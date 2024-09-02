@@ -19,6 +19,9 @@ class Petition_Setup
 
         // cpt
         add_action('init', array($this, 'register_post_types'));
+        
+        // shortcodes
+        $this->register_shortcodes();
     }
 
     /**
@@ -73,12 +76,21 @@ class Petition_Setup
         wp_enqueue_style('petitioner-style', plugin_dir_url(__FILE__) . 'css/petitioner.css', array(), PTR_VERSION);
         wp_enqueue_script('petitioner-script', plugin_dir_url(__FILE__) . 'js/petitioner.js', array(), PTR_VERSION, true);
     }
-    
+
     /**
      * Enqueue admin scripts and styles.
      */
     public function enqueue_admin_assets()
     {
         wp_enqueue_style('petitioner-css', PTR_PLUGIN_DIR . '/petitioner.css', array(), PTR_VERSION);
+    }
+
+    /**
+     * Initialize shortcodes
+     */
+    public function register_shortcodes(){
+        $frontend = new Petitioner_Frontend();
+
+        add_shortcode('petitioner-form', [$frontend, 'display_form']);
     }
 }

@@ -17,6 +17,7 @@ define('PTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PTR_VERSION', '0.0.1');
 
 require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-setup.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-frontend.php';
 
 $petitioner_setup = new Petition_Setup();
 
