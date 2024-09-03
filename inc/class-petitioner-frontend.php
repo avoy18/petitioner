@@ -23,16 +23,22 @@ class Petitioner_Frontend
 
         ob_start();
 ?>
-        <form id="petition-form" method="post" action="">
-            <label for="name">Your Name:</label>
-            <input type="text" id="name" name="name" required>
+        <form class="petitioner" id="petitioner-form" method="get" action="">
+            <div class="petitioner__input">
+                <label for="petitioner_fname">First Name:</label>
+                <input type="text" id="petitioner_fname" name="petitioner_fname">
+            </div>
 
-            <label for="email">Your Email:</label>
-            <input type="email" id="email" name="email" required>
+            <div class="petitioner__input">
+                <label for="petitioner_lname">Last Name:</label>
+                <input type="text" id="petitioner_lname" name="petitioner_lname">
+            </div>
 
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-
+            <div class="petitioner__input">
+                <label for="petitioner_email">Your Email:</label>
+                <input type="email" id="petitioner_email" name="petitioner_email">
+            </div>
+            
             <button type="submit">Sign Petition</button>
         </form>
 <?php
