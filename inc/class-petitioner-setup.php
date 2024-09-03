@@ -89,7 +89,7 @@ class Petition_Setup
      */
     public function enqueue_admin_assets()
     {
-        wp_enqueue_style('petitioner-css', plugin_dir_url(dirname(__FILE__)) . '/petitioner.css', array(), PTR_VERSION);
+        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . '/dist/adminStyle.css', array(), PTR_VERSION);
     }
 
     /**
