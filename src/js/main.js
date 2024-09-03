@@ -1,5 +1,9 @@
 // main.js
-import '../scss/style.scss';
+import "../scss/style.scss";
+import PetitionerForm from "./modules/petitioner-form";
 
-// Your JavaScript code here
-console.log('Hello, Petitions Plugin!');
+const allPetitions = document.querySelectorAll(".petitioner");
+
+for (const petition of allPetitions) {
+  new PetitionerForm(petition);
+}
