@@ -1,23 +1,25 @@
-import { defineConfig } from 'vite';
-import legacy from '@vitejs/plugin-legacy';
-import path from 'path';
+import { defineConfig } from "vite";
+import legacy from "@vitejs/plugin-legacy";
+import path from "path";
 
 export default defineConfig({
   plugins: [
     legacy({
-      targets: ['defaults', 'not IE 11'], // Specify legacy browser support
+      targets: ["defaults", "not IE 11"], // Specify legacy browser support
     }),
   ],
   build: {
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'src/js/main.js'),
-        style: path.resolve(__dirname, 'src/scss/style.scss'),
+        main: path.resolve(__dirname, "src/js/main.js"),
+        style: path.resolve(__dirname, "src/scss/style.scss"),
+        admin: path.resolve(__dirname, "src/js/admin.js"),
+        adminStyle: path.resolve(__dirname, "src/scss/admin.scss"),
       },
       output: {
-        entryFileNames: 'petitioner.js',  // Output filename for JavaScript
-        assetFileNames: 'petitioner.css', // Output filename for CSS
-        dir: path.resolve(__dirname, 'dist'),
+        entryFileNames: "[name].js",
+        assetFileNames: "[name].css",
+        dir: path.resolve(__dirname, "dist"),
       },
     },
   },
