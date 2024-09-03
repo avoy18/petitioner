@@ -1,0 +1,1 @@
+System.register([],(function(e,t){"use strict";return{execute:function(){var e=document.createElement("style");e.textContent="body{background-color:red;font-family:Arial,sans-serif}#petition-form{margin:20px;padding:10px;border:1px solid #ccc;border-radius:5px}\n",document.head.appendChild(e)}}}));

@@ -12,6 +12,13 @@ class Petition_Setup
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
 
+        add_filter('script_loader_tag', function ($tag, $handle) {
+            if ('petitioner-script' === $handle) {
+                return str_replace('<script ', '<script type="module" ', $tag);
+            }
+            return $tag;
+        }, 10, 2);
+
         // config hooks
         register_activation_hook(__FILE__, array($this, 'plugin_activation'));
         register_deactivation_hook(__FILE__, array($this, 'plugin_deactivate'));
@@ -19,7 +26,7 @@ class Petition_Setup
 
         // cpt
         add_action('init', array($this, 'register_post_types'));
-        
+
         // shortcodes
         $this->register_shortcodes();
     }
@@ -73,8 +80,8 @@ class Petition_Setup
      */
     public function enqueue_frontend_assets()
     {
-        wp_enqueue_style('petitioner-style', plugin_dir_url(__FILE__) . 'css/petitioner.css', array(), PTR_VERSION);
-        wp_enqueue_script('petitioner-script', plugin_dir_url(__FILE__) . 'js/petitioner.js', array(), PTR_VERSION, true);
+        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/petitioner.css', array(), PTR_VERSION);
+        wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/petitioner.js', array(), PTR_VERSION, true);
     }
 
     /**
@@ -82,13 +89,14 @@ class Petition_Setup
      */
     public function enqueue_admin_assets()
     {
-        wp_enqueue_style('petitioner-css', PTR_PLUGIN_DIR . '/petitioner.css', array(), PTR_VERSION);
+        wp_enqueue_style('petitioner-css', plugin_dir_url(dirname(__FILE__)) . '/petitioner.css', array(), PTR_VERSION);
     }
 
     /**
      * Initialize shortcodes
      */
-    public function register_shortcodes(){
+    public function register_shortcodes()
+    {
         $frontend = new Petitioner_Frontend();
 
         add_shortcode('petitioner-form', [$frontend, 'display_form']);
