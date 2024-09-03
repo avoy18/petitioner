@@ -1,1 +1,1 @@
-System.register(["./style-legacy.js"],(function(e,t){"use strict";return{setters:[null],execute:function(){console.log("Hello, Petitions Plugin!")}}}));
+System.register(["./style-legacy.js"],(function(t,e){"use strict";return{setters:[null],execute:function(){class t{constructor(t){this.formEl=t,this.formEl&&this.formEl.addEventListener("submit",this.handleFormSubmit)}handleFormSubmit=t=>{t.preventDefault(),alert("Form submitted!"),this.formEl.reset()}}const e=document.querySelectorAll(".petitioner");for(const r of e)new t(r)}}}));
