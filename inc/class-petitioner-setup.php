@@ -30,6 +30,9 @@ class Petition_Setup
         // shortcodes
         $this->register_shortcodes();
 
+        // admin fields
+        $petitioner_admin_ui = new Petitioner_Admin_UI();
+
         // api endpoints
         add_action('wp_ajax_petitioner_form_submit', array($this, 'handle_form_submit'));
         add_action('wp_ajax_nopriv_petitioner_form_submit', array($this, 'handle_form_submit'));
