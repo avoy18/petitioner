@@ -7,6 +7,8 @@ class Petitioner_Admin_UI
         // Hook into WordPress
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
         add_action('save_post_petitioner-petition', [$this, 'save_meta_box_data']);
+
+        add_filter('get_sample_permalink_html', [$this, 'hide_cpt_permalink'], 10, 4);
     }
 
     /**
@@ -97,5 +99,18 @@ class Petitioner_Admin_UI
         if (isset($_POST['petitioner_goal'])) {
             update_post_meta($post_id, '_petitioner_goal', intval($_POST['petitioner_goal']));
         }
+    }
+
+    /**
+     * Hide the permalink for a specific custom post type.
+     */
+    public function hide_cpt_permalink($permalink_html, $post_id, $new_title, $new_slug)
+    {
+        $post = get_post($post_id);
+        if ('petitioner-petition' === $post->post_type) {
+            return '';
+        }
+
+        return $permalink_html;
     }
 }
