@@ -18,6 +18,7 @@ define('PTR_VERSION', '0.0.1');
 
 require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-frontend.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-admin-ui.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-submissions.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-setup.php';
 
 $petitioner_setup = new Petition_Setup();

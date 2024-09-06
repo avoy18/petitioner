@@ -33,9 +33,12 @@ class Petition_Setup
         // admin fields
         $petitioner_admin_ui = new Petitioner_Admin_UI();
 
+        // submissions
+        $petitioner_submissions = new Petitioner_Submissions();
+
         // api endpoints
-        add_action('wp_ajax_petitioner_form_submit', array($this, 'handle_form_submit'));
-        add_action('wp_ajax_nopriv_petitioner_form_submit', array($this, 'handle_form_submit'));
+        add_action('wp_ajax_petitioner_form_submit', array($petitioner_submissions, 'handle_form_submit'));
+        add_action('wp_ajax_nopriv_petitioner_form_submit', array($petitioner_submissions, 'handle_form_submit'));
     }
 
     /**
@@ -107,41 +110,5 @@ class Petition_Setup
         $frontend = new Petitioner_Frontend();
 
         add_shortcode('petitioner-form', [$frontend, 'display_form']);
-    }
-
-    public function handle_form_submit()
-    {
-        // Check if the nonce is valid (security check).
-        if (! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'petitioner_form_nonce')) {
-            wp_send_json_error('Invalid nonce');
-            wp_die();
-        }
-
-        // Sanitize and validate form data.
-        $email = sanitize_email($_POST['petitioner_email']);
-        $form_id = sanitize_text_field($_POST['form_id']);
-
-        // Prepare the post data
-        $new_petition = array(
-            'post_title'   => $email . ' - ' . $form_id,
-            'post_status'  => 'publish',
-            'post_type'    => 'petitioner-entry',
-            'meta_input'   => array(
-                'email' => $email,
-                'fname' => sanitize_text_field($_POST['petitioner_fname']) ?? '',
-                'lname' => sanitize_text_field($_POST['petitioner_lname']) ?? '',
-            ),
-        );
-
-        // Insert the post into the database
-        $post_id = wp_insert_post($new_petition);
-
-        if (is_wp_error($post_id)) {
-            wp_send_json_error('Error creating petition.');
-        } else {
-            wp_send_json_success('Petition created successfully!');
-        }
-
-        wp_die();
     }
 }
