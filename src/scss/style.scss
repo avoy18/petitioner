@@ -17,6 +17,7 @@ $spacer-xl: 32px;
   // general
   --ptr-color-primary: #e01a2b;
   --ptr-color-dark: #000000;
+  --ptr-color-grey: #efefef;
 
   // wrapper
   --ptr-spacing-x: #{$spacer-md};
@@ -48,6 +49,12 @@ $spacer-xl: 32px;
   background-color: var(--ptr-wrapper-bg);
   border-radius: var(--ptr-wrapper-radius);
   box-sizing: border-box;
+
+  // progress bar
+  --ptr-progress-height: #{$spacer-sm};
+  --ptr-progress-bg: var(--ptr-color-grey);
+  --ptr-progress-radius: #{$spacer-xs};
+  --ptr-progress-inner-bg: var(--ptr-color-primary);
 
   &__input {
     display: flex;
@@ -87,6 +94,7 @@ $spacer-xl: 32px;
     background-color: var(--ptr-btn-bg);
     color: var(--ptr-btn-text-color);
     transition: 0.1s;
+    margin-bottom: $spacer-md;
 
     &:active,
     &:focus {
@@ -96,6 +104,82 @@ $spacer-xl: 32px;
     &:hover {
       cursor: pointer;
       background-color: var(--ptr-btn-bg-hover);
+    }
+  }
+
+  &__title {
+    padding: 0px;
+    margin: 0px 0px $spacer-md 0px;
+    font-size: 24px;
+  }
+
+  &__goal {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: $spacer-lg;
+    margin-bottom: $spacer-lg;
+
+
+    .petitioner__num {
+      font-size: 1rem;
+      display: block;
+      font-weight: bold;
+    }
+
+    .petitioner__numlabel {
+      font-size: 14px;
+    }
+
+    .petitioner__col {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .petitioner__col--end {
+      align-items: flex-end;
+    }
+
+    @media (min-width: $tablet) {
+
+      .petitioner__num {
+        font-size: 1.5rem;
+      }
+
+      .petitioner__numlabel {
+        font-size: 16px;
+      }
+    }
+
+  }
+
+  &__progress {
+    display: block;
+    width: 100%;
+    height: var(--ptr-progress-height);
+    display: block;
+    background-color: var(--ptr-progress-bg);
+    border-radius: var(--ptr-progress-radius);
+    position: relative;
+
+    &-bar {
+      flex-grow: 0;
+      border-radius: var(--ptr-progress-radius);
+      background-color: var(--ptr-progress-inner-bg);
+      height: 100%;
+      display: block;
+
+      span {
+        position: absolute;
+        display: block;
+        left: 0;
+        right: 0;
+        margin: 0px auto;
+        top: calc(-100% - #{$spacer-sm});
+        font-size: 14px;
+        text-align: center;
+      }
     }
   }
 
