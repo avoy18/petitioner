@@ -1,7 +1,7 @@
 export default class Petitioner_Submissions_Table {
     constructor() {
-        this.total = 1; // Total will be updated dynamically
-        this.perPage = 2;
+        this.total = 0; // Total will be updated dynamically
+        this.perPage = 100;
         this.tableDiv = document.getElementById('petitioner_submissions');
         this.entriesDiv = this.tableDiv.querySelector('.petitioner-admin__entries');
         this.paginationDiv = this.tableDiv.querySelector('.petitioner-admin__pagination');
@@ -51,7 +51,7 @@ export default class Petitioner_Submissions_Table {
                 this.total = data.total;
                 this.submissions = data.submissions;
                 this.render_table();
-                this.render_pagination();
+                // this.render_pagination();
             })
             .catch(error => console.error('Error fetching data:', error));
     }

@@ -74,10 +74,7 @@ class Petitioner_Admin_UI
             <div class="petitioner-admin__entries">
             </div>
 
-            <div class="petitioner-admin__pagination">
-                <button class="ptr-prev">pev</button>
-                <button class="ptr-next">next</button>
-            </div>
+            <div class="petitioner-admin__pagination"></div>
         </div>
 
     <?php
