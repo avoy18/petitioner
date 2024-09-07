@@ -1,4 +1,4 @@
-import PetitionerForm from "./frontend/petitioner-form";
+import PetitionerForm from "./frontend/form";
 
 const allPetitions = document.querySelectorAll(".petitioner");
 
