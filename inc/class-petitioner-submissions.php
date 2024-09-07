@@ -94,15 +94,17 @@ class Petitioner_Submissions
         wp_die();
     }
 
-    public function get_submissions()
+    public function get_submissions($page = 1, $per_page = 50)
     {
         global $wpdb;
         $table_name = $wpdb->prefix . 'petitioner_submissions';
 
+        $offset = ($page -1) * $per_page;
+
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $table_name WHERE form_id = %d",
-                $this->form_id
+                "SELECT * FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
+                $this->form_id, $per_page, $offset
             )
         );
 
@@ -111,8 +113,9 @@ class Petitioner_Submissions
 
     public function get_submission_count()
     {
-        $submissions = $this->get_submissions();
-        return count($submissions);
+        global $wpdb;
+        $total_entries = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}petitioner_submissions");
+        return $total_entries;
     }
 
     public function get_goal()

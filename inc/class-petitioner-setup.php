@@ -70,13 +70,6 @@ class Petition_Setup
             'supports'     => array('title'),
             'has_archive'  => true,
         ));
-
-        register_post_type('petitioner-entry', array(
-            'public'       => true,
-            'label'        => __('Petitioner submissions', 'petitioner-wp'),
-            'supports'     => array('title'),
-            'has_archive'  => true,
-        ));
     }
 
     /**
