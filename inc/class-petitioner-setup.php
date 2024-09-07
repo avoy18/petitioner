@@ -13,7 +13,7 @@ class Petition_Setup
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
 
         add_filter('script_loader_tag', function ($tag, $handle) {
-            if ('petitioner-script' === $handle) {
+            if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle) {
                 return str_replace('<script ', '<script type="module" ', $tag);
             }
             return $tag;
@@ -29,11 +29,10 @@ class Petition_Setup
         $petitioner_admin_ui = new Petitioner_Admin_UI();
 
         // api endpoints
-        add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'handle_form_submit'));
-        add_action('wp_ajax_nopriv_petitioner_form_submit', array('Petitioner_Submissions', 'handle_form_submit'));
+        add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
+        add_action('wp_ajax_nopriv_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
+        add_action('wp_ajax_petitioner_fetch_submissions', array('Petitioner_Submissions', 'api_fetch_form_submissions'));
     }
-
-    
     /**
      * Plugin activation callback.
      */
@@ -87,6 +86,7 @@ class Petition_Setup
     public function enqueue_admin_assets()
     {
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/adminStyle.css', array(), PTR_VERSION);
+        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array(), PTR_VERSION, true);
     }
 
     /**

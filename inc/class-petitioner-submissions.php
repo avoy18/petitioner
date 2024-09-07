@@ -40,7 +40,11 @@ class Petitioner_Submissions
         dbDelta($sql);
     }
 
-    public static function handle_form_submit()
+    /**
+     * Static function used for the API
+     * @return void
+     */
+    public static function api_handle_form_submit()
     {
         if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'petitioner_form_nonce')) {
             wp_send_json_error('Invalid nonce');
@@ -94,21 +98,54 @@ class Petitioner_Submissions
         wp_die();
     }
 
-    public function get_submissions($page = 1, $per_page = 50)
+    public static function api_fetch_form_submissions()
     {
         global $wpdb;
+
+        // Get the form ID and pagination info from the request
+        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+        $offset = ($page - 1) * $per_page;
+        $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
+
+        // Check if form_id is valid
+        if (!$form_id) {
+            wp_send_json_error('Invalid form ID.');
+            wp_die();
+        }
+
+        // Get the submissions for the specified form_id with LIMIT and OFFSET for pagination
         $table_name = $wpdb->prefix . 'petitioner_submissions';
-
-        $offset = ($page -1) * $per_page;
-
-        $results = $wpdb->get_results(
+        $submissions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
-                $this->form_id, $per_page, $offset
+                "SELECT fname AS name, email FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
+                $form_id,
+                $per_page,
+                $offset
             )
         );
 
-        return $results;
+        // Get the total count of submissions for the form
+        $total_submissions = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM $table_name WHERE form_id = %d",
+                $form_id
+            )
+        );
+
+        // Calculate the total number of pages
+        $total_pages = ceil($total_submissions / $per_page);
+
+        // Return the results as a JSON response
+        wp_send_json_success(array(
+            'submissions' => $submissions,
+            'total' => $total_submissions,
+            'total_pages' => $total_pages,
+            'current_page' => $page,
+            'per_page' => $per_page,
+        ));
+
+        wp_die();
     }
 
     public function get_submission_count()
