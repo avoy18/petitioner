@@ -19,11 +19,6 @@ class Petition_Setup
             return $tag;
         }, 10, 2);
 
-        // config hooks
-        register_activation_hook(__FILE__, array($this, 'plugin_activation'));
-        register_deactivation_hook(__FILE__, array($this, 'plugin_deactivate'));
-        register_uninstall_hook(__FILE__, array($this, 'plugin_uninstall'));
-
         // cpt
         add_action('init', array($this, 'register_post_types'));
 
@@ -33,26 +28,25 @@ class Petition_Setup
         // admin fields
         $petitioner_admin_ui = new Petitioner_Admin_UI();
 
-        // submissions
-        $petitioner_submissions = new Petitioner_Submissions();
-
         // api endpoints
-        add_action('wp_ajax_petitioner_form_submit', array($petitioner_submissions, 'handle_form_submit'));
-        add_action('wp_ajax_nopriv_petitioner_form_submit', array($petitioner_submissions, 'handle_form_submit'));
+        add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'handle_form_submit'));
+        add_action('wp_ajax_nopriv_petitioner_form_submit', array('Petitioner_Submissions', 'handle_form_submit'));
     }
 
+    
     /**
      * Plugin activation callback.
      */
-    public function plugin_activation()
+    public static function plugin_activation()
     {
         add_option('petitioner_plugin_version', PTR_VERSION);
+        Petitioner_Submissions::create_db_table();
     }
 
     /**
      * Plugin deactivation callback.
      */
-    public function plugin_deactivate()
+    public static function plugin_deactivation()
     {
         flush_rewrite_rules();
     }
@@ -60,7 +54,7 @@ class Petition_Setup
     /**
      * Plugin uninstall callback.
      */
-    public function plugin_uninstall()
+    public static function plugin_uninstall()
     {
         delete_option('petitioner_plugin_version');
     }
