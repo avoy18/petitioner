@@ -35,23 +35,23 @@ class Petitioner_Frontend
             action="<?php echo admin_url('admin-ajax.php') . '?action=petitioner_form_submit'; ?>">
             <div class="petitioner__input">
                 <label for="petitioner_fname">First Name:</label>
-                <input type="text" id="petitioner_fname" name="petitioner_fname">
+                <input required type="text" id="petitioner_fname" name="petitioner_fname">
             </div>
 
             <div class="petitioner__input">
                 <label for="petitioner_lname">Last Name:</label>
-                <input type="text" id="petitioner_lname" name="petitioner_lname">
+                <input required type="text" id="petitioner_lname" name="petitioner_lname">
             </div>
 
             <div class="petitioner__input">
                 <label for="petitioner_email">Your Email:</label>
-                <input type="email" id="petitioner_email" name="petitioner_email">
+                <input required type="email" id="petitioner_email" name="petitioner_email">
             </div>
 
             <input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
             <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>" />
 
-            <button type="submit">Sign Petition</button>
+            <button type="submit" class="petitioner__btn">Sign Petition</button>
 
             <div>
                 <?php echo $total_submissions . PHP_EOL ?> signatures out of <?php echo $goal; ?>
