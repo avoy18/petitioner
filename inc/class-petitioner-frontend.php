@@ -30,10 +30,10 @@ class Petitioner_Frontend
 
         ob_start();
 ?>
-        <form class="petitioner" id="petitioner-form-<?php echo $form_id; ?>" method="get"
-            action="<?php echo admin_url('admin-ajax.php') . '?action=petitioner_form_submit'; ?>">
+        <div class="petitioner">
 
-
+            <h2 class="petitioner__title"><?php _e('Sign this petition', 'petitioner'); ?></h2>
+            
             <div class="petitioner__goal">
                 <div class="petitioner__progress">
                     <div
@@ -45,7 +45,7 @@ class Petitioner_Frontend
                 <div class="petitioner__col">
                     <span class="petitioner__num"><?php echo $total_submissions . PHP_EOL; ?></span>
                     <span class="petitioner__numlabel">
-                        <?php _e('Signatures', 'petitioner'); ?> 
+                        <?php _e('Signatures', 'petitioner'); ?>
                         <small>(<?php echo $progress . '%'; ?>)</small>
                     </span>
                 </div>
@@ -57,27 +57,38 @@ class Petitioner_Frontend
 
             </div>
 
-            <h2 class="petitioner__title"><?php _e('Sign this petition', 'petitioner'); ?></h2>
-            <div class="petitioner__input">
-                <label for="petitioner_fname"><?php _e('First name', 'petitioner'); ?></label>
-                <input required type="text" id="petitioner_fname" name="petitioner_fname">
+
+
+            <form id="petitioner-form-<?php echo $form_id; ?>" method="get"
+                action="<?php echo admin_url('admin-ajax.php') . '?action=petitioner_form_submit'; ?>">
+
+                <div class="petitioner__input">
+                    <label for="petitioner_fname"><?php _e('First name', 'petitioner'); ?></label>
+                    <input required type="text" id="petitioner_fname" name="petitioner_fname">
+                </div>
+
+                <div class="petitioner__input">
+                    <label for="petitioner_lname"><?php _e('Last name', 'petitioner'); ?></label>
+                    <input required type="text" id="petitioner_lname" name="petitioner_lname">
+                </div>
+
+                <div class="petitioner__input">
+                    <label for="petitioner_email"><?php _e('Your email', 'petitioner'); ?></label>
+                    <input required type="email" id="petitioner_email" name="petitioner_email">
+                </div>
+
+                <input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
+                <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>" />
+
+                <button type="submit" class="petitioner__btn"><?php _e('Sign this petition', 'petitioner'); ?></button>
+            </form>
+
+            <div class="petitioner__response">
+                <h3></h3>
+                <p></p>
             </div>
 
-            <div class="petitioner__input">
-                <label for="petitioner_lname"><?php _e('Last name', 'petitioner'); ?></label>
-                <input required type="text" id="petitioner_lname" name="petitioner_lname">
-            </div>
-
-            <div class="petitioner__input">
-                <label for="petitioner_email"><?php _e('Your email', 'petitioner'); ?></label>
-                <input required type="email" id="petitioner_email" name="petitioner_email">
-            </div>
-
-            <input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
-            <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>" />
-
-            <button type="submit" class="petitioner__btn"><?php _e('Sign this petition', 'petitioner'); ?></button>
-        </form>
+        </div>
 <?php
         return ob_get_clean();
     }

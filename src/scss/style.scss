@@ -183,4 +183,23 @@ $spacer-xl: 32px;
     }
   }
 
+  &__response{
+    display: none;
+
+    h3{
+      margin: 0px;
+      padding: 0px;
+    }
+  }
+
+  &--submitted{
+    form{
+      display: none;
+    }
+
+    .petitioner__response{
+      display: block;
+    }
+  }
+
 }

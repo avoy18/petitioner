@@ -1,12 +1,21 @@
 export default class PetitionerForm {
-  constructor(theForm) {
-    this.formEl = theForm;
+  constructor(wrapper) {
+    this.wrapper = wrapper;
+    this.responseTitle = this.wrapper.querySelector('.petitioner__response > h3');
+    this.responseText = this.wrapper.querySelector('.petitioner__response > p');
+    this.formEl = this.wrapper.querySelector('form');
 
     if (!this.formEl) return;
 
     this.actionPath = this.formEl?.action ?? "";
 
     this.formEl.addEventListener("submit", this.handleFormSubmit);
+  }
+
+  showResponseMSG(title = 'Something went wrong', text = 'Please try again', isSuccess = false) {
+    this.wrapper.classList.add('petitioner--submitted');
+    this.responseTitle.innerText = title;
+    this.responseText.innerText = text;
   }
 
   handleFormSubmit = (e) => {
@@ -25,11 +34,15 @@ export default class PetitionerForm {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          alert("Petition submitted successfully!");
+          this.showResponseMSG(
+            'Thank you!',
+            'Your signature has been added!'
+          )
         } else {
-          alert(
-            "There was an error submitting your petition. Please try again."
-          );
+          this.showResponseMSG(
+            'Something went wrong',
+            'There was an error submitting your petition. Please try again.'
+          )
         }
       })
       .catch((error) => {
