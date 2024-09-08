@@ -23,8 +23,14 @@ class Petitioner_Frontend
         $form_id = esc_attr($attributes['id']);
         $nonce = wp_create_nonce('petitioner_form_nonce');
 
+        $petitioner_title = get_post_meta($form_id, '_petitioner_title', true);
+        $petitioner_goal = get_post_meta($form_id, '_petitioner_goal', true);
+        $petitioner_letter = get_post_meta($form_id, '_petitioner_letter', true);
+        $petitioner_subject = get_post_meta($form_id, '_petitioner_subject', true);
+
+        $goal = intval($petitioner_goal);
+
         $submissions = new Petitioner_Submissions($form_id);
-        $goal = $submissions->get_goal();
         $total_submissions = $submissions->get_submission_count();
         $progress = round($total_submissions / $goal * 100);
 
@@ -32,7 +38,9 @@ class Petitioner_Frontend
 ?>
         <div class="petitioner">
 
-            <h2 class="petitioner__title"><?php _e('Sign this petition', 'petitioner'); ?></h2>
+            <h2 class="petitioner__title">
+                <?php echo !empty($petitioner_title) ? $petitioner_title : __('Sign this petition', 'petitioner'); ?>
+            </h2>
 
             <div class="petitioner__goal">
                 <div class="petitioner__progress">
@@ -57,29 +65,15 @@ class Petitioner_Frontend
 
             </div>
 
-            <button class="petitioner__btn petitioner__btn--letter">View the letter</button>
+            <button class="petitioner__btn petitioner__btn--letter"><?php _e('View the letter', 'petitioner'); ?></button>
 
             <div class="petitioner-modal">
                 <span class="petitioner-modal__backdrop"></span>
                 <div class="petitioner-modal__letter">
                     <button class="petitioner-modal__close">&times; <span><?php _e('Close modal', 'petitioner') ?></span></button>
-                    <h3>Subject here</h3>
+                    <h3><?php echo $petitioner_subject; ?></h3>
                     <div class="petitioner-modal__inner">
-                        Dear something.....
-
-                        a limited feature free version or a full featured Pro version
-                        support for HTML editor so that the message can be formatted as an unordered list (like this), with <em>italics</em> or <strong>bold</strong> text, colours or a heading, like above
-                        optional Markdown editor
-                        many phrases are customisable by admin - optional confirmation of signatures
-                        several web hooks for your custom code
-                        optional privacy to only display first letter of surname
-                        optional more privacy allows signers to choose to remain publicly anonymous
-                        optional BCC message to signer - optionally display and include address fields in the message
-                        nine additional optional custom fields including one drop-down and 4 checkboxes
-                        optional newsletter sign up including to 3rd party e.g. MailChimp
-                        set a goal for signatures and display a progress bar
-                        set an expiration date
-                        duplicate a petition with one cli
+                        <?php echo $petitioner_letter; ?>
                     </div>
                     <hr />
                     <p>{Your name will be here}</p>
