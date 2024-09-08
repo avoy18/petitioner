@@ -44,11 +44,21 @@ class Petitioner_Admin_UI
         // Display form fields
 ?>
         <div class="petitioner-admin__form">
+
+            <?php if ($post->ID): ?>
+                <p>
+                    <label for="petitioner_shortcode">Your petition shortcode:</label>
+                    <input disabled type="text" name="petitioner_shortcode" id="petitioner_shortcode" value='[petitioner-form id="<?php echo $post->ID ?>"]'
+                        class="widefat">
+                </p>
+            <?php endif; ?>
+
             <p>
                 <label for="petitioner_title">Petition title *:</label>
                 <input type="text" required name="petitioner_title" id="petitioner_title" value="<?php echo esc_attr($petitioner_title); ?>"
                     class="widefat">
             </p>
+
             <p>
                 <input type="checkbox" name="petitioner_send_to_representative" id="petitioner_send_to_representative" <?php checked(1, $send_to_representative, true); ?>
                     class="widefat">
