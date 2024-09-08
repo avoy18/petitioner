@@ -240,7 +240,17 @@ class Petitioner_Submissions
     public function get_submission_count()
     {
         global $wpdb;
-        $total_entries = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}petitioner_submissions");
-        return $total_entries;
+
+        $table_name = $wpdb->prefix . 'petitioner_submissions';
+        
+        // Get the total count of submissions for the form
+        $total_submissions = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM $table_name WHERE form_id = %d",
+                $this->form_id
+            )
+        );
+
+        return $total_submissions;
     }
 }
