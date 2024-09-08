@@ -58,16 +58,21 @@ class Petitioner_Submissions
         $fname = sanitize_text_field($_POST['petitioner_fname']) ?? '';
         $lname = sanitize_text_field($_POST['petitioner_lname']) ?? '';
         $bcc = $_POST['petitioner_bcc'] === 'on';
+        
+        // todo: add these
+        $hide_name = false;
+        $newsletter_opt_in = false;
+        $accept_tos = false;
 
         $data = array(
             'form_id'      => $form_id,
             'email'        => $email,
             'fname'        => $fname,
             'lname'        => $lname,
-            'bcc_yourself' => isset($_POST['bcc_yourself']) ? 1 : 0,
-            'newsletter'   => isset($_POST['newsletter']) ? 1 : 0,
-            'hide_name'    => isset($_POST['hide_name']) ? 1 : 0,
-            'accept_tos'   => isset($_POST['accept_tos']) ? 1 : 0,
+            'bcc_yourself' => $bcc ? 1 : 0,
+            'newsletter'   => $newsletter_opt_in ? 1 : 0,
+            'hide_name'    => $hide_name ? 1 : 0,
+            'accept_tos'   => $accept_tos ? 1 : 0,
             'submitted_at' => current_time('mysql'),
         );
 
