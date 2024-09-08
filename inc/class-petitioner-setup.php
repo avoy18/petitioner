@@ -32,7 +32,7 @@ class Petition_Setup
         add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
         add_action('wp_ajax_nopriv_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
         add_action('wp_ajax_petitioner_fetch_submissions', array('Petitioner_Submissions', 'api_fetch_form_submissions'));
-        
+
         add_action('admin_post_petitioner_export_csv', array('Petitioner_Submissions', 'api_petitioner_export_csv'));
     }
     /**
@@ -65,12 +65,32 @@ class Petition_Setup
      */
     public function register_post_types()
     {
+        $labels = array(
+            'name'               => _x('Petitions', 'post type general name', 'petitioner'),
+            'singular_name'      => _x('Petition', 'post type singular name', 'petitioner'),
+            'menu_name'          => _x('Petitioner', 'admin menu', 'petitioner'),
+            'name_admin_bar'     => _x('Petition', 'add new on admin bar', 'petitioner'),
+            'add_new'            => _x('Add New', 'petition', 'petitioner'),
+            'add_new_item'       => __('Add New Petition', 'petitioner'),
+            'new_item'           => __('New Petition', 'petitioner'),
+            'edit_item'          => __('Edit Petition', 'petitioner'),
+            'view_item'          => __('View Petition', 'petitioner'),
+            'all_items'          => __('All Petitions', 'petitioner'),
+            'search_items'       => __('Search Petitions', 'petitioner'),
+            'not_found'          => __('No petitions found.', 'petitioner'),
+            'not_found_in_trash' => __('No petitions found in Trash.', 'petitioner')
+        );
+
         register_post_type('petitioner-petition', array(
-            'public'       => true,
-            'label'        => __('Petitioner', 'petitioner-wp'),
-            'supports'     => array('title'),
-            'has_archive'  => true,
-            'menu_icon'    => plugin_dir_url(dirname(__FILE__)) . 'assets/img/petitioner-glyph.svg'
+            'public'                => true,
+            'labels'                => $labels,
+            'supports'              => array('title'),
+            'has_archive'           => false,
+            'show_in_menu'          => true,
+            'exclude_from_search'   => true,
+            'hierarchical'          => false,
+            'publicly_queryable'    => false,
+            'menu_icon'             => plugin_dir_url(dirname(__FILE__)) . 'assets/img/petitioner-glyph.svg'
         ));
     }
 
