@@ -18,6 +18,8 @@ $spacer-xl: 32px;
   --ptr-color-primary: #e01a2b;
   --ptr-color-dark: #000000;
   --ptr-color-grey: #efefef;
+  --ptr-fs-sm: 14px;
+  --ptr-fs-md: 18px;
 
   // wrapper
   --ptr-spacing-x: #{$spacer-md};
@@ -34,27 +36,26 @@ $spacer-xl: 32px;
   --ptr-input-spacing-x: #{$spacer-md};
 
   // label related
-  --ptr-label-font-size: 14px;
+  --ptr-label-font-size: var(--ptr-fs-sm);
   // button
-  --ptr-btn-font-size: 18px;
+  --ptr-btn-font-size: var(--ptr-fs-md);
   --ptr-btn-bg: var(--ptr-color-primary);
   --ptr-btn-bg-hover: var(--ptr-color-dark);
-  --ptr-btn-text-color: white;
   --ptr-button-border-width: var(--ptr-input-border-width);
   --ptr-button-border-color: transparent;
   --ptr-button-border-color-active: var(--ptr-color-dark);
   --ptr-button-border-radius: #{$spacer-sm};
-
-  padding: var(--ptr-spacing-y) var(--ptr-spacing-x);
-  background-color: var(--ptr-wrapper-bg);
-  border-radius: var(--ptr-wrapper-radius);
-  box-sizing: border-box;
 
   // progress bar
   --ptr-progress-height: #{$spacer-sm};
   --ptr-progress-bg: var(--ptr-color-grey);
   --ptr-progress-radius: #{$spacer-xs};
   --ptr-progress-inner-bg: var(--ptr-color-primary);
+
+  padding: var(--ptr-spacing-y) var(--ptr-spacing-x);
+  background-color: var(--ptr-wrapper-bg);
+  border-radius: var(--ptr-wrapper-radius);
+  box-sizing: border-box;
 
   &__input {
     display: flex;
@@ -89,12 +90,31 @@ $spacer-xl: 32px;
     border-width: var(--ptr-button-border-width);
     padding: var(--ptr-input-spacing-y) var(--ptr-input-spacing-x);
     border-style: solid;
-    font-size: var(--ptr-btn-font-size);
     width: 100%;
-    background-color: var(--ptr-btn-bg);
-    color: var(--ptr-btn-text-color);
+    background-color: var(--ptr-color-grey);
     transition: 0.1s;
     margin-bottom: $spacer-md;
+
+    &--submit {
+      font-size: var(--ptr-fs-md);
+      background-color: var(--ptr-color-primary);
+      color: white;
+
+      &:hover {
+        background-color: var(--ptr-color-dark);
+      }
+    }
+
+    &--letter {
+      font-size: var(--ptr-fs-sm);
+      background-color: var(--ptr-color-grey);
+      color: var(--ptr-color-dark);
+
+      &:hover {
+        background-color: var(--ptr-color-dark);
+        color: white;
+      }
+    }
 
     &:active,
     &:focus {
@@ -103,7 +123,6 @@ $spacer-xl: 32px;
 
     &:hover {
       cursor: pointer;
-      background-color: var(--ptr-btn-bg-hover);
     }
   }
 
@@ -183,23 +202,106 @@ $spacer-xl: 32px;
     }
   }
 
-  &__response{
+  &__response {
     display: none;
 
-    h3{
+    h3 {
       margin: 0px;
       padding: 0px;
     }
   }
 
-  &--submitted{
-    form{
+  &--submitted {
+    form {
       display: none;
     }
 
-    .petitioner__response{
+    .petitioner__response {
       display: block;
     }
   }
 
+}
+
+.petitioner-modal {
+  position: fixed;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  &--visible {
+    display: flex;
+  }
+
+  &__backdrop {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(00, 00, 00, 0.5);
+  }
+
+  &__close {
+    position: absolute;
+    right: $spacer-sm;
+    top: $spacer-sm;
+    z-index: 2;
+    background: transparent;
+    outline: none;
+    border: 1px solid #ccc;
+    padding: $spacer-sm;
+    border-radius: $spacer-xs;
+    line-height: 1;
+    width: $spacer-lg;
+    height: $spacer-lg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.1s;
+
+    &:hover {
+      cursor: pointer;
+      background: var(--ptr-color-dark);
+      color: white;
+    }
+
+    // for screen readers
+    span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  }
+
+  hr{
+    border: 0px;
+    height: 1px;
+    background: #ccc;
+    margin-top: $spacer-lg;
+    margin-bottom: $spacer-sm;
+  }
+
+  &__letter {
+    position: relative;
+    max-width: 500px;
+
+    background-color: white;
+    border-radius: $spacer-md;
+    padding: $spacer-lg;
+  }
+
+  &__inner {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
 }

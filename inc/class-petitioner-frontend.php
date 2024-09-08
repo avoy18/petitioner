@@ -23,8 +23,14 @@ class Petitioner_Frontend
         $form_id = esc_attr($attributes['id']);
         $nonce = wp_create_nonce('petitioner_form_nonce');
 
+        $petitioner_title = get_post_meta($form_id, '_petitioner_title', true);
+        $petitioner_goal = get_post_meta($form_id, '_petitioner_goal', true);
+        $petitioner_letter = get_post_meta($form_id, '_petitioner_letter', true);
+        $petitioner_subject = get_post_meta($form_id, '_petitioner_subject', true);
+
+        $goal = intval($petitioner_goal);
+
         $submissions = new Petitioner_Submissions($form_id);
-        $goal = $submissions->get_goal();
         $total_submissions = $submissions->get_submission_count();
         $progress = round($total_submissions / $goal * 100);
 
@@ -32,8 +38,10 @@ class Petitioner_Frontend
 ?>
         <div class="petitioner">
 
-            <h2 class="petitioner__title"><?php _e('Sign this petition', 'petitioner'); ?></h2>
-            
+            <h2 class="petitioner__title">
+                <?php echo !empty($petitioner_title) ? $petitioner_title : __('Sign this petition', 'petitioner'); ?>
+            </h2>
+
             <div class="petitioner__goal">
                 <div class="petitioner__progress">
                     <div
@@ -57,7 +65,20 @@ class Petitioner_Frontend
 
             </div>
 
+            <button class="petitioner__btn petitioner__btn--letter"><?php _e('View the letter', 'petitioner'); ?></button>
 
+            <div class="petitioner-modal">
+                <span class="petitioner-modal__backdrop"></span>
+                <div class="petitioner-modal__letter">
+                    <button class="petitioner-modal__close">&times; <span><?php _e('Close modal', 'petitioner') ?></span></button>
+                    <h3><?php echo $petitioner_subject; ?></h3>
+                    <div class="petitioner-modal__inner">
+                        <?php echo $petitioner_letter; ?>
+                    </div>
+                    <hr />
+                    <p>{Your name will be here}</p>
+                </div>
+            </div>
 
             <form id="petitioner-form-<?php echo $form_id; ?>" method="get"
                 action="<?php echo admin_url('admin-ajax.php') . '?action=petitioner_form_submit'; ?>">
@@ -80,7 +101,7 @@ class Petitioner_Frontend
                 <input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
                 <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>" />
 
-                <button type="submit" class="petitioner__btn"><?php _e('Sign this petition', 'petitioner'); ?></button>
+                <button type="submit" class="petitioner__btn petitioner__btn--submit"><?php _e('Sign this petition', 'petitioner'); ?></button>
             </form>
 
             <div class="petitioner__response">
