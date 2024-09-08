@@ -127,7 +127,7 @@ class Petitioner_Submissions
 
         // Get the form ID and pagination info from the request
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
         $offset = ($page - 1) * $per_page;
         $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
 
@@ -141,7 +141,7 @@ class Petitioner_Submissions
         $table_name = $wpdb->prefix . 'petitioner_submissions';
         $submissions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT fname AS name, email FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
+                "SELECT * FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
                 $form_id,
                 $per_page,
                 $offset
