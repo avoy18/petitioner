@@ -45,8 +45,8 @@ class Petitioner_Admin_UI
 ?>
         <div class="petitioner-admin__form">
             <p>
-                <label for="petitioner_title">Petition title:</label>
-                <input type="text" name="petitioner_title" id="petitioner_title" value="<?php echo esc_attr($petitioner_title); ?>"
+                <label for="petitioner_title">Petition title *:</label>
+                <input type="text" required name="petitioner_title" id="petitioner_title" value="<?php echo esc_attr($petitioner_title); ?>"
                     class="widefat">
             </p>
             <p>
@@ -65,13 +65,13 @@ class Petitioner_Admin_UI
                     class="widefat">
             </p>
             <p>
-                <label for="petitioner_goal">Signature goal:</label>
-                <input type="number" name="petitioner_goal" id="petitioner_goal" value="<?php echo esc_attr($petitioner_goal); ?>"
+                <label for="petitioner_goal">Signature goal *:</label>
+                <input type="number" required name="petitioner_goal" id="petitioner_goal" value="<?php echo esc_attr($petitioner_goal); ?>"
                     class="widefat">
             </p>
             <p>
-                <label for="petitioner_subject">Petition subject:</label>
-                <input type="text" name="petitioner_subject" id="petitioner_subject" value="<?php echo esc_attr($petitioner_subject); ?>"
+                <label for="petitioner_subject">Petition subject *:</label>
+                <input type="text" required name="petitioner_subject" id="petitioner_subject" value="<?php echo esc_attr($petitioner_subject); ?>"
                     class="widefat">
             </p>
 
