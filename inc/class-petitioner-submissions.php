@@ -148,16 +148,63 @@ class Petitioner_Submissions
         wp_die();
     }
 
+    public static function api_petitioner_export_csv()
+    {
+        global $wpdb;
+
+        $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
+
+        $table_name = $wpdb->prefix . 'petitioner_submissions';
+
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM $table_name WHERE form_id = %d",
+                $form_id,
+            )
+        );
+
+        if (empty($results)) {
+            wp_die('No submissions available.');
+        }
+
+        // Set the headers to force download
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=petition_submissions.csv');
+
+        // Open output stream for writing
+        $output = fopen('php://output', 'w');
+
+        // Output the column headings (customize as per your table structure)
+        fputcsv($output, array('ID', 'First Name', 'Last Name', 'Email', 'Country', 'Salutation', 'BCC Yourself', 'Newsletter', 'Hide Name', 'Accept TOS', 'Submitted At'));
+
+        // Loop over the rows and output them as CSV
+        foreach ($results as $row) {
+            fputcsv($output, array(
+                $row->id,
+                $row->fname,
+                $row->lname,
+                $row->email,
+                $row->country,
+                $row->salutation,
+                $row->bcc_yourself,
+                $row->newsletter,
+                $row->hide_name,
+                $row->accept_tos,
+                $row->submitted_at
+            ));
+        }
+
+        // Close the output stream
+        fclose($output);
+
+        // Prevent any further output (like HTML or errors)
+        exit;
+    }
+
     public function get_submission_count()
     {
         global $wpdb;
         $total_entries = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}petitioner_submissions");
         return $total_entries;
-    }
-
-    public function get_goal()
-    {
-
-        return get_post_meta($this->form_id, '_petitioner_goal', true);
     }
 }

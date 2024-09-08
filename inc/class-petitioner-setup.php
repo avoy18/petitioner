@@ -32,6 +32,8 @@ class Petition_Setup
         add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
         add_action('wp_ajax_nopriv_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
         add_action('wp_ajax_petitioner_fetch_submissions', array('Petitioner_Submissions', 'api_fetch_form_submissions'));
+        
+        add_action('admin_post_petitioner_export_csv', array('Petitioner_Submissions', 'api_petitioner_export_csv'));
     }
     /**
      * Plugin activation callback.
