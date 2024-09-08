@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Plugin Name:       Petitioner WP
+ * Plugin Name:       Petitioner
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
  * Version:           0.0.1
  * Author:            Anton Voytenko
- * License:           Apache-2.0 license
- * License URI:       https://github.com/avoy18/petitioner/blob/main/LICENSE
- * Text Domain:       petitioner-wp
+ * License:           GPLv2 or later
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       petitioner
  */
 
 define('PTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
