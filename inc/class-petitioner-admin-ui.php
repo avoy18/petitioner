@@ -104,6 +104,8 @@ class Petitioner_Admin_UI
 
             <h3>Submissions</h3>
 
+            <a href="<?php echo admin_url('admin-post.php') . '?action=petitioner_export_csv&form_id=' . $post->ID; ?>" class="button button-primary">Export Submissions as CSV</a>
+
             <div class="petitioner-admin__entries">
             </div>
 
