@@ -65,9 +65,10 @@ class Petition_Setup
     {
         register_post_type('petitioner-petition', array(
             'public'       => true,
-            'label'        => __('Petitioner Petitions', 'petitioner-wp'),
+            'label'        => __('Petitioner', 'petitioner-wp'),
             'supports'     => array('title'),
             'has_archive'  => true,
+            'menu_icon'    => 'dashicons-list-view'
         ));
     }
 
