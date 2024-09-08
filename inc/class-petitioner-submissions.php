@@ -58,11 +58,27 @@ class Petitioner_Submissions
         $fname = sanitize_text_field($_POST['petitioner_fname']) ?? '';
         $lname = sanitize_text_field($_POST['petitioner_lname']) ?? '';
         $bcc = $_POST['petitioner_bcc'] === 'on';
-        
+
         // todo: add these
         $hide_name = false;
         $newsletter_opt_in = false;
         $accept_tos = false;
+
+        // Insert into the custom table
+        $table_name = $wpdb->prefix . 'petitioner_submissions';
+
+        // Query the table to check if the email already exists
+        $email_findings = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $table_name WHERE email = %s AND form_id = %d",
+            $email,
+            $form_id
+        ));
+
+        $email_exists = $email_findings > 0;
+
+        if ($email_exists) {
+            wp_send_json_error(__('Looks like you\'ve already signed this petition!', 'petitioner'));
+        }
 
         $data = array(
             'form_id'      => $form_id,
@@ -76,8 +92,6 @@ class Petitioner_Submissions
             'submitted_at' => current_time('mysql'),
         );
 
-        // Insert into the custom table
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
         $inserted = $wpdb->insert(
             $table_name,
             $data,
@@ -94,6 +108,7 @@ class Petitioner_Submissions
             )
         );
 
+
         $mailer_settings = array(
             'target_email' => get_post_meta($form_id, '_petitioner_email', true),
             'target_cc_emails' => get_post_meta($form_id, '_petitioner_cc_emails', true),
@@ -107,15 +122,13 @@ class Petitioner_Submissions
 
         $mailer = new Petitioner_Mailer($mailer_settings);
 
-        error_log(print_r($mailer_settings, true));
-
         $send_emails = $mailer->send_emails();
 
         // Check if the insert was successful
         if ($inserted === false || $send_emails === false) {
-            wp_send_json_error('Error saving submission.');
+            wp_send_json_error(__('Error saving submission. Please try again.', 'petitioner'));
         } else {
-            wp_send_json_success('Submission saved successfully!');
+            wp_send_json_success(__('Your signature has been added!', 'petitioner'));
         }
 
         wp_die();

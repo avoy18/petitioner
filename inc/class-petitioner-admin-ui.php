@@ -9,6 +9,7 @@ class Petitioner_Admin_UI
         add_action('save_post_petitioner-petition', [$this, 'save_meta_box_data']);
 
         add_filter('get_sample_permalink_html', [$this, 'hide_cpt_permalink'], 10, 4);
+        add_filter('post_row_actions', [$this, 'remove_view_link'], 10, 4);
     }
 
     /**
@@ -184,7 +185,7 @@ class Petitioner_Admin_UI
 
         // Sanitize and save the email field
         if (isset($_POST['petitioner_cc_emails'])) {
-            
+
             $final_cc_emails = $this->sanitize_cc_emails($_POST['petitioner_cc_emails']);
 
             update_post_meta($post_id, '_petitioner_cc_emails', $final_cc_emails);
@@ -226,7 +227,8 @@ class Petitioner_Admin_UI
         }
     }
 
-    public function sanitize_cc_emails($emaisl = array()){
+    public function sanitize_cc_emails($emaisl = array())
+    {
         // Split the string into an array using commas
         $emails = explode(',', $_POST['petitioner_cc_emails']);
 
@@ -258,5 +260,15 @@ class Petitioner_Admin_UI
         }
 
         return $permalink_html;
+    }
+
+    public function remove_view_link($actions, $post)
+    {
+        if ('petitioner-petition' === $post->post_type) {
+            // Remove the "View" action
+            unset($actions['view']);
+        }
+
+        return $actions;
     }
 }

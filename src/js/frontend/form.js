@@ -58,16 +58,16 @@ export default class PetitionerForm {
       },
     })
       .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
+      .then((res) => {
+        if (res.success) {
           this.showResponseMSG(
             'Thank you!',
-            'Your signature has been added!'
+            res.data
           )
         } else {
           this.showResponseMSG(
-            'Something went wrong',
-            'There was an error submitting your petition. Please try again.'
+            'Could not submit the form.',
+            res.data
           );
         }
 
