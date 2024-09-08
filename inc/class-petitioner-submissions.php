@@ -57,6 +57,7 @@ class Petitioner_Submissions
         $form_id = sanitize_text_field($_POST['form_id']);
         $fname = sanitize_text_field($_POST['petitioner_fname']) ?? '';
         $lname = sanitize_text_field($_POST['petitioner_lname']) ?? '';
+        $bcc = $_POST['petitioner_bcc'] === 'on';
 
         $data = array(
             'form_id'      => $form_id,
@@ -88,8 +89,25 @@ class Petitioner_Submissions
             )
         );
 
+        $mailer_settings = array(
+            'target_email' => get_post_meta($form_id, '_petitioner_email', true),
+            'target_cc_emails' => get_post_meta($form_id, '_petitioner_cc_emails', true),
+            'user_email' => $email,
+            'user_name' => $fname . ' ' . $lname,
+            'letter' => get_post_meta($form_id, '_petitioner_letter', true),
+            'subject' => get_post_meta($form_id, '_petitioner_subject', true),
+            'bcc' => $bcc,
+            'send_to_representative' => get_post_meta($form_id, '_petitioner_send_to_representative', true),
+        );
+
+        $mailer = new Petitioner_Mailer($mailer_settings);
+
+        error_log(print_r($mailer_settings, true));
+
+        $send_emails = $mailer->send_emails();
+
         // Check if the insert was successful
-        if ($inserted === false) {
+        if ($inserted === false || $send_emails === false) {
             wp_send_json_error('Error saving submission.');
         } else {
             wp_send_json_success('Submission saved successfully!');

@@ -16,6 +16,7 @@ define('PTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 define('PTR_VERSION', '0.0.1');
 
+require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-mailer.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-frontend.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-admin-ui.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-submissions.php';

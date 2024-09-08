@@ -27,6 +27,7 @@ class Petitioner_Frontend
         $petitioner_goal = get_post_meta($form_id, '_petitioner_goal', true);
         $petitioner_letter = get_post_meta($form_id, '_petitioner_letter', true);
         $petitioner_subject = get_post_meta($form_id, '_petitioner_subject', true);
+        $petitioner_send_to_representative = get_post_meta($form_id, '_petitioner_send_to_representative', true);
 
         $goal = intval($petitioner_goal);
 
@@ -97,6 +98,13 @@ class Petitioner_Frontend
                     <label for="petitioner_email"><?php _e('Your email', 'petitioner'); ?></label>
                     <input required type="email" id="petitioner_email" name="petitioner_email">
                 </div>
+
+                <?php if ($petitioner_send_to_representative): ?>
+                    <div class="petitioner__input petitioner__input--checkbox">
+                        <label for="petitioner_bcc"><?php _e('BCC me on the email', 'petitioner'); ?></label>
+                        <input type="checkbox" id="petitioner_bcc" name="petitioner_bcc">
+                    </div>
+                <?php endif; ?>
 
                 <input type="hidden" name="form_id" value="<?php echo $form_id; ?>">
                 <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>" />

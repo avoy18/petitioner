@@ -71,7 +71,6 @@ class Petition_Setup
             'supports'     => array('title'),
             'has_archive'  => true,
             'menu_icon'    => plugin_dir_url(dirname(__FILE__)) . 'assets/img/petitioner-glyph.svg'
-            // 'menu_icon'    => 'dashicons-list-view'
         ));
     }
 
