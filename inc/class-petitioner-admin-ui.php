@@ -9,6 +9,7 @@ class Petitioner_Admin_UI
         add_action('save_post_petitioner-petition', [$this, 'save_meta_box_data']);
 
         add_filter('get_sample_permalink_html', [$this, 'hide_cpt_permalink'], 10, 4);
+        add_filter('post_row_actions', [$this, 'remove_view_link'], 10, 4);
     }
 
     /**
@@ -31,35 +32,56 @@ class Petitioner_Admin_UI
     {
         // Retrieve current meta field values
         $petitioner_title = get_post_meta($post->ID, '_petitioner_title', true);
+        $send_to_representative = get_post_meta($post->ID, '_petitioner_send_to_representative', true);
         $petitioner_email = get_post_meta($post->ID, '_petitioner_email', true);
+        $petitioner_cc_emails = get_post_meta($post->ID, '_petitioner_cc_emails', true);
         $petitioner_goal = get_post_meta($post->ID, '_petitioner_goal', true);
         $petitioner_letter = get_post_meta($post->ID, '_petitioner_letter', true);
         $petitioner_subject = get_post_meta($post->ID, '_petitioner_subject', true);
-
         // Output nonce for verification
         wp_nonce_field('save_petition_details', 'petitioner_details_nonce');
 
         // Display form fields
 ?>
         <div class="petitioner-admin__form">
+
+            <?php if ($post->ID): ?>
+                <p>
+                    <label for="petitioner_shortcode">Your petition shortcode:</label>
+                    <input disabled type="text" name="petitioner_shortcode" id="petitioner_shortcode" value='[petitioner-form id="<?php echo $post->ID ?>"]'
+                        class="widefat">
+                </p>
+            <?php endif; ?>
+
             <p>
-                <label for="petitioner_title">Petition title:</label>
-                <input type="text" name="petitioner_title" id="petitioner_title" value="<?php echo esc_attr($petitioner_title); ?>"
+                <label for="petitioner_title">Petition title *:</label>
+                <input type="text" required name="petitioner_title" id="petitioner_title" value="<?php echo esc_attr($petitioner_title); ?>"
                     class="widefat">
             </p>
+
             <p>
-                <label for="petitioner_email">Petition contact email:</label>
+                <input type="checkbox" name="petitioner_send_to_representative" id="petitioner_send_to_representative" <?php checked(1, $send_to_representative, true); ?>
+                    class="widefat">
+                <label for="petitioner_send_to_representative">Send this email to representative?</label>
+            </p>
+            <p>
+                <label for="petitioner_email">Petition target email:</label>
                 <input type="email" name="petitioner_email" id="petitioner_email" value="<?php echo esc_attr($petitioner_email); ?>"
                     class="widefat">
             </p>
             <p>
-                <label for="petitioner_goal">Signature goal:</label>
-                <input type="number" name="petitioner_goal" id="petitioner_goal" value="<?php echo esc_attr($petitioner_goal); ?>"
+                <label for="petitioner_cc_emails">Petition CC emails <small>(can have multiple - separated by comma)</small>:</label>
+                <input type="text" name="petitioner_cc_emails" id="petitioner_cc_emails" value="<?php echo esc_attr($petitioner_cc_emails); ?>"
                     class="widefat">
             </p>
             <p>
-                <label for="petitioner_subject">Petition subject:</label>
-                <input type="text" name="petitioner_subject" id="petitioner_title" value="<?php echo esc_attr($petitioner_subject); ?>"
+                <label for="petitioner_goal">Signature goal *:</label>
+                <input type="number" required name="petitioner_goal" id="petitioner_goal" value="<?php echo esc_attr($petitioner_goal); ?>"
+                    class="widefat">
+            </p>
+            <p>
+                <label for="petitioner_subject">Petition subject *:</label>
+                <input type="text" required name="petitioner_subject" id="petitioner_subject" value="<?php echo esc_attr($petitioner_subject); ?>"
                     class="widefat">
             </p>
 
@@ -159,9 +181,24 @@ class Petitioner_Admin_UI
             update_post_meta($post_id, '_petitioner_title', sanitize_text_field($_POST['petitioner_title']));
         }
 
+        // Sanitize and save the checkbox value
+        if (isset($_POST['petitioner_send_to_representative']) && $_POST['petitioner_send_to_representative'] == 'on') {
+            update_post_meta($post_id, '_petitioner_send_to_representative', 1);
+        } else {
+            update_post_meta($post_id, '_petitioner_send_to_representative', 0);
+        }
+
         // Sanitize and save the email field
         if (isset($_POST['petitioner_email'])) {
             update_post_meta($post_id, '_petitioner_email', sanitize_email($_POST['petitioner_email']));
+        }
+
+        // Sanitize and save the email field
+        if (isset($_POST['petitioner_cc_emails'])) {
+
+            $final_cc_emails = $this->sanitize_cc_emails($_POST['petitioner_cc_emails']);
+
+            update_post_meta($post_id, '_petitioner_cc_emails', $final_cc_emails);
         }
 
         // Sanitize and save the goal field
@@ -200,6 +237,28 @@ class Petitioner_Admin_UI
         }
     }
 
+    public function sanitize_cc_emails($emaisl = array())
+    {
+        // Split the string into an array using commas
+        $emails = explode(',', $_POST['petitioner_cc_emails']);
+
+        // Initialize an array to hold the sanitized emails
+        $sanitized_emails = array();
+
+        // Loop through each email
+        foreach ($emails as $email) {
+            // Trim any extra spaces and sanitize the email
+            $email = sanitize_email(trim($email));
+
+            // Validate the email and add it to the sanitized list if valid
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $sanitized_emails[] = $email;
+            }
+        }
+
+        return implode(',', $sanitized_emails);
+    }
+
     /**
      * Hide the permalink for a specific custom post type.
      */
@@ -211,5 +270,15 @@ class Petitioner_Admin_UI
         }
 
         return $permalink_html;
+    }
+
+    public function remove_view_link($actions, $post)
+    {
+        if ('petitioner-petition' === $post->post_type) {
+            // Remove the "View" action
+            unset($actions['view']);
+        }
+
+        return $actions;
     }
 }

@@ -57,21 +57,41 @@ class Petitioner_Submissions
         $form_id = sanitize_text_field($_POST['form_id']);
         $fname = sanitize_text_field($_POST['petitioner_fname']) ?? '';
         $lname = sanitize_text_field($_POST['petitioner_lname']) ?? '';
+        $bcc = $_POST['petitioner_bcc'] === 'on';
+
+        // todo: add these
+        $hide_name = false;
+        $newsletter_opt_in = false;
+        $accept_tos = false;
+
+        // Insert into the custom table
+        $table_name = $wpdb->prefix . 'petitioner_submissions';
+
+        // Query the table to check if the email already exists
+        $email_findings = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM $table_name WHERE email = %s AND form_id = %d",
+            $email,
+            $form_id
+        ));
+
+        $email_exists = $email_findings > 0;
+
+        if ($email_exists) {
+            wp_send_json_error(__('Looks like you\'ve already signed this petition!', 'petitioner'));
+        }
 
         $data = array(
             'form_id'      => $form_id,
             'email'        => $email,
             'fname'        => $fname,
             'lname'        => $lname,
-            'bcc_yourself' => isset($_POST['bcc_yourself']) ? 1 : 0,
-            'newsletter'   => isset($_POST['newsletter']) ? 1 : 0,
-            'hide_name'    => isset($_POST['hide_name']) ? 1 : 0,
-            'accept_tos'   => isset($_POST['accept_tos']) ? 1 : 0,
+            'bcc_yourself' => $bcc ? 1 : 0,
+            'newsletter'   => $newsletter_opt_in ? 1 : 0,
+            'hide_name'    => $hide_name ? 1 : 0,
+            'accept_tos'   => $accept_tos ? 1 : 0,
             'submitted_at' => current_time('mysql'),
         );
 
-        // Insert into the custom table
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
         $inserted = $wpdb->insert(
             $table_name,
             $data,
@@ -88,11 +108,27 @@ class Petitioner_Submissions
             )
         );
 
+
+        $mailer_settings = array(
+            'target_email' => get_post_meta($form_id, '_petitioner_email', true),
+            'target_cc_emails' => get_post_meta($form_id, '_petitioner_cc_emails', true),
+            'user_email' => $email,
+            'user_name' => $fname . ' ' . $lname,
+            'letter' => get_post_meta($form_id, '_petitioner_letter', true),
+            'subject' => get_post_meta($form_id, '_petitioner_subject', true),
+            'bcc' => $bcc,
+            'send_to_representative' => get_post_meta($form_id, '_petitioner_send_to_representative', true),
+        );
+
+        $mailer = new Petitioner_Mailer($mailer_settings);
+
+        $send_emails = $mailer->send_emails();
+
         // Check if the insert was successful
-        if ($inserted === false) {
-            wp_send_json_error('Error saving submission.');
+        if ($inserted === false || $send_emails === false) {
+            wp_send_json_error(__('Error saving submission. Please try again.', 'petitioner'));
         } else {
-            wp_send_json_success('Submission saved successfully!');
+            wp_send_json_success(__('Your signature has been added!', 'petitioner'));
         }
 
         wp_die();
@@ -104,7 +140,7 @@ class Petitioner_Submissions
 
         // Get the form ID and pagination info from the request
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
         $offset = ($page - 1) * $per_page;
         $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
 
@@ -118,7 +154,7 @@ class Petitioner_Submissions
         $table_name = $wpdb->prefix . 'petitioner_submissions';
         $submissions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT fname AS name, email FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
+                "SELECT * FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
                 $form_id,
                 $per_page,
                 $offset

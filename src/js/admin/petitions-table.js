@@ -1,7 +1,7 @@
 export default class Petitioner_Submissions_Table {
     constructor() {
         this.total = 0; // Total will be updated dynamically
-        this.perPage = 100;
+        this.perPage = 1000;
         this.tableDiv = document.getElementById('petitioner_submissions');
         this.entriesDiv = this.tableDiv.querySelector('.petitioner-admin__entries');
         this.paginationDiv = this.tableDiv.querySelector('.petitioner-admin__pagination');
@@ -60,8 +60,11 @@ export default class Petitioner_Submissions_Table {
     render_table() {
         const rows = this.submissions?.map((item) => {
             return `<tr>
-                        <td>${item.name}</td>
                         <td>${item.email}</td>
+                        <td>${item.fname}</td>
+                        <td>${item.lname}</td>
+                        <td>${item.bcc_yourself ? 'yes' : 'no'}</td>
+                        <td>${item.submitted_at}</td>
                     </tr>`;
         }).join('');
 
@@ -70,8 +73,11 @@ export default class Petitioner_Submissions_Table {
         <table class="wp-list-table widefat fixed striped table-view-list posts">
             <thead>
                 <tr>
-                    <th>Name</th>
                     <th>Email</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>BCC</th>
+                    <th>Submitted at</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,21 +88,21 @@ export default class Petitioner_Submissions_Table {
     }
 
     // Render the pagination
-    render_pagination() {
-        const prevPage = this.currentPage--;
-        const nextPage = this.currentPage++;
+    // render_pagination() {
+    //     const prevPage = this.currentPage--;
+    //     const nextPage = this.currentPage++;
 
-        let paginationHTML = `<button class="petitioner__paging-button" data-page="${prevPage !== 0 ? prevPage : 1}"><</button>`;
+    //     let paginationHTML = `<button class="petitioner__paging-button" data-page="${prevPage > 0 ? prevPage : 1}"><</button>`;
 
-        // Calculate the total number of pages, rounding up
-        const countPages = Math.ceil(this.total / this.perPage);
+    //     // // Calculate the total number of pages, rounding up
+    //     const countPages = Math.ceil(this.total / this.perPage);
 
-        for (let i = 1; i <= countPages; i++) {
-            paginationHTML += `<button class="petitioner__paging-button ${i === this.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-        }
+    //     // for (let i = 1; i <= countPages; i++) {
+    //     //     paginationHTML += `<button class="petitioner__paging-button ${i === this.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+    //     // }
 
-        paginationHTML += `<button class="petitioner__paging-button" data-page="${nextPage <= countPages ? nextPage : countPages}">></button>`;
+    //     paginationHTML += `<button class="petitioner__paging-button" data-page="${nextPage <= countPages ? nextPage : countPages}">></button>`;
 
-        this.paginationDiv.innerHTML = paginationHTML;
-    }
+    //     this.paginationDiv.innerHTML = paginationHTML;
+    // }
 }

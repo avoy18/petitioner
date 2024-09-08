@@ -80,6 +80,18 @@ $spacer-xl: 32px;
         border-color: var(--ptr-input-border-color-active);
       }
     }
+
+    &--checkbox{
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: $spacer-md;
+      margin-bottom: $spacer-md;
+
+      label{
+        order: 1;
+      }
+    }
   }
 
   &__btn {
@@ -221,6 +233,13 @@ $spacer-xl: 32px;
     }
   }
 
+  &--loading{
+    form{
+      pointer-events: none;
+      opacity: 0.8;
+      cursor: progress;
+    }
+  }
 }
 
 .petitioner-modal {
