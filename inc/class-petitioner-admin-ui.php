@@ -122,7 +122,7 @@ class Petitioner_Admin_UI
         );
     ?>
 
-        <div id="petitioner_submissions" class="petitioner-admin__submissions" data-petitioner-submissions='<?php echo json_encode($submission_settings) ?>'>
+        <div id="petitioner_submissions" class="petitioner-admin__submissions" data-petitioner-submissions='<?php echo wp_json_encode($submission_settings) ?>'>
 
             <h3>Submissions</h3>
 
