@@ -156,13 +156,16 @@ class Petitioner_Admin_UI
      */
     public function save_meta_box_data($post_id)
     {
+        // Unslash data before sanitizing
+        $post_data = wp_unslash($_POST);
+
         // Check if nonce is set
-        if (!isset($_POST['petitioner_details_nonce'])) {
+        if (!isset($post_data['petitioner_details_nonce'])) {
             return;
         }
 
         // Verify nonce
-        if (!wp_verify_nonce($_POST['petitioner_details_nonce'], 'save_petition_details')) {
+        if (!wp_verify_nonce($post_data['petitioner_details_nonce'], 'save_petition_details')) {
             return;
         }
 
@@ -176,8 +179,6 @@ class Petitioner_Admin_UI
             return;
         }
 
-        // Unslash data before sanitizing
-        $post_data = wp_unslash($_POST);
 
         // Sanitize and save the email field
         if (isset($post_data['petitioner_title'])) {
@@ -243,7 +244,7 @@ class Petitioner_Admin_UI
     public function sanitize_cc_emails($emaisl = array())
     {
         // Split the string into an array using commas
-        $emails = explode(',', $_POST['petitioner_cc_emails']);
+        $emails = explode(',', $post_data['petitioner_cc_emails']);
 
         // Initialize an array to hold the sanitized emails
         $sanitized_emails = array();
