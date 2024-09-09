@@ -48,7 +48,7 @@ class Petitioner_Admin_UI
             <?php if ($post->ID): ?>
                 <p>
                     <label for="petitioner_shortcode">Your petition shortcode:</label>
-                    <input disabled type="text" name="petitioner_shortcode" id="petitioner_shortcode" value='[petitioner-form id="<?php echo $post->ID ?>"]'
+                    <input disabled type="text" name="petitioner_shortcode" id="petitioner_shortcode" value='[petitioner-form id="<?php echo esc_attr($post->ID) ?>"]'
                         class="widefat">
                 </p>
             <?php endif; ?>
@@ -126,7 +126,7 @@ class Petitioner_Admin_UI
 
             <h3>Submissions</h3>
 
-            <a href="<?php echo admin_url('admin-post.php') . '?action=petitioner_export_csv&form_id=' . $post->ID; ?>" class="button button-primary">Export Submissions as CSV</a>
+            <a href="<?php echo esc_attr(admin_url('admin-post.php') . '?action=petitioner_export_csv&form_id=' . $post->ID); ?>" class="button button-primary">Export Submissions as CSV</a>
 
             <div class="petitioner-admin__entries">
             </div>
@@ -176,42 +176,45 @@ class Petitioner_Admin_UI
             return;
         }
 
+        // Unslash data before sanitizing
+        $post_data = wp_unslash($_POST);
+
         // Sanitize and save the email field
-        if (isset($_POST['petitioner_title'])) {
-            update_post_meta($post_id, '_petitioner_title', sanitize_text_field($_POST['petitioner_title']));
+        if (isset($post_data['petitioner_title'])) {
+            update_post_meta($post_id, '_petitioner_title', sanitize_text_field($post_data['petitioner_title']));
         }
 
         // Sanitize and save the checkbox value
-        if (isset($_POST['petitioner_send_to_representative']) && $_POST['petitioner_send_to_representative'] == 'on') {
+        if (isset($post_data['petitioner_send_to_representative']) && $post_data['petitioner_send_to_representative'] == 'on') {
             update_post_meta($post_id, '_petitioner_send_to_representative', 1);
         } else {
             update_post_meta($post_id, '_petitioner_send_to_representative', 0);
         }
 
         // Sanitize and save the email field
-        if (isset($_POST['petitioner_email'])) {
-            update_post_meta($post_id, '_petitioner_email', sanitize_email($_POST['petitioner_email']));
+        if (isset($post_data['petitioner_email'])) {
+            update_post_meta($post_id, '_petitioner_email', sanitize_email($post_data['petitioner_email']));
         }
 
         // Sanitize and save the email field
-        if (isset($_POST['petitioner_cc_emails'])) {
+        if (isset($post_data['petitioner_cc_emails'])) {
 
-            $final_cc_emails = $this->sanitize_cc_emails($_POST['petitioner_cc_emails']);
+            $final_cc_emails = $this->sanitize_cc_emails($post_data['petitioner_cc_emails']);
 
             update_post_meta($post_id, '_petitioner_cc_emails', $final_cc_emails);
         }
 
         // Sanitize and save the goal field
-        if (isset($_POST['petitioner_goal'])) {
-            update_post_meta($post_id, '_petitioner_goal', intval($_POST['petitioner_goal']));
+        if (isset($post_data['petitioner_goal'])) {
+            update_post_meta($post_id, '_petitioner_goal', intval($post_data['petitioner_goal']));
         }
 
         // Sanitize and save the subject
-        if (isset($_POST['petitioner_subject'])) {
-            update_post_meta($post_id, '_petitioner_subject', sanitize_text_field($_POST['petitioner_subject']));
+        if (isset($post_data['petitioner_subject'])) {
+            update_post_meta($post_id, '_petitioner_subject', sanitize_text_field($post_data['petitioner_subject']));
         }
 
-        if (isset($_POST['petitioner_letter'])) {
+        if (isset($post_data['petitioner_letter'])) {
             // Allow only certain HTML tags (bold, italic, lists, and headings)
             $allowed_tags = array(
                 'strong' => array(),  // Bold
@@ -231,7 +234,7 @@ class Petitioner_Admin_UI
             );
 
             // Sanitize the content, only allowing specific tags
-            $petitioner_letter = wp_kses($_POST['petitioner_letter'], $allowed_tags);
+            $petitioner_letter = wp_kses($post_data['petitioner_letter'], $allowed_tags);
 
             update_post_meta($post_id, '_petitioner_letter', $petitioner_letter);
         }
