@@ -69,7 +69,7 @@ class Petitioner_Submissions
         // Insert into the custom table
         $table_name = $wpdb->prefix . 'petitioner_submissions';
 
-        // Query the table to check if the email already exists
+        // Query the custom table to check if the email already exists
         $email_findings = $wpdb->get_var($wpdb->prepare(
             'SELECT COUNT(*) FROM ' . esc_sql($table_name) . ' WHERE email = %s AND form_id = %d',
             $email,
