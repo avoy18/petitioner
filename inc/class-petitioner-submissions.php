@@ -46,18 +46,20 @@ class Petitioner_Submissions
      */
     public static function api_handle_form_submit()
     {
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'petitioner_form_nonce')) {
+        $post_data = wp_unslash($_POST);
+
+        if (!isset($post_data['nonce']) || !wp_verify_nonce($post_data['nonce'], 'petitioner_form_nonce')) {
             wp_send_json_error('Invalid nonce');
             wp_die();
         }
 
         global $wpdb;
 
-        $email = sanitize_email($_POST['petitioner_email']);
-        $form_id = sanitize_text_field($_POST['form_id']);
-        $fname = sanitize_text_field($_POST['petitioner_fname']) ?? '';
-        $lname = sanitize_text_field($_POST['petitioner_lname']) ?? '';
-        $bcc = $_POST['petitioner_bcc'] === 'on';
+        $email = sanitize_email($post_data['petitioner_email']);
+        $form_id = sanitize_text_field($post_data['form_id']);
+        $fname = sanitize_text_field($post_data['petitioner_fname']) ?? '';
+        $lname = sanitize_text_field($post_data['petitioner_lname']) ?? '';
+        $bcc = $post_data['petitioner_bcc'] === 'on';
 
         // todo: add these
         $hide_name = false;
