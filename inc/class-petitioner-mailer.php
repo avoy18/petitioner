@@ -24,7 +24,7 @@ class Petitioner_Mailer
         $this->bcc = $settings['bcc'];
         $this->send_to_representative = $settings['send_to_representative'];
 
-        $this->domain = parse_url(home_url(), PHP_URL_HOST);
+        $this->domain = wp_parse_url(home_url(), PHP_URL_HOST);
     }
 
     /**
