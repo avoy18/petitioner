@@ -77,7 +77,7 @@ class Petitioner_Frontend
                         <?php echo esc_html($petitioner_letter); ?>
                     </div>
                     <hr />
-                    <p>{Your name will be here}</p>
+                    <p><?php esc_html_e('{Your name will be here}', 'petitioner'); ?></p>
                 </div>
             </div>
 
