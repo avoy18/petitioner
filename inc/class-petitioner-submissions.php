@@ -71,7 +71,7 @@ class Petitioner_Submissions
 
         // Query the table to check if the email already exists
         $email_findings = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM $table_name WHERE email = %s AND form_id = %d",
+            'SELECT COUNT(*) FROM ' . esc_sql($table_name) . ' WHERE email = %s AND form_id = %d',
             $email,
             $form_id
         ));
