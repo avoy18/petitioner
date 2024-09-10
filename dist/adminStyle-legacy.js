@@ -1,0 +1,1 @@
+System.register([],(function(e,t){"use strict";return{execute:function(){var e=document.createElement("style");e.textContent=".wp-admin.post-type-petitioner-petition #edit-slug-box,.wp-admin.post-type-petitioner-petition #wp-admin-bar-view{display:none}\n",document.head.appendChild(e)}}}));

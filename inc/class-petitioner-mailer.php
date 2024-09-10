@@ -24,7 +24,7 @@ class Petitioner_Mailer
         $this->bcc = $settings['bcc'];
         $this->send_to_representative = $settings['send_to_representative'];
 
-        $this->domain = parse_url(home_url(), PHP_URL_HOST);
+        $this->domain = wp_parse_url(home_url(), PHP_URL_HOST);
     }
 
     /**
@@ -54,6 +54,8 @@ class Petitioner_Mailer
     public function send_confirmation_email()
     {
         $subject = __('Thank you for signing the petition!', 'petitioner');
+        
+        // Translators: %s is the user's name
         $message =  '<p>' . sprintf(__('Dear %s,</p>', 'petitioner'), $this->user_name) . '</p>';
         $message .=  '<p>' . __('Thank you for signing the petition.', 'petitioner') . '</p>';
 
@@ -62,6 +64,8 @@ class Petitioner_Mailer
             $message .=  '<p>' . __('Below is a copy of your letter:', 'petitioner') . '</p>';
             $message .=  '<hr/>';
             $message .= $this->letter;
+
+            // Translators: %s is the user's name
             $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
         }
 
@@ -83,6 +87,8 @@ class Petitioner_Mailer
     {
         $subject = $this->subject;
         $message =  $this->letter;
+        
+        // Translators: %s is the user's name
         $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
 
         // Headers for plain text email
