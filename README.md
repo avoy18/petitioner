@@ -2,8 +2,6 @@
 A WordPress plugin for collecting petitions.
 
 ## About
-- Contributors: avoytenko (avoy18)
-- Tags: petitions, petition, activism, form, community, email, social media
 - Requires at least: 5.9
 - Tested up to: 6.6.1
 - Requires PHP: 8.0
