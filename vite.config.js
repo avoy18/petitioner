@@ -1,8 +1,42 @@
-import { defineConfig } from "vite";
-import legacy from "@vitejs/plugin-legacy";
-import path from "path";
+const { defineConfig } = require("vite");
+const legacy = require("@vitejs/plugin-legacy");
+const path = require("path");
+const fs = require("fs-extra");
 
-export default defineConfig({
+const deploy = () => {
+  const targetDir = path.resolve(__dirname, "../petitioner-deployment");
+
+  // Clean up the target directory before deploying
+  if (fs.existsSync(targetDir)) {
+    fs.removeSync(targetDir);  // Remove existing files
+  }
+
+  fs.mkdirSync(targetDir);  // Create the directory
+
+  // Copy files and folders, excluding unwanted ones
+  fs.copySync(path.resolve(__dirname), targetDir, {
+    filter: (src) => {
+      // Excludes
+      return !src.includes("src")
+        && !src.includes(".git")
+        && !src.includes(".DS_Store")
+        && !src.includes("deployment")
+        && !src.includes("node_modules")
+        && !src.includes(".gitignore")
+        && !src.includes("package.json")
+        && !src.includes("package-lock.json")
+        && !src.includes("yarn.lock")
+        && !src.includes("yarn.lock")
+        && !src.includes("README.md")
+        && !src.includes(".git");
+    },
+  });
+
+
+  console.log("Deployment complete. Files copied to 'petitioner-deployment' folder.");
+};
+
+module.exports = defineConfig({
   plugins: [
     legacy({
       targets: ["defaults", "not IE 11"], // Specify legacy browser support
@@ -26,8 +60,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // additionalData: `@import "./src/scss/style.scss";`, // Ensure all SCSS imports are included
       },
     },
   },
+  deploy
 });

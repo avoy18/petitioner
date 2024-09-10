@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite build --watch",
-    "build": "vite build"
+    "build": "vite build",
+    "deploy": "vite build && node -e 'require(\"./vite.config.js\").deploy()'"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,9 @@
   "homepage": "https://github.com/avoy18/petitioner#readme",
   "devDependencies": {
     "@vitejs/plugin-legacy": "^5.4.2",
+    "fs-extra": "^11.2.0",
     "sass": "^1.77.8",
-    "vite": "^5.4.2"
+    "vite": "^5.4.2",
+    "vite-plugin-static-copy": "^1.0.6"
   }
 }
