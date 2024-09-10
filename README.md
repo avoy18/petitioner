@@ -2,11 +2,11 @@
 A WordPress plugin for collecting petitions.
 
 ## About
-Contributors: avoytenko (avoy18)
-Tags: petitions, petition, activism, form, community, email, social media
-Requires at least: 5.9
-Tested up to: 6.6.1
-Requires PHP: 8.0
+- Contributors: avoytenko (avoy18)
+- Tags: petitions, petition, activism, form, community, email, social media
+- Requires at least: 5.9
+- Tested up to: 6.6.1
+- Requires PHP: 8.0
 
 Petitioner is a WordPress plugin that allows you to create petitions, collect submissions, and display petition letters. This plugin includes a customizable WYSIWYG editor for editing petition letters and allows for the collection of user submissions.
 
