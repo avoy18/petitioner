@@ -25,6 +25,7 @@ const deploy = () => {
         && !src.includes(".gitignore")
         && !src.includes("package.json")
         && !src.includes("package-lock.json")
+        && !src.includes("vite.config.js")
         && !src.includes("yarn.lock")
         && !src.includes("yarn.lock")
         && !src.includes("README.md")
