@@ -20,3 +20,7 @@ Features:
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
 - Email functionality: Automatically send petition letters to representatives via email.
 - Modern and responsive design: The plugin features a modern, mobile-friendly design for a seamless user experience.
+
+== Development and Source Code ==
+The source code for this plugin is publicly available on GitHub:
+[https://github.com/avoy18/petitioner](https://github.com/avoy18/petitioner)
