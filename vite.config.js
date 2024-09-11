@@ -17,8 +17,8 @@ const deploy = () => {
   fs.copySync(path.resolve(__dirname), targetDir, {
     filter: (src) => {
       // Excludes
-      return !src.includes("src")
-        && !src.includes(".git")
+      return !src.includes(".git")
+        && !src.includes("src")
         && !src.includes(".DS_Store")
         && !src.includes("deployment")
         && !src.includes("node_modules")
@@ -52,8 +52,13 @@ module.exports = defineConfig({
         adminStyle: path.resolve(__dirname, "src/scss/admin.scss"),
       },
       output: {
-        entryFileNames: "[name].js",
-        assetFileNames: "[name].css",
+        entryFileNames: (chunk) => {
+          return chunk.name.includes("style") || chunk.name.includes("adminStyle")
+            ? "[name].css"  // Correctly name CSS files
+            : "[name].js";  // JavaScript files get .js extensions
+        },
+        // entryFileNames: "[name].js",
+        assetFileNames: "[name][extname]",
         dir: path.resolve(__dirname, "dist"),
       },
     },
