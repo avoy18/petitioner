@@ -13,7 +13,7 @@ class Petition_Setup
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
 
         add_filter('script_loader_tag', function ($tag, $handle) {
-            if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle) {
+            if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle || 'petitioner-form-block' === $handle) {
                 return str_replace('<script ', '<script type="module" ', $tag);
             }
             return $tag;
@@ -131,9 +131,11 @@ class Petition_Setup
     {
         wp_register_script(
             'petitioner-form-block',
-            plugins_url('dist/petitionerFormBlock.js', __FILE__),
+            plugin_dir_url(dirname(__FILE__)) . 'dist/petitionerFormBlock.js',
             array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
             // filemtime(plugin_dir_path(__FILE__) . 'dist/petitionerFormBlock.js')
+            1,
+            array()
         );
 
         // wp_register_style(
@@ -144,8 +146,15 @@ class Petition_Setup
         // );
 
         register_block_type('petitioner/form', array(
-            'editor_script' => 'petitioner-form-block',
-            'style'         => 'petitioner-form-style',
+            'editor_script'     => 'petitioner-form-block',
+            'style'             => 'petitioner-form-style',
+            'render_callback'   => function ($attributes) {
+                if (empty($attributes['form_id'])) return;
+
+                $form_id = $attributes['form_id'];
+
+                return do_shortcode('[petitioner-form id="' . esc_attr($form_id) . '"]');
+            }
         ));
     }
 }
