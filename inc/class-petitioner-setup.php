@@ -34,6 +34,9 @@ class Petition_Setup
         add_action('wp_ajax_petitioner_fetch_submissions', array('Petitioner_Submissions', 'api_fetch_form_submissions'));
 
         add_action('admin_post_petitioner_export_csv', array('Petitioner_Submissions', 'api_petitioner_export_csv'));
+
+        // gutenberg
+        add_action('init', array($this, 'register_petition_form_block'));
     }
     /**
      * Plugin activation callback.
@@ -122,5 +125,27 @@ class Petition_Setup
         $frontend = new Petitioner_Frontend();
 
         add_shortcode('petitioner-form', [$frontend, 'display_form']);
+    }
+
+    public function register_petition_form_block()
+    {
+        wp_register_script(
+            'petitioner-form-block',
+            plugins_url('dist/petitionerFormBlock.js', __FILE__),
+            array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
+            // filemtime(plugin_dir_path(__FILE__) . 'dist/petitionerFormBlock.js')
+        );
+
+        // wp_register_style(
+        //     'petitioner-form-style',
+        //     plugins_url('dist/style.css', __FILE__),
+        //     array(),
+        //     // filemtime(plugin_dir_path(__FILE__) . 'dist/style.css')
+        // );
+
+        register_block_type('petitioner/form', array(
+            'editor_script' => 'petitioner-form-block',
+            'style'         => 'petitioner-form-style',
+        ));
     }
 }

@@ -29,5 +29,13 @@
     "sass": "^1.77.8",
     "vite": "^5.4.2",
     "vite-plugin-static-copy": "^1.0.6"
+  },
+  "dependencies": {
+    "@wordpress/block-editor": "^14.2.0",
+    "@wordpress/blocks": "^13.7.0",
+    "@wordpress/components": "^28.7.0",
+    "@wordpress/data": "^10.7.0",
+    "@wordpress/element": "^6.7.0",
+    "@wordpress/i18n": "^5.7.0"
   }
 }
