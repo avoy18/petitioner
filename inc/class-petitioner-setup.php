@@ -101,7 +101,7 @@ class Petition_Setup
     {
         if (is_admin()) return;
 
-        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/style.css', array(), PTR_ASSET_VERSION);
+        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), PTR_ASSET_VERSION);
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), PTR_ASSET_VERSION, true);
     }
 
@@ -110,7 +110,7 @@ class Petition_Setup
      */
     public function enqueue_admin_assets()
     {
-        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/adminStyle.css', array(), PTR_ASSET_VERSION);
+        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), PTR_ASSET_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array(), PTR_ASSET_VERSION, true);
     }
 
