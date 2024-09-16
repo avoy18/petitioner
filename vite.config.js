@@ -47,9 +47,9 @@ module.exports = defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "src/js/main.js"),
-        style: path.resolve(__dirname, "src/scss/style.scss"),
+        // style: path.resolve(__dirname, "src/scss/style.scss"),
         admin: path.resolve(__dirname, "src/js/admin.js"),
-        adminStyle: path.resolve(__dirname, "src/scss/admin.scss"),
+        // adminStyle: path.resolve(__dirname, "src/scss/admin.scss"),
         petitionerFormBlock: path.resolve(__dirname, "src/gutenberg/form/index.js"),
       },
       output: {

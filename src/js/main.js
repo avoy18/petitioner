@@ -1,3 +1,4 @@
+import '../scss/style.scss';
 import PetitionerForm from "./frontend/form";
 
 const allPetitions = document.querySelectorAll(".petitioner");
