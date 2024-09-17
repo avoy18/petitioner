@@ -90,6 +90,7 @@ class Petition_Setup
             'supports'              => array('title'),
             'has_archive'           => false,
             'show_in_menu'          => true,
+            'show_in_rest'          => true,
             'exclude_from_search'   => true,
             'hierarchical'          => false,
             'publicly_queryable'    => false,
@@ -139,7 +140,7 @@ class Petition_Setup
 
         wp_register_style(
             'petitioner-form-style',
-            plugin_dir_url(dirname(__FILE__)) . 'dist/gutenberg/style-index.css',
+            plugin_dir_url(dirname(__FILE__)) . 'dist/main.css',
             array(),
             PTR_ASSET_VERSION
         );
@@ -149,8 +150,12 @@ class Petition_Setup
             'editor_style'      => 'petitioner-form-style',
             'attributes' => array(
                 'formId' => array(
-                    'type'        => 'number',
-                    'default'     => 8
+                    'type'        => 'string',
+                    'default'     => null
+                ),
+                'newPetitionLink' => array(
+                    'type'      => 'text',
+                    'default'   => admin_url('post-new.php?post_type=petitioner-petition')
                 ),
             ),
             'render_callback'   => function ($attributes) {

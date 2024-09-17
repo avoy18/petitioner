@@ -7,7 +7,7 @@
     "dev": "vite build --watch",
     "build": "vite build",
     "build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
-    "start:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
+    "dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
     "deploy": "yarn build:gutenberg && vite build && node -e 'require(\"./vite.config.js\").deploy()'"
   },
   "repository": {
@@ -26,21 +26,10 @@
   },
   "homepage": "https://github.com/avoy18/petitioner#readme",
   "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-react": "^7.24.7",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^26.0.1",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-replace": "^5.0.7",
     "@vitejs/plugin-legacy": "^5.4.2",
     "@wordpress/scripts": "^29.0.0",
     "fs-extra": "^11.2.0",
-    "rollup": "^4.21.3",
-    "rollup-plugin-external-globals": "^0.12.0",
-    "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-terser": "^7.0.2",
+    "multiselect-react-dropdown": "^2.0.25",
     "sass": "^1.77.8",
     "vite": "^5.4.2",
     "vite-plugin-static-copy": "^1.0.6"
