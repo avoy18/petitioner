@@ -131,27 +131,32 @@ class Petition_Setup
     {
         wp_register_script(
             'petitioner-form-block',
-            plugin_dir_url(dirname(__FILE__)) . 'dist/petitionerFormBlock.js',
+            plugin_dir_url(dirname(__FILE__)) . 'dist/gutenberg/petitionerFormBlock.js',
             array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
-            // filemtime(plugin_dir_path(__FILE__) . 'dist/petitionerFormBlock.js')
-            1,
+            PTR_ASSET_VERSION,
             array()
         );
 
-        // wp_register_style(
-        //     'petitioner-form-style',
-        //     plugins_url('dist/style.css', __FILE__),
-        //     array(),
-        //     // filemtime(plugin_dir_path(__FILE__) . 'dist/style.css')
-        // );
+        wp_register_style(
+            'petitioner-form-style',
+            plugin_dir_url(dirname(__FILE__)) . 'dist/gutenberg/style-index.css',
+            array(),
+            PTR_ASSET_VERSION
+        );
 
         register_block_type('petitioner/form', array(
             'editor_script'     => 'petitioner-form-block',
-            'style'             => 'petitioner-form-style',
+            'editor_style'      => 'petitioner-form-style',
+            'attributes' => array(
+                'formId' => array(
+                    'type'        => 'number',
+                    'default'     => 8
+                ),
+            ),
             'render_callback'   => function ($attributes) {
-                if (empty($attributes['form_id'])) return;
+                if (empty($attributes['formId'])) return;
 
-                $form_id = $attributes['form_id'];
+                $form_id = $attributes['formId'];
 
                 return do_shortcode('[petitioner-form id="' . esc_attr($form_id) . '"]');
             }

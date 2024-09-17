@@ -59,7 +59,6 @@ module.exports = defineConfig({
       input: {
         main: path.resolve(__dirname, "src/js/main.js"),
         admin: path.resolve(__dirname, "src/js/admin.js"),
-        petitionerFormBlock: path.resolve(__dirname, "src/gutenberg/form/index.js"),
       },
       output: {
         globals: {

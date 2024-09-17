@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite build --watch",
-    "start": "yarn rollup -c",
     "build": "vite build",
-    "deploy": "vite build && node -e 'require(\"./vite.config.js\").deploy()'"
+    "build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
+    "start:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
+    "deploy": "yarn build:gutenberg && vite build && node -e 'require(\"./vite.config.js\").deploy()'"
   },
   "repository": {
     "type": "git",
@@ -30,8 +31,11 @@
     "@babel/preset-react": "^7.24.7",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
     "@vitejs/plugin-legacy": "^5.4.2",
+    "@wordpress/scripts": "^29.0.0",
     "fs-extra": "^11.2.0",
     "rollup": "^4.21.3",
     "rollup-plugin-external-globals": "^0.12.0",
