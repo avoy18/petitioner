@@ -8,7 +8,9 @@
     "build": "vite build",
     "build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
     "dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
-    "deploy": "yarn build:gutenberg && vite build && node -e 'require(\"./vite.config.js\").deploy()'"
+    "deploy": "yarn build-all && node -e 'require(\"./vite.config.js\").deploy()'",
+    "dev-all": "concurrently \"yarn dev\" \"yarn dev:gutenberg\"",
+    "build-all": "concurrently \"yarn build:gutenberg\" \"yarn build\""
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@vitejs/plugin-legacy": "^5.4.2",
     "@wordpress/scripts": "^29.0.0",
+    "concurrently": "^9.0.1",
     "fs-extra": "^11.2.0",
     "multiselect-react-dropdown": "^2.0.25",
     "sass": "^1.77.8",
