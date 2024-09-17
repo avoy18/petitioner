@@ -13,7 +13,7 @@ class Petition_Setup
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
 
         add_filter('script_loader_tag', function ($tag, $handle) {
-            if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle) {
+            if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle || 'petitioner-form-block' === $handle) {
                 return str_replace('<script ', '<script type="module" ', $tag);
             }
             return $tag;
@@ -34,6 +34,9 @@ class Petition_Setup
         add_action('wp_ajax_petitioner_fetch_submissions', array('Petitioner_Submissions', 'api_fetch_form_submissions'));
 
         add_action('admin_post_petitioner_export_csv', array('Petitioner_Submissions', 'api_petitioner_export_csv'));
+
+        // gutenberg
+        add_action('init', array($this, 'register_petition_form_block'));
     }
     /**
      * Plugin activation callback.
@@ -87,6 +90,7 @@ class Petition_Setup
             'supports'              => array('title'),
             'has_archive'           => false,
             'show_in_menu'          => true,
+            'show_in_rest'          => true,
             'exclude_from_search'   => true,
             'hierarchical'          => false,
             'publicly_queryable'    => false,
@@ -122,5 +126,45 @@ class Petition_Setup
         $frontend = new Petitioner_Frontend();
 
         add_shortcode('petitioner-form', [$frontend, 'display_form']);
+    }
+
+    public function register_petition_form_block()
+    {
+        wp_register_script(
+            'petitioner-form-block',
+            plugin_dir_url(dirname(__FILE__)) . 'dist/gutenberg/petitionerFormBlock.js',
+            array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
+            PTR_ASSET_VERSION,
+            array()
+        );
+
+        wp_register_style(
+            'petitioner-form-style',
+            plugin_dir_url(dirname(__FILE__)) . 'dist/main.css',
+            array(),
+            PTR_ASSET_VERSION
+        );
+
+        register_block_type('petitioner/form', array(
+            'editor_script'     => 'petitioner-form-block',
+            'editor_style'      => 'petitioner-form-style',
+            'attributes' => array(
+                'formId' => array(
+                    'type'        => 'string',
+                    'default'     => null
+                ),
+                'newPetitionLink' => array(
+                    'type'      => 'text',
+                    'default'   => admin_url('post-new.php?post_type=petitioner-petition')
+                ),
+            ),
+            'render_callback'   => function ($attributes) {
+                if (empty($attributes['formId'])) return;
+
+                $form_id = $attributes['formId'];
+
+                return do_shortcode('[petitioner-form id="' . esc_attr($form_id) . '"]');
+            }
+        ));
     }
 }

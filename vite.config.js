@@ -38,6 +38,9 @@ const deploy = () => {
 };
 
 module.exports = defineConfig({
+  optimizeDeps: {
+    include: ['@ariakit/react-core', '@ariakit/core'],
+  },
   plugins: [
     legacy({
       targets: ["defaults", "not IE 11"], // Specify legacy browser support
@@ -45,19 +48,29 @@ module.exports = defineConfig({
   ],
   build: {
     rollupOptions: {
+      external: [
+        '@ariakit/react-core',
+        '@ariakit/core',
+        '@wordpress/blocks',
+        '@wordpress/element',
+        '@wordpress/i18n',
+        '@wordpress/editor'
+      ],
       input: {
         main: path.resolve(__dirname, "src/js/main.js"),
-        // style: path.resolve(__dirname, "src/scss/style.scss"),
         admin: path.resolve(__dirname, "src/js/admin.js"),
-        // adminStyle: path.resolve(__dirname, "src/scss/admin.scss"),
       },
       output: {
+        globals: {
+          '@wordpress/blocks': 'wp.blocks',
+          '@wordpress/element': 'wp.element',
+          '@wordpress/i18n': 'wp.i18n',
+        },
         entryFileNames: (chunk) => {
           return chunk.name.includes("style") || chunk.name.includes("adminStyle")
-            ? "[name].css"  // Correctly name CSS files
-            : "[name].js";  // JavaScript files get .js extensions
+            ? "[name].css"
+            : "[name].js";
         },
-        // entryFileNames: "[name].js",
         assetFileNames: "[name][extname]",
         dir: path.resolve(__dirname, "dist"),
       },
