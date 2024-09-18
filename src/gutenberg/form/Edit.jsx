@@ -33,7 +33,9 @@ export default function Edit({ attributes, setAttributes }) {
             );
         }, []) || [];
 
-    const petitionOptions = [];
+    const petitionOptions = [
+        { label: 'Please select your petition', value: '' }
+    ];
 
     allPetitions.forEach((el) => {
 
