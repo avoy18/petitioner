@@ -23,6 +23,12 @@ class Petitioner_Frontend
         $form_id = esc_attr($attributes['id']);
         $nonce = wp_create_nonce('petitioner_form_nonce');
 
+        $post_exists = get_post($form_id);
+
+        if(!$post_exists || $post_exists->post_type !== 'petitioner-petition'){
+            return;
+        }
+
         $petitioner_title = get_post_meta($form_id, '_petitioner_title', true);
         $petitioner_goal = get_post_meta($form_id, '_petitioner_goal', true);
         $petitioner_letter = get_post_meta($form_id, '_petitioner_letter', true);
