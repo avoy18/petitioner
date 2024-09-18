@@ -1,6 +1,6 @@
 {
   "name": "petitioner",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "A WordPress plugin for collecting petitions",
   "main": "index.js",
   "scripts": {
