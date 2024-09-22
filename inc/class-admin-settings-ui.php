@@ -67,6 +67,20 @@ class Petitioner_Admin_Settings_UI
             'default_value' => 1
         ));
 
+        $this->add_checkbox_field(array(
+            'slug'          => 'petitioner_show_title',
+            'display_name'  => __('Show title', 'petitioner'),
+            'helptext'      => __('Enable titles on petitions', 'petitioner'),
+            'default_value' => 1
+        ));
+
+        $this->add_checkbox_field(array(
+            'slug'          => 'petitioner_show_goal',
+            'display_name'  => __('Show goal', 'petitioner'),
+            'helptext'      => __('Enable goals on petitions', 'petitioner'),
+            'default_value' => 1
+        ));
+
         $this->add_code_field(array(
             'slug'          => 'petitioner_custom_css',
             'display_name'  => __('Custom CSS', 'petitioner'),
