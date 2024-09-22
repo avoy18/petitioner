@@ -25,7 +25,7 @@ class Petitioner_Frontend
 
         $post_exists = get_post($form_id);
 
-        if(!$post_exists || $post_exists->post_type !== 'petitioner-petition'){
+        if (!$post_exists || $post_exists->post_type !== 'petitioner-petition') {
             return;
         }
 
@@ -80,7 +80,22 @@ class Petitioner_Frontend
                     <button class="petitioner-modal__close">&times; <span><?php esc_html_e('Close modal', 'petitioner') ?></span></button>
                     <h3><?php echo esc_html($petitioner_subject); ?></h3>
                     <div class="petitioner-modal__inner">
-                        <?php echo esc_html($petitioner_letter); ?>
+                        <?php echo wp_kses($petitioner_letter,  $allowed_tags = array(
+                            'strong' => array(),
+                            'b'      => array(),
+                            'em'     => array(),
+                            'i'      => array(),
+                            'ul'     => array(),
+                            'ol'     => array(),
+                            'li'     => array(),
+                            'h1'     => array(),
+                            'h2'     => array(),
+                            'h3'     => array(),
+                            'h4'     => array(),
+                            'h5'     => array(),
+                            'h6'     => array(),
+                            'p'      => array()
+                        )); ?>
                     </div>
                     <hr />
                     <p><?php esc_html_e('{Your name will be here}', 'petitioner'); ?></p>
