@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
 class Petitioner_Admin_Edit_UI
 {
     public function __construct()

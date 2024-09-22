@@ -12,6 +12,10 @@
  * Text Domain:       petitioner
  */
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
 define('PTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 define('PTR_ASSET_VERSION', '0.1.2');
@@ -27,4 +31,3 @@ $petitioner_setup = new Petition_Setup();
 register_activation_hook(__FILE__, array('Petition_Setup', 'plugin_activation'));
 register_deactivation_hook(__FILE__, array('Petition_Setup', 'plugin_deactivation'));
 register_uninstall_hook(__FILE__, array('Petition_Setup', 'plugin_uninstall'));
-
