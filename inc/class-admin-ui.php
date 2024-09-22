@@ -243,10 +243,10 @@ class Petitioner_Admin_UI
         }
     }
 
-    public function sanitize_cc_emails($emaisl = array())
+    public function sanitize_cc_emails($emails = '')
     {
         // Split the string into an array using commas
-        $emails = explode(',', $post_data['petitioner_cc_emails']);
+        $emails = explode(',', $emails);
 
         // Initialize an array to hold the sanitized emails
         $sanitized_emails = array();
@@ -311,7 +311,7 @@ class Petitioner_Admin_UI
     ?>
         <div class="wrap">
             <h1><?php _e('Petitioner Settings', 'petitioner-pro'); ?></h1>
-            
+
             <form method="post" action="options.php">
                 <?php
                 settings_fields('petition_settings_group');
