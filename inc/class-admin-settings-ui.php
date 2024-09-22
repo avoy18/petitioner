@@ -26,8 +26,8 @@ class Petitioner_Admin_Settings_UI
     {
         add_submenu_page(
             'edit.php?post_type=petitioner-petition',
-            __('Petition Settings', 'petitioner-petition'),
-            __('Settings', 'petitioner-petition'),
+            esc_html__('Petition Settings', 'petitioner-petition'),
+            esc_html__('Settings', 'petitioner-petition'),
             'manage_options',
             'petition-settings',
             array($this, 'render_petition_settings_page')
@@ -38,7 +38,7 @@ class Petitioner_Admin_Settings_UI
     {
 ?>
         <div class="wrap">
-            <h1><?php _e('Petitioner Settings', 'petitioner-pro'); ?></h1>
+            <h1><?php esc_html_e('Petitioner Settings', 'petitioner-pro'); ?></h1>
 
             <form method="post" action="options.php">
                 <?php
@@ -55,43 +55,43 @@ class Petitioner_Admin_Settings_UI
     {
         add_settings_section(
             'petition_settings_section',
-            __('Visual Customizer', 'petitioner'),
+            esc_html__('Visual Customizer', 'petitioner'),
             array($this, 'petition_settings_section_callback'),
             'petition-settings'
         );
 
         $this->add_checkbox_field(array(
             'slug'          => 'petitioner_show_letter',
-            'display_name'  => __('Show letter popup', 'petitioner'),
-            'helptext'      => __('Enable letter popup on petitions', 'petitioner'),
+            'display_name'  => esc_html__('Show letter popup', 'petitioner'),
+            'helptext'      => esc_html__('Enable letter popup on petitions', 'petitioner'),
             'default_value' => 1
         ));
 
         $this->add_checkbox_field(array(
             'slug'          => 'petitioner_show_title',
-            'display_name'  => __('Show title', 'petitioner'),
-            'helptext'      => __('Enable titles on petitions', 'petitioner'),
+            'display_name'  => esc_html__('Show title', 'petitioner'),
+            'helptext'      => esc_html__('Enable titles on petitions', 'petitioner'),
             'default_value' => 1
         ));
 
         $this->add_checkbox_field(array(
             'slug'          => 'petitioner_show_goal',
-            'display_name'  => __('Show goal', 'petitioner'),
-            'helptext'      => __('Enable goals on petitions', 'petitioner'),
+            'display_name'  => esc_html__('Show goal', 'petitioner'),
+            'helptext'      => esc_html__('Enable goals on petitions', 'petitioner'),
             'default_value' => 1
         ));
 
         $this->add_code_field(array(
             'slug'          => 'petitioner_custom_css',
-            'display_name'  => __('Custom CSS', 'petitioner'),
-            'helptext'      => __('Use this field to override CSS of petitioner', 'petitioner'),
+            'display_name'  => esc_html__('Custom CSS', 'petitioner'),
+            'helptext'      => esc_html__('Use this field to override CSS of petitioner', 'petitioner'),
             'default_value' => 1
         ));
     }
 
     function petition_settings_section_callback()
     {
-        echo '<p>' . __('Configure how your petitions look like.', 'petitioner') . '</p>';
+        echo '<p>' . esc_html__('Configure how your petitions look like.', 'petitioner') . '</p>';
     }
 
     /**

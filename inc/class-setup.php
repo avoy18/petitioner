@@ -16,7 +16,7 @@ class Petition_Setup
         add_action('wp_head', function () {
             $custom_css = get_option('petitioner_custom_css', '');
             if (!empty($custom_css)) {
-                echo '<style id="petitioner-custom-css" type="text/css">' . wp_strip_all_tags($custom_css) . '</style>';
+                echo '<style id="petitioner-custom-css" type="text/css">' . esc_html(wp_strip_all_tags($custom_css)) . '</style>';
             }
         });
 
