@@ -10,6 +10,8 @@ class Petitioner_Admin_UI
 
         add_filter('get_sample_permalink_html', [$this, 'hide_cpt_permalink'], 10, 4);
         add_filter('post_row_actions', [$this, 'remove_view_link'], 10, 4);
+
+        add_action('admin_menu', array($this, 'add_petition_submenu'));
     }
 
     /**
@@ -148,7 +150,7 @@ class Petitioner_Admin_UI
             $this->render_submissions($post);
             ?>
         </div>
-<?php
+    <?php
     }
 
     /**
@@ -284,5 +286,40 @@ class Petitioner_Admin_UI
         }
 
         return $actions;
+    }
+
+    /**
+     * @since 0.1.2
+     */
+    public function add_petition_submenu()
+    {
+        add_submenu_page(
+            'edit.php?post_type=petitioner-petition',
+            __('Petition Settings', 'petitioner-petition'),
+            __('Settings', 'petitioner-petition'),
+            'manage_options',
+            'petition-settings',
+            array($this, 'render_petition_settings_page')
+        );
+    }
+
+    /**
+     * @since 0.1.2
+     */
+    public function render_petition_settings_page()
+    {
+    ?>
+        <div class="wrap">
+            <h1><?php _e('Petitioner Settings', 'petitioner-pro'); ?></h1>
+            
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('petition_settings_group');
+                do_settings_sections('petition-settings');
+                submit_button();
+                ?>
+            </form>
+        </div>
+<?php
     }
 }
