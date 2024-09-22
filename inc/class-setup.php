@@ -11,6 +11,14 @@ class Petition_Setup
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
+        
+        // add custom CSS
+        add_action('wp_head', function () {
+            $custom_css = get_option('petitioner_custom_css', '');
+            if (!empty($custom_css)) {
+                echo '<style id="petitioner-custom-css" type="text/css">' . wp_strip_all_tags($custom_css) . '</style>';
+            }
+        });
 
         add_filter('script_loader_tag', function ($tag, $handle) {
             if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle || 'petitioner-form-block' === $handle) {
