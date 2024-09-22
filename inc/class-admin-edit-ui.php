@@ -1,6 +1,10 @@
 <?php
 
-class Petitioner_Admin_UI
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+class Petitioner_Admin_Edit_UI
 {
     public function __construct()
     {
@@ -148,7 +152,7 @@ class Petitioner_Admin_UI
             $this->render_submissions($post);
             ?>
         </div>
-<?php
+    <?php
     }
 
     /**
@@ -241,10 +245,10 @@ class Petitioner_Admin_UI
         }
     }
 
-    public function sanitize_cc_emails($emaisl = array())
+    public function sanitize_cc_emails($emails = '')
     {
         // Split the string into an array using commas
-        $emails = explode(',', $post_data['petitioner_cc_emails']);
+        $emails = explode(',', $emails);
 
         // Initialize an array to hold the sanitized emails
         $sanitized_emails = array();

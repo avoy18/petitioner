@@ -11,6 +11,14 @@ class Petition_Setup
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
+        
+        // add custom CSS
+        add_action('wp_head', function () {
+            $custom_css = get_option('petitioner_custom_css', '');
+            if (!empty($custom_css)) {
+                echo '<style id="petitioner-custom-css" type="text/css">' . esc_html(wp_strip_all_tags($custom_css)) . '</style>';
+            }
+        });
 
         add_filter('script_loader_tag', function ($tag, $handle) {
             if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle || 'petitioner-form-block' === $handle) {
@@ -25,8 +33,11 @@ class Petition_Setup
         // shortcodes
         $this->register_shortcodes();
 
-        // admin fields
-        $petitioner_admin_ui = new Petitioner_Admin_UI();
+        // edit admin fields
+        new Petitioner_Admin_Edit_UI();
+        
+        // settings admin fields
+        new Petitioner_Admin_Settings_UI();
 
         // api endpoints
         add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
