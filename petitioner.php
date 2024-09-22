@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.1.1
+ * Version:           0.1.2
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,13 +14,13 @@
 
 define('PTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('PTR_ASSET_VERSION', '0.1.1');
+define('PTR_ASSET_VERSION', '0.1.2');
 
-require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-mailer.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-frontend.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-admin-ui.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-submissions.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-petitioner-setup.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-mailer.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-frontend.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-admin-ui.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-submissions.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-setup.php';
 
 $petitioner_setup = new Petition_Setup();
 
