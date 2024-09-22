@@ -27,6 +27,9 @@ class Petition_Setup
 
         // edit admin fields
         new Petitioner_Admin_Edit_UI();
+        
+        // settings admin fields
+        new Petitioner_Admin_Settings_UI();
 
         // api endpoints
         add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
