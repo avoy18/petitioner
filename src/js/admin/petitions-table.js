@@ -3,22 +3,20 @@ export default class Petitioner_Submissions_Table {
         this.total = 0; // Total will be updated dynamically
         this.perPage = 1000;
         this.tableDiv = document.getElementById('petitioner_submissions');
+
+        if (!this.tableDiv) return;
+
         this.entriesDiv = this.tableDiv.querySelector('.petitioner-admin__entries');
         this.paginationDiv = this.tableDiv.querySelector('.petitioner-admin__pagination');
 
-        this.currentPage = 1; // Track the current page
+        this.currentPage = 1;
         this.formSettings = {};
-
         this.handleFormSettings();
 
-        if (!this.formSettings.formID) {
-            return;
-        }
+        if (!this.formSettings.formID) return;
 
-        // Initialize by fetching the first page of data
         this.fetch_data(this.currentPage);
 
-        // Listen for pagination click events
         this.paginationDiv.addEventListener('click', (e) => {
             if (e.target.classList.contains('petitioner__paging-button')) {
                 e.preventDefault();
