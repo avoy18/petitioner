@@ -1,6 +1,6 @@
 <?php
 
-class Petitioner_Admin_UI
+class Petitioner_Admin_Edit_UI
 {
     public function __construct()
     {

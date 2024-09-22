@@ -18,7 +18,7 @@ define('PTR_ASSET_VERSION', '0.1.2');
 
 require_once PTR_PLUGIN_DIR . 'inc/class-mailer.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-frontend.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-admin-ui.php';
+require_once PTR_PLUGIN_DIR . 'inc/class-admin-edit-ui.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-submissions.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-setup.php';
 
