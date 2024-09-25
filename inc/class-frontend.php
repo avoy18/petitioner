@@ -148,8 +148,11 @@ class Petitioner_Frontend
 
         $submissions = new Petitioner_Submissions($form_id);
         $total_submissions = $submissions->get_submission_count();
-        $progress = round($total_submissions / $goal * 100);
-
+        $progress = 0;
+        
+        if($total_submissions > 0){
+            $progress = round($total_submissions / $goal * 100);
+        }
     ?>
         <div class="petitioner__goal">
             <div class="petitioner__progress">
