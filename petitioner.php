@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.1.2
+ * Version:           0.1.3
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 
 define('PTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('PTR_ASSET_VERSION', '0.1.2');
+define('PTR_ASSET_VERSION', '0.1.3');
 
 require_once PTR_PLUGIN_DIR . 'inc/class-mailer.php';
 require_once PTR_PLUGIN_DIR . 'inc/class-frontend.php';
