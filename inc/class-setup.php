@@ -143,7 +143,7 @@ class AV_Petitioner_Setup
     {
         wp_register_script(
             'petitioner-form-block',
-            plugin_dir_url(dirname(__FILE__)) . 'dist/gutenberg/petitionerFormBlock.js',
+            plugin_dir_url(dirname(__FILE__)) . 'dist-gutenberg/petitionerFormBlock.js',
             array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
             AV_PETITIONER_PLUGIN_VERSION,
             array()
