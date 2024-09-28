@@ -105,7 +105,7 @@ class Petition_Setup
             'exclude_from_search'   => true,
             'hierarchical'          => false,
             'publicly_queryable'    => false,
-            'menu_icon'             => plugin_dir_url(dirname(__FILE__)) . 'assets/img/petitioner-glyph.svg'
+            'menu_icon'             => plugin_dir_url(dirname(__FILE__)) . 'assets/petitioner-glyph.svg'
         ));
     }
 
