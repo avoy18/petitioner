@@ -166,7 +166,7 @@ class AV_Petitioner_Submissions
         // Get the total count of submissions for the form
         $total_submissions = $wpdb->get_var(
             $wpdb->prepare(
-                'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . 'WHERE form_id = %d',
+                'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
                 $form_id
             )
         );
@@ -194,7 +194,7 @@ class AV_Petitioner_Submissions
 
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                'SELECT * FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . 'WHERE form_id = %d',
+                'SELECT * FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
                 $form_id,
             )
         );

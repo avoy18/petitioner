@@ -58,7 +58,6 @@ class AV_Petitioner_Mailer
     public function send_confirmation_email()
     {
         $subject = __('Thank you for signing the petition!', 'petitioner');
-        
         // Translators: %s is the user's name
         $message =  '<p>' . sprintf(__('Dear %s,</p>', 'petitioner'), $this->user_name) . '</p>';
         $message .=  '<p>' . __('Thank you for signing the petition.', 'petitioner') . '</p>';
@@ -77,8 +76,7 @@ class AV_Petitioner_Mailer
         $headers = array(
             'Content-Type: text/html; charset=UTF-8',
             'From: petition-no-reply@' . $this->domain
-        );;
-
+        );
         // Send the email
         return wp_mail($this->user_email, $subject, $message, $headers);
     }
@@ -91,7 +89,7 @@ class AV_Petitioner_Mailer
     {
         $subject = $this->subject;
         $message =  $this->letter;
-        
+
         // Translators: %s is the user's name
         $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
 
