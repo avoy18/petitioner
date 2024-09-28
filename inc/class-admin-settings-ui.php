@@ -26,8 +26,8 @@ class Petitioner_Admin_Settings_UI
     {
         add_submenu_page(
             'edit.php?post_type=petitioner-petition',
-            esc_html__('Petition Settings', 'petitioner-petition'),
-            esc_html__('Settings', 'petitioner-petition'),
+            esc_html__('Petition Settings', 'petitioner'),
+            esc_html__('Settings', 'petitioner'),
             'manage_options',
             'petition-settings',
             array($this, 'render_petition_settings_page')
@@ -38,7 +38,7 @@ class Petitioner_Admin_Settings_UI
     {
 ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Petitioner Settings', 'petitioner-pro'); ?></h1>
+            <h1><?php esc_html_e('Petitioner Settings', 'petitioner'); ?></h1>
 
             <form method="post" action="options.php">
                 <?php
