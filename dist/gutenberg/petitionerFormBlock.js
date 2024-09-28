@@ -263,6 +263,8 @@ module.exports = window["wp"]["serverSideRender"];
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
 /*!*************************************!*\
   !*** ./src/gutenberg/form/index.js ***!
   \*************************************/
@@ -282,6 +284,8 @@ __webpack_require__.r(__webpack_exports__);
   edit: _Edit_jsx__WEBPACK_IMPORTED_MODULE_2__["default"],
   save: () => null
 });
+})();
+
 /******/ })()
 ;
 //# sourceMappingURL=petitionerFormBlock.js.map
