@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_ASSET_VERSION', '0.1.3');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.1.3');
 
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-mailer.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-frontend.php';

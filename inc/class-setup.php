@@ -54,7 +54,7 @@ class AV_Petitioner_Setup
      */
     public static function plugin_activation()
     {
-        add_option('petitioner_plugin_version', AV_PETITIONER_ASSET_VERSION);
+        add_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
         AV_Petitioner_Submissions::create_db_table();
     }
 
@@ -116,8 +116,8 @@ class AV_Petitioner_Setup
     {
         if (is_admin()) return;
 
-        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_ASSET_VERSION);
-        wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_ASSET_VERSION, true);
+        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_PLUGIN_VERSION);
+        wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
     }
 
     /**
@@ -125,8 +125,8 @@ class AV_Petitioner_Setup
      */
     public function enqueue_admin_assets()
     {
-        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_ASSET_VERSION);
-        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array(), AV_PETITIONER_ASSET_VERSION, true);
+        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
+        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
     }
 
     /**
@@ -145,7 +145,7 @@ class AV_Petitioner_Setup
             'petitioner-form-block',
             plugin_dir_url(dirname(__FILE__)) . 'dist/gutenberg/petitionerFormBlock.js',
             array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
-            AV_PETITIONER_ASSET_VERSION,
+            AV_PETITIONER_PLUGIN_VERSION,
             array()
         );
 
@@ -153,7 +153,7 @@ class AV_Petitioner_Setup
             'petitioner-form-style',
             plugin_dir_url(dirname(__FILE__)) . 'dist/main.css',
             array(),
-            AV_PETITIONER_ASSET_VERSION
+            AV_PETITIONER_PLUGIN_VERSION
         );
 
         register_block_type('petitioner/form', array(
