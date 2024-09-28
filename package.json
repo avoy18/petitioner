@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
-    "dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
+    "build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
+    "dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
     "deploy": "yarn build-all && node -e 'require(\"./vite.config.js\").deploy()'",
     "dev-all": "concurrently \"yarn dev\" \"yarn dev:gutenberg\"",
     "build-all": "concurrently \"yarn build:gutenberg\" \"yarn build\""
