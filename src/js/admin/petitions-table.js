@@ -1,8 +1,8 @@
-export default class Petitioner_Submissions_Table {
+export default class AV_Petitioner_Submissions_Table {
     constructor() {
         this.total = 0; // Total will be updated dynamically
         this.perPage = 1000;
-        this.tableDiv = document.getElementById('petitioner_submissions');
+        this.tableDiv = document.getElementById('AV_Petitioner_Submissions');
 
         if (!this.tableDiv) return;
 
