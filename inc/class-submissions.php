@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class Petitioner_Submissions
+class AV_Petitioner_Submissions
 {
     public $form_id = null;
     public function __construct($id  = null)
@@ -16,7 +16,7 @@ class Petitioner_Submissions
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
+        $table_name = $wpdb->prefix . 'AV_Petitioner_Submissions';
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -71,7 +71,7 @@ class Petitioner_Submissions
         $accept_tos = false;
 
         // Insert into the custom table
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
+        $table_name = $wpdb->prefix . 'AV_Petitioner_Submissions';
 
         // Query the custom table to check if the email already exists
         $email_findings = $wpdb->get_var($wpdb->prepare(
@@ -126,7 +126,7 @@ class Petitioner_Submissions
             'send_to_representative' => get_post_meta($form_id, '_petitioner_send_to_representative', true),
         );
 
-        $mailer = new Petitioner_Mailer($mailer_settings);
+        $mailer = new AV_Petitioner_Mailer($mailer_settings);
 
         $send_emails = $mailer->send_emails();
 
@@ -157,7 +157,7 @@ class Petitioner_Submissions
         }
 
         // Get the submissions for the specified form_id with LIMIT and OFFSET for pagination
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
+        $table_name = $wpdb->prefix . 'AV_Petitioner_Submissions';
         $submissions = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
@@ -196,7 +196,7 @@ class Petitioner_Submissions
 
         $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
 
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
+        $table_name = $wpdb->prefix . 'AV_Petitioner_Submissions';
 
         $results = $wpdb->get_results(
             $wpdb->prepare(
@@ -247,7 +247,7 @@ class Petitioner_Submissions
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
+        $table_name = $wpdb->prefix . 'AV_Petitioner_Submissions';
         
         // Get the total count of submissions for the form
         $total_submissions = $wpdb->get_var(

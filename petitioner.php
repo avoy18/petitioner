@@ -16,19 +16,19 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-define('PTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('PTR_ASSET_VERSION', '0.1.3');
+define('AV_PETITIONER_ASSET_VERSION', '0.1.3');
 
-require_once PTR_PLUGIN_DIR . 'inc/class-mailer.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-frontend.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-admin-edit-ui.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-admin-settings-ui.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-submissions.php';
-require_once PTR_PLUGIN_DIR . 'inc/class-setup.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-mailer.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-frontend.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-admin-edit-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-admin-settings-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-submissions.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';
 
-$petitioner_setup = new Petition_Setup();
+$petitioner_setup = new AV_Petitioner_Setup();
 
-register_activation_hook(__FILE__, array('Petition_Setup', 'plugin_activation'));
-register_deactivation_hook(__FILE__, array('Petition_Setup', 'plugin_deactivation'));
-register_uninstall_hook(__FILE__, array('Petition_Setup', 'plugin_uninstall'));
+register_activation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_activation'));
+register_deactivation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_deactivation'));
+register_uninstall_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_uninstall'));

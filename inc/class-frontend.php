@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-class Petitioner_Frontend
+class AV_Petitioner_Frontend
 {
 
     public function __construct()
@@ -146,7 +146,7 @@ class Petitioner_Frontend
 
         $goal = intval($petitioner_goal);
 
-        $submissions = new Petitioner_Submissions($form_id);
+        $submissions = new AV_Petitioner_Submissions($form_id);
         $total_submissions = $submissions->get_submission_count();
         $progress = 0;
         

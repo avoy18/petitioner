@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class Petitioner_Mailer
+class AV_Petitioner_Mailer
 {
     public $target_email;
     public $target_cc_emails;

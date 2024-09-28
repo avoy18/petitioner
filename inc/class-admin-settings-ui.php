@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 /**
  * @since 0.1.2
  */
-class Petitioner_Admin_Settings_UI
+class AV_Petitioner_Admin_Settings_UI
 {
     function __construct()
     {
@@ -42,7 +42,7 @@ class Petitioner_Admin_Settings_UI
 
             <form method="post" action="options.php">
                 <?php
-                settings_fields('petition_settings_group');
+                settings_fields('petitioner_settings_group');
                 do_settings_sections('petition-settings');
                 submit_button();
                 ?>
@@ -54,7 +54,7 @@ class Petitioner_Admin_Settings_UI
     public function admin_settings_init()
     {
         add_settings_section(
-            'petition_settings_section',
+            'petitioner_settings_section',
             esc_html__('Visual Customizer', 'petitioner'),
             array($this, 'petition_settings_section_callback'),
             'petition-settings'
@@ -107,7 +107,7 @@ class Petitioner_Admin_Settings_UI
         if (empty($slug) || empty($display_name)) return;
 
         register_setting(
-            'petition_settings_group',
+            'petitioner_settings_group',
             $slug,
             array(
                 'type'              => 'boolean',
@@ -128,7 +128,7 @@ class Petitioner_Admin_Settings_UI
         <?php
             },
             'petition-settings',
-            'petition_settings_section'
+            'petitioner_settings_section'
         );
     }
 
@@ -147,7 +147,7 @@ class Petitioner_Admin_Settings_UI
 
         // Register the setting for the textarea
         register_setting(
-            'petition_settings_group',
+            'petitioner_settings_group',
             $slug,
             array(
                 'type'              => 'string',
@@ -170,7 +170,7 @@ class Petitioner_Admin_Settings_UI
         <?php
             },
             'petition-settings',
-            'petition_settings_section'
+            'petitioner_settings_section'
         );
     }
 
@@ -189,7 +189,7 @@ class Petitioner_Admin_Settings_UI
 
         // Register the setting for the textarea
         register_setting(
-            'petition_settings_group',
+            'petitioner_settings_group',
             $slug,
             array(
                 'type'              => 'string',
@@ -219,7 +219,7 @@ class Petitioner_Admin_Settings_UI
 <?php
             },
             'petition-settings',
-            'petition_settings_section'
+            'petitioner_settings_section'
         );
     }
 }

@@ -4,7 +4,7 @@ if (! defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-class Petition_Setup
+class AV_Petitioner_Setup
 {
     public function __construct()
     {
@@ -34,17 +34,17 @@ class Petition_Setup
         $this->register_shortcodes();
 
         // edit admin fields
-        new Petitioner_Admin_Edit_UI();
+        new AV_Petitioner_Admin_Edit_UI();
         
         // settings admin fields
-        new Petitioner_Admin_Settings_UI();
+        new AV_Petitioner_Admin_Settings_UI();
 
         // api endpoints
-        add_action('wp_ajax_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
-        add_action('wp_ajax_nopriv_petitioner_form_submit', array('Petitioner_Submissions', 'api_handle_form_submit'));
-        add_action('wp_ajax_petitioner_fetch_submissions', array('Petitioner_Submissions', 'api_fetch_form_submissions'));
+        add_action('wp_ajax_petitioner_form_submit', array('AV_Petitioner_Submissions', 'api_handle_form_submit'));
+        add_action('wp_ajax_nopriv_petitioner_form_submit', array('AV_Petitioner_Submissions', 'api_handle_form_submit'));
+        add_action('wp_ajax_petitioner_fetch_submissions', array('AV_Petitioner_Submissions', 'api_fetch_form_submissions'));
 
-        add_action('admin_post_petitioner_export_csv', array('Petitioner_Submissions', 'api_petitioner_export_csv'));
+        add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_Submissions', 'api_petitioner_export_csv'));
 
         // gutenberg
         add_action('init', array($this, 'register_petition_form_block'));
@@ -54,8 +54,8 @@ class Petition_Setup
      */
     public static function plugin_activation()
     {
-        add_option('petitioner_plugin_version', PTR_ASSET_VERSION);
-        Petitioner_Submissions::create_db_table();
+        add_option('petitioner_plugin_version', AV_PETITIONER_ASSET_VERSION);
+        AV_Petitioner_Submissions::create_db_table();
     }
 
     /**
@@ -116,8 +116,8 @@ class Petition_Setup
     {
         if (is_admin()) return;
 
-        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), PTR_ASSET_VERSION);
-        wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), PTR_ASSET_VERSION, true);
+        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_ASSET_VERSION);
+        wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_ASSET_VERSION, true);
     }
 
     /**
@@ -125,8 +125,8 @@ class Petition_Setup
      */
     public function enqueue_admin_assets()
     {
-        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), PTR_ASSET_VERSION);
-        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array(), PTR_ASSET_VERSION, true);
+        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_ASSET_VERSION);
+        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array(), AV_PETITIONER_ASSET_VERSION, true);
     }
 
     /**
@@ -134,7 +134,7 @@ class Petition_Setup
      */
     public function register_shortcodes()
     {
-        $frontend = new Petitioner_Frontend();
+        $frontend = new AV_Petitioner_Frontend();
 
         add_shortcode('petitioner-form', [$frontend, 'display_form']);
     }
@@ -145,7 +145,7 @@ class Petition_Setup
             'petitioner-form-block',
             plugin_dir_url(dirname(__FILE__)) . 'dist/gutenberg/petitionerFormBlock.js',
             array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
-            PTR_ASSET_VERSION,
+            AV_PETITIONER_ASSET_VERSION,
             array()
         );
 
@@ -153,7 +153,7 @@ class Petition_Setup
             'petitioner-form-style',
             plugin_dir_url(dirname(__FILE__)) . 'dist/main.css',
             array(),
-            PTR_ASSET_VERSION
+            AV_PETITIONER_ASSET_VERSION
         );
 
         register_block_type('petitioner/form', array(
