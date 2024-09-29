@@ -22,7 +22,7 @@
     "wp"
   ],
   "author": "Anton Voytenko",
-  "license": "ISC",
+  "license": "GPL-2.0-or-later",
   "bugs": {
     "url": "https://github.com/avoy18/petitioner/issues"
   },
