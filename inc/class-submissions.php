@@ -48,7 +48,7 @@ class AV_Petitioner_Submissions
      */
     public static function api_handle_form_submit()
     {
-        $wpnonce = wp_unslash($_POST['nonce']);
+        $wpnonce = !empty($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
 
         if (!isset($wpnonce) || !wp_verify_nonce($wpnonce, 'petitioner_form_nonce')) {
             wp_send_json_error('Invalid nonce');
@@ -57,11 +57,11 @@ class AV_Petitioner_Submissions
 
         global $wpdb;
 
-        $email = sanitize_email(wp_unslash($_POST['petitioner_email']));
-        $form_id = sanitize_text_field(wp_unslash($_POST['form_id']));
-        $fname = sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) ?? '';
-        $lname = sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) ?? '';
-        $bcc = !empty($_POST['petitioner_bcc']) && wp_unslash($_POST['petitioner_bcc']) === 'on';
+        $email   = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
+        $form_id = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
+        $fname   = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
+        $lname   = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
+        $bcc     = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
 
         // todo: add these
         $hide_name = false;
