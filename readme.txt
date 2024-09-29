@@ -3,8 +3,8 @@ Contributors: avoytenko
 Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
-Tested up to: 6.6.1
-Stable Tag: 0.1.3
+Tested up to: 6.6.2
+Stable Tag: 0.1.4
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -50,14 +50,20 @@ Simply open the edit page for the petition in question and you will see a table 
 
 == Changelog ==
 
+= 0.1.4 =
+* Improved readme & docs
+* Improved asset enqueuing
+* Fixed internalization issues
+* Improved plugin escaping and sanitization
+
 = 0.1.3 =
-* Add plugin settings page
+* New plugin settings page
 
 = 0.1.2 =
-* Add Gutenberg block
+* New Gutenberg block
 
 = 0.1.1 =
-* Add more sanitization and preparing for the wp.org upload
+* Added more sanitization and preparing for the wp.org upload
 
 = 0.1.0 =
 * Initial version of the plugin
@@ -66,3 +72,6 @@ Simply open the edit page for the petition in question and you will see a table 
 
 = 0.1.3 =
 * This version adds the Gutenberg block and fixes a few minor issues
+
+= 0.1.4 =
+* This version adds several minor security and maintainability tweaks and fixes a few minor bugs
