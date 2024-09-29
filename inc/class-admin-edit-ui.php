@@ -160,7 +160,7 @@ class AV_Petitioner_Admin_Edit_UI
      */
     public function save_meta_box_data($post_id)
     {
-        $wpnonce = wp_unslash($_POST['petitioner_details_nonce']);
+        $wpnonce = !empty($_POST['petitioner_details_nonce']) ? wp_unslash($_POST['petitioner_details_nonce']) : '';
 
         // Check if nonce is set
         if (!isset($wpnonce)) {
