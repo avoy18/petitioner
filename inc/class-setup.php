@@ -11,14 +11,6 @@ class AV_Petitioner_Setup
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
-        
-        // add custom CSS
-        add_action('wp_head', function () {
-            $custom_css = get_option('petitioner_custom_css', '');
-            if (!empty($custom_css)) {
-                echo '<style id="petitioner-custom-css" type="text/css">' . esc_html(wp_strip_all_tags($custom_css)) . '</style>';
-            }
-        });
 
         add_filter('script_loader_tag', function ($tag, $handle) {
             if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle || 'petitioner-form-block' === $handle) {
@@ -35,7 +27,6 @@ class AV_Petitioner_Setup
 
         // edit admin fields
         new AV_Petitioner_Admin_Edit_UI();
-        
         // settings admin fields
         new AV_Petitioner_Admin_Settings_UI();
 
@@ -117,6 +108,14 @@ class AV_Petitioner_Setup
         if (is_admin()) return;
 
         wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_PLUGIN_VERSION);
+        
+        // Custom CSS styles
+        $custom_css = get_option('petitioner_custom_css', '');
+
+        if (!empty($custom_css)) {
+            wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
+        }
+
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
     }
 

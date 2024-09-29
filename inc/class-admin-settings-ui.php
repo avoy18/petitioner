@@ -18,6 +18,9 @@ class AV_Petitioner_Admin_Settings_UI
                 wp_enqueue_code_editor(array('type' => 'text/css'));
                 wp_enqueue_script('wp-theme-plugin-editor');
                 wp_enqueue_style('wp-codemirror');
+                wp_add_inline_script('wp-theme-plugin-editor', "jQuery(document).ready(function($) {
+                    wp.codeEditor.initialize($('#petitionerCode'), {type: 'text/css'});
+                });", true);
             }
         });
     }
@@ -204,18 +207,10 @@ class AV_Petitioner_Admin_Settings_UI
             function () use ($slug, $helptext) {
                 $option = get_option($slug, '');
         ?>
-            <textarea name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($slug); ?>" rows="10" cols="50" class="large-text code"><?php echo esc_textarea($option); ?></textarea>
+            <textarea name="<?php echo esc_attr($slug); ?>" id="petitionerCode" rows="10" cols="50" class="large-text code petitioner-code-editor"><?php echo esc_textarea($option); ?></textarea>
             <?php if (!empty($helptext)) : ?>
                 <p class="description"><?php echo esc_html($helptext); ?></p>
             <?php endif; ?>
-            <script>
-                jQuery(document).ready(function($) {
-                    // Initialize CodeMirror for the textarea
-                    wp.codeEditor.initialize($('#<?php echo esc_attr($slug); ?>'), {
-                        type: 'text/css'
-                    });
-                });
-            </script>
 <?php
             },
             'petition-settings',
