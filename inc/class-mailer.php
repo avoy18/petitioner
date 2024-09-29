@@ -23,12 +23,16 @@ class AV_Petitioner_Mailer
         $this->target_cc_emails = $settings['target_cc_emails'];
         $this->user_email = $settings['user_email'];
         $this->user_name = $settings['user_name'];
-        $this->letter = wp_kses_post($settings['letter']);
+        $this->letter = wpautop(wp_kses_post($settings['letter']));
         $this->subject = $settings['subject'];
         $this->bcc = $settings['bcc'];
         $this->send_to_representative = $settings['send_to_representative'];
 
         $this->domain = wp_parse_url(home_url(), PHP_URL_HOST);
+
+        if($this->domain === 'localhost'){
+            $this->domain = 'localhost.com';
+        }
     }
 
     /**
