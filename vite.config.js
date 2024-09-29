@@ -18,7 +18,6 @@ const deploy = () => {
     filter: (src) => {
       // Excludes
       return !src.includes(".git")
-        && !src.includes("src")
         && !src.includes(".DS_Store")
         && !src.includes("deployment")
         && !src.includes("node_modules")
