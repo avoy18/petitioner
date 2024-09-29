@@ -12,12 +12,13 @@ class AV_Petitioner_Setup
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
 
-        add_filter('script_loader_tag', function ($tag, $handle) {
-            if ('petitioner-script' === $handle || 'petitioner-admin-script' === $handle || 'petitioner-form-block' === $handle) {
-                return str_replace('<script ', '<script type="module" ', $tag);
+        add_filter('wp_script_attributes', function ($attributes) {
+            if ('petitioner-script-js' === $attributes['id'] || 'petitioner-admin-script-js' === $attributes['id'] || 'petitioner-form-block-js' === $attributes['id']) {
+                $attributes['type'] = 'module';
             }
-            return $tag;
-        }, 10, 2);
+
+            return $attributes;
+        });
 
         // cpt
         add_action('init', array($this, 'register_post_types'));
