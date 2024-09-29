@@ -105,8 +105,8 @@ class AV_Petitioner_Admin_Edit_UI
                 'teeny' => false,
                 'quicktags' => true,
                 'tinymce' => array(
-                    'toolbar1' => 'formatselect,bold,italic,bullist,numlist', // Custom toolbar
-                    'block_formats' => 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6', // Allowed headings
+                    'toolbar1' => 'formatselect,bold,italic,bullist,numlist',
+                    'block_formats' => 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6',
                     'height' => 300,  // Set the editor height (optional)
                 ),
             );
@@ -183,7 +183,7 @@ class AV_Petitioner_Admin_Edit_UI
         }
 
         $petitioner_title           = wp_unslash($_POST['petitioner_title']);
-        $send_to_representative     = wp_unslash($_POST['petitioner_details_nonce']);
+        $send_to_representative     = wp_unslash($_POST['petitioner_send_to_representative']);
         $petitioner_email           = wp_unslash($_POST['petitioner_email']);
         $petitioner_cc_emails       = wp_unslash($_POST['petitioner_cc_emails']);
         $petitioner_goal            = wp_unslash($_POST['petitioner_goal']);
@@ -221,26 +221,8 @@ class AV_Petitioner_Admin_Edit_UI
         }
 
         if (!empty($petitioner_letter)) {
-            // Allow only certain HTML tags (bold, italic, lists, and headings)
-            $allowed_tags = array(
-                'strong' => array(),  // Bold
-                'b'      => array(),  // Bold (alternative)
-                'em'     => array(),  // Italic
-                'i'      => array(),  // Italic (alternative)
-                'ul'     => array(),  // Unordered list
-                'ol'     => array(),  // Ordered list
-                'li'     => array(),  // List item
-                'h1'     => array(),  // Heading 1
-                'h2'     => array(),  // Heading 2
-                'h3'     => array(),  // Heading 3
-                'h4'     => array(),  // Heading 4
-                'h5'     => array(),  // Heading 5
-                'h6'     => array(),  // Heading 6
-                'p'      => array()   // Paragraph
-            );
-
             // Sanitize the content, only allowing specific tags
-            $parsed_letter = wp_kses($petitioner_letter, $allowed_tags);
+            $parsed_letter = wp_kses_post($petitioner_letter);
 
             update_post_meta($post_id, '_petitioner_letter', $parsed_letter);
         }
