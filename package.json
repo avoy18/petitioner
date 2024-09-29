@@ -1,13 +1,13 @@
 {
   "name": "petitioner",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A WordPress plugin for collecting petitions",
   "main": "index.js",
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
-    "dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist/gutenberg --output-filename=petitionerFormBlock.js",
+    "build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
+    "dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
     "deploy": "yarn build-all && node -e 'require(\"./vite.config.js\").deploy()'",
     "dev-all": "concurrently \"yarn dev\" \"yarn dev:gutenberg\"",
     "build-all": "concurrently \"yarn build:gutenberg\" \"yarn build\""
@@ -22,7 +22,7 @@
     "wp"
   ],
   "author": "Anton Voytenko",
-  "license": "ISC",
+  "license": "GPL-2.0-or-later",
   "bugs": {
     "url": "https://github.com/avoy18/petitioner/issues"
   },

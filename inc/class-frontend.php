@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-class Petitioner_Frontend
+class AV_Petitioner_Frontend
 {
 
     public function __construct()
@@ -112,22 +112,10 @@ class Petitioner_Frontend
                 <button class="petitioner-modal__close">&times; <span><?php esc_html_e('Close modal', 'petitioner') ?></span></button>
                 <h3><?php echo esc_html($petitioner_subject); ?></h3>
                 <div class="petitioner-modal__inner">
-                    <?php echo wp_kses($petitioner_letter,  $allowed_tags = array(
-                        'strong' => array(),
-                        'b'      => array(),
-                        'em'     => array(),
-                        'i'      => array(),
-                        'ul'     => array(),
-                        'ol'     => array(),
-                        'li'     => array(),
-                        'h1'     => array(),
-                        'h2'     => array(),
-                        'h3'     => array(),
-                        'h4'     => array(),
-                        'h5'     => array(),
-                        'h6'     => array(),
-                        'p'      => array()
-                    )); ?>
+                    <?php 
+
+                    $parsed_letter = wpautop($petitioner_letter);
+                    echo wp_kses_post($parsed_letter); ?>
                 </div>
                 <hr />
                 <p><?php esc_html_e('{Your name will be here}', 'petitioner'); ?></p>
@@ -146,7 +134,7 @@ class Petitioner_Frontend
 
         $goal = intval($petitioner_goal);
 
-        $submissions = new Petitioner_Submissions($form_id);
+        $submissions = new AV_Petitioner_Submissions($form_id);
         $total_submissions = $submissions->get_submission_count();
         $progress = 0;
         

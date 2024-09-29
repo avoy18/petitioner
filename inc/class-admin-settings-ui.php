@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 /**
  * @since 0.1.2
  */
-class Petitioner_Admin_Settings_UI
+class AV_Petitioner_Admin_Settings_UI
 {
     function __construct()
     {
@@ -18,6 +18,9 @@ class Petitioner_Admin_Settings_UI
                 wp_enqueue_code_editor(array('type' => 'text/css'));
                 wp_enqueue_script('wp-theme-plugin-editor');
                 wp_enqueue_style('wp-codemirror');
+                wp_add_inline_script('wp-theme-plugin-editor', "jQuery(document).ready(function($) {
+                    wp.codeEditor.initialize($('#petitionerCode'), {type: 'text/css'});
+                });", true);
             }
         });
     }
@@ -26,8 +29,8 @@ class Petitioner_Admin_Settings_UI
     {
         add_submenu_page(
             'edit.php?post_type=petitioner-petition',
-            esc_html__('Petition Settings', 'petitioner-petition'),
-            esc_html__('Settings', 'petitioner-petition'),
+            esc_html__('Petition Settings', 'petitioner'),
+            esc_html__('Settings', 'petitioner'),
             'manage_options',
             'petition-settings',
             array($this, 'render_petition_settings_page')
@@ -38,11 +41,11 @@ class Petitioner_Admin_Settings_UI
     {
 ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Petitioner Settings', 'petitioner-pro'); ?></h1>
+            <h1><?php esc_html_e('Petitioner Settings', 'petitioner'); ?></h1>
 
             <form method="post" action="options.php">
                 <?php
-                settings_fields('petition_settings_group');
+                settings_fields('petitioner_settings_group');
                 do_settings_sections('petition-settings');
                 submit_button();
                 ?>
@@ -54,7 +57,7 @@ class Petitioner_Admin_Settings_UI
     public function admin_settings_init()
     {
         add_settings_section(
-            'petition_settings_section',
+            'petitioner_settings_section',
             esc_html__('Visual Customizer', 'petitioner'),
             array($this, 'petition_settings_section_callback'),
             'petition-settings'
@@ -107,7 +110,7 @@ class Petitioner_Admin_Settings_UI
         if (empty($slug) || empty($display_name)) return;
 
         register_setting(
-            'petition_settings_group',
+            'petitioner_settings_group',
             $slug,
             array(
                 'type'              => 'boolean',
@@ -128,7 +131,7 @@ class Petitioner_Admin_Settings_UI
         <?php
             },
             'petition-settings',
-            'petition_settings_section'
+            'petitioner_settings_section'
         );
     }
 
@@ -147,7 +150,7 @@ class Petitioner_Admin_Settings_UI
 
         // Register the setting for the textarea
         register_setting(
-            'petition_settings_group',
+            'petitioner_settings_group',
             $slug,
             array(
                 'type'              => 'string',
@@ -170,7 +173,7 @@ class Petitioner_Admin_Settings_UI
         <?php
             },
             'petition-settings',
-            'petition_settings_section'
+            'petitioner_settings_section'
         );
     }
 
@@ -189,7 +192,7 @@ class Petitioner_Admin_Settings_UI
 
         // Register the setting for the textarea
         register_setting(
-            'petition_settings_group',
+            'petitioner_settings_group',
             $slug,
             array(
                 'type'              => 'string',
@@ -204,22 +207,14 @@ class Petitioner_Admin_Settings_UI
             function () use ($slug, $helptext) {
                 $option = get_option($slug, '');
         ?>
-            <textarea name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($slug); ?>" rows="10" cols="50" class="large-text code"><?php echo esc_textarea($option); ?></textarea>
+            <textarea name="<?php echo esc_attr($slug); ?>" id="petitionerCode" rows="10" cols="50" class="large-text code petitioner-code-editor"><?php echo esc_textarea($option); ?></textarea>
             <?php if (!empty($helptext)) : ?>
                 <p class="description"><?php echo esc_html($helptext); ?></p>
             <?php endif; ?>
-            <script>
-                jQuery(document).ready(function($) {
-                    // Initialize CodeMirror for the textarea
-                    wp.codeEditor.initialize($('#<?php echo esc_attr($slug); ?>'), {
-                        type: 'text/css'
-                    });
-                });
-            </script>
 <?php
             },
             'petition-settings',
-            'petition_settings_section'
+            'petitioner_settings_section'
         );
     }
 }

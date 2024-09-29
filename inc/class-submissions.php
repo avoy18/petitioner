@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class Petitioner_Submissions
+class AV_Petitioner_Submissions
 {
     public $form_id = null;
     public function __construct($id  = null)
@@ -16,11 +16,8 @@ class Petitioner_Submissions
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
-
-        $charset_collate = $wpdb->get_charset_collate();
-
-        $sql = "CREATE TABLE $table_name (
+        $sql = 'CREATE TABLE ' . $wpdb->prefix . 'av_petitioner_submissions';
+        $sql .= " (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             form_id mediumint(9) NOT NULL,
             fname varchar(255) NOT NULL,
@@ -35,7 +32,8 @@ class Petitioner_Submissions
             submitted_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id),
             KEY form_id (form_id)
-        ) $charset_collate;";
+        )";
+        $sql .= ' ' . $wpdb->get_charset_collate() . ';';
 
         // Include the upgrade file for dbDelta
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -50,20 +48,20 @@ class Petitioner_Submissions
      */
     public static function api_handle_form_submit()
     {
-        $post_data = wp_unslash($_POST);
+        $wpnonce = !empty($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
 
-        if (!isset($post_data['nonce']) || !wp_verify_nonce($post_data['nonce'], 'petitioner_form_nonce')) {
+        if (!isset($wpnonce) || !wp_verify_nonce($wpnonce, 'petitioner_form_nonce')) {
             wp_send_json_error('Invalid nonce');
             wp_die();
         }
 
         global $wpdb;
 
-        $email = sanitize_email($post_data['petitioner_email']);
-        $form_id = sanitize_text_field($post_data['form_id']);
-        $fname = sanitize_text_field($post_data['petitioner_fname']) ?? '';
-        $lname = sanitize_text_field($post_data['petitioner_lname']) ?? '';
-        $bcc = $post_data['petitioner_bcc'] === 'on';
+        $email   = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
+        $form_id = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
+        $fname   = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
+        $lname   = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
+        $bcc     = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
 
         // todo: add these
         $hide_name = false;
@@ -71,11 +69,10 @@ class Petitioner_Submissions
         $accept_tos = false;
 
         // Insert into the custom table
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
 
         // Query the custom table to check if the email already exists
         $email_findings = $wpdb->get_var($wpdb->prepare(
-            'SELECT COUNT(*) FROM ' . esc_sql($table_name) . ' WHERE email = %s AND form_id = %d',
+            'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE email = %s AND form_id = %d',
             $email,
             $form_id
         ));
@@ -99,7 +96,7 @@ class Petitioner_Submissions
         );
 
         $inserted = $wpdb->insert(
-            $table_name,
+            $wpdb->prefix . 'av_petitioner_submissions',
             $data,
             array(
                 '%d', // form_id
@@ -126,7 +123,7 @@ class Petitioner_Submissions
             'send_to_representative' => get_post_meta($form_id, '_petitioner_send_to_representative', true),
         );
 
-        $mailer = new Petitioner_Mailer($mailer_settings);
+        $mailer = new AV_Petitioner_Mailer($mailer_settings);
 
         $send_emails = $mailer->send_emails();
 
@@ -157,10 +154,9 @@ class Petitioner_Submissions
         }
 
         // Get the submissions for the specified form_id with LIMIT and OFFSET for pagination
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
         $submissions = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $table_name WHERE form_id = %d LIMIT %d OFFSET %d",
+                'SELECT * FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d LIMIT %d OFFSET %d',
                 $form_id,
                 $per_page,
                 $offset
@@ -170,7 +166,7 @@ class Petitioner_Submissions
         // Get the total count of submissions for the form
         $total_submissions = $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT COUNT(*) FROM $table_name WHERE form_id = %d",
+                'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
                 $form_id
             )
         );
@@ -196,11 +192,9 @@ class Petitioner_Submissions
 
         $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
 
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
-
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $table_name WHERE form_id = %d",
+                'SELECT * FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
                 $form_id,
             )
         );
@@ -247,12 +241,10 @@ class Petitioner_Submissions
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'petitioner_submissions';
-        
         // Get the total count of submissions for the form
         $total_submissions = $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT COUNT(*) FROM $table_name WHERE form_id = %d",
+                'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
                 $this->form_id
             )
         );

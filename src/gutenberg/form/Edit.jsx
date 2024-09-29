@@ -1,28 +1,15 @@
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import ServerSideRender from '@wordpress/server-side-render';
 import { useSelect } from '@wordpress/data';
-import { Button } from '@wordpress/components';
-
-import {
-    TextControl,
-    SelectControl, PanelBody
-} from '@wordpress/components';
-
-const continents = [
-    'Africa',
-    'America',
-    'Antarctica',
-    'Asia',
-    'Europe',
-    'Oceania',
-];
+import { Button, SelectControl, PanelBody } from "@wordpress/components";
+import { useCallback } from '@wordpress/element';
 
 export default function Edit({ attributes, setAttributes }) {
     const { formId, newPetitionLink } = attributes;
     const blockAtts = useBlockProps();
 
-    const allPetitions =
-        useSelect((select) => {
+    const fetchPetitions = useCallback(() => {
+        return useSelect((select) => {
             return select('core').getEntityRecords(
                 'postType',
                 'petitioner-petition',
@@ -31,7 +18,10 @@ export default function Edit({ attributes, setAttributes }) {
                     _fields: 'title,id',
                 }
             );
-        }, []) || [];
+        }, []);
+    }, []);
+
+    const allPetitions = fetchPetitions() || [];
 
     const petitionOptions = [
         { label: 'Please select your petition', value: '' }
@@ -52,42 +42,37 @@ export default function Edit({ attributes, setAttributes }) {
         petitionOptions.push(objToPush);
     });
 
-    const FinalCompontnt = () => {
+    const FinalComponent = useCallback(() => {
         if (!allPetitions.length) {
-            return <div style={
-                {
-                    padding: '24px',
-                    background: '#efefef'
-                }
-            }>
-                <p> <small>Petitioner form</small></p>
-                <p>Looks like you haven't added any forms yet!</p>
-                <Button variant="secondary" href={newPetitionLink || ''}>
-                    Create your first petition
-                </Button>
-            </div>
+            return (
+                <div style={{ padding: '24px', background: '#efefef' }}>
+                    <p><small>Petitioner form</small></p>
+                    <p>Looks like you haven't added any forms yet!</p>
+                    <Button variant="secondary" href={newPetitionLink || ''}>
+                        Create your first petition
+                    </Button>
+                </div>
+            );
         }
 
         if (!formId) {
-            return <div style={
-                {
-                    padding: '24px',
-                    background: '#efefef'
-                }
-            }>
-                <p> <small>Petitioner form</small></p>
-                <p>Use the dropdown in the block settings to select your petiton.</p>
-            </div>
+            return (
+                <div style={{ padding: '24px', background: '#efefef' }}>
+                    <p><small>Petitioner form</small></p>
+                    <p>Use the dropdown in the block settings to select your petition.</p>
+                </div>
+            );
         }
 
-        return <div style={{ pointerEvents: "none" }}>
-            <ServerSideRender
-                block="petitioner/form"
-                attributes={attributes}
-            />
-        </div>
-
-    }
+        return (
+            <div style={{ pointerEvents: "none" }}>
+                <ServerSideRender
+                    block="petitioner/form"
+                    attributes={attributes}
+                />
+            </div>
+        );
+    }, [allPetitions, formId, attributes, newPetitionLink]);
 
     return <div {...blockAtts}>
         <InspectorControls>
@@ -104,7 +89,7 @@ export default function Edit({ attributes, setAttributes }) {
 
         </InspectorControls>
 
-        <FinalCompontnt />
+        <FinalComponent />
 
 
     </div>

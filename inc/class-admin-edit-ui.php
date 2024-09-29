@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class Petitioner_Admin_Edit_UI
+class AV_Petitioner_Admin_Edit_UI
 {
     public function __construct()
     {
@@ -105,8 +105,8 @@ class Petitioner_Admin_Edit_UI
                 'teeny' => false,
                 'quicktags' => true,
                 'tinymce' => array(
-                    'toolbar1' => 'formatselect,bold,italic,bullist,numlist', // Custom toolbar
-                    'block_formats' => 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6', // Allowed headings
+                    'toolbar1' => 'formatselect,bold,italic,bullist,numlist',
+                    'block_formats' => 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6',
                     'height' => 300,  // Set the editor height (optional)
                 ),
             );
@@ -126,7 +126,7 @@ class Petitioner_Admin_Edit_UI
         );
     ?>
 
-        <div id="petitioner_submissions" class="petitioner-admin__submissions" data-petitioner-submissions='<?php echo wp_json_encode($submission_settings) ?>'>
+        <div id="AV_Petitioner_Submissions" class="petitioner-admin__submissions" data-petitioner-submissions='<?php echo wp_json_encode($submission_settings) ?>'>
 
             <h3>Submissions</h3>
 
@@ -160,16 +160,15 @@ class Petitioner_Admin_Edit_UI
      */
     public function save_meta_box_data($post_id)
     {
-        // Unslash data before sanitizing
-        $post_data = wp_unslash($_POST);
+        $wpnonce = !empty($_POST['petitioner_details_nonce']) ? sanitize_text_field(wp_unslash($_POST['petitioner_details_nonce'])) : '';
 
         // Check if nonce is set
-        if (!isset($post_data['petitioner_details_nonce'])) {
+        if (!isset($wpnonce)) {
             return;
         }
 
         // Verify nonce
-        if (!wp_verify_nonce($post_data['petitioner_details_nonce'], 'save_petition_details')) {
+        if (!wp_verify_nonce($wpnonce, 'save_petition_details')) {
             return;
         }
 
@@ -183,64 +182,45 @@ class Petitioner_Admin_Edit_UI
             return;
         }
 
+        $petitioner_title           = isset($_POST['petitioner_title']) ? sanitize_text_field(wp_unslash($_POST['petitioner_title'])) : '';
+        $send_to_representative     = isset($_POST['petitioner_send_to_representative']) ? sanitize_text_field(wp_unslash($_POST['petitioner_send_to_representative'])) : '';
+        $petitioner_email           = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
+        $petitioner_cc_emails       = isset($_POST['petitioner_cc_emails']) ? sanitize_text_field(wp_unslash($_POST['petitioner_cc_emails'])) : '';
+        $petitioner_goal            = isset($_POST['petitioner_goal']) ? intval(wp_unslash($_POST['petitioner_goal'])) : 0;
+        $petitioner_subject         = isset($_POST['petitioner_subject']) ? sanitize_text_field(wp_unslash($_POST['petitioner_subject'])) : '';
+        $petitioner_letter          = isset($_POST['petitioner_letter']) ? wp_kses_post(wp_unslash($_POST['petitioner_letter'])) : '';
 
-        // Sanitize and save the email field
-        if (isset($post_data['petitioner_title'])) {
-            update_post_meta($post_id, '_petitioner_title', sanitize_text_field($post_data['petitioner_title']));
+        if (!empty($petitioner_title)) {
+            update_post_meta($post_id, '_petitioner_title', sanitize_text_field($petitioner_title));
         }
-
-        // Sanitize and save the checkbox value
-        if (isset($post_data['petitioner_send_to_representative']) && $post_data['petitioner_send_to_representative'] == 'on') {
+        
+        if (!empty($send_to_representative) && $send_to_representative == 'on') {
             update_post_meta($post_id, '_petitioner_send_to_representative', 1);
         } else {
             update_post_meta($post_id, '_petitioner_send_to_representative', 0);
         }
 
-        // Sanitize and save the email field
-        if (isset($post_data['petitioner_email'])) {
-            update_post_meta($post_id, '_petitioner_email', sanitize_email($post_data['petitioner_email']));
+        if (!empty($petitioner_email)) {
+            update_post_meta($post_id, '_petitioner_email', sanitize_email($petitioner_email));
         }
 
-        // Sanitize and save the email field
-        if (isset($post_data['petitioner_cc_emails'])) {
-
-            $final_cc_emails = $this->sanitize_cc_emails($post_data['petitioner_cc_emails']);
+        if (!empty($petitioner_cc_emails)) {
+            $final_cc_emails = $this->sanitize_cc_emails($petitioner_cc_emails);
 
             update_post_meta($post_id, '_petitioner_cc_emails', $final_cc_emails);
         }
 
         // Sanitize and save the goal field
-        if (isset($post_data['petitioner_goal'])) {
-            update_post_meta($post_id, '_petitioner_goal', intval($post_data['petitioner_goal']));
+        if (isset($petitioner_goal)) {
+            update_post_meta($post_id, '_petitioner_goal', intval($petitioner_goal));
         }
 
         // Sanitize and save the subject
-        if (isset($post_data['petitioner_subject'])) {
-            update_post_meta($post_id, '_petitioner_subject', sanitize_text_field($post_data['petitioner_subject']));
+        if (!empty($petitioner_subject)) {
+            update_post_meta($post_id, '_petitioner_subject', sanitize_text_field($petitioner_subject));
         }
 
-        if (isset($post_data['petitioner_letter'])) {
-            // Allow only certain HTML tags (bold, italic, lists, and headings)
-            $allowed_tags = array(
-                'strong' => array(),  // Bold
-                'b'      => array(),  // Bold (alternative)
-                'em'     => array(),  // Italic
-                'i'      => array(),  // Italic (alternative)
-                'ul'     => array(),  // Unordered list
-                'ol'     => array(),  // Ordered list
-                'li'     => array(),  // List item
-                'h1'     => array(),  // Heading 1
-                'h2'     => array(),  // Heading 2
-                'h3'     => array(),  // Heading 3
-                'h4'     => array(),  // Heading 4
-                'h5'     => array(),  // Heading 5
-                'h6'     => array(),  // Heading 6
-                'p'      => array()   // Paragraph
-            );
-
-            // Sanitize the content, only allowing specific tags
-            $petitioner_letter = wp_kses($post_data['petitioner_letter'], $allowed_tags);
-
+        if (!empty($petitioner_letter)) {
             update_post_meta($post_id, '_petitioner_letter', $petitioner_letter);
         }
     }
