@@ -109,15 +109,45 @@ class AV_Petitioner_Setup
         if (is_admin()) return;
 
         wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_PLUGIN_VERSION);
-        
+
         // Custom CSS styles
-        $custom_css = get_option('petitioner_custom_css', '');
+        $custom_css = $this->generate_custom_css();
 
         if (!empty($custom_css)) {
             wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
         }
 
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
+    }
+
+    public function generate_custom_css()
+    {
+        $custom_css = '';
+        $primary_color = get_option('petitioner_primary_color', '');
+        $dark_color = get_option('petitioner_dark_color', '');
+        $grey_color = get_option('petitioner_grey_color', '');
+
+        $default_colors = '';
+
+        if (!empty($primary_color)) {
+            $default_colors .= '--ptr-color-primary: ' . $primary_color . '!important;';
+        }
+
+        if (!empty($dark_color)) {
+            $default_colors .= '--ptr-color-dark: ' . $dark_color . '!important;';
+        }
+
+        if (!empty($grey_color)) {
+            $default_colors .= '--ptr-color-grey: ' . $grey_color . '!important;';
+        }
+
+        if(!empty($default_colors)){
+            $custom_css .= '.petitioner {' . $default_colors . ' };';
+        }
+
+        $custom_css .= get_option('petitioner_custom_css', '');
+
+        return $custom_css;
     }
 
     /**
