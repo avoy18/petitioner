@@ -7,10 +7,208 @@ if (!defined('ABSPATH')) {
 class AV_Petitioner_Frontend
 {
 
+    public $country_list;
+
     public function __construct()
     {
-        // Any initialization for frontend if needed
-
+        $this->country_list = [
+            __("Afghanistan", "petitioner"),
+            __("Albania", "petitioner"),
+            __("Algeria", "petitioner"),
+            __("Andorra", "petitioner"),
+            __("Angola", "petitioner"),
+            __("Antigua & Deps", "petitioner"),
+            __("Argentina", "petitioner"),
+            __("Armenia", "petitioner"),
+            __("Australia", "petitioner"),
+            __("Austria", "petitioner"),
+            __("Azerbaijan", "petitioner"),
+            __("Bahamas", "petitioner"),
+            __("Bahrain", "petitioner"),
+            __("Bangladesh", "petitioner"),
+            __("Barbados", "petitioner"),
+            __("Belarus", "petitioner"),
+            __("Belgium", "petitioner"),
+            __("Belize", "petitioner"),
+            __("Benin", "petitioner"),
+            __("Bhutan", "petitioner"),
+            __("Bolivia", "petitioner"),
+            __("Bosnia Herzegovina", "petitioner"),
+            __("Botswana", "petitioner"),
+            __("Brazil", "petitioner"),
+            __("Brunei", "petitioner"),
+            __("Bulgaria", "petitioner"),
+            __("Burkina", "petitioner"),
+            __("Burundi", "petitioner"),
+            __("Cambodia", "petitioner"),
+            __("Cameroon", "petitioner"),
+            __("Canada", "petitioner"),
+            __("Cape Verde", "petitioner"),
+            __("Central African Rep", "petitioner"),
+            __("Chad", "petitioner"),
+            __("Chile", "petitioner"),
+            __("China", "petitioner"),
+            __("Colombia", "petitioner"),
+            __("Comoros", "petitioner"),
+            __("Congo", "petitioner"),
+            __("Congo {Democratic Rep}", "petitioner"),
+            __("Costa Rica", "petitioner"),
+            __("Croatia", "petitioner"),
+            __("Cuba", "petitioner"),
+            __("Cyprus", "petitioner"),
+            __("Czech Republic", "petitioner"),
+            __("Denmark", "petitioner"),
+            __("Djibouti", "petitioner"),
+            __("Dominica", "petitioner"),
+            __("Dominican Republic", "petitioner"),
+            __("East Timor", "petitioner"),
+            __("Ecuador", "petitioner"),
+            __("Egypt", "petitioner"),
+            __("El Salvador", "petitioner"),
+            __("Equatorial Guinea", "petitioner"),
+            __("Eritrea", "petitioner"),
+            __("Estonia", "petitioner"),
+            __("Ethiopia", "petitioner"),
+            __("Fiji", "petitioner"),
+            __("Finland", "petitioner"),
+            __("France", "petitioner"),
+            __("Gabon", "petitioner"),
+            __("Gambia", "petitioner"),
+            __("Georgia", "petitioner"),
+            __("Germany", "petitioner"),
+            __("Ghana", "petitioner"),
+            __("Greece", "petitioner"),
+            __("Grenada", "petitioner"),
+            __("Guatemala", "petitioner"),
+            __("Guinea", "petitioner"),
+            __("Guinea-Bissau", "petitioner"),
+            __("Guyana", "petitioner"),
+            __("Haiti", "petitioner"),
+            __("Honduras", "petitioner"),
+            __("Hungary", "petitioner"),
+            __("Iceland", "petitioner"),
+            __("India", "petitioner"),
+            __("Indonesia", "petitioner"),
+            __("Iran", "petitioner"),
+            __("Iraq", "petitioner"),
+            __("Ireland {Republic}", "petitioner"),
+            __("Israel", "petitioner"),
+            __("Italy", "petitioner"),
+            __("Ivory Coast", "petitioner"),
+            __("Jamaica", "petitioner"),
+            __("Japan", "petitioner"),
+            __("Jordan", "petitioner"),
+            __("Kazakhstan", "petitioner"),
+            __("Kenya", "petitioner"),
+            __("Kiribati", "petitioner"),
+            __("Korea North", "petitioner"),
+            __("Korea South", "petitioner"),
+            __("Kosovo", "petitioner"),
+            __("Kuwait", "petitioner"),
+            __("Kyrgyzstan", "petitioner"),
+            __("Laos", "petitioner"),
+            __("Latvia", "petitioner"),
+            __("Lebanon", "petitioner"),
+            __("Lesotho", "petitioner"),
+            __("Liberia", "petitioner"),
+            __("Libya", "petitioner"),
+            __("Liechtenstein", "petitioner"),
+            __("Lithuania", "petitioner"),
+            __("Luxembourg", "petitioner"),
+            __("Macedonia", "petitioner"),
+            __("Madagascar", "petitioner"),
+            __("Malawi", "petitioner"),
+            __("Malaysia", "petitioner"),
+            __("Maldives", "petitioner"),
+            __("Mali", "petitioner"),
+            __("Malta", "petitioner"),
+            __("Marshall Islands", "petitioner"),
+            __("Mauritania", "petitioner"),
+            __("Mauritius", "petitioner"),
+            __("Mexico", "petitioner"),
+            __("Micronesia", "petitioner"),
+            __("Moldova", "petitioner"),
+            __("Monaco", "petitioner"),
+            __("Mongolia", "petitioner"),
+            __("Montenegro", "petitioner"),
+            __("Morocco", "petitioner"),
+            __("Mozambique", "petitioner"),
+            __("Myanmar, {Burma}", "petitioner"),
+            __("Namibia", "petitioner"),
+            __("Nauru", "petitioner"),
+            __("Nepal", "petitioner"),
+            __("Netherlands", "petitioner"),
+            __("New Zealand", "petitioner"),
+            __("Nicaragua", "petitioner"),
+            __("Niger", "petitioner"),
+            __("Nigeria", "petitioner"),
+            __("Norway", "petitioner"),
+            __("Oman", "petitioner"),
+            __("Pakistan", "petitioner"),
+            __("Palau", "petitioner"),
+            __("Panama", "petitioner"),
+            __("Papua New Guinea", "petitioner"),
+            __("Paraguay", "petitioner"),
+            __("Peru", "petitioner"),
+            __("Philippines", "petitioner"),
+            __("Poland", "petitioner"),
+            __("Portugal", "petitioner"),
+            __("Qatar", "petitioner"),
+            __("Romania", "petitioner"),
+            __("Russian Federation", "petitioner"),
+            __("Rwanda", "petitioner"),
+            __("St Kitts & Nevis", "petitioner"),
+            __("St Lucia", "petitioner"),
+            __("Saint Vincent & the Grenadines", "petitioner"),
+            __("Samoa", "petitioner"),
+            __("San Marino", "petitioner"),
+            __("Sao Tome & Principe", "petitioner"),
+            __("Saudi Arabia", "petitioner"),
+            __("Senegal", "petitioner"),
+            __("Serbia", "petitioner"),
+            __("Seychelles", "petitioner"),
+            __("Sierra Leone", "petitioner"),
+            __("Singapore", "petitioner"),
+            __("Slovakia", "petitioner"),
+            __("Slovenia", "petitioner"),
+            __("Solomon Islands", "petitioner"),
+            __("Somalia", "petitioner"),
+            __("South Africa", "petitioner"),
+            __("South Sudan", "petitioner"),
+            __("Spain", "petitioner"),
+            __("Sri Lanka", "petitioner"),
+            __("Sudan", "petitioner"),
+            __("Suriname", "petitioner"),
+            __("Swaziland", "petitioner"),
+            __("Sweden", "petitioner"),
+            __("Switzerland", "petitioner"),
+            __("Syria", "petitioner"),
+            __("Taiwan", "petitioner"),
+            __("Tajikistan", "petitioner"),
+            __("Tanzania", "petitioner"),
+            __("Thailand", "petitioner"),
+            __("Togo", "petitioner"),
+            __("Tonga", "petitioner"),
+            __("Trinidad & Tobago", "petitioner"),
+            __("Tunisia", "petitioner"),
+            __("Turkey", "petitioner"),
+            __("Turkmenistan", "petitioner"),
+            __("Tuvalu", "petitioner"),
+            __("Uganda", "petitioner"),
+            __("Ukraine", "petitioner"),
+            __("United Arab Emirates", "petitioner"),
+            __("United Kingdom", "petitioner"),
+            __("United States", "petitioner"),
+            __("Uruguay", "petitioner"),
+            __("Uzbekistan", "petitioner"),
+            __("Vanuatu", "petitioner"),
+            __("Vatican City", "petitioner"),
+            __("Venezuela", "petitioner"),
+            __("Vietnam", "petitioner"),
+            __("Yemen", "petitioner"),
+            __("Zambia", "petitioner"),
+            __("Zimbabwe", "petitioner")
+        ];
     }
 
     /**
@@ -29,6 +227,7 @@ class AV_Petitioner_Frontend
             return;
         }
         $petitioner_send_to_representative = get_post_meta($form_id, '_petitioner_send_to_representative', true);
+        $petitioner_show_country = get_post_meta($form_id, '_petitioner_show_country', true);
 
         ob_start();
 ?>
@@ -56,6 +255,20 @@ class AV_Petitioner_Frontend
                     <label for="petitioner_email"><?php esc_html_e('Your email', 'petitioner'); ?></label>
                     <input required type="email" id="petitioner_email" name="petitioner_email">
                 </div>
+
+                <?php if ($petitioner_show_country): ?>
+                    <div class="petitioner__input">
+                        <label for="petitioner_country"><?php esc_html_e('Country', 'petitioner'); ?></label>
+                        <select required id="petitioner_country" name="petitioner_country">
+                            <option value="" default disabled><?php esc_html_e('Country', 'petitioner'); ?></option>
+                            <?php foreach ($this->country_list as $country): ?>
+                                <option value="<?php echo $country; ?>">
+                                    <?php echo $country; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                <?php endif; ?>
 
                 <?php if ($petitioner_send_to_representative): ?>
                     <div class="petitioner__input petitioner__input--checkbox">
@@ -112,7 +325,7 @@ class AV_Petitioner_Frontend
                 <button class="petitioner-modal__close">&times; <span><?php esc_html_e('Close modal', 'petitioner') ?></span></button>
                 <h3><?php echo esc_html($petitioner_subject); ?></h3>
                 <div class="petitioner-modal__inner">
-                    <?php 
+                    <?php
 
                     $parsed_letter = wpautop($petitioner_letter);
                     echo wp_kses_post($parsed_letter); ?>
@@ -137,8 +350,8 @@ class AV_Petitioner_Frontend
         $submissions = new AV_Petitioner_Submissions($form_id);
         $total_submissions = $submissions->get_submission_count();
         $progress = 0;
-        
-        if($total_submissions > 0){
+
+        if ($total_submissions > 0) {
             $progress = round($total_submissions / $goal * 100);
         }
     ?>

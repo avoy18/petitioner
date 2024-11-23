@@ -10,6 +10,7 @@ class AV_Petitioner_Mailer
     public $target_cc_emails;
     public $user_email;
     public $user_name;
+    public $user_country;
     public $subject;
     public $letter;
     public $bcc = true;
@@ -23,6 +24,7 @@ class AV_Petitioner_Mailer
         $this->target_cc_emails = $settings['target_cc_emails'];
         $this->user_email = $settings['user_email'];
         $this->user_name = $settings['user_name'];
+        $this->user_country = $settings['user_country'];
         $this->letter = wpautop(wp_kses_post($settings['letter']));
         $this->subject = $settings['subject'];
         $this->bcc = $settings['bcc'];

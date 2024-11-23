@@ -42,6 +42,7 @@ class AV_Petitioner_Admin_Edit_UI
         $petitioner_goal = get_post_meta($post->ID, '_petitioner_goal', true);
         $petitioner_letter = get_post_meta($post->ID, '_petitioner_letter', true);
         $petitioner_subject = get_post_meta($post->ID, '_petitioner_subject', true);
+        $petitioner_show_country = get_post_meta($post->ID, '_petitioner_show_country', true);
         // Output nonce for verification
         wp_nonce_field('save_petition_details', 'petitioner_details_nonce');
 
@@ -71,32 +72,37 @@ class AV_Petitioner_Admin_Edit_UI
             <p>
                 <label for="petitioner_email">Petition target email:</label>
                 <input type="email" name="petitioner_email" id="petitioner_email" value="<?php echo esc_attr($petitioner_email); ?>"
-                    class="widefat">
+                class="widefat">
             </p>
             <p>
                 <label for="petitioner_cc_emails">Petition CC emails <small>(can have multiple - separated by comma)</small>:</label>
                 <input type="text" name="petitioner_cc_emails" id="petitioner_cc_emails" value="<?php echo esc_attr($petitioner_cc_emails); ?>"
-                    class="widefat">
+                class="widefat">
             </p>
             <p>
                 <label for="petitioner_goal">Signature goal *:</label>
                 <input type="number" required name="petitioner_goal" id="petitioner_goal" value="<?php echo esc_attr($petitioner_goal); ?>"
+                class="widefat">
+            </p>
+            <p>
+                <input type="checkbox" name="petitioner_show_country" id="petitioner_show_country" <?php checked(1, $petitioner_show_country, true); ?>
                     class="widefat">
+                <label for="petitioner_show_country">Show country field?</label>
             </p>
             <p>
                 <label for="petitioner_subject">Petition subject *:</label>
                 <input type="text" required name="petitioner_subject" id="petitioner_subject" value="<?php echo esc_attr($petitioner_subject); ?>"
-                    class="widefat">
+                class="widefat">
             </p>
-
+            
             <h3 for="petitioner_letter">Petition letter:</h3>
             <?php
             // Load existing content (if any)
             $content = $petitioner_letter;
-
+            
             // Unique ID for the editor
             $editor_id = 'petitioner_letter';
-
+            
             // Settings for the editor
             $settings = array(
                 'textarea_name' => 'petitioner_letter',
@@ -152,7 +158,7 @@ class AV_Petitioner_Admin_Edit_UI
             $this->render_submissions($post);
             ?>
         </div>
-    <?php
+<?php
     }
 
     /**
@@ -184,28 +190,35 @@ class AV_Petitioner_Admin_Edit_UI
 
         $petitioner_title           = isset($_POST['petitioner_title']) ? sanitize_text_field(wp_unslash($_POST['petitioner_title'])) : '';
         $send_to_representative     = isset($_POST['petitioner_send_to_representative']) ? sanitize_text_field(wp_unslash($_POST['petitioner_send_to_representative'])) : '';
-        $petitioner_email           = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
+        $petitioner_email          = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
         $petitioner_cc_emails       = isset($_POST['petitioner_cc_emails']) ? sanitize_text_field(wp_unslash($_POST['petitioner_cc_emails'])) : '';
         $petitioner_goal            = isset($_POST['petitioner_goal']) ? intval(wp_unslash($_POST['petitioner_goal'])) : 0;
         $petitioner_subject         = isset($_POST['petitioner_subject']) ? sanitize_text_field(wp_unslash($_POST['petitioner_subject'])) : '';
         $petitioner_letter          = isset($_POST['petitioner_letter']) ? wp_kses_post(wp_unslash($_POST['petitioner_letter'])) : '';
+        $petitioner_show_country    = isset($_POST['petitioner_show_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_show_country'])) : '';
 
         if (!empty($petitioner_title)) {
             update_post_meta($post_id, '_petitioner_title', sanitize_text_field($petitioner_title));
         }
-        
+
         if (!empty($send_to_representative) && $send_to_representative == 'on') {
             update_post_meta($post_id, '_petitioner_send_to_representative', 1);
         } else {
             update_post_meta($post_id, '_petitioner_send_to_representative', 0);
         }
 
+        if (!empty($petitioner_show_country) && $petitioner_show_country == 'on') {
+            update_post_meta($post_id, '_petitioner_show_country', 1);
+        } else {
+            update_post_meta($post_id, '_petitioner_show_country', 0);
+        }
+
         if (!empty($petitioner_email)) {
-            update_post_meta($post_id, '_petitioner_email', sanitize_email($petitioner_email));
+            update_post_meta($post_id, '_petitioner_email', $petitioner_email);
         }
 
         if (!empty($petitioner_cc_emails)) {
-            $final_cc_emails = $this->sanitize_cc_emails($petitioner_cc_emails);
+            $final_cc_emails = $this->sanitize_emails($petitioner_cc_emails);
 
             update_post_meta($post_id, '_petitioner_cc_emails', $final_cc_emails);
         }
@@ -225,7 +238,7 @@ class AV_Petitioner_Admin_Edit_UI
         }
     }
 
-    public function sanitize_cc_emails($emails = '')
+    public function sanitize_emails($emails = '')
     {
         // Split the string into an array using commas
         $emails = explode(',', $emails);

@@ -3,8 +3,8 @@ Contributors: avoytenko
 Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
-Tested up to: 6.6.2
-Stable Tag: 0.1.4
+Tested up to: 6.7.1
+Stable Tag: 0.2.0
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,10 +13,12 @@ Create and manage petitions with Petitioner, send them to the target email, and 
 
 == Description ==
 
+[Plugin homepage](https://avoy.me/petitioner).
 Petitioner is a WordPress plugin that allows you to create petitions and send them to the target email.
 
 Features:
 - Unlimited petitions: Create and manage an unlimited number of petitions.
+- Color customizations & custom CSS options
 - WYSIWYG editor: Easily edit petition letters using a modern WYSIWYG editor.
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
 - Email functionality: Automatically send petition letters to representatives via email.
@@ -35,11 +37,15 @@ Create your first petition under Petitioner -> Add new. Once you do that, you ca
 
 = How do I customize the styles? =
 
-There is a custom css field available under Petitioner -> Settings
+You can customize your petitions under Petitioner -> Settings. You can change the colors, conditionally display certain fields, and add custom CSS.
 
 = How do I see and export the submissions? =
 
 Simply open the edit page for the petition in question and you will see a table with all of the submissions. There will also be a button to export.
+
+= Can I request features? =
+
+Absolutely! Feel free to reach out through [this contact form](https://avoy.me/contact)
 
 == Screenshots ==
 
@@ -49,6 +55,11 @@ Simply open the edit page for the petition in question and you will see a table 
 4. Petition edit page
 
 == Changelog ==
+
+= 0.2.0 =
+* Added the country field
+* Improved checkbox styles
+* Added color customizer to the settings page
 
 = 0.1.4 =
 * Improved readme & docs
