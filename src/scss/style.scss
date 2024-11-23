@@ -75,7 +75,6 @@ $spacer-xl: 32px;
       padding: var(--ptr-input-spacing-y) var(--ptr-input-spacing-x);
       border-style: solid;
       font-size: var(--ptr-label-font-size);
-      padding: 0px;
 
       &:focus {
         border-color: var(--ptr-input-border-color-active);
@@ -139,7 +138,8 @@ $spacer-xl: 32px;
         display: inline-block;
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
-
+        padding: 0px;
+        
         &:checked {
           background-color: var(--ptr-color-primary);
           border-color: var(--ptr-color-primary);
