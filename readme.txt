@@ -56,6 +56,11 @@ Absolutely! Feel free to reach out through [this contact form](https://avoy.me/c
 
 == Changelog ==
 
+= 0.2.0 =
+* Added the country field
+* Improved checkbox styles
+* Added color customizer to the settings page
+
 = 0.1.4 =
 * Improved readme & docs
 * Improved asset enqueuing
