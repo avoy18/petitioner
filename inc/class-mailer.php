@@ -32,7 +32,7 @@ class AV_Petitioner_Mailer
 
         $this->domain = wp_parse_url(home_url(), PHP_URL_HOST);
 
-        if($this->domain === 'localhost'){
+        if ($this->domain === 'localhost') {
             $this->domain = 'localhost.com';
         }
     }
@@ -114,6 +114,15 @@ class AV_Petitioner_Mailer
         }
 
         // Send the email
+        $the_args = [
+            'target_email'  => $this->target_email,
+            'subject'       => $subject,
+            'message'       => $message,
+            'headers'       => $headers
+        ];
+
+        do_action('petitioner_before_send_rep_email', $the_args);
+        
         return wp_mail($this->target_email, $subject, $message, $headers);
     }
 
