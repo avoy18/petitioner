@@ -61,6 +61,7 @@ class AV_Petitioner_Submissions
         $form_id = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
         $fname   = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
         $lname   = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
+        $country = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
         $bcc     = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
 
         // todo: add these
@@ -88,6 +89,7 @@ class AV_Petitioner_Submissions
             'email'        => $email,
             'fname'        => $fname,
             'lname'        => $lname,
+            'country'      => $country,
             'bcc_yourself' => $bcc ? 1 : 0,
             'newsletter'   => $newsletter_opt_in ? 1 : 0,
             'hide_name'    => $hide_name ? 1 : 0,
@@ -103,6 +105,7 @@ class AV_Petitioner_Submissions
                 '%s', // email
                 '%s', // fname
                 '%s', // lname
+                '%s', // country
                 '%d', // bcc_yourself
                 '%d', // newsletter
                 '%d', // hide_name
@@ -117,6 +120,7 @@ class AV_Petitioner_Submissions
             'target_cc_emails' => get_post_meta($form_id, '_petitioner_cc_emails', true),
             'user_email' => $email,
             'user_name' => $fname . ' ' . $lname,
+            'user_country' => $country,
             'letter' => get_post_meta($form_id, '_petitioner_letter', true),
             'subject' => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc' => $bcc,

@@ -61,6 +61,7 @@ export default class AV_Petitioner_Submissions_Table {
                         <td>${item.email}</td>
                         <td>${item.fname}</td>
                         <td>${item.lname}</td>
+                        <td>${item.country}</td>
                         <td>${item.bcc_yourself ? 'yes' : 'no'}</td>
                         <td>${item.submitted_at}</td>
                     </tr>`;
@@ -74,6 +75,7 @@ export default class AV_Petitioner_Submissions_Table {
                     <th>Email</th>
                     <th>First name</th>
                     <th>Last name</th>
+                    <th>Country</th>
                     <th>BCC</th>
                     <th>Submitted at</th>
                 </tr>
