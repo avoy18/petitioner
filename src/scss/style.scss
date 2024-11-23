@@ -75,6 +75,7 @@ $spacer-xl: 32px;
       padding: var(--ptr-input-spacing-y) var(--ptr-input-spacing-x);
       border-style: solid;
       font-size: var(--ptr-label-font-size);
+      padding: 0px;
 
       &:focus {
         border-color: var(--ptr-input-border-color-active);
