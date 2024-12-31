@@ -141,7 +141,7 @@ class AV_Petitioner_Setup
             $default_colors .= '--ptr-color-grey: ' . $grey_color . '!important;';
         }
 
-        if(!empty($default_colors)){
+        if (!empty($default_colors)) {
             $custom_css .= '.petitioner {' . $default_colors . ' };';
         }
 
@@ -155,8 +155,22 @@ class AV_Petitioner_Setup
      */
     public function enqueue_admin_assets()
     {
+        $screen = get_current_screen();
+
+        // Check if on the edit or add new page for 'petitioner_petition' post type
+        if ($screen && $screen->base === 'post' && $screen->post_type === 'petitioner-petition') {
+            // Enqueue scripts
+            wp_enqueue_script('wp-blocks');
+            wp_enqueue_script('wp-block-editor');
+            wp_enqueue_script('wp-element');
+            wp_enqueue_script('wp-components');
+
+            // Enqueue styles
+            wp_enqueue_style('wp-components');
+        }
+
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
-        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
+        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array('wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components'), AV_PETITIONER_PLUGIN_VERSION, true);
     }
 
     /**

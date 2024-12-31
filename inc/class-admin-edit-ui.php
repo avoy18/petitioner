@@ -35,74 +35,45 @@ class AV_Petitioner_Admin_Edit_UI
     public function render_form_fields($post)
     {
         // Retrieve current meta field values
-        $petitioner_title = get_post_meta($post->ID, '_petitioner_title', true);
-        $send_to_representative = get_post_meta($post->ID, '_petitioner_send_to_representative', true);
-        $petitioner_email = get_post_meta($post->ID, '_petitioner_email', true);
-        $petitioner_cc_emails = get_post_meta($post->ID, '_petitioner_cc_emails', true);
-        $petitioner_goal = get_post_meta($post->ID, '_petitioner_goal', true);
-        $petitioner_letter = get_post_meta($post->ID, '_petitioner_letter', true);
-        $petitioner_subject = get_post_meta($post->ID, '_petitioner_subject', true);
-        $petitioner_show_country = get_post_meta($post->ID, '_petitioner_show_country', true);
+        $petitioner_title               = get_post_meta($post->ID, '_petitioner_title', true);
+        $send_to_representative         = get_post_meta($post->ID, '_petitioner_send_to_representative', true);
+        $petitioner_email               = get_post_meta($post->ID, '_petitioner_email', true);
+        $petitioner_cc_emails           = get_post_meta($post->ID, '_petitioner_cc_emails', true);
+        $petitioner_goal                = get_post_meta($post->ID, '_petitioner_goal', true);
+        $petitioner_letter              = get_post_meta($post->ID, '_petitioner_letter', true);
+        $petitioner_subject             = get_post_meta($post->ID, '_petitioner_subject', true);
+        $petitioner_show_country        = get_post_meta($post->ID, '_petitioner_show_country', true);
+        $petitioner_require_approval    = get_post_meta($post->ID, '_petitioner_require_approval', true);
         // Output nonce for verification
         wp_nonce_field('save_petition_details', 'petitioner_details_nonce');
 
+        $petitioner_info = [
+            'form_id'                    => $post->ID,
+            'title'                      => esc_attr($petitioner_title),
+            'send_to_representative'     => (bool) $send_to_representative,
+            'email'                      => esc_attr($petitioner_email),
+            'cc_emails'                  => esc_attr($petitioner_cc_emails),
+            'goal'                       => esc_attr($petitioner_goal),
+            'show_country'               => (bool) $petitioner_show_country,
+            'subject'                    => esc_attr($petitioner_subject),
+            'require_approval'           => (bool) $petitioner_require_approval,
+            'export_url'                 => esc_attr(admin_url('admin-post.php') . '?action=petitioner_export_csv&form_id=' . $post->ID)
+        ];
+
         // Display form fields
 ?>
-        <div class="petitioner-admin__form">
+        <div class="petitioner-admin__form ptr-is-loading">
 
-            <?php if ($post->ID): ?>
-                <p>
-                    <label for="petitioner_shortcode">Your petition shortcode:</label>
-                    <input disabled type="text" name="petitioner_shortcode" id="petitioner_shortcode" value='[petitioner-form id="<?php echo esc_attr($post->ID) ?>"]'
-                        class="widefat">
-                </p>
-            <?php endif; ?>
+            <div data-av-ptr-info='<?php echo wp_json_encode($petitioner_info) ?>' id="petitioner-admin-form"></div>
 
-            <p>
-                <label for="petitioner_title">Petition title *:</label>
-                <input type="text" required name="petitioner_title" id="petitioner_title" value="<?php echo esc_attr($petitioner_title); ?>"
-                    class="widefat">
-            </p>
-
-            <p>
-                <input type="checkbox" name="petitioner_send_to_representative" id="petitioner_send_to_representative" <?php checked(1, $send_to_representative, true); ?>
-                    class="widefat">
-                <label for="petitioner_send_to_representative">Send this email to representative?</label>
-            </p>
-            <p>
-                <label for="petitioner_email">Petition target email:</label>
-                <input type="email" name="petitioner_email" id="petitioner_email" value="<?php echo esc_attr($petitioner_email); ?>"
-                class="widefat">
-            </p>
-            <p>
-                <label for="petitioner_cc_emails">Petition CC emails <small>(can have multiple - separated by comma)</small>:</label>
-                <input type="text" name="petitioner_cc_emails" id="petitioner_cc_emails" value="<?php echo esc_attr($petitioner_cc_emails); ?>"
-                class="widefat">
-            </p>
-            <p>
-                <label for="petitioner_goal">Signature goal *:</label>
-                <input type="number" required name="petitioner_goal" id="petitioner_goal" value="<?php echo esc_attr($petitioner_goal); ?>"
-                class="widefat">
-            </p>
-            <p>
-                <input type="checkbox" name="petitioner_show_country" id="petitioner_show_country" <?php checked(1, $petitioner_show_country, true); ?>
-                    class="widefat">
-                <label for="petitioner_show_country">Show country field?</label>
-            </p>
-            <p>
-                <label for="petitioner_subject">Petition subject *:</label>
-                <input type="text" required name="petitioner_subject" id="petitioner_subject" value="<?php echo esc_attr($petitioner_subject); ?>"
-                class="widefat">
-            </p>
-            
             <h3 for="petitioner_letter">Petition letter:</h3>
             <?php
             // Load existing content (if any)
             $content = $petitioner_letter;
-            
+
             // Unique ID for the editor
             $editor_id = 'petitioner_letter';
-            
+
             // Settings for the editor
             $settings = array(
                 'textarea_name' => 'petitioner_letter',
@@ -126,23 +97,9 @@ class AV_Petitioner_Admin_Edit_UI
 
     public function render_submissions($post)
     {
-
-        $submission_settings = array(
-            'formID' => $post->ID,
-        );
     ?>
 
-        <div id="AV_Petitioner_Submissions" class="petitioner-admin__submissions" data-petitioner-submissions='<?php echo wp_json_encode($submission_settings) ?>'>
-
-            <h3>Submissions</h3>
-
-            <a href="<?php echo esc_attr(admin_url('admin-post.php') . '?action=petitioner_export_csv&form_id=' . $post->ID); ?>" class="button button-primary">Export Submissions as CSV</a>
-
-            <div class="petitioner-admin__entries">
-            </div>
-
-            <div class="petitioner-admin__pagination"></div>
-        </div>
+        <div id="petitioner-submissions-container"></div>
 
     <?php
     }
@@ -188,14 +145,15 @@ class AV_Petitioner_Admin_Edit_UI
             return;
         }
 
-        $petitioner_title           = isset($_POST['petitioner_title']) ? sanitize_text_field(wp_unslash($_POST['petitioner_title'])) : '';
-        $send_to_representative     = isset($_POST['petitioner_send_to_representative']) ? sanitize_text_field(wp_unslash($_POST['petitioner_send_to_representative'])) : '';
-        $petitioner_email          = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
-        $petitioner_cc_emails       = isset($_POST['petitioner_cc_emails']) ? sanitize_text_field(wp_unslash($_POST['petitioner_cc_emails'])) : '';
-        $petitioner_goal            = isset($_POST['petitioner_goal']) ? intval(wp_unslash($_POST['petitioner_goal'])) : 0;
-        $petitioner_subject         = isset($_POST['petitioner_subject']) ? sanitize_text_field(wp_unslash($_POST['petitioner_subject'])) : '';
-        $petitioner_letter          = isset($_POST['petitioner_letter']) ? wp_kses_post(wp_unslash($_POST['petitioner_letter'])) : '';
-        $petitioner_show_country    = isset($_POST['petitioner_show_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_show_country'])) : '';
+        $petitioner_title                   = isset($_POST['petitioner_title']) ? sanitize_text_field(wp_unslash($_POST['petitioner_title'])) : '';
+        $send_to_representative             = isset($_POST['petitioner_send_to_representative']) ? sanitize_text_field(wp_unslash($_POST['petitioner_send_to_representative'])) : '';
+        $petitioner_email                   = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
+        $petitioner_cc_emails               = isset($_POST['petitioner_cc_emails']) ? sanitize_text_field(wp_unslash($_POST['petitioner_cc_emails'])) : '';
+        $petitioner_goal                    = isset($_POST['petitioner_goal']) ? intval(wp_unslash($_POST['petitioner_goal'])) : 0;
+        $petitioner_subject                 = isset($_POST['petitioner_subject']) ? sanitize_text_field(wp_unslash($_POST['petitioner_subject'])) : '';
+        $petitioner_letter                  = isset($_POST['petitioner_letter']) ? wp_kses_post(wp_unslash($_POST['petitioner_letter'])) : '';
+        $petitioner_show_country            = isset($_POST['petitioner_show_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_show_country'])) : '';
+        $petitioner_require_approval       = isset($_POST['petitioner_require_approval']) ? sanitize_text_field(wp_unslash($_POST['petitioner_require_approval'])) : '';
 
         if (!empty($petitioner_title)) {
             update_post_meta($post_id, '_petitioner_title', sanitize_text_field($petitioner_title));
@@ -231,6 +189,12 @@ class AV_Petitioner_Admin_Edit_UI
         // Sanitize and save the subject
         if (!empty($petitioner_subject)) {
             update_post_meta($post_id, '_petitioner_subject', sanitize_text_field($petitioner_subject));
+        }
+
+        if (!empty($petitioner_require_approval) && $petitioner_require_approval == 'on') {
+            update_post_meta($post_id, '_petitioner_require_approval', 1);
+        } else {
+            update_post_meta($post_id, '_petitioner_require_approval', 0);
         }
 
         if (!empty($petitioner_letter)) {

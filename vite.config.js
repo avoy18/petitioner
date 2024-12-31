@@ -44,17 +44,24 @@ module.exports = defineConfig({
   ],
   build: {
     rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress "Module level directives cause errors when bundled" warnings
+        if (warning.code === "MODULE_LEVEL_DIRECTIVE") {
+          return;
+        }
+        warn(warning);
+      },
       external: [
         '@ariakit/react-core',
         '@ariakit/core',
-        '@wordpress/blocks',
-        '@wordpress/element',
+        // '@wordpress/blocks',
+        // '@wordpress/element',
         '@wordpress/i18n',
         '@wordpress/editor'
       ],
       input: {
         main: path.resolve(__dirname, "src/js/main.js"),
-        admin: path.resolve(__dirname, "src/js/admin.js"),
+        admin: path.resolve(__dirname, "src/js/admin.jsx"),
       },
       output: {
         globals: {

@@ -29,6 +29,7 @@ class AV_Petitioner_Submissions
             newsletter tinyint(1) DEFAULT 0,
             hide_name tinyint(1) DEFAULT 0,
             accept_tos tinyint(1) DEFAULT 0,
+            approval_status varchar(255) DEFAULT 'approved',
             submitted_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id),
             KEY form_id (form_id)

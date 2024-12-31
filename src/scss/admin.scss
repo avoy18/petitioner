@@ -2,4 +2,10 @@
     #edit-slug-box, #wp-admin-bar-view {
         display: none;
     }
+
+    .ptr-is-loading{
+        opacity: 0;
+        visibility: hidden;
+    }
 }
+
