@@ -52,12 +52,12 @@ module.exports = defineConfig({
         warn(warning);
       },
       external: [
-        '@ariakit/react-core',
-        '@ariakit/core',
+        // '@ariakit/react-core',
+        // '@ariakit/core',
         // '@wordpress/blocks',
         // '@wordpress/element',
-        '@wordpress/i18n',
-        '@wordpress/editor'
+        // '@wordpress/i18n',
+        // '@wordpress/editor'
       ],
       input: {
         main: path.resolve(__dirname, "src/js/main.js"),

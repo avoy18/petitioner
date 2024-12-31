@@ -29,7 +29,7 @@ class AV_Petitioner_Submissions
             newsletter tinyint(1) DEFAULT 0,
             hide_name tinyint(1) DEFAULT 0,
             accept_tos tinyint(1) DEFAULT 0,
-            approval_status varchar(255) DEFAULT 'approved',
+            approval_status varchar(255) DEFAULT 'Confirmed',
             submitted_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id),
             KEY form_id (form_id)
@@ -58,12 +58,20 @@ class AV_Petitioner_Submissions
 
         global $wpdb;
 
-        $email   = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
-        $form_id = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
-        $fname   = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
-        $lname   = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
-        $country = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
-        $bcc     = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
+        $email                = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
+        $form_id              = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
+        $fname                = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
+        $lname                = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
+        $country              = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
+        $bcc                  = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
+        $require_approval     = get_post_meta($form_id, '_petitioner_require_approval', true);
+        $approval_status      = __('Confirmed', 'petitioner');
+
+        if ($require_approval) {
+            $default_approval_status = get_post_meta($form_id, '_petitioner_approval_state', true);
+            $approval_status = $default_approval_status;
+        }
+
 
         // todo: add these
         $hide_name = false;
@@ -86,16 +94,17 @@ class AV_Petitioner_Submissions
         }
 
         $data = array(
-            'form_id'      => $form_id,
-            'email'        => $email,
-            'fname'        => $fname,
-            'lname'        => $lname,
-            'country'      => $country,
-            'bcc_yourself' => $bcc ? 1 : 0,
-            'newsletter'   => $newsletter_opt_in ? 1 : 0,
-            'hide_name'    => $hide_name ? 1 : 0,
-            'accept_tos'   => $accept_tos ? 1 : 0,
-            'submitted_at' => current_time('mysql'),
+            'form_id'           => $form_id,
+            'email'             => $email,
+            'fname'             => $fname,
+            'lname'             => $lname,
+            'country'           => $country,
+            'bcc_yourself'      => $bcc ? 1 : 0,
+            'newsletter'        => $newsletter_opt_in ? 1 : 0,
+            'hide_name'         => $hide_name ? 1 : 0,
+            'accept_tos'        => $accept_tos ? 1 : 0,
+            'submitted_at'      => current_time('mysql'),
+            'approval_status'   => $approval_status,
         );
 
         $inserted = $wpdb->insert(
@@ -112,20 +121,20 @@ class AV_Petitioner_Submissions
                 '%d', // hide_name
                 '%d', // accept_tos
                 '%s', // submitted_at
+                '%s', // approval status
             )
         );
 
-
         $mailer_settings = array(
-            'target_email' => get_post_meta($form_id, '_petitioner_email', true),
-            'target_cc_emails' => get_post_meta($form_id, '_petitioner_cc_emails', true),
-            'user_email' => $email,
-            'user_name' => $fname . ' ' . $lname,
-            'user_country' => $country,
-            'letter' => get_post_meta($form_id, '_petitioner_letter', true),
-            'subject' => get_post_meta($form_id, '_petitioner_subject', true),
-            'bcc' => $bcc,
-            'send_to_representative' => get_post_meta($form_id, '_petitioner_send_to_representative', true),
+            'target_email'              => get_post_meta($form_id, '_petitioner_email', true),
+            'target_cc_emails'          => get_post_meta($form_id, '_petitioner_cc_emails', true),
+            'user_email'                => $email,
+            'user_name'                 => $fname . ' ' . $lname,
+            'user_country'              => $country,
+            'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
+            'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
+            'bcc'                       => $bcc,
+            'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
         );
 
         $mailer = new AV_Petitioner_Mailer($mailer_settings);
@@ -191,6 +200,71 @@ class AV_Petitioner_Submissions
         wp_die();
     }
 
+    public static function api_change_submission_status()
+    {
+        global $wpdb;
+
+        // Validate and sanitize inputs
+        $ids = isset($_POST['ids']) ? sanitize_text_field(wp_unslash($_POST['ids'])) : '';
+        $new_status = isset($_POST['status']) ? sanitize_text_field(wp_unslash($_POST['status'])) : '';
+
+        if (empty($ids) || empty($new_status)) {
+            wp_send_json_error(['message' => 'Invalid input. IDs and status are required.']);
+            return;
+        }
+
+        // Convert comma-separated IDs into an array
+        $ids_array = array_filter(array_map('intval', explode(',', $ids)));
+
+        if (empty($ids_array)) {
+            wp_send_json_error(['message' => 'Invalid ID list provided.']);
+            return;
+        }
+
+        // Prepare the placeholders for the IN clause
+        $placeholders = implode(',', array_fill(0, count($ids_array), '%d'));
+
+        // Update the status in the database
+        $table_name = $wpdb->prefix . 'av_petitioner_submissions'; // Adjust table name as needed
+        $updated_rows = $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE $table_name SET approval_status = %s WHERE id IN ($placeholders)",
+                array_merge([$new_status], $ids_array)
+            )
+        );
+
+        if ($updated_rows === false) {
+            wp_send_json_error(['message' => 'Database update failed.']);
+            return;
+        }
+
+        // Return success response
+        wp_send_json_success(['message' => 'Status updated successfully.', 'updated_rows' => $updated_rows]);
+    }
+
+    /**
+     * Update an existing notification.
+     *
+     * @param int $id
+     * @param array $fields
+     * @return bool|int
+     */
+    public static function update_notification($id, $name, $notification_type, $delivery_channels, $settings = [])
+    {
+        global $wpdb;
+
+
+        $data = array_merge([
+            'name' => sanitize_text_field($name),
+            'notification_type' => sanitize_text_field($notification_type),
+            'delivery_channels' => wp_json_encode($delivery_channels),
+        ], $settings);
+
+        do_action('monitori_save_notification');
+
+        return $wpdb->update($wpdb->prefix . 'monitori_notifications', $data, ['id' => absint($id)]);
+    }
+
     public static function api_petitioner_export_csv()
     {
         global $wpdb;
@@ -246,14 +320,27 @@ class AV_Petitioner_Submissions
     {
         global $wpdb;
 
+        $require_approval = get_post_meta($this->form_id, '_petitioner_require_approval', true);
+
+        $final_status_to_get = 'Confirmed';
+
+        // If require approval is enabled and the default approval status is 'Declined', count the number of declined submissions
+        if ($require_approval) {
+            $default_approval_status = get_post_meta($this->form_id, '_petitioner_approval_state', true);
+
+            // only return approved if the default approval status is 'Declined'
+            if ($default_approval_status === 'Declined') {
+                $final_status_to_get = 'Declined';
+            }
+        }
+
         // Get the total count of submissions for the form
-        $total_submissions = $wpdb->get_var(
+        return $wpdb->get_var(
             $wpdb->prepare(
-                'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
-                $this->form_id
+                "SELECT COUNT(*) FROM {$wpdb->prefix}av_petitioner_submissions WHERE form_id = %d AND approval_status = %s",
+                $this->form_id,
+                $final_status_to_get
             )
         );
-
-        return $total_submissions;
     }
 }

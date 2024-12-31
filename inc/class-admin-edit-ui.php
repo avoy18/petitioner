@@ -44,6 +44,7 @@ class AV_Petitioner_Admin_Edit_UI
         $petitioner_subject             = get_post_meta($post->ID, '_petitioner_subject', true);
         $petitioner_show_country        = get_post_meta($post->ID, '_petitioner_show_country', true);
         $petitioner_require_approval    = get_post_meta($post->ID, '_petitioner_require_approval', true);
+        $petitioner_approval_state      = get_post_meta($post->ID, '_petitioner_approval_state', true);
         // Output nonce for verification
         wp_nonce_field('save_petition_details', 'petitioner_details_nonce');
 
@@ -57,6 +58,7 @@ class AV_Petitioner_Admin_Edit_UI
             'show_country'               => (bool) $petitioner_show_country,
             'subject'                    => esc_attr($petitioner_subject),
             'require_approval'           => (bool) $petitioner_require_approval,
+            'approval_state'             => esc_attr($petitioner_approval_state),
             'export_url'                 => esc_attr(admin_url('admin-post.php') . '?action=petitioner_export_csv&form_id=' . $post->ID)
         ];
 
@@ -153,7 +155,8 @@ class AV_Petitioner_Admin_Edit_UI
         $petitioner_subject                 = isset($_POST['petitioner_subject']) ? sanitize_text_field(wp_unslash($_POST['petitioner_subject'])) : '';
         $petitioner_letter                  = isset($_POST['petitioner_letter']) ? wp_kses_post(wp_unslash($_POST['petitioner_letter'])) : '';
         $petitioner_show_country            = isset($_POST['petitioner_show_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_show_country'])) : '';
-        $petitioner_require_approval       = isset($_POST['petitioner_require_approval']) ? sanitize_text_field(wp_unslash($_POST['petitioner_require_approval'])) : '';
+        $petitioner_require_approval        = isset($_POST['petitioner_require_approval']) ? sanitize_text_field(wp_unslash($_POST['petitioner_require_approval'])) : '';
+        $petitioner_approval_state          = isset($_POST['petitioner_approval_state']) ? sanitize_text_field(wp_unslash($_POST['petitioner_approval_state'])) : 'approved';
 
         if (!empty($petitioner_title)) {
             update_post_meta($post_id, '_petitioner_title', sanitize_text_field($petitioner_title));
@@ -190,11 +193,15 @@ class AV_Petitioner_Admin_Edit_UI
         if (!empty($petitioner_subject)) {
             update_post_meta($post_id, '_petitioner_subject', sanitize_text_field($petitioner_subject));
         }
-
+        
         if (!empty($petitioner_require_approval) && $petitioner_require_approval == 'on') {
             update_post_meta($post_id, '_petitioner_require_approval', 1);
         } else {
             update_post_meta($post_id, '_petitioner_require_approval', 0);
+        }
+
+        if (!empty($petitioner_approval_state)) {
+            update_post_meta($post_id, '_petitioner_approval_state', sanitize_text_field($petitioner_approval_state));
         }
 
         if (!empty($petitioner_letter)) {
