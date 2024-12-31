@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.7.1
-Stable Tag: 0.2.1
+Stable Tag: 0.2.2
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,6 +18,7 @@ Petitioner is a WordPress plugin that allows you to create petitions and send th
 
 Features:
 - Unlimited petitions: Create and manage an unlimited number of petitions.
+- Ability to approve/deny petitions and set the default approval behavior (approved by default or declined)
 - Color customizations & custom CSS options
 - WYSIWYG editor: Easily edit petition letters using a modern WYSIWYG editor.
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
@@ -55,6 +56,10 @@ Absolutely! Feel free to reach out through [this contact form](https://avoy.me/c
 4. Petition edit page
 
 == Changelog ==
+
+= 0.2.2 =
+* Added the ability to approve/deny petitions
+* Reworked the edit fields & submissions UI
 
 = 0.2.0 =
 * Added the country field
