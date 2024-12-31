@@ -84,7 +84,7 @@ export default function Submissions() {
                     method: 'POST',
                     body: finalData
                 });
-                
+
                 const data = await response.json();
 
                 if (data.success) {
@@ -120,14 +120,33 @@ export default function Submissions() {
         </div>
     }
 
+    const SubmissionList = () => {
+        return <tbody>
+            {submissions.map((item) => (
+                <tr key={item.id}>
+                    <td>{item.email}</td>
+                    <td>{item.fname}</td>
+                    <td>{item.lname}</td>
+                    <td>{item.country}</td>
+                    <td><small>{item.bcc_yourself ? 'yes' : 'no'}</small></td>
+                    <td><small>{item.submitted_at}</small></td>
+                    {showApproval && <td>
+                        <ApprovalStatus id={item.id} currentStatus={item.approval_status} />
+                    </td>}
+                </tr>
+            ))}
+        </tbody>
+    }
+
     return (
         <div id="AV_Petitioner_Submissions">
             <h3>Submissions</h3>
+
             <div className="petitioner-admin__entries">
                 <p>Total: {total}</p>
                 <table className="wp-list-table widefat fixed striped table-view-list posts">
                     <thead>
-                        <tr>
+                        {submissions.length !== 0 ? <tr>
                             <th>Email</th>
                             <th>First Name</th>
                             <th>Last Name</th>
@@ -135,21 +154,11 @@ export default function Submissions() {
                             <th style={{ width: '30px' }}>BCC</th>
                             <th>Submitted At</th>
                             {showApproval && <th style={{ width: '150px' }}>Status</th>}
-                        </tr>
+                        </tr> : <tr></tr>}
                     </thead>
-                    <tbody>{submissions && submissions.map((item) => (
-                        <tr key={item.id}>
-                            <td>{item.email}</td>
-                            <td>{item.fname}</td>
-                            <td>{item.lname}</td>
-                            <td>{item.country}</td>
-                            <td><small>{item.bcc_yourself ? 'yes' : 'no'}</small></td>
-                            <td><small>{item.submitted_at}</small></td>
-                            {showApproval && <td>
-                                <ApprovalStatus id={item.id} currentStatus={item.approval_status} />
-                            </td>}
-                        </tr>
-                    ))}</tbody>
+
+                    {submissions.length === 0 && <td style={{ width: '100%', textAlign: 'center' }}>Your submissions will show up here</td>}
+                    {submissions.length !== 0 && <SubmissionList />}
                 </table>
             </div>
             <br />
