@@ -13,4 +13,12 @@
 		display: flex;
 		gap: 4px;
 	}
+
+	.petitioner-tab {
+		display: none;
+	}
+
+	.petitioner-tab.active {
+		display: block;
+	}
 }

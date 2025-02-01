@@ -5,9 +5,11 @@ import {
 	SelectControl,
 	TabPanel,
 	Dashicon,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 import Submissions from './Submissions';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const petitionerLetter = document.getElementById('petitionerLetterArea');
 
@@ -24,6 +26,8 @@ export default function FormFields(props) {
 		approval_state = 'approved',
 	} = window.petitionerData;
 
+	const [activeTab, setActiveTab] = useState('petition-details');
+
 	const [formState, setFormState] = useState({
 		title,
 		send_to_representative,
@@ -35,6 +39,10 @@ export default function FormFields(props) {
 		require_approval,
 		approval_state,
 	});
+
+	const updateActiveTab = useCallback((tabName) => {
+		setActiveTab(tabName);
+	}, []);
 
 	// Utility function to update state
 	const updateFormState = (key, value) => {
@@ -77,6 +85,7 @@ export default function FormFields(props) {
 	];
 
 	const handleTabSelect = (tabName) => {
+		updateActiveTab(tabName);
 		if (petitionerLetter === null) return;
 
 		petitionerLetter.style.display =
@@ -86,222 +95,205 @@ export default function FormFields(props) {
 	return (
 		<>
 			<TabPanel onSelect={handleTabSelect} tabs={tabs}>
-				{(tab) => {
-					return (
-						<div
-							className={`petitioner-tab-content ${tab.className}`}
-						>
-							{tab.name === 'petition-details' && (
-								<>
-									<p>
-										<TextControl
-											style={{ width: '100%' }}
-											required
-											label="Petition Title *"
-											value={formState.title}
-											name="petitioner_title"
-											id="petitioner_title"
-											onChange={(value) =>
-												updateFormState('title', value)
-											}
-										/>
-									</p>
-
-									<p>
-										<input
-											checked={
-												formState.send_to_representative
-											}
-											type="checkbox"
-											name="petitioner_send_to_representative"
-											id="petitioner_send_to_representative"
-											className="widefat"
-											onChange={(e) =>
-												updateFormState(
-													'send_to_representative',
-													e.target.checked
-												)
-											}
-										/>
-										<label htmlFor="petitioner_send_to_representative">
-											Send this email to representative?
-										</label>
-									</p>
-
-									<p>
-										<TextControl
-											style={{ width: '100%' }}
-											required
-											type="email"
-											label="Petition target email *"
-											value={formState.email}
-											name="petitioner_email"
-											id="petitioner_email"
-											onChange={(value) =>
-												updateFormState('email', value)
-											}
-										/>
-									</p>
-
-									<p>
-										<TextControl
-											style={{ width: '100%' }}
-											type="text"
-											label="Petition CC emails"
-											value={formState.cc_emails}
-											help="(can have multiple - separated by comma)"
-											name="petitioner_cc_emails"
-											id="petitioner_cc_emails"
-											onChange={(value) =>
-												updateFormState(
-													'cc_emails',
-													value
-												)
-											}
-										/>
-									</p>
-
-									<p>
-										<input
-											checked={formState.show_country}
-											type="checkbox"
-											name="petitioner_show_country"
-											id="petitioner_show_country"
-											className="widefat"
-											onChange={(e) =>
-												updateFormState(
-													'show_country',
-													e.target.checked
-												)
-											}
-										/>
-										<label htmlFor="petitioner_show_country">
-											Show country field?
-										</label>
-									</p>
-
-									<p>
-										<TextControl
-											style={{ width: '100%' }}
-											type="text"
-											required
-											label="Petition subject *"
-											value={formState.subject}
-											name="petitioner_subject"
-											id="petitioner_subject"
-											onChange={(value) =>
-												updateFormState(
-													'subject',
-													value
-												)
-											}
-										/>
-									</p>
-								</>
-							)}
-							{tab.name === 'form-settings' && (
-								<>
-									<p>
-										<TextControl
-											style={{ width: '100%' }}
-											required
-											type="number"
-											label="Signature goal *"
-											value={formState.goal}
-											name="petitioner_goal"
-											id="petitioner_goal"
-											onChange={(value) =>
-												updateFormState('goal', value)
-											}
-										/>
-									</p>
-
-									<p>
-										<input
-											checked={formState.require_approval}
-											type="checkbox"
-											name="petitioner_require_approval"
-											id="petitioner_require_approval"
-											className="widefat"
-											onChange={(e) => {
-												const isChecked =
-													e.target.checked;
-												updateFormState(
-													'require_approval',
-													isChecked
-												);
-
-												window.petitionerData.require_approval =
-													isChecked;
-												// Trigger custom event
-												const evt = new CustomEvent(
-													'onPtrApprovalChange',
-													{
-														detail: {
-															requireApproval:
-																isChecked,
-														},
-													}
-												);
-												window.dispatchEvent(evt);
-											}}
-										/>
-										<label htmlFor="petitioner_require_approval">
-											Require approval for submissions?
-										</label>
-									</p>
-
-									{formState.require_approval && (
-										<p>
-											<SelectControl
-												value={formState.approval_state}
-												id="petitioner_approval_state"
-												name="petitioner_approval_state"
-												label="Default approval state"
-												options={[
-													{
-														value: 'Confirmed',
-														label: 'Confirmed by default',
-													},
-													{
-														value: 'Declined',
-														label: 'Needs approval by default',
-													},
-												]}
-												onChange={(value) => {
-													updateFormState(
-														'approval_state',
-														value
-													);
-
-													window.petitionerData.approval_state =
-														value;
-													// Trigger custom event
-													const evt = new CustomEvent(
-														'onPtrApprovalChange',
-														{
-															detail: {
-																approvalState:
-																	value,
-															},
-														}
-													);
-													window.dispatchEvent(evt);
-												}}
-											/>
-										</p>
-									)}
-								</>
-							)}
-							{tab.name === 'submissions' && (
-								<Submissions
-									formID={window.petitionerData.form_id}
-								/>
-							)}
-						</div>
-					);
-				}}
+				{(tab) => <></>}
 			</TabPanel>
+
+			<div className={`petitioner-tab-content`}>
+				<div
+					className={`petitioner-tab petitioner-tab ${activeTab === 'petition-details' ? 'active' : ''}`}
+				>
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							required
+							label="Petition Title *"
+							value={formState.title}
+							name="petitioner_title"
+							id="petitioner_title"
+							onChange={(value) =>
+								updateFormState('title', value)
+							}
+						/>
+					</p>
+
+					<p>
+						<input
+							checked={formState.send_to_representative}
+							type="checkbox"
+							name="petitioner_send_to_representative"
+							id="petitioner_send_to_representative"
+							className="widefat"
+							onChange={(e) =>
+								updateFormState(
+									'send_to_representative',
+									e.target.checked
+								)
+							}
+						/>
+						<label htmlFor="petitioner_send_to_representative">
+							Send this email to representative?
+						</label>
+					</p>
+
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							required
+							type="text"
+							label="Petition target email *"
+							value={formState.email}
+							name="petitioner_email"
+							id="petitioner_email"
+							onChange={(value) =>
+								updateFormState('email', value)
+							}
+						/>
+					</p>
+
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							type="text"
+							label="Petition CC emails"
+							value={formState.cc_emails}
+							help="(can have multiple - separated by comma)"
+							name="petitioner_cc_emails"
+							id="petitioner_cc_emails"
+							onChange={(value) =>
+								updateFormState('cc_emails', value)
+							}
+						/>
+					</p>
+
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							type="text"
+							required
+							label="Petition subject *"
+							value={formState.subject}
+							name="petitioner_subject"
+							id="petitioner_subject"
+							onChange={(value) =>
+								updateFormState('subject', value)
+							}
+						/>
+					</p>
+				</div>
+				<div
+					className={`petitioner-tab petitioner-tab ${activeTab === 'form-settings' ? 'active' : ''}`}
+				>
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							required
+							type="number"
+							label="Signature goal *"
+							value={formState.goal}
+							name="petitioner_goal"
+							id="petitioner_goal"
+							help="Select your target submission number. You can disable this in the general settings"
+							onChange={(value) => updateFormState('goal', value)}
+						/>
+					</p>
+
+					<p>
+						<input
+							checked={formState.show_country}
+							type="checkbox"
+							name="petitioner_show_country"
+							id="petitioner_show_country"
+							className="widefat"
+							onChange={(e) =>
+								updateFormState(
+									'show_country',
+									e.target.checked
+								)
+							}
+						/>
+						<label htmlFor="petitioner_show_country">
+							Show country field?
+						</label>
+					</p>
+
+					<p>
+						<input
+							checked={formState.require_approval}
+							type="checkbox"
+							name="petitioner_require_approval"
+							id="petitioner_require_approval"
+							className="widefat"
+							onChange={(e) => {
+								const isChecked = e.target.checked;
+								updateFormState('require_approval', isChecked);
+
+								window.petitionerData.require_approval =
+									isChecked;
+								// Trigger custom event
+								const evt = new CustomEvent(
+									'onPtrApprovalChange',
+									{
+										detail: {
+											requireApproval: isChecked,
+										},
+									}
+								);
+								window.dispatchEvent(evt);
+							}}
+						/>
+						<label htmlFor="petitioner_require_approval">
+							Require approval for submissions?
+						</label>
+						<br />
+						<small>
+							When enabled, submissions will be saved as drafts
+							and will require approval before being published.
+						</small>
+					</p>
+
+					{formState.require_approval && (
+						<p>
+							<SelectControl
+								value={formState.approval_state}
+								id="petitioner_approval_state"
+								name="petitioner_approval_state"
+								label="Default approval state"
+								options={[
+									{
+										value: 'Confirmed',
+										label: 'Confirmed by default',
+									},
+									{
+										value: 'Declined',
+										label: 'Needs approval by default',
+									},
+								]}
+								onChange={(value) => {
+									updateFormState('approval_state', value);
+
+									window.petitionerData.approval_state =
+										value;
+									// Trigger custom event
+									const evt = new CustomEvent(
+										'onPtrApprovalChange',
+										{
+											detail: {
+												approvalState: value,
+											},
+										}
+									);
+									window.dispatchEvent(evt);
+								}}
+							/>
+						</p>
+					)}
+				</div>
+				<div
+					className={`petitioner-tab ${activeTab === 'submissions' ? 'active' : ''}`}
+				>
+					<Submissions formID={window.petitionerData.form_id} />
+				</div>
+			</div>
 		</>
 	);
 }
