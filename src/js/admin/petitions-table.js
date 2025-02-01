@@ -64,6 +64,7 @@ export default class AV_Petitioner_Submissions_Table {
                         <td>${item.country}</td>
                         <td>${item.bcc_yourself ? 'yes' : 'no'}</td>
                         <td>${item.submitted_at}</td>
+                        <td>Approved</td>
                     </tr>`;
         }).join('');
 
@@ -78,6 +79,7 @@ export default class AV_Petitioner_Submissions_Table {
                     <th>Country</th>
                     <th>BCC</th>
                     <th>Submitted at</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
