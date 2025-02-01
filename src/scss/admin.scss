@@ -1,11 +1,16 @@
 .wp-admin.post-type-petitioner-petition {
-    #edit-slug-box, #wp-admin-bar-view {
-        display: none;
-    }
+	#edit-slug-box,
+	#wp-admin-bar-view {
+		display: none;
+	}
 
-    .ptr-is-loading{
-        opacity: 0;
-        visibility: hidden;
-    }
+	.ptr-is-loading {
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	.petition-tablink.components-tab-panel__tabs-item {
+		display: flex;
+		gap: 4px;
+	}
 }
-
