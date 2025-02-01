@@ -208,7 +208,7 @@ class AV_Petitioner_Admin_Edit_UI
             )
             : "";
         $petitioner_email = isset($_POST["petitioner_email"])
-            ? sanitize_email(wp_unslash($_POST["petitioner_email"]))
+            ? sanitize_text_field(wp_unslash($_POST["petitioner_email"]))
             : "";
         $petitioner_cc_emails = isset($_POST["petitioner_cc_emails"])
             ? sanitize_text_field(wp_unslash($_POST["petitioner_cc_emails"]))

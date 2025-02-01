@@ -142,6 +142,7 @@ export default function FormFields(props) {
 							type="text"
 							label="Petition target email *"
 							value={formState.email}
+							help="(can have multiple - separated by comma)"
 							name="petitioner_email"
 							id="petitioner_email"
 							onChange={(value) =>

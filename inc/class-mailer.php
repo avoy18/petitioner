@@ -122,7 +122,23 @@ class AV_Petitioner_Mailer
         ];
 
         do_action('petitioner_before_send_rep_email', $the_args);
-        
+
+        /**
+         * In case the email is sent to multiple recipients, 
+         * we need to split the emails and send them one by one
+         */
+        if (strpos($this->target_email, ',') !== false) {
+            $emails = explode(',', $this->target_email);
+            $success = true;
+            foreach ($emails as $email) {
+                $email = trim($email);
+                if (!wp_mail($email, $subject, $message, $headers)) {
+                    $success = false;
+                }
+            }
+            return $success;
+        }
+
         return wp_mail($this->target_email, $subject, $message, $headers);
     }
 
