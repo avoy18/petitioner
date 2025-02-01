@@ -56,8 +56,6 @@ class AV_Petitioner_Submissions
             wp_die();
         }
 
-        global $wpdb;
-
         $email                = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
         $form_id              = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
         $fname                = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
@@ -71,7 +69,20 @@ class AV_Petitioner_Submissions
             $default_approval_status = get_post_meta($form_id, '_petitioner_approval_state', true);
             $approval_status = $default_approval_status;
         }
+        $recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
 
+        if ($recaptcha_enabled) {
+            $recaptcha_response = isset($_POST['petitioner-g-recaptcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-g-recaptcha-response'])) : '';
+
+            $result = self::verify_recaptcha($recaptcha_response);
+            error_log(print_r($result, true));
+            if (!$result['success']) {
+                wp_send_json_error($result['message']);
+                wp_die();
+            }
+        }
+
+        global $wpdb;
 
         // todo: add these
         $hide_name = false;
@@ -342,5 +353,54 @@ class AV_Petitioner_Submissions
                 $final_status_to_get
             )
         );
+    }
+
+    /**
+     * Verify the reCAPTCHA response.
+     *
+     * @param string $recaptcha_response The reCAPTCHA response token from the form.
+     * @return array Response array with 'success' boolean and 'message' string.
+     * @since 0.2.3
+     */
+    public static function verify_recaptcha($recaptcha_response)
+    {
+        $recaptcha_secret = get_option('petitioner_recaptcha_secret_key', '');
+
+        if (empty($recaptcha_response)) {
+            return [
+                'success' => false,
+                'message' => __('reCAPTCHA response is missing.', 'petitioner'),
+            ];
+        }
+
+        $verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+        $api_response = wp_remote_post($verify_url, [
+            'body' => [
+                'secret'   => $recaptcha_secret,
+                'response' => $recaptcha_response,
+            ],
+        ]);
+
+        if (is_wp_error($api_response)) {
+            return [
+                'success' => false,
+                'message' => __('reCAPTCHA verification failed: Unable to connect to Google.', 'petitioner'),
+            ];
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($api_response), true);
+
+        if (!isset($body['success']) || !$body['success']) {
+            error_log('reCAPTCHA validation failed: ' . print_r($body, true));
+            return [
+                'success' => false,
+                'message' => __('reCAPTCHA verification was not successful.', 'petitioner'),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => __('reCAPTCHA verification completed.', 'petitioner'),
+        ];
     }
 }

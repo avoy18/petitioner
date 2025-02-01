@@ -119,6 +119,23 @@ class AV_Petitioner_Setup
         }
 
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
+
+        // Google reCAPTCHA
+        $is_recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
+
+        if ($is_recaptcha_enabled) {
+
+            $site_key = get_option('petitioner_recaptcha_site_key');
+
+            if (!empty($site_key)) {
+                wp_enqueue_script('petitioner-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr($site_key), [], null, true);
+
+                // Pass site key to JavaScript
+                wp_localize_script('petitioner-script', 'petitionerRecaptcha', [
+                    'siteKey' => esc_attr($site_key),
+                ]);
+            }
+        }
     }
 
     public function generate_custom_css()

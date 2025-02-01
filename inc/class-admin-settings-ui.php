@@ -90,6 +90,15 @@ class AV_Petitioner_Admin_Settings_UI
             'petition-settings'
         );
 
+        add_settings_section(
+            'petitioner_recaptcha_section',
+            esc_html__('Google reCAPTCHA v3', 'petitioner'),
+            function () {
+                echo '<p>' . esc_html__('Configure Google reCAPTCHA', 'petitioner') . '</p>';
+            },
+            'petition-settings'
+        );
+
         $this->add_checkbox_field(array(
             'slug'          => 'petitioner_show_letter',
             'display_name'  => esc_html__('Show letter popup', 'petitioner'),
@@ -118,13 +127,6 @@ class AV_Petitioner_Admin_Settings_UI
             'default_value' => 1
         ));
 
-        add_settings_section(
-            'petition_pro_settings_section',
-            esc_html__('Color settings', 'petitioner'),
-            function () {},
-            'petition-settings'
-        );
-
         $this->add_color_field(array(
             'slug'          => 'petitioner_primary_color',
             'display_name'  => esc_html__('Primary color', 'petitioner'),
@@ -145,11 +147,40 @@ class AV_Petitioner_Admin_Settings_UI
             'helptext'      => esc_html__('Grey color', 'petitioner'),
             'default_value' => $this->default_colors['grey']
         ));
+
+        $this->add_checkbox_field(array(
+            'slug'          => 'petitioner_enable_recaptcha',
+            'display_name'  => esc_html__('Enabled?', 'petitioner'),
+            'helptext'      => esc_html__('Enable reCAPTCHA petitions for spam protection', 'petitioner'),
+            'default_value' => 0,
+            'section'       => 'petitioner_recaptcha_section'
+        ));
+
+        $this->add_text_field(array(
+            'slug'          => 'petitioner_recaptcha_site_key',
+            'display_name'  => esc_html__('Site key', 'petitioner'),
+            'helptext'      => esc_html__('Add your site key here', 'petitioner'),
+            'default_value' => '',
+            'section'       => 'petitioner_recaptcha_section'
+        ));
+
+        $this->add_text_field(array(
+            'slug'          => 'petitioner_recaptcha_secret_key',
+            'display_name'  => esc_html__('Secret key', 'petitioner'),
+            'helptext'      => esc_html__('Add your secret key here', 'petitioner'),
+            'default_value' => '',
+            'section'       => 'petitioner_recaptcha_section'
+        ));
     }
 
     function petition_settings_section_callback()
     {
         echo '<p>' . esc_html__('Configure how your petitions look like.', 'petitioner') . '</p>';
+    }
+
+    function petitioner_integrations_section_callback()
+    {
+        echo '<p>' . esc_html__('Configure available integrations', 'petitioner') . '</p>';
     }
 
     /**
@@ -186,7 +217,7 @@ class AV_Petitioner_Admin_Settings_UI
         <?php
             },
             'petition-settings',
-            'petitioner_settings_section'
+            !empty($settings['section']) ? $settings['section'] : 'petitioner_settings_section'
         );
     }
 
@@ -297,10 +328,52 @@ class AV_Petitioner_Admin_Settings_UI
                 $primary_color = get_option($slug, $default_value);
         ?>
             <input type="text" id="<?php echo esc_attr($slug); ?>" name="<?php echo esc_attr($slug); ?>" value="<?php echo esc_attr($primary_color) ?>" class="petitioner-color-field" />
-<?php
+        <?php
             },
             'petition-settings',
             'petitioner_settings_section'
+        );
+    }
+
+    /**
+     * A utility function that creates a text field
+     */
+    function add_text_field($settings = array())
+    {
+        $slug = $settings['slug'] ?? '';
+        $display_name = $settings['display_name'] ?? '';
+        $helptext = $settings['helptext'] ?? '';
+        $default_value = $settings['default_value'] ?? '';
+
+        // Ensure required settings are provided
+        if (empty($slug) || empty($display_name)) return;
+
+        // Register the setting for the text field
+        register_setting(
+            'petitioner_settings_group',
+            $slug,
+            array(
+                'type'              => 'string',
+                'default'           => $default_value,
+                'sanitize_callback' => 'sanitize_text_field',
+            )
+        );
+
+        // Add the text field
+        add_settings_field(
+            $slug,
+            esc_html($display_name),
+            function () use ($slug, $helptext) {
+                $option = get_option($slug, ''); // Retrieve the stored option
+        ?>
+            <input type="text" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($slug); ?>" value="<?php echo esc_attr($option); ?>" class="regular-text" />
+            <?php if (!empty($helptext)) : ?>
+                <p class="description"><?php echo esc_html($helptext); ?></p>
+            <?php endif; ?>
+<?php
+            },
+            'petition-settings',
+            !empty($settings['section']) ? $settings['section'] : 'petitioner_settings_section'
         );
     }
 }
