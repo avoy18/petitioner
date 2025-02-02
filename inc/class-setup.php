@@ -190,6 +190,7 @@ class AV_Petitioner_Setup
             wp_enqueue_script('wp-block-editor');
             wp_enqueue_script('wp-element');
             wp_enqueue_script('wp-components');
+            wp_enqueue_script('wp-tinymce');
 
             // Enqueue styles
             wp_enqueue_style('wp-components');

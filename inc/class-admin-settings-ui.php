@@ -83,6 +83,25 @@ class AV_Petitioner_Admin_Settings_UI
 
     public function admin_settings_init()
     {
+
+        add_settings_section(
+            'petitioner_settings_section_general',
+            esc_html__('', 'petitioner'),
+            function () {
+
+                $petitioner_info = [];
+        ?>
+            <div
+                id="petitioner-settings-container"
+                data-av-ptr-info='<?php echo wp_json_encode(
+                                        $petitioner_info
+                                    ); ?>'>
+            </div>
+        <?php
+            },
+            'petition-settings'
+        );
+
         add_settings_section(
             'petitioner_settings_section',
             esc_html__('Visual Customizer', 'petitioner'),

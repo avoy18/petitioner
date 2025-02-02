@@ -21,4 +21,23 @@
 	.petitioner-tab.active {
 		display: block;
 	}
+
+	.petitioner-rich-text {
+		display: flex;
+		flex-direction: column;
+
+		h4 {
+			margin-bottom: 4px !important;
+		}
+
+		.help {
+			font-size: 12px;
+			color: #666;
+			margin-top: 0px;
+		}
+
+		textarea {
+			display: none;
+		}
+	}
 }
