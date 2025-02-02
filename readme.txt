@@ -58,7 +58,7 @@ Absolutely! Feel free to reach out through [this contact form](https://avoy.me/c
 == Changelog ==
 
 = 0.2.3 =
-* Add Google reCAPTCHA
+* Add Google reCAPTCHA and hCaptcha
 * Allow multiple target emails
 * Refactor & organize editor UI
 
