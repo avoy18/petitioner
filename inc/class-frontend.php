@@ -230,6 +230,7 @@ class AV_Petitioner_Frontend
         $petitioner_show_country = get_post_meta($form_id, '_petitioner_show_country', true);
 
         $is_recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
+        $is_hcaptcha_enabled = get_option('petitioner_enable_hcaptcha', false);
 
         ob_start();
 ?>
@@ -282,23 +283,49 @@ class AV_Petitioner_Frontend
                 <input type="hidden" name="form_id" value="<?php echo esc_attr($form_id); ?>">
                 <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>" />
 
-                <?php if ($is_recaptcha_enabled): ?>
-                    <input type="hidden" name="petitioner-g-recaptcha-response" id="petitioner-g-recaptcha-response">
-                    <p class="petitioner-recaptcha-disclaimer">
-                        <?php
-                        // translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag
-                        printf(
-                            esc_html__(
-                                'This site is protected by reCAPTCHA and the Google %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply.',
-                                'petitioner'
-                            ),
-                            '<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">',
-                            '</a>',
-                            '<a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">',
-                            '</a>'
-                        );
-                        ?>
-                    </p>
+
+                <?php if ($is_hcaptcha_enabled || $is_recaptcha_enabled): ?>
+
+                    <?php if ($is_recaptcha_enabled): ?>
+                        <input type="hidden" name="petitioner-g-recaptcha-response" id="petitioner-g-recaptcha-response">
+                        <p class="petitioner-disclaimer-text">
+                            <?php
+                            // translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag
+                            printf(
+                                esc_html__(
+                                    'This site is protected by reCAPTCHA and the Google %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply.',
+                                    'petitioner'
+                                ),
+                                '<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">',
+                                '</a>',
+                                '<a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">',
+                                '</a>'
+                            );
+                            ?>
+                        </p>
+                    <?php endif; ?>
+
+
+                    <?php if ($is_hcaptcha_enabled): ?>
+                        <span class="petitioner-h-captcha-container"></span>
+                        <input type="hidden" name="petitioner-h-captcha-response" class="petitioner-h-captcha-response">
+                        <p class="petitioner-disclaimer-text">
+                            <?php
+                            // translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag
+                            printf(
+                                esc_html__(
+                                    'This site is protected by hCaptcha and its %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply.',
+                                    'petitioner'
+                                ),
+                                '<a href="https://www.hcaptcha.com/privacy" target="_blank" rel="noopener noreferrer">',
+                                '</a>',
+                                '<a href="https://www.hcaptcha.com/terms" target="_blank" rel="noopener noreferrer">',
+                                '</a>'
+                            );
+                            ?>
+                        </p>
+                    <?php endif; ?>
+
                 <?php endif; ?>
 
                 <button type="submit" class="petitioner__btn petitioner__btn--submit"><?php esc_html_e('Sign this petition', 'petitioner'); ?></button>

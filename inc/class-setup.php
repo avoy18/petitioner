@@ -120,21 +120,29 @@ class AV_Petitioner_Setup
 
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
 
-        // Google reCAPTCHA
+        // Captcha
         $is_recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
+        $is_hcaptcha_enabled = get_option('petitioner_enable_hcaptcha', false);
 
-        if ($is_recaptcha_enabled) {
+        if ($is_recaptcha_enabled || $is_hcaptcha_enabled) {
 
-            $site_key = get_option('petitioner_recaptcha_site_key');
+            $recaptcha_site_key = get_option('petitioner_recaptcha_site_key');
+            $hcaptcha_site_key = get_option('petitioner_hcaptcha_site_key');
 
-            if (!empty($site_key)) {
-                wp_enqueue_script('petitioner-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr($site_key), [], null, true);
-
-                // Pass site key to JavaScript
-                wp_localize_script('petitioner-script', 'petitionerRecaptcha', [
-                    'siteKey' => esc_attr($site_key),
-                ]);
+            if ($is_recaptcha_enabled && !empty($recaptcha_site_key)) {
+                wp_enqueue_script('petitioner-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr($recaptcha_site_key), [], null, true);
             }
+
+            if ($is_hcaptcha_enabled && !empty($hcaptcha_site_key)) {
+                wp_enqueue_script('hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, true);
+            }
+
+            wp_localize_script('petitioner-script', 'petitionerCaptcha', [
+                'recaptchaSiteKey'  => $recaptcha_site_key,
+                'hcaptchaSiteKey'   => $hcaptcha_site_key,
+                'enableRecaptcha'   => $is_recaptcha_enabled,
+                'enableHcaptcha'    => $is_hcaptcha_enabled,
+            ]);
         }
     }
 

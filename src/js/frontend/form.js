@@ -1,84 +1,151 @@
+import ReCaptcha from './recaptcha';
+import HCaptcha from './hcaptcha';
+
+/**
+ * @class PetitionerForm
+ *
+ * Handles form submission, validation, modal interactions, and reCAPTCHA/hCaptcha integration.
+ *
+ * ### Features:
+ * 1. Initializes form submission with AJAX.
+ * 2. Integrates Google reCAPTCHA v3 and hCaptcha (invisible).
+ * 3. Handles modal interactions (opening & closing).
+ * 4. Prevents infinite reCaptcha/hCaptcha loops using a validation flag.
+ * 5. Displays success/error messages upon submission.
+ * 6. Ensures graceful handling if elements are missing.
+ *
+ * @example
+ * ```js
+ * const formElement = document.querySelector(".petitioner");
+ * const petitionerForm = new PetitionerForm(formElement);
+ * ```
+ */
 export default class PetitionerForm {
-  constructor(wrapper) {
-    this.wrapper = wrapper;
+	constructor(wrapper) {
+		this.wrapper = wrapper;
+		if (!this.wrapper) return;
 
-    if (!this.wrapper) return;
+		this.responseTitle = this.wrapper.querySelector(
+			'.petitioner__response > h3'
+		);
+		this.responseText = this.wrapper.querySelector(
+			'.petitioner__response > p'
+		);
+		this.formEl = this.wrapper.querySelector('form');
 
-    this.responseTitle = this.wrapper.querySelector('.petitioner__response > h3');
-    this.responseText = this.wrapper.querySelector('.petitioner__response > p');
-    this.formEl = this.wrapper.querySelector('form');
+		// Handling modal
+		this.viewLetterBTN = this.wrapper.querySelector(
+			'.petitioner__btn--letter'
+		);
+		this.petitionerModal = this.wrapper.querySelector('.petitioner-modal');
+		this.modalClose = this.wrapper.querySelector(
+			'.petitioner-modal__close'
+		);
+		this.backdrop = this.wrapper.querySelector(
+			'.petitioner-modal__backdrop'
+		);
 
-    // handling modal
-    this.viewLetterBTN = this.wrapper.querySelector('.petitioner__btn--letter');
-    this.petitionerModal = this.wrapper.querySelector('.petitioner-modal');
-    this.modalClose = this.wrapper.querySelector('.petitioner-modal__close');
-    this.backdrop = this.wrapper.querySelector('.petitioner-modal__backdrop');
+		// AJAX action path
+		this.actionPath = this.formEl?.action ?? '';
 
-    // ajax action path
-    this.actionPath = this.formEl?.action ?? "";
+		// Captcha
+		this.captchaValidated = false;
+		if (petitionerCaptcha?.enableRecaptcha) {
+			new ReCaptcha(this.formEl);
+		}
+		if (petitionerCaptcha?.enableHcaptcha) {
+			this.hcaptcha = new HCaptcha(this.formEl);
+		}
 
-    // event listeners
-    this.formEl.addEventListener("submit", this.handleFormSubmit);
+		// Event Listeners
+		if (this.formEl) {
+			this.formEl.addEventListener(
+				'submit',
+				this.handleFormSubmit.bind(this)
+			);
+		}
+		if (this.viewLetterBTN) {
+			this.viewLetterBTN.addEventListener('click', () =>
+				this.toggleModal(true)
+			);
+		}
+		if (this.backdrop) {
+			this.backdrop.addEventListener('click', () =>
+				this.toggleModal(false)
+			);
+		}
+		if (this.modalClose) {
+			this.modalClose.addEventListener('click', () =>
+				this.toggleModal(false)
+			);
+		}
+	}
 
-    this.viewLetterBTN.addEventListener('click', () => {
-      this.toggleModal(true)
-    });
+	showResponseMSG(
+		title = 'Something went wrong',
+		text = 'Please try again',
+		isSuccess = false
+	) {
+		this.wrapper.classList.add('petitioner--submitted');
+		if (this.responseTitle) this.responseTitle.innerText = title;
+		if (this.responseText) this.responseText.innerText = text;
+	}
 
-    this.backdrop.addEventListener('click', () => {
-      this.toggleModal(false)
-    });
+	toggleModal(isShow = true) {
+		if (this.petitionerModal) {
+			this.petitionerModal.classList[isShow ? 'add' : 'remove'](
+				'petitioner-modal--visible'
+			);
+		}
+	}
 
-    this.modalClose.addEventListener('click', () => {
-      this.toggleModal(false)
-    });
+	handleFormSubmit(e) {
+		e.preventDefault();
 
-  }
+		// If hCaptcha is enabled, validate the captcha before submission
+		if (
+			petitionerCaptcha?.enableHcaptcha &&
+			this.hcaptcha &&
+			!this.captchaValidated
+		) {
+			this.hcaptcha.validate(() => {
+				this.captchaValidated = true; // ✅ Prevent infinite loops
+				this.formEl.dispatchEvent(
+					new Event('submit', { bubbles: true })
+				);
+			});
+			return;
+		}
 
-  showResponseMSG(title = 'Something went wrong', text = 'Please try again', isSuccess = false) {
-    this.wrapper.classList.add('petitioner--submitted');
-    this.responseTitle.innerText = title;
-    this.responseText.innerText = text;
-  }
+		this.wrapper.classList.add('petitioner--loading');
+		const formData = new FormData(this.formEl);
 
-  toggleModal(isShow = true) {
-    this.petitionerModal.classList[isShow ? 'add' : 'remove']('petitioner-modal--visible');
-  }
-
-  handleFormSubmit = (e) => {
-    e.preventDefault();
-    this.wrapper.classList.add('petitioner--loading');
-    const formData = new FormData(this.formEl);
-
-    fetch(this.actionPath, {
-      method: "POST",
-      body: formData,
-      credentials: "same-origin",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.success) {
-          this.showResponseMSG(
-            'Thank you!',
-            res.data
-          )
-        } else {
-          this.showResponseMSG(
-            'Could not submit the form.',
-            res.data
-          );
-        }
-
-        this.wrapper.classList.remove('petitioner--loading');
-        this.formEl.reset();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("An unexpected error occurred. Please try again later.");
-        this.wrapper.classList.remove('petitioner--loading');
-        this.formEl.reset();
-      });
-  };
+		fetch(this.actionPath, {
+			method: 'POST',
+			body: formData,
+			credentials: 'same-origin',
+			headers: { 'X-Requested-With': 'XMLHttpRequest' },
+		})
+			.then((response) => response.json())
+			.then((res) => {
+				if (res.success) {
+					this.showResponseMSG('Thank you!', res.data);
+				} else {
+					this.showResponseMSG(
+						'Could not submit the form.',
+						res.data
+					);
+				}
+				this.wrapper.classList.remove('petitioner--loading');
+				this.formEl.reset();
+				this.captchaValidated = false; // ✅ Reset for next submission
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+				alert('An unexpected error occurred. Please try again later.');
+				this.wrapper.classList.remove('petitioner--loading');
+				this.formEl.reset();
+				this.captchaValidated = false;
+			});
+	}
 }

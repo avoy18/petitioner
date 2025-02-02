@@ -95,6 +95,21 @@ class AV_Petitioner_Admin_Settings_UI
             esc_html__('Google reCAPTCHA v3', 'petitioner'),
             function () {
                 echo '<p>' . esc_html__('Configure Google reCAPTCHA', 'petitioner') . '</p>';
+                if (get_option('petitioner_enable_recaptcha', true) && get_option('petitioner_enable_hcaptcha', true)) {
+                    echo '<p style="color:red;">' . esc_html__('Warning! Running both hCaptcha and reCAPTCHA will break the form!', 'petitioner') . '</p>';
+                }
+            },
+            'petition-settings'
+        );
+
+        add_settings_section(
+            'petitioner_hcaptcha_section',
+            esc_html__('hCaptcha', 'petitioner'),
+            function () {
+                echo '<p>' . esc_html__('Configure hCaptcha', 'petitioner') . '</p>';
+                if (get_option('petitioner_enable_recaptcha', true) && get_option('petitioner_enable_hcaptcha', true)) {
+                    echo '<p style="color:red;">' . esc_html__('Warning! Running both hCaptcha and reCAPTCHA will break the form!', 'petitioner') . '</p>';
+                }
             },
             'petition-settings'
         );
@@ -170,6 +185,30 @@ class AV_Petitioner_Admin_Settings_UI
             'helptext'      => esc_html__('Add your secret key here', 'petitioner'),
             'default_value' => '',
             'section'       => 'petitioner_recaptcha_section'
+        ));
+
+        $this->add_checkbox_field(array(
+            'slug'          => 'petitioner_enable_hcaptcha',
+            'display_name'  => esc_html__('Enabled?', 'petitioner'),
+            'helptext'      => esc_html__('Enable hCAPTCHA petitions for spam protection', 'petitioner'),
+            'default_value' => 0,
+            'section'       => 'petitioner_hcaptcha_section'
+        ));
+
+        $this->add_text_field(array(
+            'slug'          => 'petitioner_hcaptcha_site_key',
+            'display_name'  => esc_html__('Site key', 'petitioner'),
+            'helptext'      => esc_html__('Add your site key here', 'petitioner'),
+            'default_value' => '',
+            'section'       => 'petitioner_hcaptcha_section'
+        ));
+
+        $this->add_text_field(array(
+            'slug'          => 'petitioner_hcaptcha_secret_key',
+            'display_name'  => esc_html__('Secret key', 'petitioner'),
+            'helptext'      => esc_html__('Add your secret key here', 'petitioner'),
+            'default_value' => '',
+            'section'       => 'petitioner_hcaptcha_section'
         ));
     }
 

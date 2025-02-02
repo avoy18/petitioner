@@ -69,15 +69,31 @@ class AV_Petitioner_Submissions
             $default_approval_status = get_post_meta($form_id, '_petitioner_approval_state', true);
             $approval_status = $default_approval_status;
         }
+
         $recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
+        $hcaptcha_enabled = get_option('petitioner_enable_hcaptcha', false);
 
         if ($recaptcha_enabled) {
             $recaptcha_response = isset($_POST['petitioner-g-recaptcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-g-recaptcha-response'])) : '';
 
-            $result = self::verify_recaptcha($recaptcha_response);
-            error_log(print_r($result, true));
-            if (!$result['success']) {
-                wp_send_json_error($result['message']);
+            $recaptcha_result = self::verify_captcha($recaptcha_response, 'recaptcha');
+
+
+            error_log(print_r($recaptcha_result, true));
+
+            if (!$recaptcha_result['success']) {
+                wp_send_json_error($recaptcha_result['message']);
+                wp_die();
+            }
+        }
+
+        if ($hcaptcha_enabled) {
+            $hcaptcha_response = isset($_POST['petitioner-h-captcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-h-captcha-response'])) : '';
+
+            $hcaptcha_result = self::verify_captcha($hcaptcha_response, 'hcaptcha');
+
+            if (!$hcaptcha_result['success']) {
+                wp_send_json_error($hcaptcha_result['message']);
                 wp_die();
             }
         }
@@ -356,51 +372,75 @@ class AV_Petitioner_Submissions
     }
 
     /**
-     * Verify the reCAPTCHA response.
+     * Verify the CAPTCHA response (Supports both Google reCAPTCHA v3 & hCaptcha).
      *
-     * @param string $recaptcha_response The reCAPTCHA response token from the form.
+     * @param string $captcha_response The CAPTCHA response token from the form.
+     * @param string $captcha_type The type of CAPTCHA ('recaptcha' or 'hcaptcha').
      * @return array Response array with 'success' boolean and 'message' string.
      * @since 0.2.3
      */
-    public static function verify_recaptcha($recaptcha_response)
+    public static function verify_captcha($captcha_response, $captcha_type = 'recaptcha')
     {
-        $recaptcha_secret = get_option('petitioner_recaptcha_secret_key', '');
+        // Get the appropriate secret key based on CAPTCHA type
+        $captcha_secret = ($captcha_type === 'hcaptcha')
+            ? get_option('petitioner_hcaptcha_secret_key', '')
+            : get_option('petitioner_recaptcha_secret_key', '');
 
-        if (empty($recaptcha_response)) {
+        // Handle missing response
+        if (empty($captcha_response)) {
+            error_log(strtoupper($captcha_type) . ' response is missing.');
             return [
                 'success' => false,
-                'message' => __('reCAPTCHA response is missing.', 'petitioner'),
+                'message' => __('CAPTCHA response is missing.', 'petitioner'),
             ];
         }
 
-        $verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+        // Determine verification URL
+        $verify_url = ($captcha_type === 'hcaptcha')
+            ? 'https://hcaptcha.com/siteverify'
+            : 'https://www.google.com/recaptcha/api/siteverify';
+
+        // Send request to verification API
         $api_response = wp_remote_post($verify_url, [
             'body' => [
-                'secret'   => $recaptcha_secret,
-                'response' => $recaptcha_response,
+                'secret'   => $captcha_secret,
+                'response' => $captcha_response,
+                'remoteip' => $_SERVER['REMOTE_ADDR'],
             ],
         ]);
 
+        // Handle connection failure
         if (is_wp_error($api_response)) {
+            error_log(strtoupper($captcha_type) . ' API request failed: ' . $api_response->get_error_message());
             return [
                 'success' => false,
-                'message' => __('reCAPTCHA verification failed: Unable to connect to Google.', 'petitioner'),
+                'message' => __('CAPTCHA verification failed: Unable to connect.', 'petitioner'),
             ];
         }
 
+        // Decode API response
         $body = json_decode(wp_remote_retrieve_body($api_response), true);
 
+        // Validate response
         if (!isset($body['success']) || !$body['success']) {
-            error_log('reCAPTCHA validation failed: ' . print_r($body, true));
+            error_log(strtoupper($captcha_type) . ' validation failed: ' . print_r($body, true));
             return [
                 'success' => false,
-                'message' => __('reCAPTCHA verification was not successful.', 'petitioner'),
+                'message' => __('CAPTCHA verification failed.', 'petitioner'),
+            ];
+        }
+
+        // Check score for Google reCAPTCHA v3
+        if ($captcha_type === 'recaptcha' && isset($body['score']) && $body['score'] < 0.5) {
+            return [
+                'success' => false,
+                'message' => __('reCAPTCHA score too low. Please try again.', 'petitioner'),
             ];
         }
 
         return [
             'success' => true,
-            'message' => __('reCAPTCHA verification completed.', 'petitioner'),
+            'message' => __('CAPTCHA verification completed.', 'petitioner'),
         ];
     }
 }
