@@ -100,6 +100,43 @@ export default function FormSettings({ formState, updateFormState }) {
 
 			<p>
 				<input
+					checked={formState.add_consent_checkbox}
+					type="checkbox"
+					name="petitioner_add_consent_checkbox"
+					id="petitioner_add_consent_checkbox"
+					className="widefat"
+					onChange={(e) =>
+						updateFormState(
+							'add_consent_checkbox',
+							e.target.checked
+						)
+					}
+				/>
+				<label htmlFor="petitioner_add_consent_checkbox">
+					Add privacy consent checkbox
+				</label>
+			</p>
+
+			{formState.add_consent_checkbox && (
+				<p>
+					<TextControl
+						style={{ width: '100%' }}
+						type="text"
+						label="Privacy consent label"
+						placeholder="By submitting this form, I agree to the terms of service"
+						value={formState.consent_text}
+						name="petitioner_consent_text"
+						id="petitioner_consent_text"
+						help="This text will appear on the privacy consent checkbox"
+						onChange={(value) =>
+							updateFormState('consent_text', value)
+						}
+					/>
+				</p>
+			)}
+
+			<p>
+				<input
 					checked={formState.add_legal_text}
 					type="checkbox"
 					name="petitioner_add_legal_text"
@@ -110,7 +147,7 @@ export default function FormSettings({ formState, updateFormState }) {
 					}
 				/>
 				<label htmlFor="petitioner_add_legal_text">
-					Add legal text
+					Add legal disclaimer
 				</label>
 			</p>
 

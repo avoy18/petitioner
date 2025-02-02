@@ -64,6 +64,7 @@ class AV_Petitioner_Submissions
         $bcc                  = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $require_approval     = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status      = __('Confirmed', 'petitioner');
+        $accept_tos           = !empty($_POST['petitioner_accept_tos']) && sanitize_text_field(wp_unslash($_POST['petitioner_accept_tos'])) === 'on';
 
         if ($require_approval) {
             $default_approval_status = get_post_meta($form_id, '_petitioner_approval_state', true);
@@ -103,7 +104,6 @@ class AV_Petitioner_Submissions
         // todo: add these
         $hide_name = false;
         $newsletter_opt_in = false;
-        $accept_tos = false;
 
         // Insert into the custom table
 

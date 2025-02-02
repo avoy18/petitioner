@@ -26,9 +26,11 @@ export default function FormFields(props) {
 		require_approval = false,
 		approval_state = 'approved',
 		letter = '',
-		add_legal_text = '',
+		add_legal_text = false,
+		consent_text = '',
 		legal_text = '',
 		form_id = '',
+		add_consent_checkbox = false,
 	} = window.petitionerData;
 
 	const [activeTab, setActiveTab] = useState('petition-details');
@@ -47,6 +49,8 @@ export default function FormFields(props) {
 		letter,
 		add_legal_text,
 		legal_text,
+		add_consent_checkbox,
+		consent_text,
 	});
 
 	const updateFormState = useCallback((key, value) => {

@@ -60,6 +60,7 @@ Absolutely! Feel free to reach out through [this contact form](https://avoy.me/c
 = 0.2.3 =
 * Add Google reCAPTCHA and hCaptcha
 * Allow multiple target emails
+* Add optional legal disclaimer & consent checkbox
 * Refactor & organize editor UI
 
 = 0.2.2 =

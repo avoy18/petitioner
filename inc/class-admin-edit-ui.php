@@ -21,7 +21,9 @@ class AV_Petitioner_Admin_Edit_UI
         'require_approval'        => '_petitioner_require_approval',
         'approval_state'          => '_petitioner_approval_state',
         'letter'                  => '_petitioner_letter',
+        'add_consent_checkbox'    => '_petitioner_add_consent_checkbox',
         'add_legal_text'          => '_petitioner_add_legal_text',
+        'consent_text'            => '_petitioner_consent_text',
         'legal_text'              => '_petitioner_legal_text'
     ];
 
@@ -84,6 +86,8 @@ class AV_Petitioner_Admin_Edit_UI
             "approval_state"                => esc_html($meta_values['approval_state']),
             "letter"                        => wp_kses_post($meta_values['letter']),
             "add_legal_text"                => (bool) $meta_values['add_legal_text'],
+            "add_consent_checkbox"            => (bool) $meta_values['add_consent_checkbox'],
+            "consent_text"                  => sanitize_text_field($meta_values['consent_text']),
             "legal_text"                    => wp_kses_post($meta_values['legal_text']),
             "export_url"                    => esc_url(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID))
         ];
@@ -137,12 +141,21 @@ class AV_Petitioner_Admin_Edit_UI
      */
     private function update_meta_fields($post_id, $meta_values)
     {
+        $checkboxes = [
+            'send_to_representative',
+            'show_country',
+            'require_approval',
+            'add_legal_text',
+            'add_consent_checkbox',
+            'show_goal'
+        ];
+
         foreach ($meta_values as $key => $value) {
             if ($key === 'letter' || $key === 'legal_text') {
                 $value = wp_kses_post($value);
             } elseif ($key === 'cc_emails' || $key === 'email') {
                 $value = $this->sanitize_emails($value);
-            } elseif (in_array($key, ['send_to_representative', 'show_country', 'require_approval', 'add_legal_text', 'show_goal'])) {
+            } elseif (in_array($key, $checkboxes)) {
                 $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
             } elseif ($key === 'goal') {
                 $value = (int) $value; // Ensure numeric values are stored as integers

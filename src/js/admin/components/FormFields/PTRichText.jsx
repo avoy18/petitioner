@@ -48,9 +48,7 @@ export default function PTRichText({
 		<div className="petitioner-rich-text">
 			<h4>{label}</h4>
 			{help.length > 0 && <p className="help">{help}</p>}
-			<p>
-				<textarea name={id} id={id}></textarea>
-			</p>
+			<textarea name={id} id={id}></textarea>
 		</div>
 	);
 }

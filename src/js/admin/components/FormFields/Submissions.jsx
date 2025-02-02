@@ -24,7 +24,7 @@ export default function Submissions() {
 			const data = await response.json();
 
 			if (data.success) {
-				console.log(data);
+				// console.log(data);
 				setTotal(data.data.total);
 				setSubmissions(data.data.submissions);
 			} else {
@@ -141,8 +141,15 @@ export default function Submissions() {
 						<td>{item.fname}</td>
 						<td>{item.lname}</td>
 						<td>{item.country}</td>
+						{/* <td>
+							<small>
+								{item.bcc_yourself === '1' ? '✅' : '❌'}
+							</small>
+						</td> */}
 						<td>
-							<small>{item.bcc_yourself ? '✅' : '❌'}</small>
+							<small>
+								{item.accept_tos === '1' ? '✅' : '❌'}
+							</small>
 						</td>
 						<td>
 							<small>{item.submitted_at}</small>
@@ -175,7 +182,8 @@ export default function Submissions() {
 								<th>First Name</th>
 								<th>Last Name</th>
 								<th>Country</th>
-								<th style={{ width: '30px' }}>BCC</th>
+								{/* <th style={{ width: '30px' }}>BCC</th> */}
+								<th style={{ width: '100px' }}>Consent</th>
 								<th>Submitted At</th>
 								{showApproval && (
 									<th style={{ width: '150px' }}>Status</th>
