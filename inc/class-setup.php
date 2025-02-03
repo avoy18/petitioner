@@ -123,12 +123,10 @@ class AV_Petitioner_Setup
         // Captcha
         $is_recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
         $is_hcaptcha_enabled = get_option('petitioner_enable_hcaptcha', false);
+        $recaptcha_site_key = get_option('petitioner_recaptcha_site_key');
+        $hcaptcha_site_key = get_option('petitioner_hcaptcha_site_key');
 
         if ($is_recaptcha_enabled || $is_hcaptcha_enabled) {
-
-            $recaptcha_site_key = get_option('petitioner_recaptcha_site_key');
-            $hcaptcha_site_key = get_option('petitioner_hcaptcha_site_key');
-
             if ($is_recaptcha_enabled && !empty($recaptcha_site_key)) {
                 wp_enqueue_script('petitioner-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr($recaptcha_site_key), [], null, true);
             }
