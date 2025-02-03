@@ -26,14 +26,14 @@ if (editorContainer) {
 	editorRoot.render(<FormArea />);
 }
 
-const settingsContainer = document.getElementById(
-	'petitioner-settings-container'
-);
+// const settingsContainer = document.getElementById(
+// 	'petitioner-settings-container'
+// );
 
-if (settingsContainer) {
-	const submissionsRoot = createRoot(settingsContainer);
-	submissionsRoot.render(() => <>Settings!</>);
-}
+// if (settingsContainer) {
+// 	const submissionsRoot = createRoot(settingsContainer);
+// 	submissionsRoot.render(() => <>Settings!</>);
+// }
 
 // const submissionsContainer = document.getElementById("petitioner-submissions-container");
 

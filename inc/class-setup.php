@@ -136,14 +136,14 @@ class AV_Petitioner_Setup
             if ($is_hcaptcha_enabled && !empty($hcaptcha_site_key)) {
                 wp_enqueue_script('hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, true);
             }
-
-            wp_localize_script('petitioner-script', 'petitionerCaptcha', [
-                'recaptchaSiteKey'  => $recaptcha_site_key,
-                'hcaptchaSiteKey'   => $hcaptcha_site_key,
-                'enableRecaptcha'   => $is_recaptcha_enabled,
-                'enableHcaptcha'    => $is_hcaptcha_enabled,
-            ]);
         }
+
+        wp_localize_script('petitioner-script', 'petitionerCaptcha', [
+            'recaptchaSiteKey'  => $recaptcha_site_key,
+            'hcaptchaSiteKey'   => $hcaptcha_site_key,
+            'enableRecaptcha'   => $is_recaptcha_enabled,
+            'enableHcaptcha'    => $is_hcaptcha_enabled,
+        ]);
     }
 
     public function generate_custom_css()
