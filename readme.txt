@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.7.1
-Stable Tag: 0.2.2
+Stable Tag: 0.2.4
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -56,6 +56,15 @@ Absolutely! Feel free to reach out through [this contact form](https://avoy.me/c
 4. Petition edit page
 
 == Changelog ==
+
+= 0.2.4 =
+* Bug fixes after the previous release
+
+= 0.2.3 =
+* Add Google reCAPTCHA and hCaptcha
+* Allow multiple target emails
+* Add optional legal disclaimer & consent checkbox
+* Refactor & organize editor UI
 
 = 0.2.2 =
 * Added the ability to approve/deny petitions

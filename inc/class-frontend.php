@@ -226,8 +226,16 @@ class AV_Petitioner_Frontend
         if (!$post_exists || $post_exists->post_type !== 'petitioner-petition') {
             return;
         }
+
         $petitioner_send_to_representative = get_post_meta($form_id, '_petitioner_send_to_representative', true);
         $petitioner_show_country = get_post_meta($form_id, '_petitioner_show_country', true);
+        $petitioner_add_legal_text = get_post_meta($form_id, '_petitioner_add_legal_text', true);
+        $petitioner_legal_text = get_post_meta($form_id, '_petitioner_legal_text', true);
+        $petitioner_add_consent_checkbox = get_post_meta($form_id, '_petitioner_add_consent_checkbox', true);
+        $petitioner_consent_text = get_post_meta($form_id, '_petitioner_consent_text', true);
+
+        $is_recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
+        $is_hcaptcha_enabled = get_option('petitioner_enable_hcaptcha', false);
 
         ob_start();
 ?>
@@ -277,10 +285,74 @@ class AV_Petitioner_Frontend
                     </div>
                 <?php endif; ?>
 
+                <?php if ($petitioner_add_consent_checkbox): ?>
+                    <div class="petitioner__input petitioner__input--checkbox">
+                        <label for="petitioner_accept_tos">
+                            <?php echo !empty($petitioner_consent_text) ? wp_kses_post($petitioner_consent_text) : __('By submitting this form, I agree to the terms of service', 'petitioner'); ?>
+                        </label>
+                        <input type="checkbox" id="petitioner_accept_tos" name="petitioner_accept_tos">
+                    </div>
+                <?php endif; ?>
+
                 <input type="hidden" name="form_id" value="<?php echo esc_attr($form_id); ?>">
                 <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>" />
 
+                <?php if ($petitioner_add_legal_text): ?>
+                    <div class="petitioner-legal petitioner-disclaimer-text">
+                        <?php
+                        $parsed_legal = wpautop($petitioner_legal_text);
+                        echo !empty($parsed_legal) ? wp_kses_post($parsed_legal) : ''; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($is_hcaptcha_enabled || $is_recaptcha_enabled): ?>
+
+                    <?php if ($is_recaptcha_enabled): ?>
+                        <input type="hidden" name="petitioner-g-recaptcha-response" id="petitioner-g-recaptcha-response">
+                        <p class="petitioner-disclaimer-text">
+                            <?php
+                            // translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag
+                            printf(
+                                esc_html__(
+                                    'This site is protected by reCAPTCHA and the Google %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply.',
+                                    'petitioner'
+                                ),
+                                '<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">',
+                                '</a>',
+                                '<a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">',
+                                '</a>'
+                            );
+                            ?>
+                        </p>
+                    <?php endif; ?>
+
+
+                    <?php if ($is_hcaptcha_enabled): ?>
+                        <span class="petitioner-h-captcha-container"></span>
+                        <input type="hidden" name="petitioner-h-captcha-response" class="petitioner-h-captcha-response">
+                        <p class="petitioner-disclaimer-text">
+                            <?php
+                            // translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag
+                            printf(
+                                esc_html__(
+                                    'This site is protected by hCaptcha and its %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply.',
+                                    'petitioner'
+                                ),
+                                '<a href="https://www.hcaptcha.com/privacy" target="_blank" rel="noopener noreferrer">',
+                                '</a>',
+                                '<a href="https://www.hcaptcha.com/terms" target="_blank" rel="noopener noreferrer">',
+                                '</a>'
+                            );
+                            ?>
+                        </p>
+                    <?php endif; ?>
+
+                <?php endif; ?>
+
+
                 <button type="submit" class="petitioner__btn petitioner__btn--submit"><?php esc_html_e('Sign this petition', 'petitioner'); ?></button>
+
+
             </form>
 
             <div class="petitioner__response">
@@ -326,7 +398,6 @@ class AV_Petitioner_Frontend
                 <h3><?php echo esc_html($petitioner_subject); ?></h3>
                 <div class="petitioner-modal__inner">
                     <?php
-
                     $parsed_letter = wpautop($petitioner_letter);
                     echo wp_kses_post($parsed_letter); ?>
                 </div>
