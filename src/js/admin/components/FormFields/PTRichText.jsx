@@ -5,7 +5,7 @@ export default function PTRichText({
 	label = 'Rich text label',
 	value = '',
 	height = 300,
-	help = '',
+	help,
 }) {
 	const editorRef = useRef(null);
 	const lastSavedValue = useRef(value);
@@ -47,7 +47,7 @@ export default function PTRichText({
 	return (
 		<div className="petitioner-rich-text">
 			<h4>{label}</h4>
-			{help.length > 0 && <p className="help">{help}</p>}
+			{help && <div className="help">{help}</div>}
 			<textarea name={id} id={id}></textarea>
 		</div>
 	);

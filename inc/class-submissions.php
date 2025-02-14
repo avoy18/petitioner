@@ -162,6 +162,7 @@ class AV_Petitioner_Submissions
             'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc'                       => $bcc,
             'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
+            'form_id'                   => $form_id,
         );
 
         $mailer = new AV_Petitioner_Mailer($mailer_settings);

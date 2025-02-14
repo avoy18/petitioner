@@ -24,7 +24,10 @@ class AV_Petitioner_Admin_Edit_UI
         'add_consent_checkbox'    => '_petitioner_add_consent_checkbox',
         'add_legal_text'          => '_petitioner_add_legal_text',
         'consent_text'            => '_petitioner_consent_text',
-        'legal_text'              => '_petitioner_legal_text'
+        'legal_text'              => '_petitioner_legal_text',
+        'override_ty_email'       => '_petitioner_override_ty_email',
+        'ty_email'                => '_petitioner_ty_email',
+        'ty_email_subject'        => '_petitioner_ty_email_subject',
     ];
 
     public function __construct()
@@ -70,7 +73,11 @@ class AV_Petitioner_Admin_Edit_UI
         wp_nonce_field("save_petition_details", "petitioner_details_nonce");
         // Retrieve current meta values
         $meta_values = $this->get_meta_fields($post->ID);
+        $default_ty_subject = AV_Petitioner_Mailer::get_default_ty_subject();
+        $default_ty_email = AV_Petitioner_Mailer::get_default_ty_email();
+        $ty_email_subject = $meta_values['ty_email_subject'] ?: $default_ty_subject;
 
+        $ty_email = $meta_values['ty_email'] ?: $default_ty_email;
         // Sanitize values for safe use in HTML attributes
         $petitioner_info = [
             "form_id"                       => (int) $post->ID,
@@ -86,10 +93,13 @@ class AV_Petitioner_Admin_Edit_UI
             "approval_state"                => esc_html($meta_values['approval_state']),
             "letter"                        => wp_kses_post($meta_values['letter']),
             "add_legal_text"                => (bool) $meta_values['add_legal_text'],
-            "add_consent_checkbox"            => (bool) $meta_values['add_consent_checkbox'],
+            "add_consent_checkbox"          => (bool) $meta_values['add_consent_checkbox'],
             "consent_text"                  => sanitize_text_field($meta_values['consent_text']),
             "legal_text"                    => wp_kses_post($meta_values['legal_text']),
-            "export_url"                    => esc_url(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID))
+            "export_url"                    => esc_url(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID)),
+            "override_ty_email"             => (bool) $meta_values['override_ty_email'],
+            "ty_email"                      => wp_kses_post($ty_email),
+            "ty_email_subject"              => $ty_email_subject,
         ];
 
         $data_attributes = esc_attr(wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
@@ -147,11 +157,17 @@ class AV_Petitioner_Admin_Edit_UI
             'require_approval',
             'add_legal_text',
             'add_consent_checkbox',
-            'show_goal'
+            'show_goal',
+        ];
+
+        $wysiwyg_fields = [
+            'letter',
+            'legal_text',
+            'ty_email',
         ];
 
         foreach ($meta_values as $key => $value) {
-            if ($key === 'letter' || $key === 'legal_text') {
+            if (in_array($key, $wysiwyg_fields)) {
                 $value = wp_kses_post($value);
             } elseif ($key === 'cc_emails' || $key === 'email') {
                 $value = $this->sanitize_emails($value);
