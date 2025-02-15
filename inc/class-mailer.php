@@ -17,6 +17,7 @@ class AV_Petitioner_Mailer
     public $send_to_representative = true;
     public $headers = array();
     public $domain = '';
+    public $form_id = '';
 
     public function __construct($settings)
     {
@@ -29,6 +30,7 @@ class AV_Petitioner_Mailer
         $this->subject = $settings['subject'];
         $this->bcc = $settings['bcc'];
         $this->send_to_representative = $settings['send_to_representative'];
+        $this->form_id = $settings['form_id'];
 
         $this->domain = wp_parse_url(home_url(), PHP_URL_HOST);
 
@@ -63,20 +65,30 @@ class AV_Petitioner_Mailer
      */
     public function send_confirmation_email()
     {
-        $subject = __('Thank you for signing the petition!', 'petitioner');
-        // Translators: %s is the user's name
-        $message =  '<p>' . sprintf(__('Dear %s,</p>', 'petitioner'), $this->user_name) . '</p>';
-        $message .=  '<p>' . __('Thank you for signing the petition.', 'petitioner') . '</p>';
+        $subject = self::get_default_ty_subject();
+        $message = self::get_default_ty_email();
 
-        // Add the letter if the emails are being sent to rep
-        if ($this->send_to_representative) {
-            $message .=  '<p>' . __('Below is a copy of your letter:', 'petitioner') . '</p>';
-            $message .=  '<hr/>';
-            $message .= $this->letter;
+        $override_ty_email = get_post_meta($this->form_id, '_petitioner_override_ty_email', true);
 
-            // Translators: %s is the user's name
-            $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
+        if ($override_ty_email) {
+            $custom_subject = get_post_meta($this->form_id, '_petitioner_ty_email_subject', true);
+            $custom_message = get_post_meta($this->form_id, '_petitioner_ty_email', true);
+
+            $subject = $custom_subject ? $custom_subject : $subject;
+            $message = $custom_message ? $custom_message : $message;
+        } else {
+            // // Add the letter if the emails are being sent to rep
+            if ($this->send_to_representative) {
+                $message .=  '<p>' . __('Below is a copy of your letter:', 'petitioner') . '</p>';
+                $message .=  '<hr/>';
+                $message .= $this->letter;
+
+                // Translators: %s is the user's name
+                $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
+            }
         }
+
+        $message = $this->convert_email_variables($message);
 
         // Headers for plain text email
         $headers = array(
@@ -140,6 +152,49 @@ class AV_Petitioner_Mailer
         }
 
         return wp_mail($this->target_email, $subject, $message, $headers);
+    }
+
+    static public function get_default_ty_subject()
+    {
+        return __('Thank you for signing the petition!', 'petitioner');
+    }
+
+    static public function get_default_ty_email()
+    {
+        $message = '';
+        // Translators: {{user_name}} is the user's name
+        $message =  '<p>' . __('Dear {{user_name}},</p>', 'petitioner') . '</p>';
+        $message .=  '<p>' . __('Thank you for signing the petition.', 'petitioner') . '</p>';
+
+        return $message;
+    }
+
+    public function convert_email_variables($message)
+    {
+        $variables = [
+            'user_name'       => $this->user_name,
+            'petition_letter' => $this->letter,
+            'petition_goal'   => get_post_meta($this->form_id, '_petitioner_goal', true),
+        ];
+
+        foreach ($variables as $key => $value) {
+            $pattern = '/{{\s*' . preg_quote($key, '/') . '\s*}}/';
+
+            $sanitized_value = '';
+            switch ($key) {
+                case 'petition_letter':
+                    $sanitized_value = wp_kses_post($value);
+                    break;
+                case 'user_name':
+                default:
+                    $sanitized_value = sanitize_text_field($value);
+                    break;
+            }
+
+            $message = preg_replace($pattern, $sanitized_value, $message);
+        }
+
+        return $message;
     }
 
     // todo: add admin emails

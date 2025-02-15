@@ -3,8 +3,8 @@ Contributors: avoytenko
 Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
-Tested up to: 6.7.1
-Stable Tag: 0.2.4
+Tested up to: 6.7.2
+Stable Tag: 0.2.5
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,11 +19,13 @@ Petitioner is a WordPress plugin that allows you to create petitions and send th
 Features:
 - Unlimited petitions: Create and manage an unlimited number of petitions.
 - Ability to approve/deny petitions and set the default approval behavior (approved by default or declined)
+- Modern and responsive design: The plugin features a modern, mobile-friendly design for a seamless user experience.
 - Color customizations & custom CSS options
-- WYSIWYG editor: Easily edit petition letters using a modern WYSIWYG editor.
+- WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
 - Email functionality: Automatically send petition letters to representatives via email.
-- Modern and responsive design: The plugin features a modern, mobile-friendly design for a seamless user experience.
+- Spam protection with reCAPTCHA and hCaptcha
+- Gutenberg integration with a custom petition block!
 
 == Development and Source Code ==
 
@@ -52,10 +54,15 @@ Absolutely! Feel free to reach out through [this contact form](https://avoy.me/c
 
 1. Petition on the frontend
 2. Petition letter (frontend)
-3. Petition Gutenberg block
-4. Petition edit page
+3. Gutenberg block
+4. Edit page
+5. Form settings
+6. Submissions
 
 == Changelog ==
+
+= 0.2.5 =
+* Allow editing confirmation emails
 
 = 0.2.4 =
 * Bug fixes after the previous release

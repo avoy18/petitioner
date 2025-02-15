@@ -31,6 +31,9 @@ export default function FormFields(props) {
 		legal_text = '',
 		form_id = '',
 		add_consent_checkbox = false,
+		override_ty_email = false,
+		ty_email = '',
+		ty_email_subject = '',
 	} = window.petitionerData;
 
 	const [activeTab, setActiveTab] = useState('petition-details');
@@ -51,6 +54,9 @@ export default function FormFields(props) {
 		legal_text,
 		add_consent_checkbox,
 		consent_text,
+		override_ty_email,
+		ty_email,
+		ty_email_subject,
 	});
 
 	const updateFormState = useCallback((key, value) => {
