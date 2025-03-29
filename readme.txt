@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.7.2
-Stable Tag: 0.2.5
+Stable Tag: 0.2.6
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -60,6 +60,10 @@ Absolutely! Feel free to reach out through [this contact form](https://avoy.me/c
 6. Submissions
 
 == Changelog ==
+
+= 0.2.6 =
+* Fix custom CSS not applying with custom colors
+* Add confirmation emails
 
 = 0.2.5 =
 * Allow editing confirmation emails

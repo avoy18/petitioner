@@ -166,7 +166,7 @@ class AV_Petitioner_Setup
         }
 
         if (!empty($default_colors)) {
-            $custom_css .= '.petitioner {' . $default_colors . ' };';
+            $custom_css .= '.petitioner {' . $default_colors . ' } ';
         }
 
         $custom_css .= get_option('petitioner_custom_css', '');
