@@ -13,26 +13,27 @@ class AV_Petitioner_Mailer
     public $user_country;
     public $subject;
     public $letter;
-    public $bcc = true;
-    public $send_to_representative = true;
-    public $headers = array();
-    public $domain = '';
-    public $form_id = '';
+    public $bcc                     = true;
+    public $send_to_representative  = true;
+    public $send_confirmation       = true;
+    public $headers                 = array();
+    public $domain                  = '';
+    public $form_id                 = '';
 
     public function __construct($settings)
     {
-        $this->target_email = $settings['target_email'];
-        $this->target_cc_emails = $settings['target_cc_emails'];
-        $this->user_email = $settings['user_email'];
-        $this->user_name = $settings['user_name'];
-        $this->user_country = $settings['user_country'];
-        $this->letter = wpautop(wp_kses_post($settings['letter']));
-        $this->subject = $settings['subject'];
-        $this->bcc = $settings['bcc'];
-        $this->send_to_representative = $settings['send_to_representative'];
-        $this->form_id = $settings['form_id'];
-
-        $this->domain = wp_parse_url(home_url(), PHP_URL_HOST);
+        $this->target_email             = $settings['target_email'];
+        $this->target_cc_emails         = $settings['target_cc_emails'];
+        $this->user_email               = $settings['user_email'];
+        $this->user_name                = $settings['user_name'];
+        $this->user_country             = $settings['user_country'];
+        $this->letter                   = wpautop(wp_kses_post($settings['letter']));
+        $this->subject                  = $settings['subject'];
+        $this->bcc                      = $settings['bcc'];
+        $this->send_to_representative   = $settings['send_to_representative'];
+        $this->send_confirmation        = $settings['send_confirmation'];
+        $this->form_id                  = $settings['form_id'];
+        $this->domain                   = wp_parse_url(home_url(), PHP_URL_HOST);
 
         if ($this->domain === 'localhost') {
             $this->domain = 'localhost.com';
@@ -47,14 +48,18 @@ class AV_Petitioner_Mailer
     {
         $success = false;
 
-        $conf_result = $this->send_confirmation_email();
+        $conf_result = true;
+   
+        if($this->send_confirmation) {
+            $conf_result = $this->send_confirmation_email();
+            $success = $conf_result;
+        }
 
         if ($this->send_to_representative) {
             $rep_result = $this->send_representative_email();
             $success = $rep_result && $conf_result;
-        } else {
-            $success = $conf_result;
-        }
+        } 
+
 
         return $success;
     }
