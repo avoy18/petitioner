@@ -3,7 +3,6 @@ import { Button, ButtonGroup, SelectControl } from '@wordpress/components';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
-
 	const [submissions, setSubmissions] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -168,9 +167,19 @@ export default function Submissions() {
 		);
 	};
 
+	const ExportComponent = () => {
+		return <>
+		<Button variant="primary" href={export_url}>Export entries as CSV</Button>
+		</>
+	}
+
 	return (
 		<div id="AV_Petitioner_Submissions">
-			<h3>Submissions</h3>
+			<div>
+				<h3>Submissions</h3>
+
+				<ExportComponent/>
+			</div>
 
 			<div className="petitioner-admin__entries">
 				<p>Total: {total}</p>
