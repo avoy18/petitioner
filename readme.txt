@@ -13,12 +13,13 @@ Create and manage petitions with Petitioner, send them to the target email, and 
 
 == Description ==
 
-[Plugin homepage](https://avoy.me/petitioner).
+[Plugin homepage](https://getpetitioner.com).
 Petitioner is a WordPress plugin that allows you to create petitions and send them to the target email.
 
 Features:
 - Unlimited petitions: Create and manage an unlimited number of petitions.
 - Ability to approve/deny petitions and set the default approval behavior (approved by default or declined)
+- Option to send customizable email confirmations or thank you emails
 - Modern and responsive design: The plugin features a modern, mobile-friendly design for a seamless user experience.
 - Color customizations & custom CSS options
 - WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
@@ -48,7 +49,7 @@ Simply open the edit page for the petition in question and you will see a table 
 
 = Can I request features? =
 
-Absolutely! Feel free to reach out through [this contact form](https://avoy.me/contact)
+Absolutely! Feel free to reach out through [this contact form](https://getpetitioner.com/contact/)
 
 == Screenshots ==
 
