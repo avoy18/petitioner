@@ -263,7 +263,6 @@ class AV_Petitioner_Submissions_Controller
 
         // Handle missing response
         if (empty($captcha_response)) {
-            error_log(strtoupper($captcha_type) . ' response is missing.');
             return [
                 'success' => false,
                 'message' => __('CAPTCHA response is missing.', 'petitioner'),
@@ -286,7 +285,6 @@ class AV_Petitioner_Submissions_Controller
 
         // Handle connection failure
         if (is_wp_error($api_response)) {
-            error_log(strtoupper($captcha_type) . ' API request failed: ' . $api_response->get_error_message());
             return [
                 'success' => false,
                 'message' => __('CAPTCHA verification failed: Unable to connect.', 'petitioner'),
@@ -298,7 +296,6 @@ class AV_Petitioner_Submissions_Controller
 
         // Validate response
         if (!isset($body['success']) || !$body['success']) {
-            error_log(strtoupper($captcha_type) . ' validation failed: ' . print_r($body, true));
             return [
                 'success' => false,
                 'message' => __('CAPTCHA verification failed.', 'petitioner'),
