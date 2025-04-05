@@ -1,4 +1,5 @@
 .wp-admin.post-type-petitioner-petition {
+
 	#edit-slug-box,
 	#wp-admin-bar-view {
 		display: none;
@@ -59,5 +60,29 @@
 			border-radius: 4px;
 			max-width: 120px;
 		}
+	}
+
+	.petitioner-callout-box {
+
+		margin-top: 16px;
+		padding: 16px;
+		border-radius: 8px;
+		background: #f4f6fc;
+
+		h2 {
+			font-weight: bold;
+			padding-left: 0 !important;
+			margin-left: 0 !important;
+			text-transform: uppercase;
+		}
+	}
+
+	.text-ptr-red {
+		color: #e71845;
+	}
+
+	.ptr-action-buttons {
+		display: flex;
+		gap: 4px;
 	}
 }
