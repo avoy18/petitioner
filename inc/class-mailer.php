@@ -210,7 +210,6 @@ class AV_Petitioner_Mailer
 
         foreach ($variables as $key => $value) {
             $pattern = '/{{\s*' . preg_quote($key, '/') . '\s*}}/';
-            error_log($value);
             $sanitized_value = '';
 
             switch ($key) {
@@ -224,8 +223,6 @@ class AV_Petitioner_Mailer
                     $sanitized_value = sanitize_text_field($value);
                     break;
             }
-
-            error_log($sanitized_value);
 
             $message = preg_replace($pattern, $sanitized_value, $message);
         }

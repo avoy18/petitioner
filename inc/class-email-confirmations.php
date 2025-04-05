@@ -30,7 +30,7 @@ class AV_Email_Confirmations
     static function get_confirmation_token($sid)
     {
         $sid                = intval($sid);
-        $current_submission = AV_Petitioner_Submissions::get_submission_by_id($sid);
+        $current_submission = AV_Petitioner_Submissions_Model::get_submission_by_id($sid);
 
         return !empty($current_submission->confirmation_token) ? $current_submission->confirmation_token : '';
     }
@@ -70,7 +70,7 @@ class AV_Email_Confirmations
         $id     = absint($_GET['sid']);
         $token  = sanitize_text_field(wp_unslash($_GET['token']));
 
-        $submission = AV_Petitioner_Submissions::get_submission_by_id($id);
+        $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
 
         if (!$submission) {
             return;
@@ -78,7 +78,7 @@ class AV_Email_Confirmations
 
         if ($token === $submission->confirmation_token) {
             // Update status and remove the token
-            $updated = AV_Petitioner_Submissions::update_submission($id, [
+            $updated = AV_Petitioner_Submissions_Model::update_submission($id, [
                 'approval_status'       => 'Confirmed',
                 'confirmation_token'    => null
             ]);

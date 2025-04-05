@@ -17,9 +17,8 @@ function FormArea() {
 }
 
 const editorContainer = document.getElementById('petitioner-admin-form');
-window.petitionerData = editorContainer.dataset?.avPtrInfo
-	? JSON.parse(editorContainer.dataset.avPtrInfo)
-	: {};
+const jsonContainer = document.getElementById('petitioner-json-data');
+window.petitionerData = jsonContainer ? JSON.parse(jsonContainer?.textContent) : {};
 
 if (editorContainer) {
 	const editorRoot = createRoot(editorContainer);

@@ -6,6 +6,16 @@ import PTRichText from './PTRichText';
  * ✅ Petition Details Component
  */
 export default function PetitionDetails({ formState, updateFormState }) {
+	const defaultValues = window.petitionerData?.default_values;	
+	const confirmEmails = formState.approval_state === 'Email';
+	let defaultTYSubject = defaultValues?.ty_email_subject || '';
+	let defaultTYEmailContent = defaultValues?.ty_email || '';
+
+	if(confirmEmails){
+		defaultTYSubject = defaultValues?.ty_email_subject_confirm || 'Thank you for signing the {{petition_title}}';
+		defaultTYEmailContent = defaultValues?.ty_email_confirm || 'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
+	}
+
 	return (
 		<>
 			<p>
@@ -118,7 +128,8 @@ export default function PetitionDetails({ formState, updateFormState }) {
 				<br />
 				<small>
 					When enabled, submissions will be saved as drafts and will
-					require approval or an email confirmation before being published.
+					require approval or an email confirmation before being
+					published.
 				</small>
 			</p>
 
@@ -173,11 +184,20 @@ export default function PetitionDetails({ formState, updateFormState }) {
 					}
 				/>
 				<label htmlFor="petitioner_override_ty_email">
-					Override the thank you email?
+					Override the confirmation email?
 					<br />
 					<small>
 						Use this to customize the thank you email sent when
 						submitting a petition.
+						{confirmEmails && formState.override_ty_email && (
+							<>
+								<br />
+								<strong style={{ color: 'salmon' }}>
+									Make sure to include the email confirmation
+									variable. {'{{confirmation_link}}'}
+								</strong>
+							</>
+						)}
 					</small>
 				</label>
 			</p>
@@ -190,7 +210,7 @@ export default function PetitionDetails({ formState, updateFormState }) {
 							type="text"
 							required
 							label="Thank you email subject *"
-							value={formState.ty_email_subject}
+							value={formState?.ty_email_subject.length > 0 ? formState.ty_email_subject : defaultTYSubject}
 							name="petitioner_ty_email_subject"
 							id="petitioner_ty_email_subject"
 							onChange={(value) =>
@@ -217,10 +237,17 @@ export default function PetitionDetails({ formState, updateFormState }) {
 										disabled
 										value={`{{petition_goal}}`}
 									/>
+									{formState.approval_state === 'Email' && (
+										<input
+											disabled
+											style={{ minWidth: 140 }}
+											value={`{{confirmation_link}}`}
+										/>
+									)}
 								</div>
 							</div>
 						}
-						value={formState.ty_email}
+						value={ formState?.ty_email?.length > 0 ? formState.ty_email : defaultTYEmailContent }
 						onChange={(value) => updateFormState('ty_email', value)}
 						height={150}
 					/>
