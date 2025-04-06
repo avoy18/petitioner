@@ -28,6 +28,7 @@ class AV_Petitioner_Admin_Edit_UI
         'override_ty_email'       => '_petitioner_override_ty_email',
         'ty_email'                => '_petitioner_ty_email',
         'ty_email_subject'        => '_petitioner_ty_email_subject',
+        'form_fields'             => '_petitioner_form_fields',
     ];
 
     public function __construct()
@@ -102,7 +103,9 @@ class AV_Petitioner_Admin_Edit_UI
                 "ty_email"                      => AV_Petitioner_Mailer::get_default_ty_email(),
                 'ty_email_subject_confirm'      => AV_Petitioner_Mailer::get_default_ty_subject(true),
                 'ty_email_confirm'              => AV_Petitioner_Mailer::get_default_ty_email(true),
-            ]
+            ],
+            // new way of handling the form fields
+            "form_fields"                   => !empty($meta_values['form_fields']) ? json_decode($meta_values['form_fields'], true) : [],
         ];
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

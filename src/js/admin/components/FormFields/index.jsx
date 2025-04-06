@@ -9,6 +9,7 @@ import {
 import { useState, useCallback, useRef, useMemo } from 'react';
 import Submissions from './Submissions';
 import FormSettings from './FormSettings';
+import FormBuilder from './FormBuilder';
 import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
 
@@ -85,6 +86,15 @@ export default function FormFields(props) {
 				className: 'petition-tablink',
 			},
 			{
+				name: 'form-builder',
+				title: (
+					<>
+						<Dashicon icon="welcome-write-blog" /> Form builder
+					</>
+				),
+				className: 'petition-tablink',
+			},
+			{
 				name: 'submissions',
 				title: (
 					<>
@@ -124,6 +134,14 @@ export default function FormFields(props) {
 					className={`petitioner-tab petitioner-tab ${activeTab === 'form-settings' ? 'active' : ''}`}
 				>
 					<FormSettings
+						formState={formState}
+						updateFormState={updateFormState}
+					/>
+				</div>
+				<div
+					className={`petitioner-tab petitioner-tab ${activeTab === 'form-builder' ? 'active' : ''}`}
+				>
+					<FormBuilder
 						formState={formState}
 						updateFormState={updateFormState}
 					/>
