@@ -418,8 +418,7 @@ class AV_Petitioner_Frontend
 
         $goal = intval($petitioner_goal);
 
-        $submissions = new AV_Petitioner_Submissions($form_id);
-        $total_submissions = $submissions->get_submission_count();
+        $total_submissions = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
         $progress = 0;
 
         if ($total_submissions > 0) {

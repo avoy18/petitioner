@@ -72,12 +72,9 @@ class AV_Petitioner_Admin_Edit_UI
     {
         wp_nonce_field("save_petition_details", "petitioner_details_nonce");
         // Retrieve current meta values
-        $meta_values = $this->get_meta_fields($post->ID);
-        $default_ty_subject = AV_Petitioner_Mailer::get_default_ty_subject();
-        $default_ty_email = AV_Petitioner_Mailer::get_default_ty_email();
-        $ty_email_subject = $meta_values['ty_email_subject'] ?: $default_ty_subject;
-
-        $ty_email = $meta_values['ty_email'] ?: $default_ty_email;
+        $meta_values        = $this->get_meta_fields($post->ID);
+        $ty_email_subject   = $meta_values['ty_email_subject'] ?: '';
+        $ty_email           = $meta_values['ty_email'] ?: '';
         // Sanitize values for safe use in HTML attributes
         $petitioner_info = [
             "form_id"                       => (int) $post->ID,
@@ -100,12 +97,19 @@ class AV_Petitioner_Admin_Edit_UI
             "override_ty_email"             => (bool) $meta_values['override_ty_email'],
             "ty_email"                      => wp_kses_post($ty_email),
             "ty_email_subject"              => $ty_email_subject,
+            "default_values"                => [
+                "ty_email_subject"              => AV_Petitioner_Mailer::get_default_ty_subject(),
+                "ty_email"                      => AV_Petitioner_Mailer::get_default_ty_email(),
+                'ty_email_subject_confirm'      => AV_Petitioner_Mailer::get_default_ty_subject(true),
+                'ty_email_confirm'              => AV_Petitioner_Mailer::get_default_ty_email(true),
+            ]
         ];
 
-        $data_attributes = esc_attr(wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 ?>
         <div class="petitioner-admin__form ptr-is-loading">
-            <div data-av-ptr-info='<?php echo $data_attributes; ?>' id="petitioner-admin-form"></div>
+            <script id="petitioner-json-data" type="text/json"><?php echo $data_attributes; ?></script>
+            <div id="petitioner-admin-form"></div>
         </div>
 <?php
     }

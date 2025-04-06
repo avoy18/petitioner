@@ -3,7 +3,6 @@ import { Button, ButtonGroup, SelectControl } from '@wordpress/components';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
-
 	const [submissions, setSubmissions] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -11,8 +10,16 @@ export default function Submissions() {
 		window.petitionerData.require_approval
 	);
 	const [defaultApprovalState, setDefaultApprovalState] = useState(
-		window.petitionerData.approval_state
+		() => {
+			if(window.petitionerData.approval_state === 'Email'){
+				return 'Declined'
+			}
+
+			return window.petitionerData.approval_state;
+		}
 	);
+
+	const showConfirmEmail = window.petitionerData.approval_state === 'Email';
 
 	const perPage = 100;
 
@@ -168,9 +175,23 @@ export default function Submissions() {
 		);
 	};
 
+	const ExportComponent = () => {
+		return (
+			<>
+				<Button variant="primary" href={export_url}>
+					Export entries as CSV
+				</Button>
+			</>
+		);
+	};
+
 	return (
 		<div id="AV_Petitioner_Submissions">
-			<h3>Submissions</h3>
+			<div>
+				<h3>Submissions</h3>
+
+				<ExportComponent />
+			</div>
 
 			<div className="petitioner-admin__entries">
 				<p>Total: {total}</p>

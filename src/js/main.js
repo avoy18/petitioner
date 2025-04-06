@@ -7,3 +7,11 @@ const allPetitions = document.querySelectorAll('.petitioner');
 allPetitions.forEach((petition) => {
 	new PetitionerForm(petition);
 });
+
+if (window.location.search.includes('petitioner=confirmed')) {
+	alert('Thank you for confirming your email!');
+}
+
+if (window.location.search.includes('petitioner=invalid')) {
+	alert('Something went wrong - could not confirm your email');
+}

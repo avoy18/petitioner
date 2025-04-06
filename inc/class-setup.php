@@ -32,12 +32,12 @@ class AV_Petitioner_Setup
         new AV_Petitioner_Admin_Settings_UI();
 
         // api endpoints
-        add_action('wp_ajax_petitioner_form_submit', array('AV_Petitioner_Submissions', 'api_handle_form_submit'));
-        add_action('wp_ajax_nopriv_petitioner_form_submit', array('AV_Petitioner_Submissions', 'api_handle_form_submit'));
-        add_action('wp_ajax_petitioner_fetch_submissions', array('AV_Petitioner_Submissions', 'api_fetch_form_submissions'));
-        add_action('wp_ajax_petitioner_change_status', array('AV_Petitioner_Submissions', 'api_change_submission_status'));
+        add_action('wp_ajax_petitioner_form_submit', array('AV_Petitioner_Submissions_Controller', 'api_handle_form_submit'));
+        add_action('wp_ajax_nopriv_petitioner_form_submit', array('AV_Petitioner_Submissions_Controller', 'api_handle_form_submit'));
+        add_action('wp_ajax_petitioner_fetch_submissions', array('AV_Petitioner_Submissions_Controller', 'api_fetch_form_submissions'));
+        add_action('wp_ajax_petitioner_change_status', array('AV_Petitioner_Submissions_Controller', 'api_change_submission_status'));
 
-        add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_Submissions', 'api_petitioner_export_csv'));
+        add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_Submissions_Controller', 'admin_petitioner_export_csv'));
 
         // gutenberg
         add_action('init', array($this, 'register_petition_form_block'));
@@ -48,7 +48,7 @@ class AV_Petitioner_Setup
     public static function plugin_activation()
     {
         add_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
-        AV_Petitioner_Submissions::create_db_table();
+        AV_Petitioner_Submissions_Model::create_db_table();
     }
 
     /**
@@ -166,7 +166,7 @@ class AV_Petitioner_Setup
         }
 
         if (!empty($default_colors)) {
-            $custom_css .= '.petitioner {' . $default_colors . ' };';
+            $custom_css .= '.petitioner {' . $default_colors . ' } ';
         }
 
         $custom_css .= get_option('petitioner_custom_css', '');

@@ -13,26 +13,30 @@ class AV_Petitioner_Mailer
     public $user_country;
     public $subject;
     public $letter;
-    public $bcc = true;
-    public $send_to_representative = true;
-    public $headers = array();
-    public $domain = '';
-    public $form_id = '';
+    public $bcc                     = true;
+    public $send_to_representative  = true;
+    public $send_ty_email           = true;
+    public $confirm_emails          = false;
+    public $headers                 = array();
+    public $domain                  = '';
+    public $form_id                 = '';
+    public $submission_id           = false;
 
     public function __construct($settings)
     {
-        $this->target_email = $settings['target_email'];
-        $this->target_cc_emails = $settings['target_cc_emails'];
-        $this->user_email = $settings['user_email'];
-        $this->user_name = $settings['user_name'];
-        $this->user_country = $settings['user_country'];
-        $this->letter = wpautop(wp_kses_post($settings['letter']));
-        $this->subject = $settings['subject'];
-        $this->bcc = $settings['bcc'];
-        $this->send_to_representative = $settings['send_to_representative'];
-        $this->form_id = $settings['form_id'];
-
-        $this->domain = wp_parse_url(home_url(), PHP_URL_HOST);
+        $this->target_email             = $settings['target_email'];
+        $this->target_cc_emails         = $settings['target_cc_emails'];
+        $this->user_email               = $settings['user_email'];
+        $this->user_name                = $settings['user_name'];
+        $this->user_country             = $settings['user_country'];
+        $this->letter                   = wpautop(wp_kses_post($settings['letter']));
+        $this->subject                  = $settings['subject'];
+        $this->bcc                      = $settings['bcc'];
+        $this->send_to_representative   = $settings['send_to_representative'];
+        $this->confirm_emails           = $settings['confirm_emails'];
+        $this->form_id                  = $settings['form_id'];
+        $this->submission_id            = $settings['submission_id'];
+        $this->domain                   = wp_parse_url(home_url(), PHP_URL_HOST);
 
         if ($this->domain === 'localhost') {
             $this->domain = 'localhost.com';
@@ -47,14 +51,16 @@ class AV_Petitioner_Mailer
     {
         $success = false;
 
-        $conf_result = $this->send_confirmation_email();
+        $conf_result = true;
+
+        $conf_result = $this->ty_email();
+        $success = $conf_result;
 
         if ($this->send_to_representative) {
-            $rep_result = $this->send_representative_email();
+            $rep_result = $this->representative_email();
             $success = $rep_result && $conf_result;
-        } else {
-            $success = $conf_result;
         }
+
 
         return $success;
     }
@@ -63,10 +69,10 @@ class AV_Petitioner_Mailer
      * Sends the petition details to the user
      * @return bool
      */
-    public function send_confirmation_email()
+    public function ty_email()
     {
-        $subject = self::get_default_ty_subject();
-        $message = self::get_default_ty_email();
+        $subject = self::get_default_ty_subject($this->confirm_emails);
+        $message = self::get_default_ty_email($this->confirm_emails);
 
         $override_ty_email = get_post_meta($this->form_id, '_petitioner_override_ty_email', true);
 
@@ -103,7 +109,7 @@ class AV_Petitioner_Mailer
      * Sends the petition details to the admin or representative
      * @return bool
      */
-    public function send_representative_email()
+    public function representative_email()
     {
         $subject = $this->subject;
         $message =  $this->letter;
@@ -154,38 +160,65 @@ class AV_Petitioner_Mailer
         return wp_mail($this->target_email, $subject, $message, $headers);
     }
 
-    static public function get_default_ty_subject()
+    static public function get_default_ty_subject($confirm_emails = false)
     {
-        return __('Thank you for signing the petition!', 'petitioner');
+        if (!$confirm_emails) {
+            return __('Thank you for signing the petition!', 'petitioner');
+        }
+
+        return __('Please confirm your email.', 'petitioner');
     }
 
-    static public function get_default_ty_email()
+    static public function get_default_ty_email($confirm_emails = false)
     {
         $message = '';
         // Translators: {{user_name}} is the user's name
         $message =  '<p>' . __('Dear {{user_name}},</p>', 'petitioner') . '</p>';
         $message .=  '<p>' . __('Thank you for signing the petition.', 'petitioner') . '</p>';
 
+        if ($confirm_emails) {
+            $message .=  '<p>' . __('Please confirm your email by clicking the link below.', 'petitioner') . '</p>';
+            $message .=  '<p>{{confirmation_link}}</p>';
+        }
+
         return $message;
     }
 
     public function convert_email_variables($message)
     {
+        $confirmation_link = '';
+
+        if ($this->confirm_emails) {
+            $confirmation_link = add_query_arg(
+                array(
+                    'petitioner_confirm' => 1,
+                    'token'              => AV_Email_Confirmations::get_confirmation_token($this->submission_id),
+                    'sid'                => $this->submission_id,
+                ),
+                get_site_url()
+            );
+
+            $confirmation_link = '<a href="' . esc_url($confirmation_link) . '">' . esc_html__('Confirm your email.', 'petitioner') . '</a>';
+        }
+
         $variables = [
-            'user_name'       => $this->user_name,
-            'petition_letter' => $this->letter,
-            'petition_goal'   => get_post_meta($this->form_id, '_petitioner_goal', true),
+            'user_name'         => $this->user_name,
+            'petition_letter'   => $this->letter,
+            'petition_goal'     => get_post_meta($this->form_id, '_petitioner_goal', true),
+            'confirmation_link' => $confirmation_link
         ];
 
         foreach ($variables as $key => $value) {
             $pattern = '/{{\s*' . preg_quote($key, '/') . '\s*}}/';
-
             $sanitized_value = '';
+
             switch ($key) {
                 case 'petition_letter':
                     $sanitized_value = wp_kses_post($value);
                     break;
-                case 'user_name':
+                case 'confirmation_link':
+                    $sanitized_value = wp_kses_post($value);
+                    break;
                 default:
                     $sanitized_value = sanitize_text_field($value);
                     break;
