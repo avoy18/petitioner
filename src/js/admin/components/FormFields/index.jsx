@@ -38,7 +38,7 @@ export default function FormFields(props) {
 		ty_email_subject = '',
 	} = window.petitionerData;
 
-	const [activeTab, setActiveTab] = useState('petition-details');
+	const [activeTab, setActiveTab] = useState('form-builder');
 
 	const [formState, setFormState] = useState({
 		title,
@@ -123,6 +123,14 @@ export default function FormFields(props) {
 
 			<div className={`petitioner-tab-content`}>
 				<div
+					className={`petitioner-tab petitioner-tab ${activeTab === 'form-builder' ? 'active' : ''}`}
+				>
+					<FormBuilder
+						formState={formState}
+						updateFormState={updateFormState}
+					/>
+				</div>
+				<div
 					className={`petitioner-tab petitioner-tab ${activeTab === 'petition-details' ? 'active' : ''}`}
 				>
 					<PetitionDetails
@@ -138,14 +146,7 @@ export default function FormFields(props) {
 						updateFormState={updateFormState}
 					/>
 				</div>
-				<div
-					className={`petitioner-tab petitioner-tab ${activeTab === 'form-builder' ? 'active' : ''}`}
-				>
-					<FormBuilder
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				</div>
+
 				<div
 					className={`petitioner-tab ${activeTab === 'submissions' ? 'active' : ''}`}
 				>

@@ -85,4 +85,21 @@
 		display: flex;
 		gap: 4px;
 	}
+
+	.ptr-field-wrapper{
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.ptr-visual-position {
+		width: 100%;
+		border: 1px solid #efefef;
+		background: #fbf0f0;
+		height: 5px;
+
+		&.active{
+			background: blue;
+		}
+	}
 }
