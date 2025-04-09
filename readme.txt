@@ -62,6 +62,10 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 
 == Changelog ==
 
+= 0.2.7 =
+* Add better DB schema handling
+* 
+
 = 0.2.6 =
 * Fix export button not showing up
 * Fix custom CSS not applying with custom colors

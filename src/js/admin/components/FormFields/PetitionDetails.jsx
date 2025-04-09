@@ -6,14 +6,18 @@ import PTRichText from './PTRichText';
  * ✅ Petition Details Component
  */
 export default function PetitionDetails({ formState, updateFormState }) {
-	const defaultValues = window.petitionerData?.default_values;	
+	const defaultValues = window.petitionerData?.default_values;
 	const confirmEmails = formState.approval_state === 'Email';
 	let defaultTYSubject = defaultValues?.ty_email_subject || '';
 	let defaultTYEmailContent = defaultValues?.ty_email || '';
 
-	if(confirmEmails){
-		defaultTYSubject = defaultValues?.ty_email_subject_confirm || 'Thank you for signing the {{petition_title}}';
-		defaultTYEmailContent = defaultValues?.ty_email_confirm || 'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
+	if (confirmEmails) {
+		defaultTYSubject =
+			defaultValues?.ty_email_subject_confirm ||
+			'Thank you for signing the {{petition_title}}';
+		defaultTYEmailContent =
+			defaultValues?.ty_email_confirm ||
+			'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
 	}
 
 	return (
@@ -49,32 +53,40 @@ export default function PetitionDetails({ formState, updateFormState }) {
 				</label>
 			</p>
 
-			<p>
-				<TextControl
-					style={{ width: '100%' }}
-					required
-					type="text"
-					label="Petition target email *"
-					value={formState.email}
-					help="(can have multiple, separated by commas)"
-					name="petitioner_email"
-					id="petitioner_email"
-					onChange={(value) => updateFormState('email', value)}
-				/>
-			</p>
+			{formState.send_to_representative && (
+				<>
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							required
+							type="text"
+							label="Petition target email *"
+							value={formState.email}
+							help="(can have multiple, separated by commas)"
+							name="petitioner_email"
+							id="petitioner_email"
+							onChange={(value) =>
+								updateFormState('email', value)
+							}
+						/>
+					</p>
 
-			<p>
-				<TextControl
-					style={{ width: '100%' }}
-					type="text"
-					label="Petition CC emails"
-					value={formState.cc_emails}
-					help="(can have multiple, separated by commas)"
-					name="petitioner_cc_emails"
-					id="petitioner_cc_emails"
-					onChange={(value) => updateFormState('cc_emails', value)}
-				/>
-			</p>
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							type="text"
+							label="Petition CC emails"
+							value={formState.cc_emails}
+							help="(can have multiple, separated by commas)"
+							name="petitioner_cc_emails"
+							id="petitioner_cc_emails"
+							onChange={(value) =>
+								updateFormState('cc_emails', value)
+							}
+						/>
+					</p>
+				</>
+			)}
 
 			<hr />
 			<h3>Emails</h3>
@@ -210,7 +222,11 @@ export default function PetitionDetails({ formState, updateFormState }) {
 							type="text"
 							required
 							label="Thank you email subject *"
-							value={formState?.ty_email_subject.length > 0 ? formState.ty_email_subject : defaultTYSubject}
+							value={
+								formState?.ty_email_subject.length > 0
+									? formState.ty_email_subject
+									: defaultTYSubject
+							}
 							name="petitioner_ty_email_subject"
 							id="petitioner_ty_email_subject"
 							onChange={(value) =>
@@ -247,7 +263,11 @@ export default function PetitionDetails({ formState, updateFormState }) {
 								</div>
 							</div>
 						}
-						value={ formState?.ty_email?.length > 0 ? formState.ty_email : defaultTYEmailContent }
+						value={
+							formState?.ty_email?.length > 0
+								? formState.ty_email
+								: defaultTYEmailContent
+						}
 						onChange={(value) => updateFormState('ty_email', value)}
 						height={150}
 					/>

@@ -8,6 +8,8 @@ class AV_Petitioner_Setup
 {
     public function __construct()
     {
+        // db schema
+        add_action('plugins_loaded', [$this, 'maybe_update_schema']);
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
@@ -19,6 +21,7 @@ class AV_Petitioner_Setup
 
             return $attributes;
         });
+
 
         // cpt
         add_action('init', array($this, 'register_post_types'));
@@ -49,6 +52,17 @@ class AV_Petitioner_Setup
     {
         add_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
         AV_Petitioner_Submissions_Model::create_db_table();
+    }
+
+    public function maybe_update_schema()
+    {
+        $current_version = get_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
+
+        if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
+            // Update the database schema or perform any other necessary updates
+            AV_Petitioner_Submissions_Model::create_db_table();
+            update_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
+        }
     }
 
     /**
