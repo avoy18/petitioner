@@ -68,6 +68,7 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 * Add a honeypot option for additional spam protection
 * Create custom filters (petitioner_send_ty_email, petitioner_send_to_representative, petitioner_after_submission)
 * New shortcodes (petitioner-goal, petitioner-submission-count, petitioner-goal-progress-ui, petitioner-letter-modal-ui)
+* Minor bug fixes and UI improvements
 
 = 0.2.6 =
 * Fix export button not showing up
