@@ -49,10 +49,16 @@ class AV_Petitioner_Mailer
      */
     public function send_emails()
     {
-        $success                = false;
-        $conf_result            = true;
-        $should_send_ty_email   = apply_filters('petitioner_send_ty_email', true, $this->form_id);
-        $should_send_to_rep     = apply_filters('petitioner_send_to_representative', $this->send_to_representative, $this->form_id);
+        $success                = true;
+        $conf_result            = false;
+        $filter_args            = [
+            'form_id'       => $this->form_id,
+            'submission_id' => $this->submission_id,
+            'user_name'     => $this->user_name,
+        ]; // what data to pass to the filter
+
+        $should_send_ty_email   = apply_filters('petitioner_send_ty_email', true, $filter_args);
+        $should_send_to_rep     = apply_filters('petitioner_send_to_representative', $this->send_to_representative, $filter_args);
 
         if ($should_send_ty_email) {
             $conf_result    = $this->ty_email();
