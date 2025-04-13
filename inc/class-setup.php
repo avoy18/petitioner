@@ -26,11 +26,10 @@ class AV_Petitioner_Setup
         // cpt
         add_action('init', array($this, 'register_post_types'));
 
-        // shortcodes
-        $this->register_shortcodes();
-
         // edit admin fields
         new AV_Petitioner_Admin_Edit_UI();
+        // shortcodes
+        new AV_Petitioner_Shortcodes();
         // settings admin fields
         new AV_Petitioner_Admin_Settings_UI();
 
@@ -210,16 +209,6 @@ class AV_Petitioner_Setup
 
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array('wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components'), AV_PETITIONER_PLUGIN_VERSION, true);
-    }
-
-    /**
-     * Initialize shortcodes
-     */
-    public function register_shortcodes()
-    {
-        $frontend = new AV_Petitioner_Frontend();
-
-        add_shortcode('petitioner-form', [$frontend, 'display_form']);
     }
 
     public function register_petition_form_block()

@@ -24,7 +24,8 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-email-confirmations.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-mailer.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-frontend.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-frontend-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-shortcodes.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-edit-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-settings-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';

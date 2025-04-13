@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-class AV_Petitioner_Frontend
+class AV_Petitioner_Frontend_UI
 {
 
     public $country_list;
