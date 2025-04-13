@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.7.2
-Stable Tag: 0.2.6
+Stable Tag: 0.2.7
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
