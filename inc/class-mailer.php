@@ -49,18 +49,21 @@ class AV_Petitioner_Mailer
      */
     public function send_emails()
     {
-        $success = false;
+        $success                = false;
+        $conf_result            = true;
+        $should_send_ty_email   = apply_filters('petitioner_send_ty_email', true, $this->form_id);
+        $should_send_to_rep     = apply_filters('petitioner_send_to_representative', $this->send_to_representative, $this->form_id);
 
-        $conf_result = true;
+        if ($should_send_ty_email) {
+            $conf_result    = $this->ty_email();
+            $success        = $conf_result;
+        }
 
-        $conf_result = $this->ty_email();
-        $success = $conf_result;
 
-        if ($this->send_to_representative) {
+        if ($should_send_to_rep) {
             $rep_result = $this->representative_email();
             $success = $rep_result && $conf_result;
         }
-
 
         return $success;
     }
@@ -255,5 +258,4 @@ class AV_Petitioner_Mailer
         }
         return 'petition-no-reply@' . $domain;
     }
-
 }

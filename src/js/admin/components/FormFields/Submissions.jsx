@@ -19,8 +19,6 @@ export default function Submissions() {
 		}
 	);
 
-	const showConfirmEmail = window.petitionerData.approval_state === 'Email';
-
 	const perPage = 100;
 
 	const fetchData = async () => {
