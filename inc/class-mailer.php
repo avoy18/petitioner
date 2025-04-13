@@ -18,9 +18,9 @@ class AV_Petitioner_Mailer
     public $send_ty_email           = true;
     public $confirm_emails          = false;
     public $headers                 = array();
-    public $domain                  = '';
     public $form_id                 = '';
     public $submission_id           = false;
+    public $from_field              = false;
 
     public function __construct($settings)
     {
@@ -36,10 +36,10 @@ class AV_Petitioner_Mailer
         $this->confirm_emails           = $settings['confirm_emails'];
         $this->form_id                  = $settings['form_id'];
         $this->submission_id            = $settings['submission_id'];
-        $this->domain                   = wp_parse_url(home_url(), PHP_URL_HOST);
+        $this->from_field               = $settings['from_field'];
 
-        if ($this->domain === 'localhost') {
-            $this->domain = 'localhost.com';
+        if (empty($this->from_field)) {
+            $this->from_field = self::get_default_from_field();
         }
     }
 
@@ -99,7 +99,7 @@ class AV_Petitioner_Mailer
         // Headers for plain text email
         $headers = array(
             'Content-Type: text/html; charset=UTF-8',
-            'From: petition-no-reply@' . $this->domain
+            'From: ' . $this->from_field
         );
         // Send the email
         return wp_mail($this->user_email, $subject, $message, $headers);
@@ -120,7 +120,7 @@ class AV_Petitioner_Mailer
         // Headers for plain text email
         $headers = array(
             'Content-Type: text/html; charset=UTF-8',
-            'From: petition-no-reply@' . $this->domain
+            'From: ' . $this->from_field
         );
 
         if (!empty($this->target_cc_emails)) {
@@ -245,4 +245,15 @@ class AV_Petitioner_Mailer
     //     // Send the email
     //     return wp_mail($admin_email, $subject, $message, $headers);
     // }
+
+    static public function get_default_from_field()
+    {
+        $domain = wp_parse_url(home_url(), PHP_URL_HOST);
+
+        if ($domain === 'localhost') {
+            $domain = 'localhost.com';
+        }
+        return 'petition-no-reply@' . $domain;
+    }
+
 }

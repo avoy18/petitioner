@@ -35,6 +35,7 @@ export default function FormFields(props) {
 		override_ty_email = false,
 		ty_email = '',
 		ty_email_subject = '',
+		from_field = '',
 	} = window.petitionerData;
 
 	const [activeTab, setActiveTab] = useState('petition-details');
@@ -58,6 +59,7 @@ export default function FormFields(props) {
 		override_ty_email,
 		ty_email,
 		ty_email_subject,
+		from_field
 	});
 
 	const updateFormState = useCallback((key, value) => {

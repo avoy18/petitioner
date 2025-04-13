@@ -10,6 +10,7 @@ export default function PetitionDetails({ formState, updateFormState }) {
 	const confirmEmails = formState.approval_state === 'Email';
 	let defaultTYSubject = defaultValues?.ty_email_subject || '';
 	let defaultTYEmailContent = defaultValues?.ty_email || '';
+	const defaultFromField = defaultValues?.from_field || '';
 
 	if (confirmEmails) {
 		defaultTYSubject =
@@ -87,6 +88,20 @@ export default function PetitionDetails({ formState, updateFormState }) {
 					</p>
 				</>
 			)}
+
+			<p>
+				<TextControl
+					style={{ width: '100%' }}
+					label="From field"
+					value={formState.from_field}
+					defaultValue={defaultFromField}
+					type="email"
+					help={`This is the email address that will appear in the 'From' field of the email. If empty will default to ${defaultFromField}.`}
+					name="petitioner_from_field"
+					id="petitioner_from_field"
+					onChange={(value) => updateFormState('from_field', value)}
+				/>
+			</p>
 
 			<hr />
 			<h3>Emails</h3>

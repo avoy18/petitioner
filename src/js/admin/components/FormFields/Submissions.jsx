@@ -31,7 +31,6 @@ export default function Submissions() {
 			const data = await response.json();
 
 			if (data.success) {
-				// console.log(data);
 				setTotal(data.data.total);
 				setSubmissions(data.data.submissions);
 			} else {

@@ -114,7 +114,8 @@ class AV_Petitioner_Submissions_Controller
             'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
             'form_id'                   => $form_id,
             'confirm_emails'            => $default_approval_status === 'Email',
-            'submission_id'             => $submission_id
+            'submission_id'             => $submission_id,
+            'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
         );
 
         $mailer = new AV_Petitioner_Mailer($mailer_settings);
