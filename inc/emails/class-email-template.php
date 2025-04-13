@@ -40,4 +40,20 @@ class AV_Petitioner_Email_Template
         }
         return 'petition-no-reply@' . $domain;
     }
+
+    static public function get_styled_message($message)
+    {
+        $final_html = '
+        <div style="background-color: #f2f4f6; padding: 48px 8px; text-align: center;">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 6px; overflow: hidden;">
+                <tr>
+                    <td style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; color: #333333; text-align: left;">
+                        ' . $message . '
+                    </td>
+                </tr>
+            </table>
+        </div>';
+
+        return $final_html;
+    }
 }

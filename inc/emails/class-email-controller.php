@@ -13,6 +13,7 @@ class AV_Petitioner_Email_Controller
 {
     public static function send($to, $subject, $message, $headers = [])
     {
+        $message = AV_Petitioner_Email_Template::get_styled_message($message);
         /**
          * In case the email is sent to multiple recipients, 
          * we need to split the emails and send them one by one
