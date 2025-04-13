@@ -29,6 +29,7 @@ class AV_Petitioner_Admin_Edit_UI
         'ty_email'                => '_petitioner_ty_email',
         'ty_email_subject'        => '_petitioner_ty_email_subject',
         'from_field'              => '_petitioner_from_field',
+        'add_honeypot'            => '_petitioner_add_honeypot',
     ];
 
     public function __construct()
@@ -97,6 +98,7 @@ class AV_Petitioner_Admin_Edit_UI
             "ty_email"                      => wp_kses_post($meta_values['ty_email']),
             "ty_email_subject"              => sanitize_text_field($meta_values['ty_email_subject']),
             "from_field"                    => sanitize_text_field($meta_values['from_field']),
+            "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
             "default_values"                => [
                 "ty_email_subject"              => AV_Petitioner_Mailer::get_default_ty_subject(),
                 "ty_email"                      => AV_Petitioner_Mailer::get_default_ty_email(),
@@ -163,6 +165,7 @@ class AV_Petitioner_Admin_Edit_UI
             'add_legal_text',
             'add_consent_checkbox',
             'show_goal',
+            'add_honeypot',
         ];
 
         $wysiwyg_fields = [
