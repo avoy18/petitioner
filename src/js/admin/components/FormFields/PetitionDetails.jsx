@@ -6,18 +6,6 @@ import PTRichText from './PTRichText';
  * ✅ Petition Details Component
  */
 export default function PetitionDetails({ formState, updateFormState }) {
-	const defaultValues = window.petitionerData?.default_values;
-	const confirmEmails = formState.approval_state === 'Email';
-
-	if (confirmEmails) {
-		defaultTYSubject =
-			defaultValues?.ty_email_subject_confirm ||
-			'Thank you for signing the {{petition_title}}';
-		defaultTYEmailContent =
-			defaultValues?.ty_email_confirm ||
-			'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
-	}
-
 	return (
 		<>
 			<p>
