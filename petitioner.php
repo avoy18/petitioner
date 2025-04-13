@@ -22,8 +22,10 @@ define('AV_PETITIONER_PLUGIN_VERSION', '0.2.7');
 
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-email-confirmations.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-mailer.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-template.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-mailer.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-frontend-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-shortcodes.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-edit-ui.php';

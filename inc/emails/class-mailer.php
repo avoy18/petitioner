@@ -39,7 +39,7 @@ class AV_Petitioner_Mailer
         $this->from_field               = $settings['from_field'];
 
         if (empty($this->from_field)) {
-            $this->from_field = self::get_default_from_field();
+            $this->from_field = AV_Petitioner_Email_Template::get_default_from_field();
         }
     }
 
@@ -65,7 +65,6 @@ class AV_Petitioner_Mailer
             $success        = $conf_result;
         }
 
-
         if ($should_send_to_rep) {
             $rep_result = $this->representative_email();
             $success = $rep_result && $conf_result;
@@ -80,8 +79,8 @@ class AV_Petitioner_Mailer
      */
     public function ty_email()
     {
-        $subject = self::get_default_ty_subject($this->confirm_emails);
-        $message = self::get_default_ty_email($this->confirm_emails);
+        $subject = AV_Petitioner_Email_Template::get_default_ty_subject($this->confirm_emails);
+        $message = AV_Petitioner_Email_Template::get_default_ty_email($this->confirm_emails, $this->user_name, $this->letter);
 
         $override_ty_email = get_post_meta($this->form_id, '_petitioner_override_ty_email', true);
 
@@ -105,13 +104,12 @@ class AV_Petitioner_Mailer
 
         $message = $this->convert_email_variables($message);
 
-        // Headers for plain text email
-        $headers = array(
-            'Content-Type: text/html; charset=UTF-8',
-            'From: ' . $this->from_field
+        return AV_Petitioner_Email_Controller::send(
+            $this->user_email,
+            $subject,
+            $message,
+            $this->from_field
         );
-        // Send the email
-        return wp_mail($this->user_email, $subject, $message, $headers);
     }
 
     /**
@@ -126,19 +124,7 @@ class AV_Petitioner_Mailer
         // Translators: %s is the user's name
         $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
 
-        // Headers for plain text email
-        $headers = array(
-            'Content-Type: text/html; charset=UTF-8',
-            'From: ' . $this->from_field
-        );
-
-        if (!empty($this->target_cc_emails)) {
-            $headers[] = 'CC: ' . $this->target_cc_emails;
-        }
-
-        if ($this->bcc) {
-            $headers[] = 'BCC: ' . $this->user_email;
-        }
+        $headers = AV_Petitioner_Email_Controller::build_headers($this->from_field, $this->target_cc_emails, $this->user_email);
 
         // Send the email
         $the_args = [
@@ -150,47 +136,8 @@ class AV_Petitioner_Mailer
 
         do_action('petitioner_before_send_rep_email', $the_args);
 
-        /**
-         * In case the email is sent to multiple recipients, 
-         * we need to split the emails and send them one by one
-         */
-        if (strpos($this->target_email, ',') !== false) {
-            $emails = explode(',', $this->target_email);
-            $success = true;
-            foreach ($emails as $email) {
-                $email = trim($email);
-                if (!wp_mail($email, $subject, $message, $headers)) {
-                    $success = false;
-                }
-            }
-            return $success;
-        }
 
-        return wp_mail($this->target_email, $subject, $message, $headers);
-    }
-
-    static public function get_default_ty_subject($confirm_emails = false)
-    {
-        if (!$confirm_emails) {
-            return __('Thank you for signing the petition!', 'petitioner');
-        }
-
-        return __('Please confirm your email.', 'petitioner');
-    }
-
-    static public function get_default_ty_email($confirm_emails = false)
-    {
-        $message = '';
-        // Translators: {{user_name}} is the user's name
-        $message =  '<p>' . __('Dear {{user_name}},</p>', 'petitioner') . '</p>';
-        $message .=  '<p>' . __('Thank you for signing the petition.', 'petitioner') . '</p>';
-
-        if ($confirm_emails) {
-            $message .=  '<p>' . __('Please confirm your email by clicking the link below.', 'petitioner') . '</p>';
-            $message .=  '<p>{{confirmation_link}}</p>';
-        }
-
-        return $message;
+        return AV_Petitioner_Email_Controller::send($this->target_email, $subject, $message, $headers);
     }
 
     public function convert_email_variables($message)
@@ -237,31 +184,5 @@ class AV_Petitioner_Mailer
         }
 
         return $message;
-    }
-
-    // todo: add admin emails
-    // public function send_admin_email()
-    // {
-    //     // Fetch recipient email from options or fallback to the site admin email
-    //     $admin_email = get_option('admin_email');
-    //     $subject = __('New petition submission - ', 'petitioner') . $this->subject;
-    //     $message = '<p>' . sprintf(__("A new petition has been submitted by %s. Here are the details:\n\n", 'petitioner'), $this->user_name) . '</p>';
-    //     $message .= '';
-
-    //     // Headers for plain text email
-    //     $headers = array('Content-Type: text/html; charset=UTF-8');
-
-    //     // Send the email
-    //     return wp_mail($admin_email, $subject, $message, $headers);
-    // }
-
-    static public function get_default_from_field()
-    {
-        $domain = wp_parse_url(home_url(), PHP_URL_HOST);
-
-        if ($domain === 'localhost') {
-            $domain = 'localhost.com';
-        }
-        return 'petition-no-reply@' . $domain;
     }
 }
