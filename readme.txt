@@ -64,7 +64,9 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 
 = 0.2.7 =
 * Add better DB schema handling
-* 
+* Allow overriding the "from" field
+* Add a honeypot option for additional spam protection
+* Add custom filters (petitioner_send_ty_email, petitioner_send_to_representative, petitioner_after_submission)
 
 = 0.2.6 =
 * Fix export button not showing up

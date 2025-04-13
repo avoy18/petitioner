@@ -20,6 +20,11 @@ class AV_Petitioner_Submissions_Controller
             wp_die();
         }
 
+        if (!empty($_POST['ptr_info'])) {
+            wp_send_json_error('Invalid submission data');
+            wp_die();
+        }
+
         $email                      = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
         $form_id                    = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
         $fname                      = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
@@ -101,6 +106,8 @@ class AV_Petitioner_Submissions_Controller
         }
 
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
+
+        do_action('petitioner_after_submission', $submission_id, $form_id);
 
         $mailer_settings = array(
             'target_email'              => get_post_meta($form_id, '_petitioner_email', true),

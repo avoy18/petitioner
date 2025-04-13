@@ -218,24 +218,24 @@ class AV_Petitioner_Frontend
      */
     public function display_form($attributes)
     {
-        $form_id = esc_attr($attributes['id']);
-        $nonce = wp_create_nonce('petitioner_form_nonce');
-
-        $post_exists = get_post($form_id);
+        $form_id        = esc_attr($attributes['id']);
+        $nonce          = wp_create_nonce('petitioner_form_nonce');
+        $post_exists    = get_post($form_id);
 
         if (!$post_exists || $post_exists->post_type !== 'petitioner-petition') {
             return;
         }
 
-        $petitioner_send_to_representative = get_post_meta($form_id, '_petitioner_send_to_representative', true);
-        $petitioner_show_country = get_post_meta($form_id, '_petitioner_show_country', true);
-        $petitioner_add_legal_text = get_post_meta($form_id, '_petitioner_add_legal_text', true);
-        $petitioner_legal_text = get_post_meta($form_id, '_petitioner_legal_text', true);
-        $petitioner_add_consent_checkbox = get_post_meta($form_id, '_petitioner_add_consent_checkbox', true);
-        $petitioner_consent_text = get_post_meta($form_id, '_petitioner_consent_text', true);
+        $petitioner_send_to_representative  = get_post_meta($form_id, '_petitioner_send_to_representative', true);
+        $petitioner_show_country            = get_post_meta($form_id, '_petitioner_show_country', true);
+        $petitioner_add_legal_text          = get_post_meta($form_id, '_petitioner_add_legal_text', true);
+        $petitioner_legal_text              = get_post_meta($form_id, '_petitioner_legal_text', true);
+        $petitioner_add_consent_checkbox    = get_post_meta($form_id, '_petitioner_add_consent_checkbox', true);
+        $petitioner_consent_text            = get_post_meta($form_id, '_petitioner_consent_text', true);
+        $add_honeypot                       = get_post_meta($form_id, '_petitioner_add_honeypot', false);
 
-        $is_recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
-        $is_hcaptcha_enabled = get_option('petitioner_enable_hcaptcha', false);
+        $is_recaptcha_enabled               = get_option('petitioner_enable_recaptcha', false);
+        $is_hcaptcha_enabled                = get_option('petitioner_enable_hcaptcha', false);
 
         ob_start();
 ?>
@@ -349,6 +349,9 @@ class AV_Petitioner_Frontend
 
                 <?php endif; ?>
 
+                <?php if ($add_honeypot): ?>
+                    <input type="text" name="ptr_info" style="display:none"/>
+                <?php endif; ?>
 
                 <button type="submit" class="petitioner__btn petitioner__btn--submit"><?php esc_html_e('Sign this petition', 'petitioner'); ?></button>
 
@@ -410,16 +413,14 @@ class AV_Petitioner_Frontend
 
     public function render_goal($form_id)
     {
-        $petitioner_show_goal = get_option('petitioner_show_goal', true);
+        $petitioner_show_goal   = get_option('petitioner_show_goal', true);
 
         if (!$petitioner_show_goal) return;
 
-        $petitioner_goal = get_post_meta($form_id, '_petitioner_goal', true);
-
-        $goal = intval($petitioner_goal);
-
-        $total_submissions = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
-        $progress = 0;
+        $petitioner_goal        = get_post_meta($form_id, '_petitioner_goal', true);
+        $goal                   = intval($petitioner_goal);
+        $total_submissions      = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
+        $progress               = 0;
 
         if ($total_submissions > 0) {
             $progress = round($total_submissions / $goal * 100);
