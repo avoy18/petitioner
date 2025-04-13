@@ -54,6 +54,20 @@ class AV_Petitioner_Email_Template
             </table>
         </div>';
 
+        /**
+         * petitioner_get_styled_message
+         * 
+         * Filters the styled email message content.
+         *
+         * This filter allows modification of the final HTML content of the email message.
+         *
+         * @since 0.2.7
+         *
+         * @param string $final_html The final HTML content of the email message.
+         * @param string $message    The original unstyled message content.
+         */
+        $final_html = apply_filters('petitioner_get_styled_message', $final_html, $message);
+
         return $final_html;
     }
 }

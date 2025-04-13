@@ -57,7 +57,28 @@ class AV_Petitioner_Mailer
             'user_name'     => $this->user_name,
         ]; // what data to pass to the filter
 
+        /**
+         * petitioner_send_ty_email
+         * 
+         * Decided if the thank you email should be sent.
+         *
+         * @since 0.2.7
+         *
+         * @param bool  $should_send_ty_email Whether to send the thank you email.
+         * @param array $filter_args The arguments passed to the filter.
+         */
         $should_send_ty_email   = apply_filters('petitioner_send_ty_email', true, $filter_args);
+
+        /**
+         * petitioner_send_ty_email
+         * 
+         * Decided if the rep email should be sent.
+         *
+         * @since 0.2.7
+         *
+         * @param bool  $should_send_to_rep Whether to send the rep you email.
+         * @param array $filter_args The arguments passed to the filter.
+         */
         $should_send_to_rep     = apply_filters('petitioner_send_to_representative', $this->send_to_representative, $filter_args);
 
         if ($should_send_ty_email) {
@@ -133,6 +154,18 @@ class AV_Petitioner_Mailer
             'headers'       => $headers
         ];
 
+        /**
+         * petitioner_before_send_rep_email
+         * 
+         * Fires an action before sending a representative email.
+         *
+         * This hook allows developers to perform custom actions or modify data
+         * before the email to the representative is sent.
+         *
+         * @since 0.2.7
+         * 
+         * @param array $the_args An array of arguments related to the email being sent.
+         */
         do_action('petitioner_before_send_rep_email', $the_args);
 
 

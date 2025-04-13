@@ -107,6 +107,19 @@ class AV_Petitioner_Submissions_Controller
 
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
 
+        /**
+         * petitioner_after_submission
+         * 
+         * Fires an action after a submission is processed.
+         *
+         * This hook allows developers to perform custom actions or extend functionality
+         * after a submission has been successfully handled.
+         *
+         * @since 0.2.7
+         * 
+         * @param int $submission_id The ID of the processed submission.
+         * @param int $form_id The ID of the form associated with the submission.
+         */
         do_action('petitioner_after_submission', $submission_id, $form_id);
 
         $mailer_settings = array(
