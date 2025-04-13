@@ -13,7 +13,7 @@ import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
 import AdvancedSettings from './AdvancedSettings';
 
-export default function FormFields(props) {
+export default function EditFields(props) {
 	const petitionerLetterRef = useRef(null);
 
 	const {
