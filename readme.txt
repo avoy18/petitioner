@@ -62,8 +62,9 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 
 == Changelog ==
 
-= 0.2.7 =
+= 0.3.0 =
 * Better style emails visually
+* A new and improved settings page
 * Allow overriding the "from" field
 * Add a honeypot option for additional spam protection
 * Create custom filters (petitioner_send_ty_email, petitioner_send_to_representative, petitioner_after_submission, petitioner_get_styled_message)
