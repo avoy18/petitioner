@@ -11,7 +11,21 @@ class AV_Petitioner_Admin_Settings_UI
 {
     public $default_colors;
 
-    private const OPTION_FIELDS = [];
+    private const OPTION_FIELDS = [
+        'show_letter'               => 'petitioner_show_letter',
+        'show_title'                => 'petitioner_show_title',
+        'show_goal'                 => 'petitioner_show_goal',
+        'custom_css'                => 'petitioner_custom_css',
+        'primary_color'             => 'petitioner_primary_color',
+        'dark_color'                => 'petitioner_dark_color',
+        'grey_color'                => 'petitioner_grey_color',
+        'enable_recaptcha'          => 'petitioner_enable_recaptcha',
+        'recaptcha_site_key'        => 'petitioner_recaptcha_site_key',
+        'recaptcha_secret_key'      => 'petitioner_recaptcha_secret_key',
+        'enable_hcaptcha'           => 'petitioner_enable_hcaptcha',
+        'hcaptcha_site_key'         => 'petitioner_hcaptcha_site_key',
+        'hcaptcha_secret_key'       => 'petitioner_hcaptcha_secret_key',
+    ];
 
     function __construct()
     {
@@ -23,6 +37,11 @@ class AV_Petitioner_Admin_Settings_UI
         );
 
         add_action('admin_menu', array($this, 'add_settings_submenu'));
+        add_action('admin_init', function () {
+            if (!empty($_POST)) {
+                $this->save_meta_box_data();
+            }
+        });
 
         add_action('admin_head', function () {
             $screen = get_current_screen();
@@ -80,8 +99,7 @@ class AV_Petitioner_Admin_Settings_UI
         <div class="wrap">
             <h1><?php esc_html_e('Petitioner Settings', 'petitioner'); ?></h1>
 
-            <form method="post" action="options.php">
-
+            <form method="post" action="<?php echo esc_url(admin_url('edit.php?post_type=petitioner-petition&page=petition-settings')); ?>">
                 <?php
                 $this->render_form_fields();
                 submit_button();
@@ -96,39 +114,26 @@ class AV_Petitioner_Admin_Settings_UI
      */
     public function render_form_fields()
     {
-        wp_nonce_field("save_petition_details", "petitioner_details_nonce");
+        wp_nonce_field("save_petition_settings", "petitioner_settings_nonce");
         // Retrieve current meta values
         $option_values     = $this->get_option_fields();
         // Sanitize values for safe use in HTML attributes
         $petitioner_info = [
-            // "form_id"                       => (int) $post->ID,
-            // "title"                         => esc_html($meta_values['title']),
-            // "send_to_representative"        => (bool) $meta_values['send_to_representative'],
-            // "email"                         => sanitize_text_field($meta_values['email']),
-            // "cc_emails"                     => sanitize_text_field($meta_values['cc_emails']),
-            // "show_goal"                     => (bool) $meta_values['show_goal'],
-            // "goal"                          => (int) $meta_values['goal'],
-            // "show_country"                  => (bool) $meta_values['show_country'],
-            // "subject"                       => esc_html($meta_values['subject']),
-            // "require_approval"              => (bool) $meta_values['require_approval'],
-            // "approval_state"                => esc_html($meta_values['approval_state']),
-            // "letter"                        => wp_kses_post($meta_values['letter']),
-            // "add_legal_text"                => (bool) $meta_values['add_legal_text'],
-            // "add_consent_checkbox"          => (bool) $meta_values['add_consent_checkbox'],
-            // "consent_text"                  => sanitize_text_field($meta_values['consent_text']),
-            // "legal_text"                    => wp_kses_post($meta_values['legal_text']),
-            // "export_url"                    => esc_url(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID)),
-            // "override_ty_email"             => (bool) $meta_values['override_ty_email'],
-            // "ty_email"                      => wp_kses_post($meta_values['ty_email']),
-            // "ty_email_subject"              => sanitize_text_field($meta_values['ty_email_subject']),
-            // "from_field"                    => sanitize_text_field($meta_values['from_field']),
-            // "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
+            'show_letter'               => (bool) $option_values['show_letter'],
+            'show_title'                => (bool) $option_values['show_title'],
+            'show_goal'                 => (bool) $option_values['show_goal'],
+            'custom_css'                => esc_textarea($option_values['custom_css']),
+            'primary_color'             => esc_attr($option_values['primary_color']),
+            'dark_color'                => esc_attr($option_values['dark_color']),
+            'grey_color'                => esc_attr($option_values['grey_color']),
+            'enable_recaptcha'          => (bool) $option_values['enable_recaptcha'],
+            'recaptcha_site_key'        => sanitize_text_field($option_values['recaptcha_site_key']),
+            'recaptcha_secret_key'      => sanitize_text_field($option_values['recaptcha_secret_key']),
+            'enable_hcaptcha'           => (bool) $option_values['enable_hcaptcha'],
+            'hcaptcha_site_key'         => sanitize_text_field($option_values['hcaptcha_site_key']),
+            'hcaptcha_secret_key'       => sanitize_text_field($option_values['hcaptcha_secret_key']),
             "default_values"                => [
-                "ty_email_subject"              => AV_Petitioner_Email_Template::get_default_ty_subject(),
-                "ty_email"                      => AV_Petitioner_Email_Template::get_default_ty_email(),
-                'ty_email_subject_confirm'      => AV_Petitioner_Email_Template::get_default_ty_subject(true),
-                'ty_email_confirm'              => AV_Petitioner_Email_Template::get_default_ty_email(true),
-                "from_field"                    => AV_Petitioner_Email_Template::get_default_from_field(),
+                "colors"              => $this->default_colors,
             ]
         ];
 
@@ -144,12 +149,55 @@ class AV_Petitioner_Admin_Settings_UI
     }
 
     /**
-     * Display Meta Box Fields
+     * Save Meta Box Data
      */
-    public function display_meta_box($post)
+    public function save_meta_box_data()
     {
-        echo '<div class="petitioner-admin-settings">';
-        $this->render_form_fields($post);
-        echo '</div>';
+        if (
+            !isset($_POST["petitioner_settings_nonce"]) ||
+            !wp_verify_nonce($_POST["petitioner_settings_nonce"], "save_petition_settings") ||
+            (defined("DOING_AUTOSAVE") && DOING_AUTOSAVE) ||
+            !current_user_can("manage_options")
+        ) {
+            return;
+        }
+
+        // Process meta fields
+        $meta_values = [];
+        foreach (self::OPTION_FIELDS as $key => $meta_key) {
+            $meta_values[$key] = isset($_POST["petitioner_$key"])
+                ? wp_unslash($_POST["petitioner_$key"])
+                : '';
+        }
+
+        // Sanitize and update meta fields
+        $this->update_meta_fields($meta_values);
+    }
+
+    /**
+     * Update meta fields in bulk.
+     */
+    private function update_meta_fields($meta_values)
+    {
+        $checkboxes = [
+            'show_letter',
+            'show_title',
+            'show_goal',
+            'enable_recaptcha',
+            'enable_hcaptcha',
+        ];
+
+
+        foreach ($meta_values as $key => $value) {
+            if (in_array($key, $checkboxes)) {
+                $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
+            } else if ($key === 'custom_css') {
+                $value = wp_strip_all_tags($value);
+            } else {
+                $value = sanitize_text_field($value);
+            }
+
+            update_option(self::OPTION_FIELDS[$key], $value);
+        }
     }
 }

@@ -11,9 +11,6 @@ class AV_Petitioner_Admin_Settings_UI
 {
     public $default_colors;
 
-    private const META_FIELDS = [
-    ];
-
     function __construct()
     {
 
