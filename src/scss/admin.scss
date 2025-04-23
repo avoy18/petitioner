@@ -85,4 +85,18 @@
 		display: flex;
 		gap: 4px;
 	}
+
+	.ptr-color-picker {
+		position: relative;
+		display: inline-block;
+
+		&__palette {
+			padding: 4px;
+			border-radius: 4px;
+			background: white;
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+	}
 }
