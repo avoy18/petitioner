@@ -1,5 +1,4 @@
 .wp-admin.post-type-petitioner-petition {
-
 	#edit-slug-box,
 	#wp-admin-bar-view {
 		display: none;
@@ -63,7 +62,6 @@
 	}
 
 	.petitioner-callout-box {
-
 		margin-top: 16px;
 		padding: 16px;
 		border-radius: 8px;
@@ -74,6 +72,16 @@
 			padding-left: 0 !important;
 			margin-left: 0 !important;
 			text-transform: uppercase;
+		}
+	}
+
+	.petitioner-settings-box {
+		padding: 16px 16px 32px 16px;
+		border-radius: 8px;
+		background: #fff;
+
+		.components-tab-panel__tabs {
+			margin-bottom: 32px;
 		}
 	}
 
@@ -90,6 +98,13 @@
 		position: relative;
 		display: inline-block;
 
+		.color-picker__button {
+			--wp-components-color-accent: #333;
+			--wp-components-color-accent-hover: #333;
+			display: flex;
+			gap: 8px;
+		}
+
 		&__palette {
 			padding: 4px;
 			border-radius: 4px;
@@ -97,6 +112,35 @@
 			position: absolute;
 			top: 0;
 			right: 0;
+			z-index: 2;
+			transform: translate(calc(100% + 36px), calc(-100% + 36px));
 		}
 	}
+
+	.ptr-field-panel {
+		width: 100%;
+		display: flex;
+		gap: 64px;
+		flex-wrap: wrap;
+		padding: 16px 0px;
+
+		label {
+			font-weight: bold;
+			display: block;
+			min-width: 100px;
+		}
+	}
+}
+
+.ptr-color-picker__overlay {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	z-index: 1;
+}
+
+.ptr-hidden-fields {
+	display: none;
 }

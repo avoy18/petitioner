@@ -1,155 +1,8 @@
-import {
-	Dashicon,
-	ColorPicker,
-	Button,
-	__experimentalInputControl as InputControl,
-} from '@wordpress/components';
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { Dashicon } from '@wordpress/components';
+import { useState, useCallback } from 'react';
 import Tabs from '../shared/Tabs';
-
-function CodeEditor({ title, help, code }) {
-	return (
-		<div>
-			<p>
-				<label for="petitioner_custom_css">{title}</label>
-				<br />
-				<span>{help}</span>
-			</p>
-			<textarea
-				name="petitioner_custom_css"
-				id="petitionerCode"
-				rows="10"
-				cols="50"
-				className="large-text code petitioner-code-editor"
-			>
-				{code}
-			</textarea>
-		</div>
-	);
-}
-
-function ColorField(props) {
-	const {
-		color = '#fff',
-		onColorChange = () => true,
-		defaultColor = '#fff',
-	} = props;
-
-	const [isPickerOpen, setIsPickerOpen] = useState(false);
-
-	useEffect(() => {
-
-		const handleClickAway = () => {
-
-		}
-
-		document.addEventListener('click', handleClickAway);
-
-		return () => {
-			document.removeEventListener('click', handleClickAway);
-		};
-	}, [isPickerOpen]);
-
-	const handlePickerOpen = useCallback(() => {
-		setIsPickerOpen(() => !isPickerOpen);
-	}, []);
-
-	return (
-		<div className="ptr-color-picker">
-			<p className="ptr-color-picker__label">Primary color</p>
-			<Button onClick={handlePickerOpen} variant="secondary">
-				Select color
-			</Button>
-			{isPickerOpen && (
-				<div className="ptr-color-picker__palette">
-					<ColorPicker
-						color={color}
-						onChange={(newColor) => {
-							onColorChange(newColor);
-						}}
-						enableAlpha
-						defaultValue={defaultColor}
-					/>
-				</div>
-			)}
-		</div>
-	);
-}
-
-function GeneralSettings({ formState, updateFormState }) {
-	const defaultColors = window.petitionerData?.default_values?.colors || {
-		primary: '#000',
-		dark: '#000',
-		grey: '#000',
-	};
-
-	return (
-		<>
-			<p>
-				<input
-					checked={formState.show_letter}
-					type="checkbox"
-					name="petitioner_show_letter"
-					id="petitioner_show_letter"
-					className="widefat"
-					onChange={(e) => {
-						updateFormState('show_letter', e.target.checked);
-					}}
-				/>
-				<label htmlFor="petitioner_show_letter">
-					Show letter on the frontend?
-				</label>
-			</p>
-			<p>
-				<input
-					checked={formState.show_title}
-					type="checkbox"
-					name="petitioner_show_title"
-					id="petitioner_show_title"
-					className="widefat"
-					onChange={(e) => {
-						updateFormState('show_title', e.target.checked);
-					}}
-				/>
-				<label htmlFor="petitioner_show_title">
-					Show petition title?
-				</label>
-			</p>
-			<p>
-				<input
-					checked={formState.show_goal}
-					type="checkbox"
-					name="petitioner_show_goal"
-					id="petitioner_show_goal"
-					className="widefat"
-					onChange={(e) => {
-						updateFormState('show_goal', e.target.checked);
-					}}
-				/>
-				<label htmlFor="petitioner_show_goal">
-					Show petition goal?
-				</label>
-			</p>
-
-			<CodeEditor
-				code={formState?.custom_css || ''}
-				title="Custom CSS"
-				help="Add your custom CSS here."
-			/>
-
-			<p>
-				<label>Primary color</label>
-				<ColorField
-					color={formState?.primary_color}
-					defaultColor={defaultColors?.primary}
-					onColorChange={(newColor) =>
-						updateFormState('primary_color', newColor)
-					}
-				/>
-			</p>
-		</>
-	);
-}
+import VisualSettings from './VisualSettings';
+import Integrations from './Integrations';
 
 export default function SettingsFields(props) {
 	const {
@@ -190,35 +43,40 @@ export default function SettingsFields(props) {
 
 	const tabs = [
 		{
-			name: 'general',
+			name: 'visual',
 			title: (
 				<>
-					<Dashicon icon="email-alt" /> General
+					<Dashicon icon="visibility" /> Visual settings
 				</>
 			),
 			className: 'petition-tablink',
 			renderingEl: (
-				<GeneralSettings
+				<VisualSettings
 					formState={formState}
 					updateFormState={updateFormState}
 				/>
 			),
 		},
 		{
-			name: 'else',
+			name: 'integrations',
 			title: (
 				<>
-					<Dashicon icon="email-alt" /> Else
+					<Dashicon icon="admin-generic" /> Integrations
 				</>
 			),
 			className: 'petition-tablink',
-			renderingEl: <>Another tab</>,
+			renderingEl: (
+				<Integrations
+					formState={formState}
+					updateFormState={updateFormState}
+				/>
+			),
 		},
 	];
 
 	return (
-		<>
+		<div className="petitioner-settings-box">
 			<Tabs tabs={tabs} />
-		</>
+		</div>
 	);
 }
