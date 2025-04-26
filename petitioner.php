@@ -22,6 +22,7 @@ define('AV_PETITIONER_PLUGIN_VERSION', '0.3.0');
 
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-template.php';

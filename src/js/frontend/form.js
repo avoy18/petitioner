@@ -1,5 +1,6 @@
 import ReCaptcha from './recaptcha';
 import HCaptcha from './hcaptcha';
+import Turnstile from './turnstile';
 
 /**
  * @class PetitionerForm
@@ -50,11 +51,17 @@ export default class PetitionerForm {
 
 		// Captcha
 		this.captchaValidated = false;
+
 		if (petitionerCaptcha?.enableRecaptcha) {
 			new ReCaptcha(this.formEl);
 		}
+
 		if (petitionerCaptcha?.enableHcaptcha) {
 			this.hcaptcha = new HCaptcha(this.formEl);
+		}
+
+		if (petitionerCaptcha?.enableTurnstile) {
+			this.turnstile = new Turnstile(this.formEl);
 		}
 
 		// Event Listeners
@@ -64,16 +71,19 @@ export default class PetitionerForm {
 				this.handleFormSubmit.bind(this)
 			);
 		}
+
 		if (this.viewLetterBTN) {
 			this.viewLetterBTN.addEventListener('click', () =>
 				this.toggleModal(true)
 			);
 		}
+
 		if (this.backdrop) {
 			this.backdrop.addEventListener('click', () =>
 				this.toggleModal(false)
 			);
 		}
+
 		if (this.modalClose) {
 			this.modalClose.addEventListener('click', () =>
 				this.toggleModal(false)
@@ -109,7 +119,22 @@ export default class PetitionerForm {
 			!this.captchaValidated
 		) {
 			this.hcaptcha.validate(() => {
-				this.captchaValidated = true; // ✅ Prevent infinite loops
+				this.captchaValidated = true;
+				this.formEl.dispatchEvent(
+					new Event('submit', { bubbles: true })
+				);
+			});
+			return;
+		}
+
+		// If Turnstile is enabled, validate the captcha before submission
+		if (
+			petitionerCaptcha?.enableTurnstile &&
+			this.turnstile &&
+			!this.captchaValidated
+		) {
+			this.turnstile.validate(() => {
+				this.captchaValidated = true;
 				this.formEl.dispatchEvent(
 					new Event('submit', { bubbles: true })
 				);

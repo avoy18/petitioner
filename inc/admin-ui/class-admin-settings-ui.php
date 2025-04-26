@@ -25,6 +25,9 @@ class AV_Petitioner_Admin_Settings_UI
         'enable_hcaptcha'           => 'petitioner_enable_hcaptcha',
         'hcaptcha_site_key'         => 'petitioner_hcaptcha_site_key',
         'hcaptcha_secret_key'       => 'petitioner_hcaptcha_secret_key',
+        'enable_turnstile'          => 'petitioner_enable_turnstile',
+        'turnstile_site_key'        => 'petitioner_turnstile_site_key',
+        'turnstile_secret_key'      => 'petitioner_turnstile_secret_key',
     ];
 
     function __construct()
@@ -132,6 +135,9 @@ class AV_Petitioner_Admin_Settings_UI
             'enable_hcaptcha'           => (bool) $option_values['enable_hcaptcha'],
             'hcaptcha_site_key'         => sanitize_text_field($option_values['hcaptcha_site_key']),
             'hcaptcha_secret_key'       => sanitize_text_field($option_values['hcaptcha_secret_key']),
+            'enable_turnstile'          => (bool) $option_values['enable_turnstile'],
+            'turnstile_site_key'        => sanitize_text_field($option_values['turnstile_site_key']),
+            'turnstile_secret_key'      => sanitize_text_field($option_values['turnstile_secret_key']),
             "default_values"                => [
                 "colors"              => $this->default_colors,
             ]
@@ -185,8 +191,8 @@ class AV_Petitioner_Admin_Settings_UI
             'show_goal',
             'enable_recaptcha',
             'enable_hcaptcha',
+            'enable_turnstile',
         ];
-
 
         foreach ($meta_values as $key => $value) {
             if (in_array($key, $checkboxes)) {

@@ -233,10 +233,6 @@ class AV_Petitioner_Frontend_UI
         $petitioner_add_consent_checkbox    = get_post_meta($form_id, '_petitioner_add_consent_checkbox', true);
         $petitioner_consent_text            = get_post_meta($form_id, '_petitioner_consent_text', true);
         $add_honeypot                       = get_post_meta($form_id, '_petitioner_add_honeypot', false);
-
-        $is_recaptcha_enabled               = get_option('petitioner_enable_recaptcha', false);
-        $is_hcaptcha_enabled                = get_option('petitioner_enable_hcaptcha', false);
-
         ob_start();
 ?>
         <div class="petitioner">
@@ -305,52 +301,10 @@ class AV_Petitioner_Frontend_UI
                     </div>
                 <?php endif; ?>
 
-                <?php if ($is_hcaptcha_enabled || $is_recaptcha_enabled): ?>
-
-                    <?php if ($is_recaptcha_enabled): ?>
-                        <input type="hidden" name="petitioner-g-recaptcha-response" id="petitioner-g-recaptcha-response">
-                        <p class="petitioner-disclaimer-text">
-                            <?php
-                            // translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag
-                            printf(
-                                esc_html__(
-                                    'This site is protected by reCAPTCHA and the Google %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply.',
-                                    'petitioner'
-                                ),
-                                '<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">',
-                                '</a>',
-                                '<a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">',
-                                '</a>'
-                            );
-                            ?>
-                        </p>
-                    <?php endif; ?>
-
-
-                    <?php if ($is_hcaptcha_enabled): ?>
-                        <span class="petitioner-h-captcha-container"></span>
-                        <input type="hidden" name="petitioner-h-captcha-response" class="petitioner-h-captcha-response">
-                        <p class="petitioner-disclaimer-text">
-                            <?php
-                            // translators: %1$s is the opening anchor tag, %2$s is the closing anchor tag
-                            printf(
-                                esc_html__(
-                                    'This site is protected by hCaptcha and its %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply.',
-                                    'petitioner'
-                                ),
-                                '<a href="https://www.hcaptcha.com/privacy" target="_blank" rel="noopener noreferrer">',
-                                '</a>',
-                                '<a href="https://www.hcaptcha.com/terms" target="_blank" rel="noopener noreferrer">',
-                                '</a>'
-                            );
-                            ?>
-                        </p>
-                    <?php endif; ?>
-
-                <?php endif; ?>
+                <?php AV_Petitioner_Captcha::render_inputs(); ?>
 
                 <?php if ($add_honeypot): ?>
-                    <input type="text" name="ptr_info" style="display:none"/>
+                    <input type="text" name="ptr_info" style="display:none" />
                 <?php endif; ?>
 
                 <button type="submit" class="petitioner__btn petitioner__btn--submit"><?php esc_html_e('Sign this petition', 'petitioner'); ?></button>

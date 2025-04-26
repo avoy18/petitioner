@@ -44,30 +44,8 @@ class AV_Petitioner_Submissions_Controller
             }
         }
 
-        $recaptcha_enabled  = get_option('petitioner_enable_recaptcha', false);
-        $hcaptcha_enabled   = get_option('petitioner_enable_hcaptcha', false);
-
-        if ($recaptcha_enabled) {
-            $recaptcha_response = isset($_POST['petitioner-g-recaptcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-g-recaptcha-response'])) : '';
-
-            $recaptcha_result = self::verify_captcha($recaptcha_response, 'recaptcha');
-
-            if (!$recaptcha_result['success']) {
-                wp_send_json_error($recaptcha_result['message']);
-                wp_die();
-            }
-        }
-
-        if ($hcaptcha_enabled) {
-            $hcaptcha_response = isset($_POST['petitioner-h-captcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-h-captcha-response'])) : '';
-
-            $hcaptcha_result = self::verify_captcha($hcaptcha_response, 'hcaptcha');
-
-            if (!$hcaptcha_result['success']) {
-                wp_send_json_error($hcaptcha_result['message']);
-                wp_die();
-            }
-        }
+        // handle captcha
+        AV_Petitioner_Captcha::validate_captcha($form_id);
 
         // todo: add these
         $hide_name          = false;
@@ -277,10 +255,32 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function verify_captcha($captcha_response, $captcha_type = 'recaptcha')
     {
-        // Get the appropriate secret key based on CAPTCHA type
-        $captcha_secret = ($captcha_type === 'hcaptcha')
-            ? get_option('petitioner_hcaptcha_secret_key', '')
-            : get_option('petitioner_recaptcha_secret_key', '');
+        // Lookup table for each CAPTCHA provider
+        $providers = [
+            'recaptcha' => [
+                'secret_key_option' => 'petitioner_recaptcha_secret_key',
+                'verify_url'        => 'https://www.google.com/recaptcha/api/siteverify',
+            ],
+            'hcaptcha' => [
+                'secret_key_option' => 'petitioner_hcaptcha_secret_key',
+                'verify_url'        => 'https://hcaptcha.com/siteverify',
+            ],
+            'turnstile' => [
+                'secret_key_option' => 'petitioner_turnstile_secret_key',
+                'verify_url'        => 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            ],
+        ];
+
+        // Validate captcha type
+        if (! isset($providers[$captcha_type])) {
+            return [
+                'success' => false,
+                'message' => __('Invalid CAPTCHA type.', 'petitioner'),
+            ];
+        }
+
+        $provider = $providers[$captcha_type];
+        $captcha_secret = get_option($provider['secret_key_option'], '');
 
         // Handle missing response
         if (empty($captcha_response)) {
@@ -290,13 +290,8 @@ class AV_Petitioner_Submissions_Controller
             ];
         }
 
-        // Determine verification URL
-        $verify_url = ($captcha_type === 'hcaptcha')
-            ? 'https://hcaptcha.com/siteverify'
-            : 'https://www.google.com/recaptcha/api/siteverify';
-
         // Send request to verification API
-        $api_response = wp_remote_post($verify_url, [
+        $api_response = wp_remote_post($provider['verify_url'], [
             'body' => [
                 'secret'   => $captcha_secret,
                 'response' => $captcha_response,
@@ -315,15 +310,15 @@ class AV_Petitioner_Submissions_Controller
         // Decode API response
         $body = json_decode(wp_remote_retrieve_body($api_response), true);
 
-        // Validate response
-        if (!isset($body['success']) || !$body['success']) {
+        // Validate general success
+        if (! isset($body['success']) || ! $body['success']) {
             return [
                 'success' => false,
                 'message' => __('CAPTCHA verification failed.', 'petitioner'),
             ];
         }
 
-        // Check score for Google reCAPTCHA v3
+        // Special case: Check reCAPTCHA v3 score
         if ($captcha_type === 'recaptcha' && isset($body['score']) && $body['score'] < 0.5) {
             return [
                 'success' => false,

@@ -1,87 +1,21 @@
 import {
-	Card,
-	CardHeader,
-	CardBody,
-	CardFooter,
-	__experimentalText as Text,
-	__experimentalHeading as Heading,
 	__experimentalGrid as Grid,
-	Button,
-	Modal,
-	__experimentalDivider as Divider,
-	CheckboxControl,
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
 
-import { useState } from '@wordpress/element';
-
-function IntegrationBox({
-	name = '',
-	title = 'reCAPTCHA',
-	description = 'Google reCAPTCHA integration',
-	enabled = false,
-	integrationFields = () => true,
-}) {
-	const [isOpen, setOpen] = useState(false);
-	const openModal = () => setOpen(true);
-	const closeModal = () => setOpen(false);
-
-	return (
-		<>
-			<Card>
-				<CardHeader>
-					<Heading level={4}>{title}</Heading>
-				</CardHeader>
-				<CardBody>
-					<Text>{description}</Text>
-				</CardBody>
-				<CardFooter>
-					<Text
-						as="p"
-						weight="bold"
-						size="subheadline"
-						color={enabled ? 'green' : 'neutral'}
-					>
-						{enabled ? 'Active' : 'Inactive'}
-					</Text>
-					<Button onClick={openModal} variant="primary">
-						Configure
-					</Button>
-				</CardFooter>
-			</Card>
-
-			{isOpen && (
-				<Modal
-					size="large"
-					title={title}
-					closeButtonLabel={close}
-					onRequestClose={closeModal}
-				>
-					<Text>{description}</Text>
-					<Divider margin={5} />
-					{integrationFields}
-
-					<Button
-						style={{ marginTop: 16 }}
-						variant="secondary"
-						onClick={closeModal}
-					>
-						Close
-					</Button>
-				</Modal>
-			)}
-		</>
-	);
-}
+import IntegrationBox from './IntegrationBox';
+import { __ } from '@wordpress/i18n';
 
 export default function Integrations({ formState, updateFormState }) {
 	const integrations = [
 		{
 			name: 'recaptcha',
-			title: 'Google reCAPTCHA v3',
-			description:
+			title: __('Google reCAPTCHA v3', 'petitioner'),
+			description: __(
 				'Google reCAPTCHA integration. Use this to protect your forms from spam.',
+				'petitioner'
+			),
 			enabled: formState.enable_recaptcha,
 			integrationFields: (
 				<>
@@ -143,9 +77,11 @@ export default function Integrations({ formState, updateFormState }) {
 		},
 		{
 			name: 'hcaptcha',
-			title: 'hCaptcha',
-			description:
+			title: __('hCaptcha', 'petitioner'),
+			description: __(
 				'hCaptcha integration. Use this to protect your forms from spam.',
+				'petitioner'
+			),
 			enabled: formState.enable_hcaptcha,
 			integrationFields: (
 				<>
@@ -201,6 +137,70 @@ export default function Integrations({ formState, updateFormState }) {
 						type="hidden"
 						name="petitioner_hcaptcha_secret_key"
 						value={formState.hcaptcha_secret_key}
+					/>
+				</div>
+			),
+		},
+		{
+			name: 'turnstile',
+			title: 'Cloudflare Turnstile',
+			description:
+				'Cloudflare Turnstile integration. A captcha alternative that is privacy-friendly.',
+			enabled: formState.enable_turnstile,
+			integrationFields: (
+				<>
+					<div>
+						<ToggleControl
+							label="Enable Turnstile"
+							checked={formState.enable_turnstile}
+							onChange={(checked) =>
+								updateFormState('enable_turnstile', checked)
+							}
+						/>
+
+						<p>
+							<TextControl
+								label="Site Key"
+								value={formState.turnstile_site_key}
+								onChange={(value) =>
+									updateFormState('turnstile_site_key', value)
+								}
+								placeholder="Enter your Turnstile site key"
+							/>
+						</p>
+
+						<p>
+							<TextControl
+								label="Secret Key"
+								value={formState.turnstile_secret_key}
+								onChange={(value) =>
+									updateFormState(
+										'turnstile_secret_key',
+										value
+									)
+								}
+								placeholder="Enter your Turnstile secret key"
+							/>
+						</p>
+					</div>
+				</>
+			),
+			hiddenFields: (
+				<div className="ptr-hidden-fields">
+					<input
+						type="checkbox"
+						name="petitioner_enable_turnstile"
+						checked={formState.enable_turnstile}
+					/>
+					<input
+						type="hidden"
+						name="petitioner_turnstile_site_key"
+						value={formState.turnstile_site_key}
+					/>
+					<input
+						type="hidden"
+						name="petitioner_turnstile_secret_key"
+						value={formState.turnstile_secret_key}
 					/>
 				</div>
 			),

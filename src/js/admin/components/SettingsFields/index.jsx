@@ -19,6 +19,9 @@ export default function SettingsFields(props) {
 		enable_hcaptcha = false,
 		hcaptcha_site_key,
 		hcaptcha_secret_key,
+		enable_turnstile = false,
+		turnstile_site_key,
+		turnstile_secret_key,
 	} = window.petitionerData;
 
 	const [formState, setFormState] = useState({
@@ -35,6 +38,9 @@ export default function SettingsFields(props) {
 		enable_hcaptcha,
 		hcaptcha_site_key,
 		hcaptcha_secret_key,
+		enable_turnstile,
+		turnstile_site_key,
+		turnstile_secret_key,
 	});
 
 	const updateFormState = useCallback((key, value) => {
