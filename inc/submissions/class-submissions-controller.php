@@ -47,6 +47,19 @@ class AV_Petitioner_Submissions_Controller
         // handle captcha
         AV_Petitioner_Captcha::validate_captcha($form_id);
 
+        // akismet
+        $akismet_is_spam = AV_Petitioner_Akismet::check_with_akismet(
+            $email,
+            $fname,
+            $lname,
+            $country,
+            $form_id
+        );
+
+        if($akismet_is_spam){
+            wp_send_json_error(__('Your submission has been flagged as spam.', 'petitioner'));
+        }
+
         // todo: add these
         $hide_name          = false;
         $newsletter_opt_in  = false;

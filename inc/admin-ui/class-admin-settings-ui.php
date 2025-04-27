@@ -28,6 +28,7 @@ class AV_Petitioner_Admin_Settings_UI
         'enable_turnstile'          => 'petitioner_enable_turnstile',
         'turnstile_site_key'        => 'petitioner_turnstile_site_key',
         'turnstile_secret_key'      => 'petitioner_turnstile_secret_key',
+        'enable_akismet'            => 'petitioner_enable_akismet',
     ];
 
     function __construct()
@@ -138,8 +139,9 @@ class AV_Petitioner_Admin_Settings_UI
             'enable_turnstile'          => (bool) $option_values['enable_turnstile'],
             'turnstile_site_key'        => sanitize_text_field($option_values['turnstile_site_key']),
             'turnstile_secret_key'      => sanitize_text_field($option_values['turnstile_secret_key']),
+            'enable_akismet'            => (bool) $option_values['enable_akismet'],
             "default_values"                => [
-                "colors"              => $this->default_colors,
+                "colors"              => $this->default_colors
             ]
         ];
 
@@ -192,6 +194,7 @@ class AV_Petitioner_Admin_Settings_UI
             'enable_recaptcha',
             'enable_hcaptcha',
             'enable_turnstile',
+            'enable_akismet',
         ];
 
         foreach ($meta_values as $key => $value) {

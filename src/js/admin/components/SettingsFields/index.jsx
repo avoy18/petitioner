@@ -22,6 +22,7 @@ export default function SettingsFields(props) {
 		enable_turnstile = false,
 		turnstile_site_key,
 		turnstile_secret_key,
+		enable_akismet = true,
 	} = window.petitionerData;
 
 	const [formState, setFormState] = useState({
@@ -41,6 +42,7 @@ export default function SettingsFields(props) {
 		enable_turnstile,
 		turnstile_site_key,
 		turnstile_secret_key,
+		enable_akismet
 	});
 
 	const updateFormState = useCallback((key, value) => {

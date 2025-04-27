@@ -205,6 +205,35 @@ export default function Integrations({ formState, updateFormState }) {
 				</div>
 			),
 		},
+		{
+			name: 'akismet',
+			title: 'Akismet',
+			description:
+				'Akismet integration.',
+			enabled: formState.enable_akismet,
+			integrationFields: (
+				<>
+					<div>
+						<ToggleControl
+							label="Enable Turnstile"
+							checked={formState.enable_akismet}
+							onChange={(checked) =>
+								updateFormState('enable_akismet', checked)
+							}
+						/>
+					</div>
+				</>
+			),
+			hiddenFields: (
+				<div className="ptr-hidden-fields">
+					<input
+						type="checkbox"
+						name="petitioner_enable_akismet"
+						checked={formState.enable_akismet}
+					/>
+				</div>
+			),
+		},
 	];
 
 	return (
