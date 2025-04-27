@@ -83,6 +83,9 @@ class AV_Email_Confirmations
                 'confirmation_token'    => null
             ]);
 
+            // Send the emails
+            self::send_emails($submission);
+
             if ($updated !== false) {
                 // Optional: show success flag in query string
                 wp_redirect(home_url('/?petitioner=confirmed'));
@@ -93,5 +96,39 @@ class AV_Email_Confirmations
         // Optional: redirect on failure
         wp_redirect(home_url('/?petitioner=invalid'));
         exit;
+    }
+
+    /**
+     * Sends emails to the user and the target email address.
+     */
+    static public function send_emails($submission){
+        $form_id           = $submission->form_id;
+        $email             = $submission->email;
+        $fname             = $submission->fname;
+        $lname             = $submission->lname;
+        $country           = $submission->country;
+        $bcc               = $submission->bcc_yourself ? 1 : 0;
+        $submission_id     = $submission->id;
+
+        $mailer_settings = array(
+            'target_email'              => get_post_meta($form_id, '_petitioner_email', true),
+            'target_cc_emails'          => get_post_meta($form_id, '_petitioner_cc_emails', true),
+            'user_email'                => $email,
+            'user_name'                 => $fname . ' ' . $lname,
+            'user_country'              => $country,
+            'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
+            'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
+            'bcc'                       => $bcc,
+            'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
+            'form_id'                   => $form_id,
+            'confirm_emails'            => false,
+            'send_ty_email'             => false,
+            'submission_id'             => $submission_id,
+            'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
+        );
+
+        $mailer = new AV_Petitioner_Mailer($mailer_settings);
+
+        return $mailer->send_emails();
     }
 }

@@ -34,6 +34,7 @@ class AV_Petitioner_Mailer
         $this->bcc                      = $settings['bcc'];
         $this->send_to_representative   = $settings['send_to_representative'];
         $this->confirm_emails           = $settings['confirm_emails'];
+        $this->send_ty_email            = $settings['send_ty_email'] ?? true;
         $this->form_id                  = $settings['form_id'];
         $this->submission_id            = $settings['submission_id'];
         $this->from_field               = $settings['from_field'];
@@ -67,7 +68,7 @@ class AV_Petitioner_Mailer
          * @param bool  $should_send_ty_email Whether to send the thank you email.
          * @param array $filter_args The arguments passed to the filter.
          */
-        $should_send_ty_email   = apply_filters('petitioner_send_ty_email', true, $filter_args);
+        $should_send_ty_email   = apply_filters('petitioner_send_ty_email', $this->send_ty_email, $filter_args);
 
         /**
          * petitioner_send_ty_email

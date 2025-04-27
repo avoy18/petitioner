@@ -113,6 +113,8 @@ class AV_Petitioner_Submissions_Controller
          */
         do_action('petitioner_after_submission', $submission_id, $form_id);
 
+        $send_to_rep = $default_approval_status !== 'Email' && get_post_meta($form_id, '_petitioner_send_to_representative', true);
+
         $mailer_settings = array(
             'target_email'              => get_post_meta($form_id, '_petitioner_email', true),
             'target_cc_emails'          => get_post_meta($form_id, '_petitioner_cc_emails', true),
@@ -122,7 +124,7 @@ class AV_Petitioner_Submissions_Controller
             'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
             'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc'                       => $bcc,
-            'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
+            'send_to_representative'    => $send_to_rep,
             'form_id'                   => $form_id,
             'confirm_emails'            => $default_approval_status === 'Email',
             'submission_id'             => $submission_id,

@@ -14,7 +14,7 @@ class AV_Petitioner_Akismet
 
         // skip if the plugin or the integration are not enabled
         if (!function_exists('akismet_http_post') || !$enable_akismet) {
-            return true;
+            return false;
         }
 
         $akismet_api_key = get_option('wordpress_api_key');
