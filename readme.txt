@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.7.2
-Stable Tag: 0.2.6
+Stable Tag: 0.2.7
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,20 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 6. Submissions
 
 == Changelog ==
+
+= 0.3.0 =
+* Better style emails visually
+* A new and improved settings page
+* Allow overriding the "from" field
+* Several spam protection improvements:
+    * Add a honeypot option for additional spam protection
+    * Akismet integration - handle spam seamlessly without adding any js libraries
+    * Integrate with Cloudflare Turnstile - a privacy first captcha
+* Create custom filters (petitioner_send_ty_email, petitioner_send_to_representative, petitioner_after_submission, petitioner_get_styled_message)
+* New shortcodes (petitioner-goal, petitioner-submission-count, petitioner-goal-progress-ui, petitioner-letter-modal-ui)
+* Add better DB schema handling
+* Minor bug fixes and UI improvements
+* Add a translation template
 
 = 0.2.6 =
 * Fix export button not showing up

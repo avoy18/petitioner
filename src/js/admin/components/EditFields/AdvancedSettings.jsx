@@ -1,105 +1,60 @@
 import React from 'react';
 import { TextControl, SelectControl } from '@wordpress/components';
 import PTRichText from './PTRichText';
+import { useState } from '@wordpress/element';
 
 /**
- * ✅ Petition Details Component
+ * Advanced Settings Component
  */
-export default function PetitionDetails({ formState, updateFormState }) {
-	const defaultValues = window.petitionerData?.default_values;	
+export default function AdvancedSettings({ formState, updateFormState }) {
+	const defaultValues = window.petitionerData?.default_values;
+	const defaultFromField = defaultValues?.from_field || '';
+
 	const confirmEmails = formState.approval_state === 'Email';
+
 	let defaultTYSubject = defaultValues?.ty_email_subject || '';
 	let defaultTYEmailContent = defaultValues?.ty_email || '';
 
-	if(confirmEmails){
-		defaultTYSubject = defaultValues?.ty_email_subject_confirm || 'Thank you for signing the {{petition_title}}';
-		defaultTYEmailContent = defaultValues?.ty_email_confirm || 'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
+	if (confirmEmails) {
+		defaultTYSubject =
+			defaultValues?.ty_email_subject_confirm ||
+			'Thank you for signing the {{petition_title}}';
+		defaultTYEmailContent =
+			defaultValues?.ty_email_confirm ||
+			'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
 	}
 
 	return (
 		<>
 			<p>
-				<TextControl
-					style={{ width: '100%' }}
-					required
-					label="Petition title *"
-					value={formState.title}
-					name="petitioner_title"
-					id="petitioner_title"
-					onChange={(value) => updateFormState('title', value)}
-				/>
-			</p>
-
-			<p>
 				<input
-					checked={formState.send_to_representative}
+					checked={formState.add_honeypot}
 					type="checkbox"
-					name="petitioner_send_to_representative"
-					id="petitioner_send_to_representative"
+					name="petitioner_add_honeypot"
+					id="petitioner_add_honeypot"
 					className="widefat"
 					onChange={(e) =>
-						updateFormState(
-							'send_to_representative',
-							e.target.checked
-						)
+						updateFormState('add_honeypot', e.target.checked)
 					}
 				/>
-				<label htmlFor="petitioner_send_to_representative">
-					Send this email to a representative?
+				<label htmlFor="petitioner_add_honeypot">
+					Add a honeypot field to the form for better spam protection?
 				</label>
 			</p>
 
 			<p>
 				<TextControl
 					style={{ width: '100%' }}
-					required
-					type="text"
-					label="Petition target email *"
-					value={formState.email}
-					help="(can have multiple, separated by commas)"
-					name="petitioner_email"
-					id="petitioner_email"
-					onChange={(value) => updateFormState('email', value)}
+					label="From field"
+					value={formState.from_field}
+					defaultValue={defaultFromField}
+					type="email"
+					help={`This is the email address that will appear in the 'From' field of the email. If empty will default to ${defaultFromField}.`}
+					name="petitioner_from_field"
+					id="petitioner_from_field"
+					onChange={(value) => updateFormState('from_field', value)}
 				/>
 			</p>
-
-			<p>
-				<TextControl
-					style={{ width: '100%' }}
-					type="text"
-					label="Petition CC emails"
-					value={formState.cc_emails}
-					help="(can have multiple, separated by commas)"
-					name="petitioner_cc_emails"
-					id="petitioner_cc_emails"
-					onChange={(value) => updateFormState('cc_emails', value)}
-				/>
-			</p>
-
-			<hr />
-			<h3>Emails</h3>
-			<p>
-				<TextControl
-					style={{ width: '100%' }}
-					type="text"
-					required
-					label="Petition subject *"
-					value={formState.subject}
-					name="petitioner_subject"
-					id="petitioner_subject"
-					onChange={(value) => updateFormState('subject', value)}
-				/>
-			</p>
-
-			<PTRichText
-				label="Petition letter"
-				id="petitioner_letter"
-				help="This will be the main content of the email sent to the representative."
-				value={formState.letter}
-				onChange={(value) => updateFormState('letter', value)}
-			/>
-
-			<br />
 
 			<p>
 				<input
@@ -111,6 +66,7 @@ export default function PetitionDetails({ formState, updateFormState }) {
 					onChange={(e) => {
 						const isChecked = e.target.checked;
 						updateFormState('require_approval', isChecked);
+						updateFormState('approval_state', 'Email');
 
 						window.petitionerData.require_approval = isChecked;
 						// Trigger custom event
@@ -170,8 +126,6 @@ export default function PetitionDetails({ formState, updateFormState }) {
 				</p>
 			)}
 
-			<br />
-
 			<p>
 				<input
 					checked={formState.override_ty_email}
@@ -210,7 +164,11 @@ export default function PetitionDetails({ formState, updateFormState }) {
 							type="text"
 							required
 							label="Thank you email subject *"
-							value={formState?.ty_email_subject.length > 0 ? formState.ty_email_subject : defaultTYSubject}
+							value={
+								formState?.ty_email_subject.length > 0
+									? formState.ty_email_subject
+									: defaultTYSubject
+							}
 							name="petitioner_ty_email_subject"
 							id="petitioner_ty_email_subject"
 							onChange={(value) =>
@@ -247,7 +205,11 @@ export default function PetitionDetails({ formState, updateFormState }) {
 								</div>
 							</div>
 						}
-						value={ formState?.ty_email?.length > 0 ? formState.ty_email : defaultTYEmailContent }
+						value={
+							formState?.ty_email?.length > 0
+								? formState.ty_email
+								: defaultTYEmailContent
+						}
 						onChange={(value) => updateFormState('ty_email', value)}
 						height={150}
 					/>

@@ -28,6 +28,8 @@ class AV_Petitioner_Admin_Edit_UI
         'override_ty_email'       => '_petitioner_override_ty_email',
         'ty_email'                => '_petitioner_ty_email',
         'ty_email_subject'        => '_petitioner_ty_email_subject',
+        'from_field'              => '_petitioner_from_field',
+        'add_honeypot'            => '_petitioner_add_honeypot',
     ];
 
     public function __construct()
@@ -72,9 +74,7 @@ class AV_Petitioner_Admin_Edit_UI
     {
         wp_nonce_field("save_petition_details", "petitioner_details_nonce");
         // Retrieve current meta values
-        $meta_values        = $this->get_meta_fields($post->ID);
-        $ty_email_subject   = $meta_values['ty_email_subject'] ?: '';
-        $ty_email           = $meta_values['ty_email'] ?: '';
+        $meta_values     = $this->get_meta_fields($post->ID);
         // Sanitize values for safe use in HTML attributes
         $petitioner_info = [
             "form_id"                       => (int) $post->ID,
@@ -95,13 +95,16 @@ class AV_Petitioner_Admin_Edit_UI
             "legal_text"                    => wp_kses_post($meta_values['legal_text']),
             "export_url"                    => esc_url(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID)),
             "override_ty_email"             => (bool) $meta_values['override_ty_email'],
-            "ty_email"                      => wp_kses_post($ty_email),
-            "ty_email_subject"              => $ty_email_subject,
+            "ty_email"                      => wp_kses_post($meta_values['ty_email']),
+            "ty_email_subject"              => sanitize_text_field($meta_values['ty_email_subject']),
+            "from_field"                    => sanitize_text_field($meta_values['from_field']),
+            "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
             "default_values"                => [
-                "ty_email_subject"              => AV_Petitioner_Mailer::get_default_ty_subject(),
-                "ty_email"                      => AV_Petitioner_Mailer::get_default_ty_email(),
-                'ty_email_subject_confirm'      => AV_Petitioner_Mailer::get_default_ty_subject(true),
-                'ty_email_confirm'              => AV_Petitioner_Mailer::get_default_ty_email(true),
+                "ty_email_subject"              => AV_Petitioner_Email_Template::get_default_ty_subject(),
+                "ty_email"                      => AV_Petitioner_Email_Template::get_default_ty_email(),
+                'ty_email_subject_confirm'      => AV_Petitioner_Email_Template::get_default_ty_subject(true),
+                'ty_email_confirm'              => AV_Petitioner_Email_Template::get_default_ty_email(true),
+                "from_field"                    => AV_Petitioner_Email_Template::get_default_from_field(),
             ]
         ];
 
@@ -162,6 +165,7 @@ class AV_Petitioner_Admin_Edit_UI
             'add_legal_text',
             'add_consent_checkbox',
             'show_goal',
+            'add_honeypot',
         ];
 
         $wysiwyg_fields = [

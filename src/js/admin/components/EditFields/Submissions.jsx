@@ -19,8 +19,6 @@ export default function Submissions() {
 		}
 	);
 
-	const showConfirmEmail = window.petitionerData.approval_state === 'Email';
-
 	const perPage = 100;
 
 	const fetchData = async () => {
@@ -31,7 +29,6 @@ export default function Submissions() {
 			const data = await response.json();
 
 			if (data.success) {
-				// console.log(data);
 				setTotal(data.data.total);
 				setSubmissions(data.data.submissions);
 			} else {

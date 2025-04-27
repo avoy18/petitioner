@@ -397,3 +397,9 @@ $spacer-xl: 32px;
 		overflow-y: auto;
 	}
 }
+
+.petitioner-turnstile-container {
+	iframe {
+		width: 100%;
+	}
+}

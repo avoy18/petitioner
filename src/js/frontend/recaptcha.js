@@ -11,6 +11,14 @@ export default class ReCaptcha {
 			petitionForm.addEventListener(
 				'focusin',
 				function () {
+					if (recaptchaField && recaptchaField.value) {
+						return;
+					}
+
+					if (typeof grecaptcha === 'undefined') {
+						return;
+					}
+
 					grecaptcha.ready(function () {
 						grecaptcha
 							.execute(petitionerCaptcha.recaptchaSiteKey, {
