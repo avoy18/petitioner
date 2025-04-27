@@ -215,7 +215,7 @@ export default function Integrations({ formState, updateFormState }) {
 				<>
 					<div>
 						<ToggleControl
-							label="Enable Turnstile"
+							label="Enable Akismet"
 							checked={formState.enable_akismet}
 							onChange={(checked) =>
 								updateFormState('enable_akismet', checked)
