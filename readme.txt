@@ -83,7 +83,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 == Changelog ==
 
 = 0.3.1 =
-* Add custom javascript event - petitionerFormSubmitted
+* Add custom javascript event - petitionerFormSubmit
 * Improve readme to highlight the latest features
 
 = 0.3.0 =
