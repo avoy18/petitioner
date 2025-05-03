@@ -8,6 +8,8 @@ class AV_Petitioner_Setup
 {
     public function __construct()
     {
+        // db schema
+        add_action('plugins_loaded', [$this, 'maybe_update_schema']);
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
@@ -20,14 +22,14 @@ class AV_Petitioner_Setup
             return $attributes;
         });
 
+
         // cpt
         add_action('init', array($this, 'register_post_types'));
 
-        // shortcodes
-        $this->register_shortcodes();
-
         // edit admin fields
         new AV_Petitioner_Admin_Edit_UI();
+        // shortcodes
+        new AV_Petitioner_Shortcodes();
         // settings admin fields
         new AV_Petitioner_Admin_Settings_UI();
 
@@ -49,6 +51,17 @@ class AV_Petitioner_Setup
     {
         add_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
         AV_Petitioner_Submissions_Model::create_db_table();
+    }
+
+    public function maybe_update_schema()
+    {
+        $current_version = get_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
+
+        if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
+            // Update the database schema or perform any other necessary updates
+            AV_Petitioner_Submissions_Model::create_db_table();
+            update_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
+        }
     }
 
     /**
@@ -120,28 +133,7 @@ class AV_Petitioner_Setup
 
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
 
-        // Captcha
-        $is_recaptcha_enabled = get_option('petitioner_enable_recaptcha', false);
-        $is_hcaptcha_enabled = get_option('petitioner_enable_hcaptcha', false);
-        $recaptcha_site_key = get_option('petitioner_recaptcha_site_key');
-        $hcaptcha_site_key = get_option('petitioner_hcaptcha_site_key');
-
-        if ($is_recaptcha_enabled || $is_hcaptcha_enabled) {
-            if ($is_recaptcha_enabled && !empty($recaptcha_site_key)) {
-                wp_enqueue_script('petitioner-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr($recaptcha_site_key), [], null, true);
-            }
-
-            if ($is_hcaptcha_enabled && !empty($hcaptcha_site_key)) {
-                wp_enqueue_script('hcaptcha', 'https://js.hcaptcha.com/1/api.js', [], null, true);
-            }
-        }
-
-        wp_localize_script('petitioner-script', 'petitionerCaptcha', [
-            'recaptchaSiteKey'  => $recaptcha_site_key,
-            'hcaptchaSiteKey'   => $hcaptcha_site_key,
-            'enableRecaptcha'   => $is_recaptcha_enabled,
-            'enableHcaptcha'    => $is_hcaptcha_enabled,
-        ]);
+        AV_Petitioner_Captcha::enqueue_scripts();
     }
 
     public function generate_custom_css()
@@ -182,7 +174,7 @@ class AV_Petitioner_Setup
         $screen = get_current_screen();
 
         // Check if on the edit or add new page for 'petitioner_petition' post type
-        if ($screen && $screen->base === 'post' && $screen->post_type === 'petitioner-petition') {
+        if ($screen->post_type === 'petitioner-petition') {
             // Enqueue scripts
             wp_enqueue_script('wp-blocks');
             wp_enqueue_script('wp-block-editor');
@@ -196,16 +188,6 @@ class AV_Petitioner_Setup
 
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array('wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components'), AV_PETITIONER_PLUGIN_VERSION, true);
-    }
-
-    /**
-     * Initialize shortcodes
-     */
-    public function register_shortcodes()
-    {
-        $frontend = new AV_Petitioner_Frontend();
-
-        add_shortcode('petitioner-form', [$frontend, 'display_form']);
     }
 
     public function register_petition_form_block()

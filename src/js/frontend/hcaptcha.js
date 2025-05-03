@@ -22,7 +22,7 @@ export default class HCaptcha {
 			!petitionerCaptcha?.hcaptchaSiteKey ||
 			!this.hcaptchaContainer
 		) {
-			console.warn('❌ petitioner - hCaptcha is not enabled or missing.');
+			// console.warn('❌ petitioner - hCaptcha is not enabled or missing.');
 			return;
 		}
 

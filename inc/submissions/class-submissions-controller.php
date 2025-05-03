@@ -20,6 +20,11 @@ class AV_Petitioner_Submissions_Controller
             wp_die();
         }
 
+        if (!empty($_POST['ptr_info'])) {
+            wp_send_json_error('Invalid submission data');
+            wp_die();
+        }
+
         $email                      = isset($_POST['petitioner_email']) ? sanitize_email(wp_unslash($_POST['petitioner_email'])) : '';
         $form_id                    = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
         $fname                      = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
@@ -39,29 +44,20 @@ class AV_Petitioner_Submissions_Controller
             }
         }
 
-        $recaptcha_enabled  = get_option('petitioner_enable_recaptcha', false);
-        $hcaptcha_enabled   = get_option('petitioner_enable_hcaptcha', false);
+        // handle captcha
+        AV_Petitioner_Captcha::validate_captcha($form_id);
 
-        if ($recaptcha_enabled) {
-            $recaptcha_response = isset($_POST['petitioner-g-recaptcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-g-recaptcha-response'])) : '';
+        // akismet
+        $akismet_is_spam = AV_Petitioner_Akismet::check_with_akismet(
+            $email,
+            $fname,
+            $lname,
+            $country,
+            $form_id
+        );
 
-            $recaptcha_result = self::verify_captcha($recaptcha_response, 'recaptcha');
-
-            if (!$recaptcha_result['success']) {
-                wp_send_json_error($recaptcha_result['message']);
-                wp_die();
-            }
-        }
-
-        if ($hcaptcha_enabled) {
-            $hcaptcha_response = isset($_POST['petitioner-h-captcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-h-captcha-response'])) : '';
-
-            $hcaptcha_result = self::verify_captcha($hcaptcha_response, 'hcaptcha');
-
-            if (!$hcaptcha_result['success']) {
-                wp_send_json_error($hcaptcha_result['message']);
-                wp_die();
-            }
+        if($akismet_is_spam){
+            wp_send_json_error(__('Your submission has been flagged as spam.', 'petitioner'));
         }
 
         // todo: add these
@@ -102,6 +98,23 @@ class AV_Petitioner_Submissions_Controller
 
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
 
+        /**
+         * petitioner_after_submission
+         * 
+         * Fires an action after a submission is processed.
+         *
+         * This hook allows developers to perform custom actions or extend functionality
+         * after a submission has been successfully handled.
+         *
+         * @since 0.2.7
+         * 
+         * @param int $submission_id The ID of the processed submission.
+         * @param int $form_id The ID of the form associated with the submission.
+         */
+        do_action('petitioner_after_submission', $submission_id, $form_id);
+
+        $send_to_rep = $default_approval_status !== 'Email' && get_post_meta($form_id, '_petitioner_send_to_representative', true);
+
         $mailer_settings = array(
             'target_email'              => get_post_meta($form_id, '_petitioner_email', true),
             'target_cc_emails'          => get_post_meta($form_id, '_petitioner_cc_emails', true),
@@ -111,10 +124,11 @@ class AV_Petitioner_Submissions_Controller
             'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
             'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc'                       => $bcc,
-            'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
+            'send_to_representative'    => $send_to_rep,
             'form_id'                   => $form_id,
             'confirm_emails'            => $default_approval_status === 'Email',
-            'submission_id'             => $submission_id
+            'submission_id'             => $submission_id,
+            'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
         );
 
         $mailer = new AV_Petitioner_Mailer($mailer_settings);
@@ -256,10 +270,32 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function verify_captcha($captcha_response, $captcha_type = 'recaptcha')
     {
-        // Get the appropriate secret key based on CAPTCHA type
-        $captcha_secret = ($captcha_type === 'hcaptcha')
-            ? get_option('petitioner_hcaptcha_secret_key', '')
-            : get_option('petitioner_recaptcha_secret_key', '');
+        // Lookup table for each CAPTCHA provider
+        $providers = [
+            'recaptcha' => [
+                'secret_key_option' => 'petitioner_recaptcha_secret_key',
+                'verify_url'        => 'https://www.google.com/recaptcha/api/siteverify',
+            ],
+            'hcaptcha' => [
+                'secret_key_option' => 'petitioner_hcaptcha_secret_key',
+                'verify_url'        => 'https://hcaptcha.com/siteverify',
+            ],
+            'turnstile' => [
+                'secret_key_option' => 'petitioner_turnstile_secret_key',
+                'verify_url'        => 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            ],
+        ];
+
+        // Validate captcha type
+        if (! isset($providers[$captcha_type])) {
+            return [
+                'success' => false,
+                'message' => __('Invalid CAPTCHA type.', 'petitioner'),
+            ];
+        }
+
+        $provider = $providers[$captcha_type];
+        $captcha_secret = get_option($provider['secret_key_option'], '');
 
         // Handle missing response
         if (empty($captcha_response)) {
@@ -269,13 +305,8 @@ class AV_Petitioner_Submissions_Controller
             ];
         }
 
-        // Determine verification URL
-        $verify_url = ($captcha_type === 'hcaptcha')
-            ? 'https://hcaptcha.com/siteverify'
-            : 'https://www.google.com/recaptcha/api/siteverify';
-
         // Send request to verification API
-        $api_response = wp_remote_post($verify_url, [
+        $api_response = wp_remote_post($provider['verify_url'], [
             'body' => [
                 'secret'   => $captcha_secret,
                 'response' => $captcha_response,
@@ -294,15 +325,15 @@ class AV_Petitioner_Submissions_Controller
         // Decode API response
         $body = json_decode(wp_remote_retrieve_body($api_response), true);
 
-        // Validate response
-        if (!isset($body['success']) || !$body['success']) {
+        // Validate general success
+        if (! isset($body['success']) || ! $body['success']) {
             return [
                 'success' => false,
                 'message' => __('CAPTCHA verification failed.', 'petitioner'),
             ];
         }
 
-        // Check score for Google reCAPTCHA v3
+        // Special case: Check reCAPTCHA v3 score
         if ($captcha_type === 'recaptcha' && isset($body['score']) && $body['score'] < 0.5) {
             return [
                 'success' => false,

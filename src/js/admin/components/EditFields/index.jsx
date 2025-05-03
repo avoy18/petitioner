@@ -12,8 +12,9 @@ import FormSettings from './FormSettings';
 import FormBuilder from './FormBuilder';
 import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
+import AdvancedSettings from './AdvancedSettings';
 
-export default function FormFields(props) {
+export default function EditFields(props) {
 	const petitionerLetterRef = useRef(null);
 
 	const {
@@ -36,6 +37,8 @@ export default function FormFields(props) {
 		override_ty_email = false,
 		ty_email = '',
 		ty_email_subject = '',
+		from_field = '',
+		add_honeypot = true,
 	} = window.petitionerData;
 
 	const [activeTab, setActiveTab] = useState('form-builder');
@@ -59,6 +62,8 @@ export default function FormFields(props) {
 		override_ty_email,
 		ty_email,
 		ty_email_subject,
+		from_field,
+		add_honeypot,
 	});
 
 	const updateFormState = useCallback((key, value) => {
@@ -67,6 +72,15 @@ export default function FormFields(props) {
 
 	const tabs = useMemo(
 		() => [
+			{
+				name: 'form-builder',
+				title: (
+					<>
+						<Dashicon icon="welcome-write-blog" /> Form builder
+					</>
+				),
+				className: 'petition-tablink',
+			},
 			{
 				name: 'petition-details',
 				title: (
@@ -86,10 +100,10 @@ export default function FormFields(props) {
 				className: 'petition-tablink',
 			},
 			{
-				name: 'form-builder',
+				name: 'advanced-settings',
 				title: (
 					<>
-						<Dashicon icon="welcome-write-blog" /> Form builder
+						<Dashicon icon="admin-settings" /> Advanced settings
 					</>
 				),
 				className: 'petition-tablink',
@@ -147,6 +161,14 @@ export default function FormFields(props) {
 					/>
 				</div>
 
+				<div
+					className={`petitioner-tab ${activeTab === 'advanced-settings' ? 'active' : ''}`}
+				>
+					<AdvancedSettings
+						formState={formState}
+						updateFormState={updateFormState}
+					/>
+				</div>
 				<div
 					className={`petitioner-tab ${activeTab === 'submissions' ? 'active' : ''}`}
 				>
