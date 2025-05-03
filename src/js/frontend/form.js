@@ -121,7 +121,7 @@ export default class PetitionerForm {
 			this.hcaptcha.validate(() => {
 				this.captchaValidated = true;
 				this.formEl.dispatchEvent(
-					new Event('submit', { bubbles: true })
+					new Event('submit', { bubbles: true, cancelable: true })
 				);
 			});
 			return;
