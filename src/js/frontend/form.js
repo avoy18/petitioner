@@ -164,6 +164,14 @@ export default class PetitionerForm {
 				this.wrapper.classList.remove('petitioner--loading');
 				this.formEl.reset();
 				this.captchaValidated = false; // ✅ Reset for next submission
+
+				const event = new CustomEvent('petitionerFormSubmit', {
+					detail: {
+						formData,
+					},
+				});
+
+				document.dispatchEvent(event);
 			})
 			.catch((error) => {
 				console.error('Error:', error);
