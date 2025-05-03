@@ -15,7 +15,7 @@ export default class ReCaptcha {
 						return;
 					}
 
-					if (typeof grecaptcha === 'undefined') {
+					if (typeof grecaptcha === 'undefined' || typeof grecaptcha?.ready === 'undefined') {
 						return;
 					}
 
