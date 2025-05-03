@@ -3,8 +3,8 @@ Contributors: avoytenko
 Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
-Tested up to: 6.7.2
-Stable Tag: 0.2.7
+Tested up to: 6.8
+Stable Tag: 0.3.1
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,20 +13,36 @@ Create and manage petitions with Petitioner, send them to the target email, and 
 
 == Description ==
 
-[Plugin homepage](https://getpetitioner.com).
+[Plugin homepage & demo](https://getpetitioner.com).
+[Documentation](https://getpetitioner.com/docs/).
 Petitioner is a WordPress plugin that allows you to create petitions and send them to the target email.
 
-Features:
-- Unlimited petitions: Create and manage an unlimited number of petitions.
-- Ability to approve/deny petitions and set the default approval behavior (approved by default or declined)
-- Option to send customizable email confirmations or thank you emails
-- Modern and responsive design: The plugin features a modern, mobile-friendly design for a seamless user experience.
-- Color customizations & custom CSS options
-- WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
-- Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
-- Email functionality: Automatically send petition letters to representatives via email.
-- Spam protection with reCAPTCHA and hCaptcha
-- Gutenberg integration with a custom petition block!
+### Features:
+**Unlimited petitions** 
+Create and manage an unlimited number of petitions.
+
+**Control submission behaviour**
+* Email functionality: Automatically send petition letters to representatives via email.
+* Ability to store submissions without sending emails to the rep.
+* Ability to manually approve/deny petitions and set the default approval behavior (approved by default or declined)
+* Option to confirm emails via email
+* Customize email confirmations, petition letters, and thank you emails
+* Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
+
+**Design & layout features**
+* The plugin features a modern, mobile-friendly design for a seamless user experience.
+* Color customizations & custom CSS options
+* WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
+* Gutenberg integration with a custom petition block!
+* Several shortcodes to take your petitions to the next level
+
+**Spam protection features**
+* Captcha integrations: reCAPTCHA, hCaptcha, and Cloudflare Turnstile
+* Akismet integration - handle spam seamlessly without adding any js libraries
+* Honeypot field
+* Email confirmations
+* Compatible with all of the popular SMTP plugins (uses wp_mail behind the scenes)
+
 
 == Development and Source Code ==
 
@@ -51,6 +67,10 @@ Simply open the edit page for the petition in question and you will see a table 
 
 Absolutely! Feel free to reach out through [this contact form](https://getpetitioner.com/contact/)
 
+= What I have more questions = 
+
+You can find a more extensive FAQ [on the main website](https://getpetitioner.com/docs/). Additionally, yu can reach out to me via [this contact form](https://getpetitioner.com/contact/)
+
 == Screenshots ==
 
 1. Petition on the frontend
@@ -62,18 +82,23 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 
 == Changelog ==
 
+= 0.3.1 =
+* Add custom javascript event - petitionerFormSubmit
+* Improve readme to highlight the latest features
+
 = 0.3.0 =
-* Better style emails visually
-* A new and improved settings page
-* Allow overriding the "from" field
-* Several spam protection improvements:
+* Spam protection improvements:
     * Add a honeypot option for additional spam protection
     * Akismet integration - handle spam seamlessly without adding any js libraries
     * Integrate with Cloudflare Turnstile - a privacy first captcha
 * Create custom filters (petitioner_send_ty_email, petitioner_send_to_representative, petitioner_after_submission, petitioner_get_styled_message)
 * New shortcodes (petitioner-goal, petitioner-submission-count, petitioner-goal-progress-ui, petitioner-letter-modal-ui)
-* Add better DB schema handling
-* Minor bug fixes and UI improvements
+* Bug fixes and UI improvements
+    * Better style emails visually
+    * Allow overriding the "from" field
+    * A new and improved settings page
+    * Add better DB schema handling
+    * Fix a bug with confirmed emails not sending letters to the rep
 * Add a translation template
 
 = 0.2.6 =

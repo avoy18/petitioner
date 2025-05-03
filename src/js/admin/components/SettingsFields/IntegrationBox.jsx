@@ -33,7 +33,7 @@ export default function IntegrationBox({
 				<CardHeader>
 					<Heading level={4}>{title}</Heading>
 				</CardHeader>
-				<CardBody>
+				<CardBody style={{'min-height': '80px'}}>
 					<Text>{description}</Text>
 				</CardBody>
 				<CardFooter>
