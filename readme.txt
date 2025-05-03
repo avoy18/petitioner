@@ -82,6 +82,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.3.2 =
+* Bug fixes:
+    * Fix a bug with hCaptcha breaking forms on Firefox, special thanks to [@Shahraz98](https://github.com/Shahraz98)
+    * Fix the recaptcha code running when recaptcha is used by another plugin
+
 = 0.3.1 =
 * Add custom javascript event - petitionerFormSubmit
 * Improve readme to highlight the latest features

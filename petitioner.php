@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.3.1
+ * Version:           0.3.2
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_PLUGIN_VERSION', '0.3.1');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.3.2');
 
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
