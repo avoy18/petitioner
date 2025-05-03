@@ -101,10 +101,10 @@ class AV_Petitioner_Admin_Edit_UI
             "from_field"                    => sanitize_text_field($meta_values['from_field']),
             "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
             "default_values"                => [
-                "ty_email_subject"              => AV_Petitioner_Mailer::get_default_ty_subject(),
-                "ty_email"                      => AV_Petitioner_Mailer::get_default_ty_email(),
-                'ty_email_subject_confirm'      => AV_Petitioner_Mailer::get_default_ty_subject(true),
-                'ty_email_confirm'              => AV_Petitioner_Mailer::get_default_ty_email(true),
+                "ty_email_subject"              => AV_Petitioner_Email_Template::get_default_ty_subject(),
+                "ty_email"                      => AV_Petitioner_Email_Template::get_default_ty_email(),
+                'ty_email_subject_confirm'      => AV_Petitioner_Email_Template::get_default_ty_subject(true),
+                'ty_email_confirm'              => AV_Petitioner_Email_Template::get_default_ty_email(true),
                 "from_field"                    => AV_Petitioner_Email_Template::get_default_from_field(),
             ],
             // new way of handling the form fields

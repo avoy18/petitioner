@@ -1,0 +1,81 @@
+@mixin form-builder {
+	.ptr-fake-field {
+		padding: 8px;
+        border-radius: 4px;
+        border: 1px dashed transparent;
+        transition: 0.15s;
+
+		&--input {
+			border: 1px solid var(--ptr-admin-color-grey, #ccc);
+			border-radius: 4px;
+			background-color: #fff;
+			font-size: 14px;
+		}
+
+		&--checkbox {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+
+			input[type="checkbox"] {
+				width: 16px;
+				height: 16px;
+				cursor: pointer;
+			}
+
+			label {
+				font-size: 14px;
+				margin-bottom: 0px;
+			}
+		}
+
+		&:hover {
+			border: 1px dashed #000;
+		}
+	}
+
+	.ptr-form-builder .components-button {
+        --wp-components-color-accent: var(--ptr-admin-color-primary);
+        --wp-components-color-accent-hover: var(--ptr-admin-color-dark);
+        border-radius: var(--ptr-admin-input-border-radius);
+		width: 100%;
+		text-align: center;
+		justify-content: center;
+	}
+
+	.ptr-form-builder {
+		&__form {
+			width: 70%;
+
+			.ptr-visual-position {
+				width: 100%;
+				border: 1px solid #efefef;
+				background: #fbf0f0;
+				opacity: 0;
+				height: 5px;
+
+				&.active {
+					background: blue;
+				}
+			}
+
+			&.is-dragging {
+				cursor: grabbing;
+
+				.ptr-visual-position {
+					opacity: 1;
+				}
+			}
+		}
+
+		&__form-header {
+			padding: 16px;
+
+			h3,
+			p {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+		}
+	}
+}

@@ -1,0 +1,45 @@
+$spacer-xs: 4px;
+$spacer-sm: 8px;
+$spacer-md: 16px;
+$spacer-lg: 24px;
+$spacer-xl: 32px;
+
+@mixin ptr-variables {
+	// general
+	--ptr-admin-color-primary: #e01a2b;
+	--ptr-admin-color-dark: #000000;
+	--ptr-admin-color-grey: #efefef;
+	--ptr-admin-fs-sm: 14px;
+	--ptr-admin-fs-md: 18px;
+
+	// wrapper
+	--ptr-admin-spacing-x: #{$spacer-md};
+	--ptr-admin-spacing-y: #{$spacer-md};
+	--ptr-admin-wrapper-bg: white;
+	--ptr-admin-wrapper-radius: #{$spacer-md};
+
+	// input related
+	--ptr-admin-input-border-width: 1px;
+	--ptr-admin-input-border-color: #a1a1a1;
+	--ptr-admin-input-border-color-active: #00000;
+	--ptr-admin-input-border-radius: #{$spacer-sm};
+	--ptr-admin-input-spacing-y: 0.7rem;
+	--ptr-admin-input-spacing-x: #{$spacer-md};
+
+	// label related
+	--ptr-admin-label-font-size: var(--ptr-admin-fs-sm);
+	// button
+	--ptr-admin-btn-font-size: var(--ptr-admin-fs-md);
+	--ptr-admin-btn-bg: var(--ptr-admin-color-primary);
+	--ptr-admin-btn-bg-hover: var(--ptr-admin-color-dark);
+	--ptr-admin-button-border-width: var(--ptr-admin-input-border-width);
+	--ptr-admin-button-border-color: transparent;
+	--ptr-admin-button-border-color-active: var(--ptr-admin-color-dark);
+	--ptr-admin-button-border-radius: #{$spacer-sm};
+
+	// progress bar
+	--ptr-admin-progress-height: #{$spacer-sm};
+	--ptr-admin-progress-bg: var(--ptr-admin-color-grey);
+	--ptr-admin-progress-radius: #{$spacer-xs};
+	--ptr-admin-progress-inner-bg: var(--ptr-admin-color-primary);
+}
