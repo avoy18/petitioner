@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, ButtonGroup, SelectControl } from '@wordpress/components';
+import { Button, ButtonGroup } from '@wordpress/components';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;

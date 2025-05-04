@@ -1,74 +1,20 @@
-import React from 'react';
-
-import {
-	TabPanel,
-	Dashicon,
-	__experimentalToggleGroupControl as ToggleGroupControl,
-	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-} from '@wordpress/components';
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { Dashicon } from '@wordpress/components';
+import { useMemo } from '@wordpress/element';
 import Submissions from './Submissions';
 import FormSettings from './FormSettings';
 import FormBuilder from './FormBuilder';
 import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
 import AdvancedSettings from './AdvancedSettings';
+import {
+	useEditFormContext,
+	EditFormContextProvider,
+} from '@admin/context/EditFormContext';
 
-export default function EditFields(props) {
-	const petitionerLetterRef = useRef(null);
+import Tabs from '@admin/components/shared/Tabs';
 
-	const {
-		title = '',
-		send_to_representative = false,
-		email = '',
-		cc_emails = '',
-		show_goal = true,
-		goal = 0,
-		show_country = false,
-		subject = '',
-		require_approval = false,
-		approval_state = 'approved',
-		letter = '',
-		add_legal_text = false,
-		consent_text = '',
-		legal_text = '',
-		form_id = '',
-		add_consent_checkbox = false,
-		override_ty_email = false,
-		ty_email = '',
-		ty_email_subject = '',
-		from_field = '',
-		add_honeypot = true,
-	} = window.petitionerData;
-
-	const [activeTab, setActiveTab] = useState('form-builder');
-
-	const [formState, setFormState] = useState({
-		title,
-		send_to_representative,
-		email,
-		cc_emails,
-		show_goal,
-		goal,
-		show_country,
-		subject,
-		require_approval,
-		approval_state,
-		letter,
-		add_legal_text,
-		legal_text,
-		add_consent_checkbox,
-		consent_text,
-		override_ty_email,
-		ty_email,
-		ty_email_subject,
-		from_field,
-		add_honeypot,
-	});
-
-	const updateFormState = useCallback((key, value) => {
-		setFormState((prevState) => ({ ...prevState, [key]: value }));
-	}, []);
+function EditFieldsComponent() {
+	const { formState, updateFormState } = useEditFormContext();
 
 	const tabs = useMemo(
 		() => [
@@ -80,6 +26,12 @@ export default function EditFields(props) {
 					</>
 				),
 				className: 'petition-tablink',
+				renderingEl: (
+					<FormBuilder
+						formState={formState}
+						updateFormState={updateFormState}
+					/>
+				),
 			},
 			{
 				name: 'petition-details',
@@ -89,6 +41,12 @@ export default function EditFields(props) {
 					</>
 				),
 				className: 'petition-tablink',
+				renderingEl: (
+					<PetitionDetails
+						formState={formState}
+						updateFormState={updateFormState}
+					/>
+				),
 			},
 			{
 				name: 'form-settings',
@@ -98,6 +56,12 @@ export default function EditFields(props) {
 					</>
 				),
 				className: 'petition-tablink',
+				renderingEl: (
+					<FormSettings
+						formState={formState}
+						updateFormState={updateFormState}
+					/>
+				),
 			},
 			{
 				name: 'advanced-settings',
@@ -107,6 +71,12 @@ export default function EditFields(props) {
 					</>
 				),
 				className: 'petition-tablink',
+				renderingEl: (
+					<AdvancedSettings
+						formState={formState}
+						updateFormState={updateFormState}
+					/>
+				),
 			},
 			{
 				name: 'submissions',
@@ -116,67 +86,26 @@ export default function EditFields(props) {
 					</>
 				),
 				className: 'petition-tablink',
+				renderingEl: (
+					<Submissions formID={window.petitionerData.form_id} />
+				),
 			},
 		],
 		[]
 	);
 
-	const handleTabSelect = useCallback((tabName) => {
-		setActiveTab(tabName);
-		if (petitionerLetterRef.current) {
-			petitionerLetterRef.current.style.display =
-				tabName === 'petition-details' ? 'block' : 'none';
-		}
-	}, []);
-
 	return (
 		<>
-			<TabPanel onSelect={handleTabSelect} tabs={tabs}>
-				{(tab) => <></>}
-			</TabPanel>
-
-			<div className={`petitioner-tab-content`}>
-				<div
-					className={`petitioner-tab petitioner-tab ${activeTab === 'form-builder' ? 'active' : ''}`}
-				>
-					<FormBuilder
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				</div>
-				<div
-					className={`petitioner-tab petitioner-tab ${activeTab === 'petition-details' ? 'active' : ''}`}
-				>
-					<PetitionDetails
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				</div>
-				<div
-					className={`petitioner-tab petitioner-tab ${activeTab === 'form-settings' ? 'active' : ''}`}
-				>
-					<FormSettings
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				</div>
-
-				<div
-					className={`petitioner-tab ${activeTab === 'advanced-settings' ? 'active' : ''}`}
-				>
-					<AdvancedSettings
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				</div>
-				<div
-					className={`petitioner-tab ${activeTab === 'submissions' ? 'active' : ''}`}
-				>
-					<Submissions formID={window.petitionerData.form_id} />
-				</div>
-			</div>
-
+			<Tabs tabs={tabs} />
 			<BottomCallout />
 		</>
+	);
+}
+
+export default function EditFields(props) {
+	return (
+		<EditFormContextProvider>
+			<EditFieldsComponent />
+		</EditFormContextProvider>
 	);
 }

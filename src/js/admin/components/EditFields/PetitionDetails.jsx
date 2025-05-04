@@ -1,11 +1,13 @@
 import React from 'react';
 import { TextControl } from '@wordpress/components';
-import PTRichText from './PTRichText';
+import PTRichText from '../shared/PTRichText';
+import { useEditFormContext } from '@admin/context/EditFormContext';
 
 /**
  * ✅ Petition Details Component
  */
-export default function PetitionDetails({ formState, updateFormState }) {
+export default function PetitionDetails() {
+	const { formState, updateFormState } = useEditFormContext();
 	return (
 		<>
 			<p>

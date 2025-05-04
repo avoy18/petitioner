@@ -1,7 +1,10 @@
 import { TextControl } from '@wordpress/components';
-import PTRichText from './PTRichText';
+import PTRichText from '../shared/PTRichText';
+import { useEditFormContext } from '@admin/context/EditFormContext';
 
-export default function FormSettings({ formState, updateFormState }) {
+export default function FormSettings() {
+	const { formState, updateFormState } = useEditFormContext();
+
 	return (
 		<>
 			<p>
@@ -33,8 +36,6 @@ export default function FormSettings({ formState, updateFormState }) {
 					Show country field?
 				</label>
 			</p>
-
-			
 
 			<p>
 				<input

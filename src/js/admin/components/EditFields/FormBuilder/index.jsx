@@ -1,9 +1,10 @@
 import { Panel, PanelBody, Button } from '@wordpress/components';
 import { useRef } from '@wordpress/element';
 
-import PtrDraggable from './../shared/Draggable';
+import PtrDraggable from './../../shared/Draggable';
+import BuilderSettings from './BuilderSettings';
 
-export default function FormBuilder(props) {
+export default function FormBuilderComponent(props) {
 	const formRef = useRef(null);
 
 	const handleDragStart = (event) => {
@@ -36,6 +37,7 @@ export default function FormBuilder(props) {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				id={'draggable_' + name}
+				// onClick={}
 			>
 				{isInputField && (
 					<div className="ptr-fake-field ptr-fake-field--input">
@@ -74,10 +76,15 @@ export default function FormBuilder(props) {
 				padding: '24px 16px',
 			}}
 		>
-			<div style={{ width: '30%' }}>Settings go here</div>
+			<div
+				className="ptr-form-builder__settings"
+				style={{ width: '30%' }}
+			>
+				<BuilderSettings />
+			</div>
 			<div
 				ref={formRef}
-				className={`ptr-form-builder__form`}
+				className="ptr-form-builder__form"
 				style={{ width: '70%' }}
 			>
 				<Panel>

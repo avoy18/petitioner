@@ -1,12 +1,13 @@
 import React from 'react';
 import { TextControl, SelectControl } from '@wordpress/components';
-import PTRichText from './PTRichText';
-import { useState } from '@wordpress/element';
+import PTRichText from '../shared/PTRichText';
+import { useEditFormContext } from '@admin/context/EditFormContext';
 
 /**
  * Advanced Settings Component
  */
-export default function AdvancedSettings({ formState, updateFormState }) {
+export default function AdvancedSettings() {
+	const { formState, updateFormState } = useEditFormContext();
 	const defaultValues = window.petitionerData?.default_values;
 	const defaultFromField = defaultValues?.from_field || '';
 

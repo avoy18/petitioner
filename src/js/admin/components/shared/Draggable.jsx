@@ -1,10 +1,20 @@
 import { Draggable } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
-export default function PtrDraggable({ id, onDragStart, onDragEnd, children }) {
+export default function PtrDraggable({
+	id,
+	onDragStart,
+	onDragEnd,
+	onClick,
+	children,
+}) {
 	const [selected, setSelected] = useState(false);
 	return (
-		<div style={{ opacity: selected ? '0.5' : '1' }} id={id}>
+		<div
+			style={{ opacity: selected ? '0.5' : '1' }}
+			id={id}
+			onClick={onClick}
+		>
 			<Draggable
 				elementId={id}
 				transferData={{}}

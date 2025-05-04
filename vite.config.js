@@ -90,4 +90,10 @@ module.exports = defineConfig({
 		},
 	},
 	deploy,
+	resolve: {
+		alias: {
+			'@admin': path.resolve(__dirname, 'src/js/admin/'),
+			// Add as many as needed
+		},
+	},
 });
