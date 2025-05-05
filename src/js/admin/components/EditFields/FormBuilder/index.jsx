@@ -3,9 +3,12 @@ import { useRef } from '@wordpress/element';
 
 import PtrDraggable from './../../shared/Draggable';
 import BuilderSettings from './BuilderSettings';
+import { useEditFormContext } from '@admin/context/EditFormContext';
 
-export default function FormBuilderComponent(props) {
+export default function FormBuilder() {
 	const formRef = useRef(null);
+
+	const { formBuilderFields } = useEditFormContext();
 
 	const handleDragStart = (event) => {
 		formRef.current.classList.add('is-dragging');
@@ -68,80 +71,87 @@ export default function FormBuilderComponent(props) {
 	};
 
 	return (
-		<div
-			className="ptr-form-builder"
-			style={{
-				display: 'flex',
-				flexDirection: 'row',
-				padding: '24px 16px',
-			}}
-		>
+		<>
+			<input
+				type="text"
+				name="form_fields"
+				value={JSON.stringify(formBuilderFields)}
+			/>
 			<div
-				className="ptr-form-builder__settings"
-				style={{ width: '30%' }}
+				className="ptr-form-builder"
+				style={{
+					display: 'flex',
+					flexDirection: 'row',
+					padding: '24px 16px',
+				}}
 			>
-				<BuilderSettings />
-			</div>
-			<div
-				ref={formRef}
-				className="ptr-form-builder__form"
-				style={{ width: '70%' }}
-			>
-				<Panel>
-					<div className="ptr-form-builder__form-header">
-						<h3>Form builder</h3>
-						<p>
-							Drag and drop fields to build your form. Click on
-							each field to edit it's properties
-						</p>
-					</div>
-
-					<PanelBody>
-						<div className="ptr-field-wrapper">
-							<span className="ptr-visual-position"></span>
-							<DynamicField
-								name="first_name"
-								type="first_name"
-								label="First Name"
-							/>
-							<span className="ptr-visual-position"></span>
-							<DynamicField
-								name="last_name"
-								type="last_name"
-								label="Last Name"
-							/>
-							<span className="ptr-visual-position"></span>
-							<DynamicField
-								name="email"
-								type="email"
-								label="Your email"
-							/>
-							<span className="ptr-visual-position"></span>
-							<DynamicField
-								name="country"
-								type="country"
-								label="Your country"
-							/>
-							<span className="ptr-visual-position"></span>
-							<DynamicField
-								name="terms"
-								type="terms"
-								label="By submitting this form, I agree to the terms of service"
-							/>
-							<DynamicField
-								name="legal"
-								type="legal"
-								label="Legal text"
-							/>
-							<div>
-								<Button disabled={true} variant="primary">
-									Sign this petition
-								</Button>
-							</div>
+				<div
+					className="ptr-form-builder__settings"
+					style={{ width: '30%' }}
+				>
+					<BuilderSettings />
+				</div>
+				<div
+					ref={formRef}
+					className="ptr-form-builder__form"
+					style={{ width: '70%' }}
+				>
+					<Panel>
+						<div className="ptr-form-builder__form-header">
+							<h3>Form builder</h3>
+							<p>
+								Drag and drop fields to build your form. Click
+								on each field to edit it's properties
+							</p>
 						</div>
-					</PanelBody>
-				</Panel>
+
+						<PanelBody>
+							<div className="ptr-field-wrapper">
+								<span className="ptr-visual-position"></span>
+								<DynamicField
+									name="first_name"
+									type="first_name"
+									label="First Name"
+								/>
+								<span className="ptr-visual-position"></span>
+								<DynamicField
+									name="last_name"
+									type="last_name"
+									label="Last Name"
+								/>
+								<span className="ptr-visual-position"></span>
+								<DynamicField
+									name="email"
+									type="email"
+									label="Your email"
+								/>
+								<span className="ptr-visual-position"></span>
+								<DynamicField
+									name="country"
+									type="country"
+									label="Your country"
+								/>
+								<span className="ptr-visual-position"></span>
+								<DynamicField
+									name="terms"
+									type="terms"
+									label="By submitting this form, I agree to the terms of service"
+								/>
+								<DynamicField
+									name="legal"
+									type="legal"
+									label="Legal text"
+								/>
+								<div>
+									<Button disabled={true} variant="primary">
+										Sign this petition
+									</Button>
+								</div>
+							</div>
+						</PanelBody>
+					</Panel>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }

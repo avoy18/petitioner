@@ -5,6 +5,8 @@ import {
 	useCallback,
 } from '@wordpress/element';
 
+import { safelyParseJSON } from '@admin/utilities';
+
 const EditFormContext = createContext();
 
 export function EditFormContextProvider({ children }) {
@@ -30,7 +32,10 @@ export function EditFormContextProvider({ children }) {
 		ty_email_subject = '',
 		from_field = '',
 		add_honeypot = true,
+		form_fields = '{}',
 	} = window.petitionerData;
+
+	const parsedFormFields = safelyParseJSON(form_fields);
 
 	const [formState, setFormState] = useState({
 		title,
@@ -53,7 +58,25 @@ export function EditFormContextProvider({ children }) {
 		ty_email_subject,
 		from_field,
 		add_honeypot,
+		form_fields:
+			typeof parsedFormFields === 'object' ? parsedFormFields : {},
 	});
+
+	const [formBuilderFields, setFormBuilderFields] = useState(
+		parsedFormFields
+			? Object.keys(parsedFormFields).map((key) => ({
+					name: key,
+					type: parsedFormFields[key].type,
+					label: parsedFormFields[key].label,
+					placeholder: parsedFormFields[key].placeholder,
+					required: parsedFormFields[key].required,
+				}))
+			: []
+	);
+
+	const updateFormBuilderFields = useCallback((newFields) => {
+		setFormBuilderFields((prevState) => ({ ...prevState, [key]: value }));
+	}, []);
 
 	const updateFormState = useCallback((key, value) => {
 		setFormState((prevState) => ({ ...prevState, [key]: value }));
@@ -64,6 +87,8 @@ export function EditFormContextProvider({ children }) {
 			value={{
 				formState,
 				updateFormState,
+				formBuilderFields,
+				updateFormBuilderFields,
 			}}
 		>
 			{children}

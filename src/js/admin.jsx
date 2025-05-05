@@ -1,14 +1,14 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
-import EditFields from './admin/components/EditFields';
-import SettingsFields from './admin/components/SettingsFields';
-import ShortcodeArea from './admin/components/ShortcodeArea';
+import EditFields from '@admin/components/EditFields';
+import SettingsFields from '@admin/components/SettingsFields';
+import ShortcodeArea from '@admin/components/ShortcodeArea';
 
 import '../scss/admin.scss';
+import { safelyParseJSON } from '@admin/utilities';
 
 const jsonContainer = document.getElementById('petitioner-json-data');
 window.petitionerData = jsonContainer
-	? JSON.parse(jsonContainer?.textContent)
+	? safelyParseJSON(jsonContainer?.textContent)
 	: {};
 
 function EditUI() {
