@@ -3,6 +3,8 @@ import { Button, ButtonGroup, SelectControl } from '@wordpress/components';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
+	const [isResent, setIsResent] = useState(false);
+	const [isResentAll, setIsResentAll] = useState(false);
 	const [submissions, setSubmissions] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -115,9 +117,10 @@ export default function Submissions() {
 	
 			const data = await response.json();
 			if (data.success) {
-				alert('Confirmation email resent successfully.');
+				setIsResent(true);
+        		setTimeout(() => setIsResent(false), 3000);
 			} else {
-				alert(data.message || 'Failed to resend email.');
+				console.log(data.message || 'Failed to resend email.');
 			}
 		}
 	};
@@ -158,9 +161,10 @@ export default function Submissions() {
 
 		const resendData = await resendResponse.json();
 		if (resendData.success) {
-			alert(`Resent confirmation emails to ${count} users.`);
+			setIsResentAll(true);
+        	setTimeout(() => setIsResentAll(false), 3000);
 		} else {
-			alert(resendData.message || 'Failed to resend emails.');
+			console.log(resendData.message || 'Failed to resend emails.');
 		}
 	};
 
@@ -229,12 +233,13 @@ export default function Submissions() {
 								/>
 								{item.approval_status === 'Declined' && item.confirmation_token && (
 									<Button
+										disabled={isResent}
 										size="small"
 										variant="secondary"
 										onClick={() => handleResendEmail(item.id)}
 										style={{ marginTop: '5px' }}
 									>
-										Resend Email
+										{!isResent ? 'Resend Email' : 'Resent Successfully'}
 									</Button>
 								)}
 							</td>
@@ -257,8 +262,8 @@ export default function Submissions() {
 
 	const ResendAllButton = () => {
 		return (
-			<Button variant="secondary" onClick={handleResendAll} style={{ marginLeft: '8px' }}>
-				Resend All Unconfirmed Emails
+			<Button disabled={isResentAll} variant="secondary" onClick={handleResendAll} style={{ marginLeft: '8px' }}>
+				{!isResentAll ? 'Resend All Unconfirmed Emails' : 'Resent Successfully'}
 			</Button>
 		);
 	};		
