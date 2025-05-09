@@ -101,7 +101,7 @@ class AV_Email_Confirmations
     /**
      * Sends emails to the user and the target email address.
      */
-    static public function send_emails($submission){
+    static public function send_emails($submission, $force_ty_email = false, $force_confirm_email = false){
         $form_id           = $submission->form_id;
         $email             = $submission->email;
         $fname             = $submission->fname;
@@ -121,13 +121,13 @@ class AV_Email_Confirmations
             'bcc'                       => $bcc,
             'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
             'form_id'                   => $form_id,
-            'confirm_emails'            => false,
-            'send_ty_email'             => false,
+            'confirm_emails'            => $force_confirm_email,  // set TRUE only when resending
+            'send_ty_email'             => $force_ty_email,       // set TRUE only when resending
             'submission_id'             => $submission_id,
             'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
         );
 
-        $mailer = new AV_Petitioner_Mailer($mailer_settings);
+	    $mailer = new AV_Petitioner_Mailer($mailer_settings);
 
         return $mailer->send_emails();
     }

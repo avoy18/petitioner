@@ -3,6 +3,8 @@ import { Button, ButtonGroup, SelectControl } from '@wordpress/components';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
+	const [isResent, setIsResent] = useState(false);
+	const [isResentAll, setIsResentAll] = useState(false);
 	const [submissions, setSubmissions] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -101,6 +103,71 @@ export default function Submissions() {
 		}
 	};
 
+	const handleResendEmail = async (id) => {
+		if (window.confirm("Resend confirmation email to this signee?")) {
+			const response = await fetch(`${ajaxurl}?action=petitioner_resend_confirmation_email`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+				},
+				body: new URLSearchParams({
+					id: id,
+				}),
+			});
+	
+			const data = await response.json();
+			if (data.success) {
+				setIsResent(true);
+        		setTimeout(() => setIsResent(false), 3000);
+			} else {
+				console.log(data.message || 'Failed to resend email.');
+			}
+		}
+	};
+
+	const handleResendAll = async () => {
+		// Check how many unconfirmed
+		const checkResponse = await fetch(`${ajaxurl}?action=petitioner_check_unconfirmed_count`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: new URLSearchParams({ form_id }),
+		});
+
+		const checkData = await checkResponse.json();
+		if (!checkData.success || !checkData.data.count) {
+			alert('No unconfirmed users found for this petition.');
+			return;
+		}
+
+		const count = checkData.data.count;
+
+		// Confirm with user
+		const confirmSend = window.confirm(
+			`This will resend confirmation emails to ${count} unconfirmed signees. Proceed?`
+		);
+
+		if (!confirmSend) return;
+
+		// Proceed with resend
+		const resendResponse = await fetch(`${ajaxurl}?action=petitioner_resend_all_confirmation_emails`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: new URLSearchParams({ form_id }),
+		});
+
+		const resendData = await resendResponse.json();
+		if (resendData.success) {
+			setIsResentAll(true);
+        	setTimeout(() => setIsResentAll(false), 3000);
+		} else {
+			console.log(resendData.message || 'Failed to resend emails.');
+		}
+	};
+
 	const ApprovalStatus = ({ id, currentStatus = '' }) => {
 		currentStatus =
 			currentStatus?.length > 0 ? currentStatus : defaultApprovalState;
@@ -164,6 +231,17 @@ export default function Submissions() {
 									id={item.id}
 									currentStatus={item.approval_status}
 								/>
+								{item.approval_status === 'Declined' && item.confirmation_token && (
+									<Button
+										disabled={isResent}
+										size="small"
+										variant="secondary"
+										onClick={() => handleResendEmail(item.id)}
+										style={{ marginTop: '5px' }}
+									>
+										{!isResent ? 'Resend Email' : 'Resent Successfully'}
+									</Button>
+								)}
 							</td>
 						)}
 					</tr>
@@ -182,12 +260,21 @@ export default function Submissions() {
 		);
 	};
 
+	const ResendAllButton = () => {
+		return (
+			<Button disabled={isResentAll} variant="secondary" onClick={handleResendAll} style={{ marginLeft: '8px' }}>
+				{!isResentAll ? 'Resend All Unconfirmed Emails' : 'Resent Successfully'}
+			</Button>
+		);
+	};		
+
 	return (
 		<div id="AV_Petitioner_Submissions">
 			<div>
 				<h3>Submissions</h3>
 
 				<ExportComponent />
+				<ResendAllButton />
 			</div>
 
 			<div className="petitioner-admin__entries">
