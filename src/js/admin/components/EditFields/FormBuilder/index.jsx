@@ -5,10 +5,19 @@ import PtrDraggable from './../../shared/Draggable';
 import BuilderSettings from './BuilderSettings';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 
+const getFieldTypeGroup = (type) => {
+	if (['text', 'number', 'email', 'first_name', 'last_name'].includes(type))
+		return 'input';
+	if (['select', 'country'].includes(type)) return 'select';
+	if (['checkbox', 'terms'].includes(type)) return 'checkbox';
+
+	return type;
+};
+
 export default function FormBuilder() {
 	const formRef = useRef(null);
 
-	const { formBuilderFields } = useEditFormContext();
+	const { formBuilderFields, setBuilderEditScreen } = useEditFormContext();
 
 	const handleDragStart = (event) => {
 		formRef.current.classList.add('is-dragging');
@@ -25,25 +34,35 @@ export default function FormBuilder() {
 		placeholder = 'Placeholder',
 		required = false,
 	}) => {
-		const isInputField = [
-			'first_name',
-			'last_name',
-			'email',
-			'text',
-			'number',
-			'country',
-			'select',
-		].includes(type);
-		const isCheckboxField = type === 'checkbox' || type === 'terms';
+		const inputType = getFieldTypeGroup(type);
+
+		const isInputField = inputType === 'input';
+
+		const isCheckboxField = inputType === 'checkbox';
+
+		const isDropdownField = inputType === 'select';
+
+		const handleFieldEdit = (event) => {
+			event.preventDefault();
+
+			setBuilderEditScreen(inputType);
+		};
+
 		return (
 			<PtrDraggable
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				id={'draggable_' + name}
-				// onClick={}
+				onClick={handleFieldEdit}
 			>
 				{isInputField && (
 					<div className="ptr-fake-field ptr-fake-field--input">
+						{label}
+					</div>
+				)}
+
+				{isDropdownField && (
+					<div className="ptr-fake-field ptr-fake-field--dropdown">
 						{label}
 					</div>
 				)}
@@ -61,7 +80,7 @@ export default function FormBuilder() {
 					</div>
 				)}
 
-				{type === 'legal' && (
+				{inputType === 'legal' && (
 					<div className="ptr-fake-field ptr-fake-field--legal">
 						{label}
 					</div>
@@ -69,6 +88,8 @@ export default function FormBuilder() {
 			</PtrDraggable>
 		);
 	};
+
+	console.log('formBuilderFields', formBuilderFields);
 
 	return (
 		<>

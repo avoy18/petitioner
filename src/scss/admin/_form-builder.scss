@@ -6,7 +6,7 @@
         transition: 0.15s;
         transition-delay: 0;
 
-		&--input {
+		&--input, &--dropdown {
 			border: 1px solid var(--ptr-admin-color-grey, #ccc);
 			border-radius: 4px;
 			background-color: #fff;

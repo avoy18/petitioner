@@ -108,12 +108,10 @@ class AV_Petitioner_Admin_Edit_UI
                 "from_field"                    => AV_Petitioner_Email_Template::get_default_from_field(),
             ],
             // new way of handling the form fields
-            "form_fields"                   => !empty($meta_values['form_fields']) ? json_decode($meta_values['form_fields'], true) : new stdClass(),
+            "form_fields"                   =>  !empty($meta_values['form_fields']) ? json_decode($meta_values['form_fields'], true) : null,
         ];
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        print_r(!empty($meta_values['form_fields']) ? json_encode($meta_values['form_fields'], true) : json_encode([]));
-        print_r('asas');
 ?>
         <div class="petitioner-admin__form ptr-is-loading">
             <script id="petitioner-json-data" type="text/json">

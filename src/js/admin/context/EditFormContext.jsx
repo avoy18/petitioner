@@ -62,19 +62,13 @@ export function EditFormContextProvider({ children }) {
 			typeof parsedFormFields === 'object' ? parsedFormFields : {},
 	});
 
+	const [builderEditScreen, setBuilderEditScreen] = useState('default');
+
 	const [formBuilderFields, setFormBuilderFields] = useState(
-		parsedFormFields
-			? Object.keys(parsedFormFields).map((key) => ({
-					name: key,
-					type: parsedFormFields[key].type,
-					label: parsedFormFields[key].label,
-					placeholder: parsedFormFields[key].placeholder,
-					required: parsedFormFields[key].required,
-				}))
-			: []
+		parsedFormFields ? parsedFormFields : {}
 	);
 
-	const updateFormBuilderFields = useCallback((newFields) => {
+	const updateFormBuilderFields = useCallback((key, value) => {
 		setFormBuilderFields((prevState) => ({ ...prevState, [key]: value }));
 	}, []);
 
@@ -89,6 +83,8 @@ export function EditFormContextProvider({ children }) {
 				updateFormState,
 				formBuilderFields,
 				updateFormBuilderFields,
+				builderEditScreen,
+				setBuilderEditScreen,
 			}}
 		>
 			{children}
