@@ -88,6 +88,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Add a button to resend all confirmation emails at once (please use this with caution)
     * Refactored the code & improved the submissions UI
 * Fix a bug with the export button
+* Fix a bug with the wrong number on the submission count when the confirmation behavious is auto-denied by default
 
 = 0.3.2 =
 * Bug fixes:
