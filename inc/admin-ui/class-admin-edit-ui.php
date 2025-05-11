@@ -93,7 +93,7 @@ class AV_Petitioner_Admin_Edit_UI
             "add_consent_checkbox"          => (bool) $meta_values['add_consent_checkbox'],
             "consent_text"                  => sanitize_text_field($meta_values['consent_text']),
             "legal_text"                    => wp_kses_post($meta_values['legal_text']),
-            "export_url"                    => esc_url(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID)),
+            "export_url"                    => esc_url_raw(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID)),
             "override_ty_email"             => (bool) $meta_values['override_ty_email'],
             "ty_email"                      => wp_kses_post($meta_values['ty_email']),
             "ty_email_subject"              => sanitize_text_field($meta_values['ty_email_subject']),
