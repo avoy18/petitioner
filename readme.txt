@@ -67,7 +67,7 @@ Simply open the edit page for the petition in question and you will see a table 
 
 Absolutely! Feel free to reach out through [this contact form](https://getpetitioner.com/contact/)
 
-= What I have more questions = 
+= What if I have more questions? = 
 
 You can find a more extensive FAQ [on the main website](https://getpetitioner.com/docs/). Additionally, yu can reach out to me via [this contact form](https://getpetitioner.com/contact/)
 
