@@ -158,9 +158,9 @@ export default function Submissions() {
 							<tr>
 								<th width="20%">Email</th>
 								<th>First/Last name</th>
-								<th>Country</th>
+								<th style={{ width: '100px' }}>Country</th>
 								{/* <th style={{ width: '30px' }}>BCC</th> */}
-								<th style={{ width: '100px' }}>Consent</th>
+								<th style={{ width: '60px' }}>Consent</th>
 								<th>Submitted at</th>
 								{showApproval && (
 									<th style={{ width: '200px' }}>Status</th>

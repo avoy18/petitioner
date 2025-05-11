@@ -187,7 +187,8 @@ class AV_Petitioner_Submissions_Controller
     {
         $id         = isset($_POST['id']) ? absint($_POST['id']) : 0;
         $new_status = isset($_POST['status']) ? sanitize_text_field(wp_unslash($_POST['status'])) : '';
-
+        error_log('ID: ' . $id);
+        error_log('New Status: ' . $new_status);
         if (!$id || empty($new_status)) {
             wp_send_json_error(['message' => 'Invalid input. ID and status are required.']);
             return;

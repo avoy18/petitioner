@@ -62,13 +62,13 @@ export default function ApprovalStatus({
 
 	return (
 		<div>
-			<small
+			<p
 				style={{
 					color: currentStatus === 'Confirmed' ? 'green' : 'red',
 				}}
 			>
 				{currentStatus}
-			</small>
+			</p>
 			<div style={{ display: 'flex', gap: '5px' }}>
 				<Button
 					size="small"
