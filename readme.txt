@@ -89,6 +89,8 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Refactored the code & improved the submissions UI
 * Fix a bug with the export button
 * Fix a bug with the wrong number on the submission count when the confirmation behavious is auto-denied by default
+* Fix a minor bug with the textdomain loading too early
+* Add basic translations to French, Ukrainian, Russian, and Dutch
 
 = 0.3.2 =
 * Bug fixes:
