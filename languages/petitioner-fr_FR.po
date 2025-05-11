@@ -36,7 +36,7 @@ msgstr "Ajoutez votre clé de site ici"
 #: inc/class-setup.php:91
 msgctxt "admin menu"
 msgid "Petitioner"
-msgstr "Pétitionnaire"
+msgstr "Petitioner"
 
 #: inc/frontend/class-frontend-ui.php:15
 msgid "Afghanistan"

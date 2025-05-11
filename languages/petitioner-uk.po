@@ -36,7 +36,7 @@ msgstr "Додайте сюди ключ вашого сайту"
 #: inc/class-setup.php:91
 msgctxt "admin menu"
 msgid "Petitioner"
-msgstr "Заявник"
+msgstr "Petitioner"
 
 #: inc/frontend/class-frontend-ui.php:15
 msgid "Afghanistan"

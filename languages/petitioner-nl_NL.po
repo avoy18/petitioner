@@ -36,7 +36,7 @@ msgstr "Voeg hier uw sitesleutel toe"
 #: inc/class-setup.php:91
 msgctxt "admin menu"
 msgid "Petitioner"
-msgstr "Verzoeker"
+msgstr "Petitioner"
 
 #: inc/frontend/class-frontend-ui.php:15
 msgid "Afghanistan"
