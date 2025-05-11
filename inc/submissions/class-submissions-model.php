@@ -73,6 +73,19 @@ class AV_Petitioner_Submissions_Model
         );
     }
 
+    public static function get_unconfirmed_submissions($form_id)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'av_petitioner_submissions';
+
+        return $wpdb->get_results(
+            $wpdb->prepare("
+                SELECT * FROM $table
+                WHERE form_id = %d AND approval_status = 'Declined' AND confirmation_token IS NOT NULL
+            ", $form_id)
+        );
+    }
+
     /**
      * Update a single submission by ID.
      *
@@ -164,28 +177,37 @@ class AV_Petitioner_Submissions_Model
     {
         global $wpdb;
 
-        $require_approval = get_post_meta($form_id, '_petitioner_require_approval', true);
-
-        $final_status_to_get = 'Confirmed';
-
-        // If require approval is enabled and the default approval status is 'Declined', count the number of declined submissions
-        if ($require_approval) {
-            $default_approval_status = get_post_meta($form_id, '_petitioner_approval_state', true);
-
-            // only return approved if the default approval status is 'Declined'
-            if ($default_approval_status === 'Declined') {
-                $final_status_to_get = 'Declined';
-            }
-        }
-
         $table_name = self::table_name();
 
         // Get the total count of submissions for the form
         return $wpdb->get_var(
             $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table_name} WHERE form_id = %d AND approval_status = %s",
+                "SELECT COUNT(*) FROM {$table_name} WHERE form_id = %d AND approval_status = 'Confirmed'",
                 $form_id,
-                $final_status_to_get
+            )
+        );
+    }
+
+    /**
+     * Retrieves the count of unverified submissions for a specific form.
+     *
+     * This method calculates the total number of unverified submissions for the
+     * form identified by `$this->form_id`. It considers the approval status of
+     * the submissions and returns the count of those that are pending approval.
+     *
+     * @return int The total count of unverified submissions.
+     */
+    public static function get_unconfirmed_count($form_id)
+    {
+        global $wpdb;
+
+        $table_name = self::table_name();
+
+        // Get the total count of unverified submissions for the form
+        return $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$table_name} WHERE form_id = %d AND approval_status = 'Declined'",
+                $form_id,
             )
         );
     }
