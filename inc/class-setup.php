@@ -9,7 +9,7 @@ class AV_Petitioner_Setup
     public function __construct()
     {
         // db schema
-        add_action('plugins_loaded', [$this, 'maybe_update_schema']);
+        add_action('plugins_loaded', [$this, 'on_plugins_loaded']);
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
@@ -22,16 +22,16 @@ class AV_Petitioner_Setup
             return $attributes;
         });
 
-
-        // cpt
-        add_action('init', array($this, 'register_post_types'));
-
-        // edit admin fields
-        new AV_Petitioner_Admin_Edit_UI();
-        // shortcodes
-        new AV_Petitioner_Shortcodes();
-        // settings admin fields
-        new AV_Petitioner_Admin_Settings_UI();
+        add_action('init', function () {
+            // cpt
+            $this->register_post_types();
+            // edit admin fields
+            new AV_Petitioner_Admin_Edit_UI();
+            // // shortcodes
+            new AV_Petitioner_Shortcodes();
+            // // settings admin fields
+            new AV_Petitioner_Admin_Settings_UI();
+        });
 
         // api endpoints
         add_action('wp_ajax_petitioner_form_submit', array('AV_Petitioner_Submissions_Controller', 'api_handle_form_submit'));
@@ -56,8 +56,19 @@ class AV_Petitioner_Setup
         AV_Petitioner_Submissions_Model::create_db_table();
     }
 
-    public function maybe_update_schema()
+    /**
+     * Check if the plugin is updated and perform necessary actions.
+     */
+    public function on_plugins_loaded()
     {
+        // Load plugin text domain for translations
+        load_plugin_textdomain(
+            'petitioner',
+            false,
+            basename(dirname(__DIR__)) . '/languages/'
+        );
+
+        // Check if the plugin is updated
         $current_version = get_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
 
         if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
