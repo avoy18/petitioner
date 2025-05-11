@@ -56,7 +56,7 @@ class AV_Petitioner_Submissions_Controller
             $form_id
         );
 
-        if($akismet_is_spam){
+        if ($akismet_is_spam) {
             wp_send_json_error(__('Your submission has been flagged as spam.', 'petitioner'));
         }
 
@@ -204,6 +204,87 @@ class AV_Petitioner_Submissions_Controller
             'message' => 'Status updated successfully.',
             'updated_rows' => $updated_rows
         ]);
+    }
+
+    /**
+     * Resend confirmation email to a specific submission
+     */
+    public static function api_resend_confirmation_email()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Permission denied.']);
+        }
+
+        $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        if (!$id) {
+            wp_send_json_error(['message' => 'Invalid submission ID.']);
+        }
+
+        $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
+
+        if (!$submission || $submission->approval_status === 'Confirmed') {
+            wp_send_json_error(['message' => 'Submission already confirmed or not found.']);
+        }
+
+        if (empty($submission->confirmation_token)) {
+            wp_send_json_error(['message' => 'No confirmation token found for this submission.']);
+        }
+
+        $success = AV_Email_Confirmations::send_emails($submission, true, true);
+
+        if ($success) {
+            wp_send_json_success(['message' => 'Confirmation email resent.']);
+        } else {
+            wp_send_json_error(['message' => 'Failed to send confirmation email.']);
+        }
+    }
+
+    /**
+     * Resend confirmation emails to all unconfirmed submissions
+     */
+    public static function api_resend_all_confirmation_emails()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Permission denied.']);
+        }
+
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
+
+        if (!$form_id) {
+            wp_send_json_error(['message' => 'Invalid form ID.']);
+        }
+
+        $results = AV_Petitioner_Submissions_Model::get_unconfirmed_submissions($form_id);
+
+        if (empty($results)) {
+            wp_send_json_error(['message' => 'No unconfirmed submissions found.']);
+        }
+
+        $count = 0;
+        foreach ($results as $submission) {
+            $success = AV_Email_Confirmations::send_emails($submission, true, true);
+            if ($success) {
+                $count++;
+            }
+        }
+
+        wp_send_json_success(['message' => "Resent confirmation emails to $count users."]);
+    }
+
+    /**
+     * Check the count of unconfirmed submissions for a specific form
+     */
+    public static function api_check_unconfirmed_count()
+    {
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
+
+        if (!$form_id) {
+            wp_send_json_error(['message' => 'Invalid form ID.']);
+        }
+
+        $count = AV_Petitioner_Submissions_Model::get_unconfirmed_count($form_id);
+
+        wp_send_json_success(['count' => (int) $count]);
     }
 
     /**
