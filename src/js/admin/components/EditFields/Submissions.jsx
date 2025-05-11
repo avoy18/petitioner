@@ -92,6 +92,8 @@ export default function Submissions() {
 		return window.petitionerData.approval_state;
 	});
 
+	const hasSubmissions = submissions.length > 0;
+
 	const perPage = 100;
 
 	const fetchData = async () => {
@@ -221,14 +223,14 @@ export default function Submissions() {
 		<div id="AV_Petitioner_Submissions">
 			<div>
 				<h3>Submissions</h3>
-				<ExportComponent />
+				{hasSubmissions && <ExportComponent />}
 			</div>
 
 			<div className="petitioner-admin__entries">
 				<p>Total: {total}</p>
 				<table className="wp-list-table widefat fixed striped table-view-list posts">
 					<thead>
-						{submissions.length !== 0 ? (
+						{hasSubmissions ? (
 							<tr>
 								<th width="20%">Email</th>
 								<th>First/Last name</th>
@@ -245,19 +247,17 @@ export default function Submissions() {
 						)}
 					</thead>
 
-					{submissions.length === 0 && (
+					{hasSubmissions ? (
+						<SubmissionList />
+					) : (
 						<td style={{ width: '100%', textAlign: 'center' }}>
 							Your submissions will show up here
 						</td>
 					)}
-					{submissions.length !== 0 && <SubmissionList />}
 				</table>
 			</div>
-
 			<br />
-
-			<ResendAllButton />
-
+			{hasSubmissions && <ResendAllButton />}
 			<br />
 			{buttons?.length > 1 && <ButtonGroup>{buttons}</ButtonGroup>}
 		</div>
