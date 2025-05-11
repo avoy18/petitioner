@@ -1,0 +1,1123 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"X-Loco-Version: 2.7.2; wp-6.8\n"
+"X-Domain: petitioner\n"
+"Project-Id-Version: Petitioner\n"
+"Language: fr\n"
+
+#. Description of the plugin
+#: 
+msgid "A WordPress plugin for collecting petitions."
+msgstr "Une extension WordPress pour la collecte de pétitions."
+
+#: inc/class-setup.php:92
+msgctxt "add new on admin bar"
+msgid "Petition"
+msgstr "Pétition"
+
+#: inc/class-setup.php:94
+msgid "Add New Petition"
+msgstr "Ajouter une nouvelle pétition"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:204
+#: inc/admin-ui/class-admin-settings-ui-old.php:228
+msgid "Add your secret key here"
+msgstr "Ajoutez votre clé secrète ici"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:196
+#: inc/admin-ui/class-admin-settings-ui-old.php:220
+msgid "Add your site key here"
+msgstr "Ajoutez votre clé de site ici"
+
+#: inc/class-setup.php:91
+msgctxt "admin menu"
+msgid "Petitioner"
+msgstr "Pétitionnaire"
+
+#: inc/frontend/class-frontend-ui.php:15
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+#: inc/frontend/class-frontend-ui.php:16
+msgid "Albania"
+msgstr "Albanie"
+
+#: inc/frontend/class-frontend-ui.php:17
+msgid "Algeria"
+msgstr "Algérie"
+
+#: inc/class-setup.php:98
+msgid "All Petitions"
+msgstr "Toutes les pétitions"
+
+#: inc/frontend/class-frontend-ui.php:18
+msgid "Andorra"
+msgstr "Andorre"
+
+#: inc/frontend/class-frontend-ui.php:19
+msgid "Angola"
+msgstr "Angola"
+
+#: inc/frontend/class-frontend-ui.php:20
+msgid "Antigua & Deps"
+msgstr "Antigua-et-Barbuda"
+
+#. Author of the plugin
+#: 
+msgid "Anton Voytenko"
+msgstr "Anton Voytenko"
+
+#: inc/frontend/class-frontend-ui.php:21
+msgid "Argentina"
+msgstr "Argentine"
+
+#: inc/frontend/class-frontend-ui.php:22
+msgid "Armenia"
+msgstr "Arménie"
+
+#: inc/frontend/class-frontend-ui.php:23
+msgid "Australia"
+msgstr "Australie"
+
+#: inc/frontend/class-frontend-ui.php:24
+msgid "Austria"
+msgstr "Autriche"
+
+#: inc/frontend/class-frontend-ui.php:25
+msgid "Azerbaijan"
+msgstr "Azerbaïdjan"
+
+#: inc/frontend/class-frontend-ui.php:26
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: inc/frontend/class-frontend-ui.php:27
+msgid "Bahrain"
+msgstr "Bahreïn"
+
+#: inc/frontend/class-frontend-ui.php:28
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+#: inc/frontend/class-frontend-ui.php:29
+msgid "Barbados"
+msgstr "Barbade"
+
+#: inc/frontend/class-frontend-ui.php:283
+msgid "BCC me on the email"
+msgstr "Mettez-moi en Cci sur l'e-mail"
+
+#: inc/frontend/class-frontend-ui.php:30
+msgid "Belarus"
+msgstr "Biélorussie"
+
+#: inc/frontend/class-frontend-ui.php:31
+msgid "Belgium"
+msgstr "Belgique"
+
+#: inc/frontend/class-frontend-ui.php:32
+msgid "Belize"
+msgstr "Belize"
+
+#: inc/emails/class-mailer.php:116
+msgid "Below is a copy of your letter:"
+msgstr "Ci-dessous une copie de votre lettre :"
+
+#: inc/frontend/class-frontend-ui.php:33
+msgid "Benin"
+msgstr "Bénin"
+
+#: inc/frontend/class-frontend-ui.php:34
+msgid "Bhutan"
+msgstr "Bhoutan"
+
+#: inc/frontend/class-frontend-ui.php:35
+msgid "Bolivia"
+msgstr "Bolivie"
+
+#: inc/frontend/class-frontend-ui.php:36
+msgid "Bosnia Herzegovina"
+msgstr "Bosnie-Herzégovine"
+
+#: inc/frontend/class-frontend-ui.php:37
+msgid "Botswana"
+msgstr "Botswana"
+
+#: inc/frontend/class-frontend-ui.php:38
+msgid "Brazil"
+msgstr "Brésil"
+
+#: inc/frontend/class-frontend-ui.php:39
+msgid "Brunei"
+msgstr "Brunei"
+
+#: inc/frontend/class-frontend-ui.php:40
+msgid "Bulgaria"
+msgstr "Bulgarie"
+
+#: inc/frontend/class-frontend-ui.php:41
+msgid "Burkina"
+msgstr "Burkina Faso"
+
+#: inc/frontend/class-frontend-ui.php:42
+msgid "Burundi"
+msgstr "Burundi"
+
+#: inc/frontend/class-frontend-ui.php:291
+msgid "By submitting this form, I agree to the terms of service"
+msgstr "En soumettant ce formulaire, j'accepte les conditions d'utilisation"
+
+#: inc/frontend/class-frontend-ui.php:43
+msgid "Cambodia"
+msgstr "Cambodge"
+
+#: inc/frontend/class-frontend-ui.php:44
+msgid "Cameroon"
+msgstr "Cameroun"
+
+#: inc/frontend/class-frontend-ui.php:45
+msgid "Canada"
+msgstr "Canada"
+
+#: inc/frontend/class-frontend-ui.php:46
+msgid "Cape Verde"
+msgstr "Cap-Vert"
+
+#: inc/submissions/class-submissions-controller.php:289
+msgid "CAPTCHA response is missing."
+msgstr "La réponse CAPTCHA est manquante."
+
+#: inc/submissions/class-submissions-controller.php:336
+msgid "CAPTCHA verification completed."
+msgstr "Vérification CAPTCHA terminée."
+
+#: inc/submissions/class-submissions-controller.php:322
+msgid "CAPTCHA verification failed."
+msgstr "La vérification CAPTCHA a échoué."
+
+#: inc/submissions/class-submissions-controller.php:311
+msgid "CAPTCHA verification failed: Unable to connect."
+msgstr "La vérification CAPTCHA a échoué : Impossible de se connecter."
+
+#: inc/frontend/class-frontend-ui.php:47
+msgid "Central African Rep"
+msgstr "République centrafricaine"
+
+#: inc/frontend/class-frontend-ui.php:48
+msgid "Chad"
+msgstr "Tchad"
+
+#: inc/frontend/class-frontend-ui.php:49
+msgid "Chile"
+msgstr "Chili"
+
+#: inc/frontend/class-frontend-ui.php:50
+msgid "China"
+msgstr "Chine"
+
+#: inc/frontend/class-frontend-ui.php:400
+msgid "Close modal"
+msgstr "Fermer la fenêtre modale"
+
+#: inc/frontend/class-frontend-ui.php:51
+msgid "Colombia"
+msgstr "Colombie"
+
+#: inc/frontend/class-frontend-ui.php:52
+msgid "Comoros"
+msgstr "Comores"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:241
+msgid "Configure available integrations"
+msgstr "Configurer les intégrations disponibles"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:116
+msgid "Configure Google reCAPTCHA"
+msgstr "Configurer Google reCAPTCHA"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:128
+msgid "Configure hCaptcha"
+msgstr "Configurer hCaptcha"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:236
+msgid "Configure how your petitions look like."
+msgstr "Configurer l'apparence de vos pétitions."
+
+#: inc/emails/class-mailer.php:189
+msgid "Confirm your email."
+msgstr "Confirmez votre e-mail."
+
+#: inc/submissions/class-submissions-controller.php:35
+msgid "Confirmed"
+msgstr "Confirmé"
+
+#: inc/frontend/class-frontend-ui.php:53
+msgid "Congo"
+msgstr "Congo"
+
+#: inc/frontend/class-frontend-ui.php:54
+msgid "Congo {Democratic Rep}"
+msgstr "Congo (République démocratique du)"
+
+#: inc/frontend/class-frontend-ui.php:55
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: inc/frontend/class-frontend-ui.php:269
+#: inc/frontend/class-frontend-ui.php:271
+msgid "Country"
+msgstr "Pays"
+
+#: inc/frontend/class-frontend-ui.php:56
+msgid "Croatia"
+msgstr "Croatie"
+
+#: inc/frontend/class-frontend-ui.php:57
+msgid "Cuba"
+msgstr "Cuba"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:159
+msgid "Custom CSS"
+msgstr "CSS personnalisé"
+
+#: inc/frontend/class-frontend-ui.php:58
+msgid "Cyprus"
+msgstr "Chypre"
+
+#: inc/frontend/class-frontend-ui.php:59
+msgid "Czech Republic"
+msgstr "République tchèque"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:173
+#: inc/admin-ui/class-admin-settings-ui-old.php:174
+msgid "Dark color"
+msgstr "Couleur foncée"
+
+#. {{user_name}} is the user's name
+#: inc/emails/class-email-template.php:23
+msgid "Dear {{user_name}},</p>"
+msgstr "Cher/Chère {{user_name}},</p>"
+
+#: inc/frontend/class-frontend-ui.php:60
+msgid "Denmark"
+msgstr "Danemark"
+
+#: inc/frontend/class-frontend-ui.php:61
+msgid "Djibouti"
+msgstr "Djibouti"
+
+#: inc/frontend/class-frontend-ui.php:62
+msgid "Dominica"
+msgstr "Dominique"
+
+#: inc/frontend/class-frontend-ui.php:63
+msgid "Dominican Republic"
+msgstr "République dominicaine"
+
+#: inc/frontend/class-frontend-ui.php:64
+msgid "East Timor"
+msgstr "Timor oriental"
+
+#: inc/frontend/class-frontend-ui.php:65
+msgid "Ecuador"
+msgstr "Équateur"
+
+#: inc/class-setup.php:96
+msgid "Edit Petition"
+msgstr "Modifier la pétition"
+
+#: inc/frontend/class-frontend-ui.php:66
+msgid "Egypt"
+msgstr "Égypte"
+
+#: inc/frontend/class-frontend-ui.php:67
+msgid "El Salvador"
+msgstr "Salvador"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:153
+msgid "Enable goals on petitions"
+msgstr "Activer les objectifs sur les pétitions"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:212
+msgid "Enable hCAPTCHA petitions for spam protection"
+msgstr "Activer les pétitions hCAPTCHA pour la protection anti-spam"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:139
+msgid "Enable letter popup on petitions"
+msgstr "Activer la fenêtre contextuelle de la lettre sur les pétitions"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:188
+msgid "Enable reCAPTCHA petitions for spam protection"
+msgstr "Activer les pétitions reCAPTCHA pour la protection anti-spam"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:146
+msgid "Enable titles on petitions"
+msgstr "Activer les titres sur les pétitions"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:187
+#: inc/admin-ui/class-admin-settings-ui-old.php:211
+msgid "Enabled?"
+msgstr "Activé ?"
+
+#: inc/frontend/class-frontend-ui.php:68
+msgid "Equatorial Guinea"
+msgstr "Guinée équatoriale"
+
+#: inc/frontend/class-frontend-ui.php:69
+msgid "Eritrea"
+msgstr "Érythrée"
+
+#: inc/submissions/class-submissions-controller.php:147
+msgid "Error saving submission. Please try again."
+msgstr "Erreur lors de l'enregistrement de la soumission. Veuillez réessayer."
+
+#: inc/frontend/class-frontend-ui.php:70
+msgid "Estonia"
+msgstr "Estonie"
+
+#: inc/frontend/class-frontend-ui.php:71
+msgid "Ethiopia"
+msgstr "Éthiopie"
+
+#: inc/frontend/class-frontend-ui.php:72
+msgid "Fiji"
+msgstr "Fidji"
+
+#: inc/frontend/class-frontend-ui.php:73
+msgid "Finland"
+msgstr "Finlande"
+
+#: inc/frontend/class-frontend-ui.php:253
+msgid "First name"
+msgstr "Prénom"
+
+#: inc/frontend/class-frontend-ui.php:74
+msgid "France"
+msgstr "France"
+
+#: inc/frontend/class-frontend-ui.php:75
+msgid "Gabon"
+msgstr "Gabon"
+
+#: inc/frontend/class-frontend-ui.php:76
+msgid "Gambia"
+msgstr "Gambie"
+
+#: inc/frontend/class-frontend-ui.php:77
+msgid "Georgia"
+msgstr "Géorgie"
+
+#: inc/frontend/class-frontend-ui.php:78
+msgid "Germany"
+msgstr "Allemagne"
+
+#: inc/frontend/class-frontend-ui.php:79
+msgid "Ghana"
+msgstr "Ghana"
+
+#: inc/frontend/class-frontend-ui.php:447
+msgid "Goal"
+msgstr "Objectif"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:114
+msgid "Google reCAPTCHA v3"
+msgstr "Google reCAPTCHA v3"
+
+#: inc/frontend/class-frontend-ui.php:80
+msgid "Greece"
+msgstr "Grèce"
+
+#: inc/frontend/class-frontend-ui.php:81
+msgid "Grenada"
+msgstr "Grenade"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:180
+#: inc/admin-ui/class-admin-settings-ui-old.php:181
+msgid "Grey color"
+msgstr "Couleur grise"
+
+#: inc/frontend/class-frontend-ui.php:82
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: inc/frontend/class-frontend-ui.php:83
+msgid "Guinea"
+msgstr "Guinée"
+
+#: inc/frontend/class-frontend-ui.php:84
+msgid "Guinea-Bissau"
+msgstr "Guinée-Bissau"
+
+#: inc/frontend/class-frontend-ui.php:85
+msgid "Guyana"
+msgstr "Guyane"
+
+#: inc/frontend/class-frontend-ui.php:86
+msgid "Haiti"
+msgstr "Haïti"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:126
+msgid "hCaptcha"
+msgstr "hCaptcha"
+
+#: inc/frontend/class-frontend-ui.php:87
+msgid "Honduras"
+msgstr "Honduras"
+
+#: inc/frontend/class-frontend-ui.php:88
+msgid "Hungary"
+msgstr "Hongrie"
+
+#: inc/frontend/class-frontend-ui.php:89
+msgid "Iceland"
+msgstr "Islande"
+
+#: inc/frontend/class-frontend-ui.php:90
+msgid "India"
+msgstr "Inde"
+
+#: inc/frontend/class-frontend-ui.php:91
+msgid "Indonesia"
+msgstr "Indonésie"
+
+#: inc/frontend/class-frontend-ui.php:92
+msgid "Iran"
+msgstr "L'Iran"
+
+#: inc/frontend/class-frontend-ui.php:93
+msgid "Iraq"
+msgstr "Irak"
+
+#: inc/frontend/class-frontend-ui.php:94
+msgid "Ireland {Republic}"
+msgstr "Irlande {République}"
+
+#: inc/frontend/class-frontend-ui.php:95
+msgid "Israel"
+msgstr "Israël"
+
+#: inc/frontend/class-frontend-ui.php:96
+msgid "Italy"
+msgstr "Italie"
+
+#: inc/frontend/class-frontend-ui.php:97
+msgid "Ivory Coast"
+msgstr "Côte d'Ivoire"
+
+#: inc/frontend/class-frontend-ui.php:98
+msgid "Jamaica"
+msgstr "Jamaïque"
+
+#: inc/frontend/class-frontend-ui.php:99
+msgid "Japan"
+msgstr "Japon"
+
+#: inc/frontend/class-frontend-ui.php:100
+msgid "Jordan"
+msgstr "Jordanie"
+
+#: inc/frontend/class-frontend-ui.php:101
+msgid "Kazakhstan"
+msgstr "Kazakhstan"
+
+#: inc/frontend/class-frontend-ui.php:102
+msgid "Kenya"
+msgstr "Kenya"
+
+#: inc/frontend/class-frontend-ui.php:103
+msgid "Kiribati"
+msgstr "Kiribati"
+
+#: inc/frontend/class-frontend-ui.php:104
+msgid "Korea North"
+msgstr "Corée du Nord"
+
+#: inc/frontend/class-frontend-ui.php:105
+msgid "Korea South"
+msgstr "Corée du Sud"
+
+#: inc/frontend/class-frontend-ui.php:106
+msgid "Kosovo"
+msgstr "Kosovo"
+
+#: inc/frontend/class-frontend-ui.php:107
+msgid "Kuwait"
+msgstr "Koweit"
+
+#: inc/frontend/class-frontend-ui.php:108
+msgid "Kyrgyzstan"
+msgstr "Kirghizistan"
+
+#: inc/frontend/class-frontend-ui.php:109
+msgid "Laos"
+msgstr "Laos"
+
+#: inc/frontend/class-frontend-ui.php:258
+msgid "Last name"
+msgstr "Nom de famille"
+
+#: inc/frontend/class-frontend-ui.php:110
+msgid "Latvia"
+msgstr "Lettonie"
+
+#: inc/frontend/class-frontend-ui.php:111
+msgid "Lebanon"
+msgstr "Liban"
+
+#: inc/frontend/class-frontend-ui.php:112
+msgid "Lesotho"
+msgstr "Lesotho"
+
+#: inc/frontend/class-frontend-ui.php:113
+msgid "Liberia"
+msgstr "Libéria"
+
+#: inc/frontend/class-frontend-ui.php:114
+msgid "Libya"
+msgstr "Libye"
+
+#: inc/frontend/class-frontend-ui.php:115
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: inc/frontend/class-frontend-ui.php:116
+msgid "Lithuania"
+msgstr "Lituanie"
+
+#: inc/submissions/class-submissions-controller.php:81
+msgid "Looks like you've already signed this petition!"
+msgstr "Il semblerait que vous ayez déjà signé cette pétition !"
+
+#: inc/frontend/class-frontend-ui.php:117
+msgid "Luxembourg"
+msgstr "Luxembourg"
+
+#: inc/frontend/class-frontend-ui.php:118
+msgid "Macedonia"
+msgstr "Macédoine"
+
+#: inc/frontend/class-frontend-ui.php:119
+msgid "Madagascar"
+msgstr "Madagascar"
+
+#: inc/frontend/class-frontend-ui.php:120
+msgid "Malawi"
+msgstr "Malawi"
+
+#: inc/frontend/class-frontend-ui.php:121
+msgid "Malaysia"
+msgstr "Malaisie"
+
+#: inc/frontend/class-frontend-ui.php:122
+msgid "Maldives"
+msgstr "Maldives"
+
+#: inc/frontend/class-frontend-ui.php:123
+msgid "Mali"
+msgstr "Mali"
+
+#: inc/frontend/class-frontend-ui.php:124
+msgid "Malta"
+msgstr "Malte"
+
+#: inc/frontend/class-frontend-ui.php:125
+msgid "Marshall Islands"
+msgstr "Îles Marshall"
+
+#: inc/frontend/class-frontend-ui.php:126
+msgid "Mauritania"
+msgstr "Mauritanie"
+
+#: inc/frontend/class-frontend-ui.php:127
+msgid "Mauritius"
+msgstr "Maurice"
+
+#: inc/frontend/class-frontend-ui.php:128
+msgid "Mexico"
+msgstr "Mexique"
+
+#: inc/frontend/class-frontend-ui.php:129
+msgid "Micronesia"
+msgstr "Micronésie"
+
+#: inc/frontend/class-frontend-ui.php:130
+msgid "Moldova"
+msgstr "Moldavie"
+
+#: inc/frontend/class-frontend-ui.php:131
+msgid "Monaco"
+msgstr "Monaco"
+
+#: inc/frontend/class-frontend-ui.php:132
+msgid "Mongolia"
+msgstr "Mongolie"
+
+#: inc/frontend/class-frontend-ui.php:133
+msgid "Montenegro"
+msgstr "Monténégro"
+
+#: inc/frontend/class-frontend-ui.php:134
+msgid "Morocco"
+msgstr "Maroc"
+
+#: inc/frontend/class-frontend-ui.php:135
+msgid "Mozambique"
+msgstr "Mozambique"
+
+#: inc/frontend/class-frontend-ui.php:136
+msgid "Myanmar, {Burma}"
+msgstr "Myanmar, {Birmanie}"
+
+#: inc/frontend/class-frontend-ui.php:137
+msgid "Namibia"
+msgstr "Namibie"
+
+#: inc/frontend/class-frontend-ui.php:138
+msgid "Nauru"
+msgstr "Nauru"
+
+#: inc/frontend/class-frontend-ui.php:139
+msgid "Nepal"
+msgstr "Népal"
+
+#: inc/frontend/class-frontend-ui.php:140
+msgid "Netherlands"
+msgstr "Pays-Bas"
+
+#: inc/class-setup.php:95
+msgid "New Petition"
+msgstr "Nouvelle pétition"
+
+#: inc/frontend/class-frontend-ui.php:141
+msgid "New Zealand"
+msgstr "Nouvelle-Zélande"
+
+#: inc/frontend/class-frontend-ui.php:142
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: inc/frontend/class-frontend-ui.php:143
+msgid "Niger"
+msgstr "Niger"
+
+#: inc/frontend/class-frontend-ui.php:144
+msgid "Nigeria"
+msgstr "Nigeria"
+
+#: inc/class-setup.php:101
+msgid "No petitions found in Trash."
+msgstr "Aucune pétition trouvée dans la corbeille."
+
+#: inc/class-setup.php:100
+msgid "No petitions found."
+msgstr "Aucune pétition trouvée."
+
+#: inc/frontend/class-frontend-ui.php:145
+msgid "Norway"
+msgstr "Norvège"
+
+#: inc/frontend/class-frontend-ui.php:146
+msgid "Oman"
+msgstr "Oman"
+
+#: inc/frontend/class-frontend-ui.php:147
+msgid "Pakistan"
+msgstr "Pakistan"
+
+#: inc/frontend/class-frontend-ui.php:148
+msgid "Palau"
+msgstr "Palaos"
+
+#: inc/frontend/class-frontend-ui.php:149
+msgid "Panama"
+msgstr "Panama"
+
+#: inc/frontend/class-frontend-ui.php:150
+msgid "Papua New Guinea"
+msgstr "Papouasie-Nouvelle-Guinée"
+
+#: inc/frontend/class-frontend-ui.php:151
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: inc/frontend/class-frontend-ui.php:152
+msgid "Peru"
+msgstr "Pérou"
+
+#: inc/class-setup.php:93
+msgctxt "petition"
+msgid "Add New"
+msgstr "Ajouter un nouveau"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:59
+#: inc/admin-ui/class-admin-settings-ui.php:88
+msgid "Petition Settings"
+msgstr "Paramètres de la pétition"
+
+#. Name of the plugin
+#: 
+msgid "Petitioner"
+msgstr "Pétitionnaire"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:71
+#: inc/admin-ui/class-admin-settings-ui.php:100
+msgid "Petitioner Settings"
+msgstr "Paramètres du pétitionnaire"
+
+#: inc/frontend/class-frontend-ui.php:153
+msgid "Philippines"
+msgstr "Philippines"
+
+#: inc/emails/class-email-template.php:27
+msgid "Please confirm your email by clicking the link below."
+msgstr "Veuillez confirmer votre email en cliquant sur le lien ci-dessous."
+
+#: inc/emails/class-email-template.php:16
+msgid "Please confirm your email."
+msgstr "Veuillez confirmer votre email."
+
+#: inc/frontend/class-frontend-ui.php:154
+msgid "Poland"
+msgstr "Pologne"
+
+#: inc/frontend/class-frontend-ui.php:155
+msgid "Portugal"
+msgstr "Portugal"
+
+#: inc/class-setup.php:89
+msgctxt "post type general name"
+msgid "Petitions"
+msgstr "Pétitions"
+
+#: inc/class-setup.php:90
+msgctxt "post type singular name"
+msgid "Petition"
+msgstr "Pétition"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:166
+msgid "Primary color"
+msgstr "Couleur primaire"
+
+#: inc/frontend/class-frontend-ui.php:156
+msgid "Qatar"
+msgstr "Qatar"
+
+#: inc/submissions/class-submissions-controller.php:330
+msgid "reCAPTCHA score too low. Please try again."
+msgstr "Score reCAPTCHA trop faible. Veuillez réessayer."
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:167
+msgid "Red"
+msgstr "Rouge"
+
+#: inc/frontend/class-frontend-ui.php:157
+msgid "Romania"
+msgstr "Roumanie"
+
+#: inc/frontend/class-frontend-ui.php:158
+msgid "Russian Federation"
+msgstr "Fédération de Russie"
+
+#: inc/frontend/class-frontend-ui.php:159
+msgid "Rwanda"
+msgstr "Rwanda"
+
+#: inc/frontend/class-frontend-ui.php:162
+msgid "Saint Vincent & the Grenadines"
+msgstr "Saint-Vincent-et-les Grenadines"
+
+#: inc/frontend/class-frontend-ui.php:163
+msgid "Samoa"
+msgstr "Samoa"
+
+#: inc/frontend/class-frontend-ui.php:164
+msgid "San Marino"
+msgstr "Saint-Marin"
+
+#: inc/frontend/class-frontend-ui.php:165
+msgid "Sao Tome & Principe"
+msgstr "Sao Tomé-et-Principe"
+
+#: inc/frontend/class-frontend-ui.php:166
+msgid "Saudi Arabia"
+msgstr "Arabie Saoudite"
+
+#: inc/class-setup.php:99
+msgid "Search Petitions"
+msgstr "Rechercher des pétitions"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:203
+#: inc/admin-ui/class-admin-settings-ui-old.php:227
+msgid "Secret key"
+msgstr "Clé secrète"
+
+#: inc/frontend/class-frontend-ui.php:167
+msgid "Senegal"
+msgstr "Sénégal"
+
+#: inc/frontend/class-frontend-ui.php:168
+msgid "Serbia"
+msgstr "Serbie"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:60
+#: inc/admin-ui/class-admin-settings-ui.php:89
+msgid "Settings"
+msgstr "Paramètres"
+
+#: inc/frontend/class-frontend-ui.php:169
+msgid "Seychelles"
+msgstr "Seychelles"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:152
+msgid "Show goal"
+msgstr "Afficher l'objectif"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:138
+msgid "Show letter popup"
+msgstr "Afficher la fenêtre contextuelle des lettres"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:145
+msgid "Show title"
+msgstr "Afficher le titre"
+
+#: inc/frontend/class-frontend-ui.php:170
+msgid "Sierra Leone"
+msgstr "Sierra Leone"
+
+#: inc/frontend/class-frontend-ui.php:356
+#: inc/frontend/class-frontend-ui.php:380
+msgid "Sign this petition"
+msgstr "Signez cette pétition"
+
+#: inc/frontend/class-frontend-ui.php:440
+msgid "Signatures"
+msgstr "Signatures"
+
+#: inc/frontend/class-frontend-ui.php:171
+msgid "Singapore"
+msgstr "Singapour"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:195
+#: inc/admin-ui/class-admin-settings-ui-old.php:219
+msgid "Site key"
+msgstr "Clé du site"
+
+#: inc/frontend/class-frontend-ui.php:172
+msgid "Slovakia"
+msgstr "Slovaquie"
+
+#: inc/frontend/class-frontend-ui.php:173
+msgid "Slovenia"
+msgstr "Slovénie"
+
+#: inc/frontend/class-frontend-ui.php:174
+msgid "Solomon Islands"
+msgstr "Îles Salomon"
+
+#: inc/frontend/class-frontend-ui.php:175
+msgid "Somalia"
+msgstr "Somalie"
+
+#: inc/frontend/class-frontend-ui.php:176
+msgid "South Africa"
+msgstr "Afrique du Sud"
+
+#: inc/frontend/class-frontend-ui.php:177
+msgid "South Sudan"
+msgstr "Soudan du Sud"
+
+#: inc/frontend/class-frontend-ui.php:178
+msgid "Spain"
+msgstr "Espagne"
+
+#: inc/frontend/class-frontend-ui.php:179
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+#: inc/frontend/class-frontend-ui.php:160
+msgid "St Kitts & Nevis"
+msgstr "Saint-Kitts-et-Nevis"
+
+#: inc/frontend/class-frontend-ui.php:161
+msgid "St Lucia"
+msgstr "Sainte-Lucie"
+
+#: inc/frontend/class-frontend-ui.php:180
+msgid "Sudan"
+msgstr "Soudan"
+
+#: inc/frontend/class-frontend-ui.php:181
+msgid "Suriname"
+msgstr "Suriname"
+
+#: inc/frontend/class-frontend-ui.php:182
+msgid "Swaziland"
+msgstr "Swaziland"
+
+#: inc/frontend/class-frontend-ui.php:183
+msgid "Sweden"
+msgstr "Suède"
+
+#: inc/frontend/class-frontend-ui.php:184
+msgid "Switzerland"
+msgstr "Suisse"
+
+#: inc/frontend/class-frontend-ui.php:185
+msgid "Syria"
+msgstr "Syrie"
+
+#: inc/frontend/class-frontend-ui.php:186
+msgid "Taiwan"
+msgstr "Taïwan"
+
+#: inc/frontend/class-frontend-ui.php:187
+msgid "Tajikistan"
+msgstr "Tadjikistan"
+
+#: inc/frontend/class-frontend-ui.php:188
+msgid "Tanzania"
+msgstr "Tanzanie"
+
+#: inc/frontend/class-frontend-ui.php:189
+msgid "Thailand"
+msgstr "Thaïlande"
+
+#: inc/emails/class-email-template.php:16
+msgid "Thank you for signing the petition!"
+msgstr "Merci d'avoir signé la pétition !"
+
+#: inc/emails/class-email-template.php:24
+msgid "Thank you for signing the petition."
+msgstr "Merci d'avoir signé la pétition."
+
+#. %1$s is the opening anchor tag, %2$s is the closing anchor tag
+#: inc/frontend/class-frontend-ui.php:337
+msgid "This site is protected by hCaptcha and its %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply."
+msgstr "Ce site est protégé par hCaptcha et sa %1$sPolitique de confidentialité%2$s et ses %3$sConditions d'utilisation%4$s s'appliquent."
+
+#. %1$s is the opening anchor tag, %2$s is the closing anchor tag
+#: inc/frontend/class-frontend-ui.php:316
+msgid "This site is protected by reCAPTCHA and the Google %1$sPrivacy Policy%2$s and %3$sTerms of Service%4$s apply."
+msgstr "Ce site est protégé par reCAPTCHA et les %1$sPolitique de confidentialité%2$s et %3$sConditions d'utilisation%4$s de Google s'appliquent."
+
+#: inc/frontend/class-frontend-ui.php:190
+msgid "Togo"
+msgstr "Aller"
+
+#: inc/frontend/class-frontend-ui.php:191
+msgid "Tonga"
+msgstr "Tonga"
+
+#: inc/frontend/class-frontend-ui.php:192
+msgid "Trinidad & Tobago"
+msgstr "Trinité-et-Tobago"
+
+#: inc/frontend/class-frontend-ui.php:193
+msgid "Tunisia"
+msgstr "Tunisie"
+
+#: inc/frontend/class-frontend-ui.php:194
+msgid "Turkey"
+msgstr "Turquie"
+
+#: inc/frontend/class-frontend-ui.php:195
+msgid "Turkmenistan"
+msgstr "Turkménistan"
+
+#: inc/frontend/class-frontend-ui.php:196
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: inc/frontend/class-frontend-ui.php:197
+msgid "Uganda"
+msgstr "Ouganda"
+
+#: inc/frontend/class-frontend-ui.php:198
+msgid "Ukraine"
+msgstr "Ukraine"
+
+#: inc/frontend/class-frontend-ui.php:199
+msgid "United Arab Emirates"
+msgstr "Émirats arabes unis"
+
+#: inc/frontend/class-frontend-ui.php:200
+msgid "United Kingdom"
+msgstr "Royaume-Uni"
+
+#: inc/frontend/class-frontend-ui.php:201
+msgid "United States"
+msgstr "États-Unis"
+
+#: inc/frontend/class-frontend-ui.php:202
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:160
+msgid "Use this field to override CSS of petitioner"
+msgstr "Utilisez ce champ pour remplacer le CSS du pétitionnaire"
+
+#: inc/frontend/class-frontend-ui.php:203
+msgid "Uzbekistan"
+msgstr "Ouzbékistan"
+
+#: inc/frontend/class-frontend-ui.php:204
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: inc/frontend/class-frontend-ui.php:205
+msgid "Vatican City"
+msgstr "Cité du Vatican"
+
+#: inc/frontend/class-frontend-ui.php:206
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: inc/frontend/class-frontend-ui.php:207
+msgid "Vietnam"
+msgstr "Vietnam"
+
+#: inc/class-setup.php:97
+msgid "View Petition"
+msgstr "Voir la pétition"
+
+#: inc/frontend/class-frontend-ui.php:395
+msgid "View the letter"
+msgstr "Voir la lettre"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:107
+msgid "Visual Customizer"
+msgstr "Personnalisateur visuel"
+
+#: inc/admin-ui/class-admin-settings-ui-old.php:118
+#: inc/admin-ui/class-admin-settings-ui-old.php:130
+msgid "Warning! Running both hCaptcha and reCAPTCHA will break the form!"
+msgstr "Attention ! L'exécution simultanée de hCaptcha et de reCAPTCHA entraînera la corruption du formulaire."
+
+#: inc/frontend/class-frontend-ui.php:208
+msgid "Yemen"
+msgstr "Yémen"
+
+#: inc/frontend/class-frontend-ui.php:263
+msgid "Your email"
+msgstr "Votre email"
+
+#: inc/submissions/class-submissions-controller.php:149
+msgid "Your signature has been added!"
+msgstr "Votre signature a été ajoutée !"
+
+#: inc/frontend/class-frontend-ui.php:209
+msgid "Zambia"
+msgstr "Zambie"
+
+#: inc/frontend/class-frontend-ui.php:210
+msgid "Zimbabwe"
+msgstr "Zimbabwe"
+
+#: inc/frontend/class-frontend-ui.php:408
+msgid "{Your name will be here}"
+msgstr "{Votre nom sera ici}"
+
