@@ -10,8 +10,6 @@ import { getFieldTypeGroup } from '@admin/utilities';
 function FormBuilderComponent() {
 	const formRef = useRef(null);
 
-	// const { formBuilderFields } = useEditFormContext();
-
 	const { setBuilderEditScreen, builderEditScreen, formBuilderFields } =
 		useFormBuilderContext();
 

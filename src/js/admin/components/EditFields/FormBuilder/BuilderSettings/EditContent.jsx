@@ -1,7 +1,7 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import { TextControl, CheckboxControl } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import PTRichText from '@admin/components/shared/PTRichText';
+import { sanitizeText } from '@wordpress/server-side-render';
+import DOMPurify from 'dompurify';
 
 export default function EditContent() {
 	const { formBuilderFields, updateFormBuilderFields, builderEditScreen } =
@@ -16,14 +16,13 @@ export default function EditContent() {
 	return (
 		<div>
 			<PTRichText
-				label="Thank you email content"
+				label="Content"
 				id={`petitioner_content_wisiwyg_${builderEditScreen}`}
 				value={currentField?.value}
 				onChange={(value) => {
-                    console.log(value);
 					updateFormBuilderFields(builderEditScreen, {
 						...formBuilderFields[builderEditScreen],
-						value: value,
+						value: DOMPurify.sanitize(value),
 					});
 				}}
 				height={200}

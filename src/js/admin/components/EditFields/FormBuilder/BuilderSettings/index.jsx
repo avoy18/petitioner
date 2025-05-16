@@ -2,6 +2,7 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { Button, TextControl } from '@wordpress/components';
 import { getFieldTypeGroup } from '@admin/utilities';
+import { __ } from '@wordpress/i18n';
 
 import EditInput from './EditInput';
 import EditDropdown from './EditDropdown';
@@ -30,18 +31,26 @@ export default function BuilderSettings(props) {
 	return (
 		<div>
 			{builderEditScreen != 'default' && (
-				<Button
-					variant="secondary"
-					size="small"
-					icon="arrow-left-alt2"
-					onClick={(e) => {
-						e.preventDefault();
-						setBuilderEditScreen('default');
-					}}
-				>
-					Back
-				</Button>
+				<>
+					<Button
+						variant="secondary"
+						size="small"
+						icon="arrow-left-alt2"
+						onClick={(e) => {
+							e.preventDefault();
+							setBuilderEditScreen('default');
+						}}
+					>
+						{__('Back', 'petitioner')}
+					</Button>
+
+					<h4>
+						{__('Editing: ', 'petitioner')}
+						{currentField?.fieldName}
+					</h4>
+				</>
 			)}
+
 			<ScreenComponent />
 		</div>
 	);

@@ -58,19 +58,9 @@ export function EditFormContextProvider({ children }) {
 		ty_email_subject,
 		from_field,
 		add_honeypot,
-		form_fields:
-			typeof parsedFormFields === 'object' ? parsedFormFields : {},
 	});
 
 	const [builderEditScreen, setBuilderEditScreen] = useState('default');
-
-	const [formBuilderFields, setFormBuilderFields] = useState(
-		parsedFormFields ? parsedFormFields : {}
-	);
-
-	const updateFormBuilderFields = useCallback((key, value) => {
-		setFormBuilderFields((prevState) => ({ ...prevState, [key]: value }));
-	}, []);
 
 	const updateFormState = useCallback((key, value) => {
 		setFormState((prevState) => ({ ...prevState, [key]: value }));
@@ -81,8 +71,6 @@ export function EditFormContextProvider({ children }) {
 			value={{
 				formState,
 				updateFormState,
-				formBuilderFields,
-				updateFormBuilderFields,
 				builderEditScreen,
 				setBuilderEditScreen,
 			}}

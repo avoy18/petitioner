@@ -57,13 +57,15 @@ export default function EditInput() {
 					onBlur={onPlaceholderEditComplete}
 				/>
 			</p>
-			<p>
-				<CheckboxControl
-					label="Required"
-					checked={currentField.required}
-					onChange={onRequiredEditComplete}
-				/>
-			</p>
+			{currentField?.type !== 'email' && (
+				<p>
+					<CheckboxControl
+						label="Required"
+						checked={currentField.required}
+						onChange={onRequiredEditComplete}
+					/>
+				</p>
+			)}
 		</div>
 	);
 }

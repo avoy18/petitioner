@@ -25,7 +25,7 @@ export default function EditSubmit() {
 		<div>
 			<p>
 				<TextControl
-					label="Field label"
+					label="Button text"
 					value={draftLabelValue}
 					onChange={setDraftLabelValue}
 					onBlur={onLabelEditComplete}
