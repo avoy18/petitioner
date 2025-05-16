@@ -1,23 +1,18 @@
 import { Panel, PanelBody, Button } from '@wordpress/components';
 import { useRef } from '@wordpress/element';
-
-import PtrDraggable from './../../shared/Draggable';
-import BuilderSettings from './BuilderSettings';
+import PtrDraggable from '@admin/components/shared/Draggable';
+import BuilderSettings from './BuilderSettings/';
 import { useEditFormContext } from '@admin/context/EditFormContext';
+import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
+import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
+import { getFieldTypeGroup } from '@admin/utilities';
 
-const getFieldTypeGroup = (type) => {
-	if (['text', 'number', 'email', 'first_name', 'last_name'].includes(type))
-		return 'input';
-	if (['select', 'country'].includes(type)) return 'select';
-	if (['checkbox', 'terms'].includes(type)) return 'checkbox';
-
-	return type;
-};
-
-export default function FormBuilder() {
+function FormBuilderComponent() {
 	const formRef = useRef(null);
 
-	const { formBuilderFields, setBuilderEditScreen } = useEditFormContext();
+	const { formBuilderFields } = useEditFormContext();
+
+	const { setBuilderEditScreen, builderEditScreen } = useFormBuilderContext();
 
 	const handleDragStart = (event) => {
 		formRef.current.classList.add('is-dragging');
@@ -44,9 +39,12 @@ export default function FormBuilder() {
 
 		const handleFieldEdit = (event) => {
 			event.preventDefault();
-
-			setBuilderEditScreen(inputType);
+			setBuilderEditScreen(name);
 		};
+
+		const isActive = builderEditScreen === name;
+
+		const fieldClassName = `ptr-fake-field ptr-fake-field--${inputType} ${!isActive ? '' : 'ptr-fake-field--active'}`;
 
 		return (
 			<PtrDraggable
@@ -55,41 +53,30 @@ export default function FormBuilder() {
 				id={'draggable_' + name}
 				onClick={handleFieldEdit}
 			>
-				{isInputField && (
-					<div className="ptr-fake-field ptr-fake-field--input">
-						{label}
-					</div>
-				)}
+				{isInputField && <div className={fieldClassName}>{label}</div>}
 
 				{isDropdownField && (
-					<div className="ptr-fake-field ptr-fake-field--dropdown">
-						{label}
-					</div>
+					<div className={fieldClassName}>{label}</div>
 				)}
 
 				{isCheckboxField && (
-					<div className="ptr-fake-field ptr-fake-field--checkbox">
+					<div className={fieldClassName}>
 						<input
 							type="checkbox"
 							id={name}
 							name={name}
 							required={required}
-							disabled={true}
 						/>
 						<label htmlFor={name}>{label}</label>
 					</div>
 				)}
 
 				{inputType === 'legal' && (
-					<div className="ptr-fake-field ptr-fake-field--legal">
-						{label}
-					</div>
+					<div className={fieldClassName}>{label}</div>
 				)}
 			</PtrDraggable>
 		);
 	};
-
-	console.log('formBuilderFields', formBuilderFields);
 
 	return (
 		<>
@@ -174,5 +161,13 @@ export default function FormBuilder() {
 				</div>
 			</div>
 		</>
+	);
+}
+
+export default function FormBuilder() {
+	return (
+		<FormBuilderContextProvider>
+			<FormBuilderComponent />
+		</FormBuilderContextProvider>
 	);
 }
