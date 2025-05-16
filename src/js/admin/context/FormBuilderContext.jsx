@@ -55,11 +55,19 @@ const defaultBuilderFields = {
 		removable: true,
 	},
 	legal: {
-		type: 'legal',
+		type: 'wysiwyg',
 		fieldName: __('Legal text', 'petitioner'),
-		label: __('Legal text', 'petitioner'),
+		label: '',
+		value: __('By submitting, you agree to our terms.', 'petitioner'),
 		required: false,
 		removable: true,
+	},
+	submit: {
+		type: 'submit',
+		fieldName: __('Submit button', 'petitioner'),
+		label: __('Sign this petition', 'petitioner'),
+		required: true,
+		removable: false,
 	},
 };
 

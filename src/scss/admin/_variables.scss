@@ -11,6 +11,11 @@ $spacer-xl: 32px;
 	--ptr-admin-color-grey: #efefef;
 	--ptr-admin-fs-sm: 14px;
 	--ptr-admin-fs-md: 18px;
+	--ptr-admin-spacing-xs: #{$spacer-xs};
+	--ptr-admin-spacing-sm: #{$spacer-sm};
+	--ptr-admin-spacing-md: #{$spacer-md};
+	--ptr-admin-spacing-lg: #{$spacer-lg};
+	--ptr-admin-spacing-xl: #{$spacer-xl};
 
 	// wrapper
 	--ptr-admin-spacing-x: #{$spacer-md};

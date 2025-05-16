@@ -6,6 +6,8 @@ import { getFieldTypeGroup } from '@admin/utilities';
 import EditInput from './EditInput';
 import EditDropdown from './EditDropdown';
 import EditCheckbox from './EditCheckbox';
+import EditContent from './EditContent';
+import EditSubmit from './EditSubmit';
 
 export default function BuilderSettings(props) {
 	const { formBuilderFields, builderEditScreen, setBuilderEditScreen } =
@@ -18,7 +20,8 @@ export default function BuilderSettings(props) {
 		input: () => <EditInput />,
 		select: () => <EditDropdown />,
 		checkbox: () => <EditCheckbox />,
-		legal: () => <EditLegal />,
+		wysiwyg: () => <EditContent />,
+		submit: () => <EditSubmit />,
 		default: () => <InputList />,
 	};
 
@@ -54,8 +57,4 @@ function InputList() {
 			Click on one of the inputs on the right to show it's field settings.
 		</div>
 	);
-}
-
-function EditLegal() {
-	return <div>Editing legal text</div>;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from '@wordpress/element';
 
 export default function PTRichText({
 	id,
@@ -6,10 +6,10 @@ export default function PTRichText({
 	value = '',
 	height = 300,
 	help,
+	onChange = () => true,
 }) {
 	const editorRef = useRef(null);
 	const lastSavedValue = useRef(value);
-	const debounceTimeout = useRef(null);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined' && typeof tinymce !== 'undefined') {
@@ -30,6 +30,11 @@ export default function PTRichText({
 							editor.setContent(value);
 							lastSavedValue.current = value;
 						}
+					});
+
+					editor.on('blur', () => {
+						const content = editor.getContent();
+						onChange(content);
 					});
 				},
 			});

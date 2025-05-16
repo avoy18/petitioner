@@ -10,9 +10,10 @@ import { getFieldTypeGroup } from '@admin/utilities';
 function FormBuilderComponent() {
 	const formRef = useRef(null);
 
-	const { formBuilderFields } = useEditFormContext();
+	// const { formBuilderFields } = useEditFormContext();
 
-	const { setBuilderEditScreen, builderEditScreen } = useFormBuilderContext();
+	const { setBuilderEditScreen, builderEditScreen, formBuilderFields } =
+		useFormBuilderContext();
 
 	const handleDragStart = (event) => {
 		formRef.current.classList.add('is-dragging');
@@ -26,16 +27,11 @@ function FormBuilderComponent() {
 		name = '',
 		type = 'text', // 'name', 'email', 'country', 'text', 'number', 'textarea', 'select', 'checkbox', 'radio'
 		label = 'Field Label',
-		placeholder = 'Placeholder',
+		value = '',
+		placeholder = '',
 		required = false,
 	}) => {
 		const inputType = getFieldTypeGroup(type);
-
-		const isInputField = inputType === 'input';
-
-		const isCheckboxField = inputType === 'checkbox';
-
-		const isDropdownField = inputType === 'select';
 
 		const handleFieldEdit = (event) => {
 			event.preventDefault();
@@ -46,6 +42,44 @@ function FormBuilderComponent() {
 
 		const fieldClassName = `ptr-fake-field ptr-fake-field--${inputType} ${!isActive ? '' : 'ptr-fake-field--active'}`;
 
+		let FinalField = (
+			<div className={fieldClassName}>
+				<p className="ptr-fake-field__label">{label}</p>
+				<div className="ptr-fake-field__input">{placeholder}</div>
+			</div>
+		);
+
+		if (inputType === 'checkbox') {
+			FinalField = (
+				<div className={fieldClassName}>
+					<input
+						type="checkbox"
+						id={name}
+						name={name}
+						required={required}
+					/>
+					<label htmlFor={name}>{label}</label>
+				</div>
+			);
+		} else if (inputType === 'submit') {
+			FinalField = (
+				<div className={fieldClassName}>
+					<button>
+						{label}
+					</button>
+				</div>
+			);
+		} else if (inputType === 'wysiwyg') {
+			FinalField = (
+				<div
+					className={fieldClassName}
+					dangerouslySetInnerHTML={{
+						__html: value,
+					}}
+				></div>
+			);
+		}
+
 		return (
 			<PtrDraggable
 				onDragStart={handleDragStart}
@@ -53,30 +87,12 @@ function FormBuilderComponent() {
 				id={'draggable_' + name}
 				onClick={handleFieldEdit}
 			>
-				{isInputField && <div className={fieldClassName}>{label}</div>}
-
-				{isDropdownField && (
-					<div className={fieldClassName}>{label}</div>
-				)}
-
-				{isCheckboxField && (
-					<div className={fieldClassName}>
-						<input
-							type="checkbox"
-							id={name}
-							name={name}
-							required={required}
-						/>
-						<label htmlFor={name}>{label}</label>
-					</div>
-				)}
-
-				{inputType === 'legal' && (
-					<div className={fieldClassName}>{label}</div>
-				)}
+				{FinalField}
 			</PtrDraggable>
 		);
 	};
+
+	const formBuilderKeys = Object.keys(formBuilderFields);
 
 	return (
 		<>
@@ -115,46 +131,27 @@ function FormBuilderComponent() {
 
 						<PanelBody>
 							<div className="ptr-field-wrapper">
+								{formBuilderKeys?.length > 0 &&
+									formBuilderKeys.map((key) => {
+										const currentField =
+											formBuilderFields[key];
+										return (
+											<>
+												<span className="ptr-visual-position"></span>
+												<DynamicField
+													name={key}
+													type={currentField?.type}
+													label={currentField?.label}
+													placeholder={
+														currentField?.placeholder
+													}
+													value={currentField?.value}
+												/>
+											</>
+										);
+									})}
+
 								<span className="ptr-visual-position"></span>
-								<DynamicField
-									name="first_name"
-									type="first_name"
-									label="First Name"
-								/>
-								<span className="ptr-visual-position"></span>
-								<DynamicField
-									name="last_name"
-									type="last_name"
-									label="Last Name"
-								/>
-								<span className="ptr-visual-position"></span>
-								<DynamicField
-									name="email"
-									type="email"
-									label="Your email"
-								/>
-								<span className="ptr-visual-position"></span>
-								<DynamicField
-									name="country"
-									type="country"
-									label="Your country"
-								/>
-								<span className="ptr-visual-position"></span>
-								<DynamicField
-									name="terms"
-									type="terms"
-									label="By submitting this form, I agree to the terms of service"
-								/>
-								<DynamicField
-									name="legal"
-									type="legal"
-									label="Legal text"
-								/>
-								<div>
-									<Button disabled={true} variant="primary">
-										Sign this petition
-									</Button>
-								</div>
 							</div>
 						</PanelBody>
 					</Panel>
