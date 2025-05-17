@@ -29,6 +29,7 @@ class AV_Petitioner_Admin_Settings_UI
         'turnstile_site_key'        => 'petitioner_turnstile_site_key',
         'turnstile_secret_key'      => 'petitioner_turnstile_secret_key',
         'enable_akismet'            => 'petitioner_enable_akismet',
+        'form_fields'               => 'petitioner_form_fields'
     ];
 
     function __construct()
@@ -120,9 +121,9 @@ class AV_Petitioner_Admin_Settings_UI
     {
         wp_nonce_field("save_petition_settings", "petitioner_settings_nonce");
         // Retrieve current meta values
-        $option_values     = $this->get_option_fields();
+        $option_values      = $this->get_option_fields();
         // Sanitize values for safe use in HTML attributes
-        $petitioner_info = [
+        $petitioner_info    = [
             'show_letter'               => (bool) $option_values['show_letter'],
             'show_title'                => (bool) $option_values['show_title'],
             'show_goal'                 => (bool) $option_values['show_goal'],

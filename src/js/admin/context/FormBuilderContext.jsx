@@ -72,15 +72,20 @@ const defaultBuilderFields = {
 };
 
 export function FormBuilderContextProvider({ children }) {
-	const { form_fields = '{}' } = window.petitionerData;
-
-	const parsedFormFields = safelyParseJSON(form_fields);
+	const { form_fields = {} } = window.petitionerData;
 
 	const [builderEditScreen, setBuilderEditScreen] = useState('default');
 
-	const [formBuilderFields, setFormBuilderFields] = useState(
-		parsedFormFields ? parsedFormFields : defaultBuilderFields
-	);
+	const [formBuilderFields, setFormBuilderFields] = useState(() => {
+		if (
+			typeof form_fields === 'object' &&
+			form_fields !== null &&
+			Object.keys(form_fields).length > 0
+		) {
+			return form_fields;
+		}
+		return defaultBuilderFields;
+	});
 
 	const updateFormBuilderFields = useCallback((key, value) => {
 		setFormBuilderFields((prevState) => ({ ...prevState, [key]: value }));

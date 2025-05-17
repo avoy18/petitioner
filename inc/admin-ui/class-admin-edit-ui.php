@@ -28,9 +28,9 @@ class AV_Petitioner_Admin_Edit_UI
         'override_ty_email'       => '_petitioner_override_ty_email',
         'ty_email'                => '_petitioner_ty_email',
         'ty_email_subject'        => '_petitioner_ty_email_subject',
-        'form_fields'             => '_petitioner_form_fields',
         'from_field'              => '_petitioner_from_field',
         'add_honeypot'            => '_petitioner_add_honeypot',
+        'form_fields'             => '_petitioner_form_fields',
     ];
 
     public function __construct()
@@ -108,7 +108,7 @@ class AV_Petitioner_Admin_Edit_UI
                 "from_field"                    => AV_Petitioner_Email_Template::get_default_from_field(),
             ],
             // new way of handling the form fields
-            "form_fields"                   =>  !empty($meta_values['form_fields']) ? json_decode($meta_values['form_fields'], true) : null,
+            "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
         ];
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -185,13 +185,14 @@ class AV_Petitioner_Admin_Edit_UI
             } elseif ($key === 'cc_emails' || $key === 'email') {
                 $value = $this->sanitize_emails($value);
             } elseif (in_array($key, $checkboxes)) {
-                $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
+                $value = $value === "on" ? 1 : 0;
             } elseif ($key === 'goal') {
-                $value = (int) $value; // Ensure numeric values are stored as integers
+                $value = (int) $value;
+            } elseif ($key === 'form_fields') {
+                $value = $this->sanitize_form_fields($value);
             } else {
                 $value = sanitize_text_field($value);
             }
-
             update_post_meta($post_id, self::META_FIELDS[$key], $value);
         }
     }
@@ -222,5 +223,64 @@ class AV_Petitioner_Admin_Edit_UI
             unset($actions["view"]);
         }
         return $actions;
+    }
+
+    /**
+     * Sanitize a JSON-encoded string representing form fields configuration.
+     *
+     * This method decodes the input JSON, sanitizes each field's sub-properties,
+     * and re-encodes the structure. For fields of type 'wysiwyg', it allows limited HTML
+     * in the 'value' key using wp_kses_post(). All other scalar values are sanitized
+     * using sanitize_text_field().
+     *
+     * @param string $value JSON-encoded string of form fields.
+     * @param bool   $returns_string Optional. Whether to return the sanitized data as a JSON-encoded string.
+     *                               Defaults to false.
+     * @return array|string Sanitized data. Returns an array if $returns_string is false, or a JSON-encoded
+     *                      string if $returns_string is true. Returns an empty string if the input JSON is invalid.
+     */
+    public function sanitize_form_fields($value, $stringify = true)
+    {
+        if (!is_string($value)) {
+            return '';
+        }
+
+        $decoded = json_decode($value, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+            return '';
+        }
+
+        $sanitized = [];
+
+        foreach ($decoded as $field_key => $field_data) {
+            if (!is_array($field_data)) {
+                continue;
+            }
+
+            $sanitized_field = [];
+
+            foreach ($field_data as $sub_key => $sub_value) {
+                if (
+                    $sub_key === 'value' &&
+                    isset($field_data['type']) &&
+                    $field_data['type'] === 'wysiwyg'
+                ) {
+                    $sanitized_field[$sub_key] = wp_kses_post($sub_value);
+                } else {
+                    $sanitized_field[$sub_key] = is_scalar($sub_value)
+                        ? sanitize_text_field($sub_value)
+                        : $sub_value;
+                }
+            }
+
+            $sanitized[$field_key] = $sanitized_field;
+        }
+
+        if ($stringify) {
+            return wp_slash(wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+
+        return $sanitized;
     }
 }

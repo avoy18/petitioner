@@ -5,8 +5,6 @@ import {
 	useCallback,
 } from '@wordpress/element';
 
-import { safelyParseJSON } from '@admin/utilities';
-
 const EditFormContext = createContext();
 
 export function EditFormContextProvider({ children }) {
@@ -32,10 +30,7 @@ export function EditFormContextProvider({ children }) {
 		ty_email_subject = '',
 		from_field = '',
 		add_honeypot = true,
-		form_fields = '{}',
 	} = window.petitionerData;
-
-	const parsedFormFields = safelyParseJSON(form_fields);
 
 	const [formState, setFormState] = useState({
 		title,
