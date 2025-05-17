@@ -1,17 +1,13 @@
-import { Panel, PanelBody, Button } from '@wordpress/components';
+import { Panel, PanelBody } from '@wordpress/components';
 import { useRef } from '@wordpress/element';
-import PtrDraggable from '@admin/components/shared/Draggable';
 import BuilderSettings from './BuilderSettings/';
-import { useEditFormContext } from '@admin/context/EditFormContext';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
-import { getFieldTypeGroup } from '@admin/utilities';
+
+import DynamicField from './DynamicField';
 
 function FormBuilderComponent() {
 	const formRef = useRef(null);
-
-	const { setBuilderEditScreen, builderEditScreen, formBuilderFields } =
-		useFormBuilderContext();
 
 	const handleDragStart = (event) => {
 		formRef.current.classList.add('is-dragging');
@@ -21,82 +17,15 @@ function FormBuilderComponent() {
 		formRef.current.classList.remove('is-dragging');
 	};
 
-	const DynamicField = ({
-		name = '',
-		type = 'text', // 'name', 'email', 'country', 'text', 'number', 'textarea', 'select', 'checkbox', 'radio'
-		label = 'Field Label',
-		value = '',
-		placeholder = '',
-		required = false,
-	}) => {
-		const inputType = getFieldTypeGroup(type);
-
-		const handleFieldEdit = (event) => {
-			event.preventDefault();
-			setBuilderEditScreen(name);
-		};
-
-		const isActive = builderEditScreen === name;
-
-		const fieldClassName = `ptr-fake-field ptr-fake-field--${inputType} ${!isActive ? '' : 'ptr-fake-field--active'}`;
-
-		let FinalField = (
-			<div className={fieldClassName}>
-				<p className="ptr-fake-field__label">{label}</p>
-				<div className="ptr-fake-field__input">{placeholder}</div>
-			</div>
-		);
-
-		if (inputType === 'checkbox') {
-			FinalField = (
-				<div className={fieldClassName}>
-					<input
-						type="checkbox"
-						id={name}
-						name={name}
-						required={required}
-					/>
-					<label htmlFor={name}>{label}</label>
-				</div>
-			);
-		} else if (inputType === 'submit') {
-			FinalField = (
-				<div className={fieldClassName}>
-					<button>
-						{label}
-					</button>
-				</div>
-			);
-		} else if (inputType === 'wysiwyg') {
-			FinalField = (
-				<div
-					className={fieldClassName}
-					dangerouslySetInnerHTML={{
-						__html: value,
-					}}
-				></div>
-			);
-		}
-
-		return (
-			<PtrDraggable
-				onDragStart={handleDragStart}
-				onDragEnd={handleDragEnd}
-				id={'draggable_' + name}
-				onClick={handleFieldEdit}
-			>
-				{FinalField}
-			</PtrDraggable>
-		);
-	};
+	const { formBuilderFields } = useFormBuilderContext();
 
 	const formBuilderKeys = Object.keys(formBuilderFields);
 
 	return (
 		<>
 			<input
-				type="text"
-				name="form_fields"
+				type="hidden"
+				name="petitioner_form_fields"
 				value={JSON.stringify(formBuilderFields)}
 			/>
 			<div
@@ -144,6 +73,8 @@ function FormBuilderComponent() {
 														currentField?.placeholder
 													}
 													value={currentField?.value}
+													onDragStart={handleDragStart}
+													onDragEnd={handleDragEnd}
 												/>
 											</>
 										);
