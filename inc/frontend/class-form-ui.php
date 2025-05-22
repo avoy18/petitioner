@@ -31,7 +31,7 @@ class AV_Petitioner_Form_UI
         $this->consent_text             = get_post_meta($this->form_id, '_petitioner_consent_text', true);
         $this->add_honeypot             = get_post_meta($this->form_id, '_petitioner_add_honeypot', true);
         $this->form_fields              = get_post_meta($this->form_id, '_petitioner_form_fields', false);
-        $this->country_list = av_petitioner_get_countries();
+        $this->country_list             = av_petitioner_get_countries();
     }
 
     public function render(): void
@@ -107,6 +107,7 @@ class AV_Petitioner_Form_UI
         </form>
     <?php
     }
+
     /**
      * Render the form fields, captchas, etc.
      * @return void
@@ -195,8 +196,6 @@ class AV_Petitioner_Form_UI
 
     public function render_select_field(string $name, array $field): void
     {
-
-        // return void;
         $field_label = !empty($field['label']) ? esc_html($field['label']) : '';
         $field_name  = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         if($name === 'country'){
