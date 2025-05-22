@@ -12,7 +12,7 @@ import { safelyParseJSON } from '@admin/utilities';
 const FormBuilderContext = createContext();
 
 const defaultBuilderFields = {
-	first_name: {
+	fname: {
 		type: 'text',
 		fieldName: __('First name', 'petitioner'),
 		label: __('First name', 'petitioner'),
@@ -20,7 +20,7 @@ const defaultBuilderFields = {
 		required: true,
 		removable: false,
 	},
-	last_name: {
+	lname: {
 		type: 'text',
 		fieldName: __('Last name', 'petitioner'),
 		label: __('Last name', 'petitioner'),
@@ -43,7 +43,7 @@ const defaultBuilderFields = {
 		required: false,
 		removable: true,
 	},
-	terms: {
+	accept_tos: {
 		type: 'checkbox',
 		fieldName: 'Terms of service checkbox',
 		label: __(
