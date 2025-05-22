@@ -65,7 +65,7 @@ module.exports = defineConfig({
 			],
 			input: {
 				main: path.resolve(__dirname, 'src/js/main.js'),
-				admin: path.resolve(__dirname, 'src/js/admin.jsx'),
+				admin: path.resolve(__dirname, 'src/js/admin.tsx'),
 			},
 			output: {
 				globals: {

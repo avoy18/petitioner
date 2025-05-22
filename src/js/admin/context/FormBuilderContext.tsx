@@ -7,11 +7,17 @@ import {
 
 import { __ } from '@wordpress/i18n';
 
-import { safelyParseJSON } from '@admin/utilities';
+import {
+	BuilderFieldMap,
+	FormBuilderContextValue,
+	FormBuilderContextProviderProps,
+} from './form-builder.types';
 
-const FormBuilderContext = createContext();
+export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
+	null
+);
 
-const defaultBuilderFields = {
+const defaultBuilderFields: BuilderFieldMap = {
 	fname: {
 		type: 'text',
 		fieldName: __('First name', 'petitioner'),
@@ -71,7 +77,9 @@ const defaultBuilderFields = {
 	},
 };
 
-export function FormBuilderContextProvider({ children }) {
+export function FormBuilderContextProvider({
+	children,
+}: FormBuilderContextProviderProps): JSX.Element {
 	const { form_fields = {} } = window.petitionerData;
 
 	const [builderEditScreen, setBuilderEditScreen] = useState('default');

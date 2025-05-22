@@ -6,9 +6,17 @@ import ShortcodeArea from '@admin/components/ShortcodeArea';
 import '../scss/admin.scss';
 import { safelyParseJSON } from '@admin/utilities';
 
+declare global {
+	interface Window {
+		petitionerData: Record<string, unknown>;
+	}
+}
+
 const jsonContainer = document.getElementById('petitioner-json-data');
+const rawJson = jsonContainer?.textContent || '{}';
+
 window.petitionerData = jsonContainer
-	? safelyParseJSON(jsonContainer?.textContent)
+	? safelyParseJSON(rawJson)
 	: {};
 
 function EditUI() {
