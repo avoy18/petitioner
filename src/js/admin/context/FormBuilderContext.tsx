@@ -8,6 +8,10 @@ import {
 import { __ } from '@wordpress/i18n';
 
 import {
+	BuilderField,
+	TextField,
+	CheckboxField,
+	WysiwygField,
 	BuilderFieldMap,
 	FormBuilderContextValue,
 	FormBuilderContextProviderProps,
@@ -77,27 +81,115 @@ const defaultBuilderFields: BuilderFieldMap = {
 	},
 };
 
+/*
+ * This function normalizes the raw form fields data into a consistent format.
+ * It ensures that each field has the required properties and types,
+ * applying default values where necessary.
+ * It also handles type-specific enhancements for fields like text, checkbox, and wysiwyg.
+ */
+export function normalizeFormFields(raw: unknown): BuilderFieldMap {
+	const output: BuilderFieldMap = {};
+	const source =
+		typeof raw === 'object' && raw !== null
+			? (raw as Record<string, unknown>)
+			: {};
+
+	for (const [key, defaultField] of Object.entries(defaultBuilderFields)) {
+		const value = source[key];
+		if (typeof value !== 'object' || value === null) {
+			output[key] = defaultField;
+			continue;
+		}
+
+		const incoming = value as Record<string, unknown>;
+
+		// Base validation
+		if (
+			typeof incoming.type !== 'string' ||
+			typeof incoming.fieldName !== 'string' ||
+			typeof incoming.required !== 'boolean' ||
+			typeof incoming.removable !== 'boolean'
+		) {
+			output[key] = defaultField;
+			continue;
+		}
+
+		const base: BuilderField = {
+			type: incoming.type as BuilderField['type'],
+			fieldName: incoming.fieldName as string,
+			label:
+				typeof incoming.label === 'string'
+					? incoming.label
+					: defaultField.label,
+			required: incoming.required as boolean,
+			removable: incoming.removable as boolean,
+		} as BuilderField;
+
+		// Type-specific enhancements
+		switch (incoming.type) {
+			case 'text':
+			case 'email':
+				(base as TextField).placeholder =
+					typeof incoming.placeholder === 'string'
+						? incoming.placeholder
+						: ((defaultField as TextField).placeholder ?? '');
+				break;
+
+			case 'checkbox':
+				(base as CheckboxField).defaultValue =
+					typeof incoming.defaultValue === 'boolean'
+						? incoming.defaultValue
+						: ((defaultField as CheckboxField).defaultValue ??
+							false);
+				break;
+
+			case 'wysiwyg':
+				(base as WysiwygField).value =
+					typeof incoming.value === 'string'
+						? incoming.value
+						: ((defaultField as WysiwygField).value ?? '');
+				break;
+
+			case 'select':
+				// Extend here if `select` gets options, etc.
+				break;
+
+			case 'submit':
+				break;
+
+			default:
+				output[key] = defaultField;
+				continue;
+		}
+
+		output[key] = base;
+	}
+
+	return output;
+}
+
 export function FormBuilderContextProvider({
 	children,
-}: FormBuilderContextProviderProps): JSX.Element {
+}: FormBuilderContextProviderProps) {
 	const { form_fields = {} } = window.petitionerData;
 
+	const startingFormFields = normalizeFormFields(form_fields);
+
+	const [formBuilderFields, setFormBuilderFields] =
+		useState(startingFormFields);
 	const [builderEditScreen, setBuilderEditScreen] = useState('default');
-
-	const [formBuilderFields, setFormBuilderFields] = useState(() => {
-		if (
-			typeof form_fields === 'object' &&
-			form_fields !== null &&
-			Object.keys(form_fields).length > 0
-		) {
-			return form_fields;
-		}
-		return defaultBuilderFields;
-	});
-
-	const updateFormBuilderFields = useCallback((key, value) => {
-		setFormBuilderFields((prevState) => ({ ...prevState, [key]: value }));
-	}, []);
+	const updateFormBuilderFields = useCallback(
+		<K extends keyof BuilderFieldMap>(
+			key: K,
+			value: BuilderFieldMap[K]
+		) => {
+			setFormBuilderFields((prevState) => ({
+				...prevState,
+				[key]: value,
+			}));
+		},
+		[]
+	);
 
 	return (
 		<FormBuilderContext.Provider

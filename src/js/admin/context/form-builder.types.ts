@@ -14,30 +14,30 @@ interface BaseField {
 	removable: boolean;
 }
 
-interface TextField extends BaseField {
+export interface TextField extends BaseField {
 	type: 'text' | 'email';
 	placeholder: string;
 }
 
-interface SelectField extends BaseField {
+export interface SelectField extends BaseField {
 	type: 'select';
 }
 
-interface CheckboxField extends BaseField {
+export interface CheckboxField extends BaseField {
 	type: 'checkbox';
 	defaultValue: boolean;
 }
 
-interface WysiwygField extends BaseField {
+export interface WysiwygField extends BaseField {
 	type: 'wysiwyg';
 	value: string;
 }
 
-interface SubmitField extends BaseField {
+export interface SubmitField extends BaseField {
 	type: 'submit';
 }
 
-type BuilderField =
+export type BuilderField =
 	| TextField
 	| SelectField
 	| CheckboxField
@@ -47,7 +47,7 @@ type BuilderField =
 export type BuilderFieldMap = Record<string, BuilderField>;
 
 export interface FormBuilderContextValue {
-	formBuilderFields: FormBuilderFieldsMap;
+	formBuilderFields: BuilderFieldMap;
 	updateFormBuilderFields: (key: string, value: BuilderField) => void;
 	builderEditScreen: string;
 	setBuilderEditScreen: React.Dispatch<React.SetStateAction<string>>;
