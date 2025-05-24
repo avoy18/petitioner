@@ -1,6 +1,11 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { TextControl, CheckboxControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
+import { BuilderField, TextField } from '@admin/context/form-builder.types';
+
+const isInputField = (field: BuilderField): field is TextField => {
+	return field.type === 'text' || field.type === 'email';
+};
 
 export default function EditInput() {
 	const { formBuilderFields, updateFormBuilderFields, builderEditScreen } =
@@ -8,7 +13,7 @@ export default function EditInput() {
 
 	const currentField = formBuilderFields[builderEditScreen];
 
-	if (!currentField) {
+	if (!currentField || !isInputField(currentField)) {
 		return null;
 	}
 
@@ -20,22 +25,22 @@ export default function EditInput() {
 
 	const onLabelEditComplete = () => {
 		updateFormBuilderFields(builderEditScreen, {
-			...formBuilderFields[builderEditScreen],
+			...currentField,
 			label: draftLabelValue,
 		});
 	};
 
 	const onPlaceholderEditComplete = () => {
 		updateFormBuilderFields(builderEditScreen, {
-			...formBuilderFields[builderEditScreen],
+			...currentField,
 			placeholder: draftPlaceholderValue,
 		});
 	};
 
-	const onRequiredEditComplete = (value) => {
+	const onRequiredEditComplete = (value: boolean) => {
 		updateFormBuilderFields(builderEditScreen, {
-			...formBuilderFields[builderEditScreen],
-			required: value,
+			...currentField,
+			required: Boolean(value),
 		});
 	};
 

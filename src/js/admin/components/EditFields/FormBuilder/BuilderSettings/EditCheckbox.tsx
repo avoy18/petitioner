@@ -40,8 +40,6 @@ export default function EditCheckbox() {
 		});
 	};
 
-	console.log(formBuilderFields);
-
 	return (
 		<div>
 			<p>

@@ -19,8 +19,7 @@ function FormBuilderComponent() {
 	const { formBuilderFields } = useFormBuilderContext();
 
 	const formBuilderKeys = Object.keys(formBuilderFields);
-	console.log('form stuff here', formBuilderFields);
-	console.log('stringified', JSON.stringify(formBuilderFields));
+
 	return (
 		<>
 			<input

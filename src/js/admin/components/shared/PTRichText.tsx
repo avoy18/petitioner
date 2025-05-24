@@ -1,18 +1,20 @@
 import { useEffect, useRef } from '@wordpress/element';
 
 export default function PTRichText({
-	id,
+	id = '',
 	label = 'Rich text label',
 	value = '',
 	height = 300,
-	help,
-	onChange = () => true,
+	help = '',
+	onChange = (value: string) => {},
 }) {
 	const editorRef = useRef(null);
 	const lastSavedValue = useRef(value);
 
 	useEffect(() => {
+		// @ts-ignore
 		if (typeof window !== 'undefined' && typeof tinymce !== 'undefined') {
+			// @ts-ignore
 			tinymce.init({
 				selector: `#${id}`,
 				menubar: false,
@@ -43,6 +45,7 @@ export default function PTRichText({
 		// ✅ Cleanup TinyMCE instance when unmounting
 		return () => {
 			if (editorRef.current) {
+				// @ts-ignore
 				editorRef.current.remove();
 				editorRef.current = null;
 			}

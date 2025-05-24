@@ -1,4 +1,4 @@
-type FieldType =
+export type FieldType =
 	| 'text'
 	| 'email'
 	| 'select'

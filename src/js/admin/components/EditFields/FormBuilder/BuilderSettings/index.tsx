@@ -10,14 +10,24 @@ import EditCheckbox from './EditCheckbox';
 import EditContent from './EditContent';
 import EditSubmit from './EditSubmit';
 
-export default function BuilderSettings(props) {
+const screenKeys = [
+	'input',
+	'select',
+	'checkbox',
+	'wysiwyg',
+	'submit',
+] as const;
+
+type ScreenType = (typeof screenKeys)[number];
+
+export default function BuilderSettings() {
 	const { formBuilderFields, builderEditScreen, setBuilderEditScreen } =
 		useFormBuilderContext();
 
 	const currentField = formBuilderFields[builderEditScreen];
 	const currentType = getFieldTypeGroup(currentField?.type);
 
-	const screens = {
+	const screens: Record<ScreenType | 'default', () => any> = {
 		input: () => <EditInput />,
 		select: () => <EditDropdown />,
 		checkbox: () => <EditCheckbox />,
@@ -26,7 +36,9 @@ export default function BuilderSettings(props) {
 		default: () => <InputList />,
 	};
 
-	const ScreenComponent = screens[currentType] || screens.default;
+	const ScreenComponent = screenKeys.includes(currentType as ScreenType)
+		? screens[currentType as ScreenType]
+		: screens.default;
 
 	return (
 		<div>

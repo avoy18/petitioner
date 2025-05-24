@@ -21,10 +21,10 @@ export default function EditDropdown() {
 		});
 	};
 
-	const onRequiredEditComplete = (value) => {
+	const onRequiredEditComplete = (value: boolean) => {
 		updateFormBuilderFields(builderEditScreen, {
 			...formBuilderFields[builderEditScreen],
-			required: value,
+			required: Boolean(value),
 		});
 	};
 

@@ -1,3 +1,4 @@
+import { FieldType } from '@admin/context/form-builder.types';
 export function safelyParseJSON(jsonString: string): Record<string, unknown> {
 	try {
 		return JSON.parse(jsonString);
@@ -7,34 +8,19 @@ export function safelyParseJSON(jsonString: string): Record<string, unknown> {
 	}
 }
 
-type FieldType =
-	| 'text'
-	| 'number'
-	| 'email'
-	| 'fname'
-	| 'lname'
-	| 'select'
-	| 'country'
-	| 'checkbox'
-	| 'accept_tos'
-	| string;
-
-type FieldGroup = 'input' | 'select' | 'checkbox' | string;
-
-const fieldTypeToGroup: Record<string, FieldGroup> = {
+const fieldTypeToGroup = {
 	text: 'input',
-	number: 'input',
 	email: 'input',
-	fname: 'input',
-	lname: 'input',
 	select: 'select',
-	country: 'select',
 	checkbox: 'checkbox',
-	accept_tos: 'checkbox',
+	wysiwyg: 'wysiwyg',
+	submit: 'submit',
 };
 
+export type FieldGroup = (typeof fieldTypeToGroup)[FieldType];
+
 export const getFieldTypeGroup = (type: FieldType): FieldGroup => {
-	return fieldTypeToGroup[type] ?? type;
+	return fieldTypeToGroup[type];
 };
 
 export const isNonEmptyObject = <T extends object = Record<string, unknown>>(
