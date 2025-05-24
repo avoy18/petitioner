@@ -1,5 +1,5 @@
-type CheckboxValue = boolean | number;
-type TextValue = string | null;
+type CheckboxValue = boolean;
+type TextValue = string | number;
 type NumberValue = number | null;
 
 export type PetitionerData = {
@@ -12,7 +12,7 @@ export type PetitionerData = {
 	show_country: CheckboxValue;
 	subject: TextValue;
 	require_approval: CheckboxValue;
-	approval_state: TextValue;
+	approval_state: 'Email' | 'Confirmed' | 'Declined';
 	letter: TextValue;
 	add_legal_text: CheckboxValue;
 	legal_text: TextValue;
@@ -38,3 +38,11 @@ export interface EditFormContextValue {
 export interface EditFormContextProviderProps {
 	children: React.ReactNode;
 }
+
+export type DefaultValues = {
+	from_field: string;
+	ty_email_subject: string;
+	ty_email: string;
+	ty_email_subject_confirm: string;
+	ty_email_confirm: string;
+};

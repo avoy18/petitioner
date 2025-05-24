@@ -2,34 +2,80 @@ import React from 'react';
 import { TextControl, SelectControl } from '@wordpress/components';
 import PTRichText from '@admin/components/shared/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
+import { DefaultValues } from '@admin/context/edit-form.types';
+
+/*
+ * Normalize the default values from the raw data
+ * to ensure they match the expected structure.
+ *
+ * @param raw - The raw default values from the server.
+ * @returns An object with default values for the form fields.
+ */
+const normalizeDefaultValues = (raw: unknown): DefaultValues => {
+	const DEFAULT_SUBJECT = 'Thank you for signing the {{petition_title}}';
+	const DEFAULT_CONTENT =
+		'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
+
+	const defaultValues: DefaultValues = {
+		from_field: '',
+		ty_email_subject: DEFAULT_SUBJECT,
+		ty_email: DEFAULT_CONTENT,
+		ty_email_subject_confirm: DEFAULT_SUBJECT,
+		ty_email_confirm: DEFAULT_CONTENT,
+	};
+
+	if (typeof raw !== 'object' || raw === null) {
+		return defaultValues;
+	}
+
+	const input = raw as Record<string, unknown>;
+
+	for (const key of Object.keys(defaultValues) as (keyof DefaultValues)[]) {
+		const value = input[key];
+		if (typeof value === 'string' && value.trim().length > 0) {
+			defaultValues[key] = value;
+		}
+	}
+
+	return defaultValues;
+};
+
+function getThankYouDefaults(
+	defaults: DefaultValues,
+	approvalState: string
+): { subject: string; content: string } {
+	const isConfirmEmail = approvalState === 'Email';
+
+	return {
+		subject: isConfirmEmail
+			? defaults.ty_email_subject_confirm
+			: defaults.ty_email_subject,
+		content: isConfirmEmail ? defaults.ty_email_confirm : defaults.ty_email,
+	};
+}
 
 /**
  * Advanced Settings Component
  */
 export default function AdvancedSettings() {
 	const { formState, updateFormState } = useEditFormContext();
-	const defaultValues = window.petitionerData?.default_values;
+
+	const defaultValues = normalizeDefaultValues(
+		window.petitionerData?.default_values
+	);
+
 	const defaultFromField = defaultValues?.from_field || '';
 
 	const confirmEmails = formState.approval_state === 'Email';
 
-	let defaultTYSubject = defaultValues?.ty_email_subject || '';
-	let defaultTYEmailContent = defaultValues?.ty_email || '';
-
-	if (confirmEmails) {
-		defaultTYSubject =
-			defaultValues?.ty_email_subject_confirm ||
-			'Thank you for signing the {{petition_title}}';
-		defaultTYEmailContent =
-			defaultValues?.ty_email_confirm ||
-			'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
-	}
+	const { subject: defaultTYSubject, content: defaultTYEmailContent } =
+		getThankYouDefaults(defaultValues, formState.approval_state);
 
 	return (
 		<>
 			<p>
 				<input
-					checked={formState.add_honeypot}
+					checked={!!formState.add_honeypot}
 					type="checkbox"
 					name="petitioner_add_honeypot"
 					id="petitioner_add_honeypot"
