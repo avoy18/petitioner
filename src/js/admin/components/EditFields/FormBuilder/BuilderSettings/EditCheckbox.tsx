@@ -1,6 +1,11 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { TextControl, CheckboxControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
+import { CheckboxField, BuilderField } from '@admin/context/form-builder.types';
+
+function isCheckboxField(field: BuilderField): field is CheckboxField {
+	return field.type === 'checkbox';
+}
 
 export default function EditCheckbox() {
 	const { formBuilderFields, updateFormBuilderFields, builderEditScreen } =
@@ -8,33 +13,34 @@ export default function EditCheckbox() {
 
 	const currentField = formBuilderFields[builderEditScreen];
 
-	if (!currentField) {
+	if (!currentField || !isCheckboxField(currentField)) {
 		return null;
 	}
 
 	const [draftLabelValue, setDraftLabelValue] = useState(currentField.label);
-	const [defaultValue, setDefaultValue] = useState(currentField.defaultValue);
 
 	const onLabelEditComplete = () => {
 		updateFormBuilderFields(builderEditScreen, {
-			...formBuilderFields[builderEditScreen],
+			...currentField,
 			label: draftLabelValue,
 		});
 	};
 
-	const onRequiredEditComplete = (value) => {
+	const onRequiredEditComplete = (value: boolean) => {
 		updateFormBuilderFields(builderEditScreen, {
-			...formBuilderFields[builderEditScreen],
-			required: value,
+			...currentField,
+			required: Boolean(value),
 		});
 	};
 
-	const onDefaultValueComplete = (value) => {
+	const onDefaultValueComplete = (value: boolean) => {
 		updateFormBuilderFields(builderEditScreen, {
-			...formBuilderFields[builderEditScreen],
-			defaultValue: value,
+			...currentField,
+			defaultValue: Boolean(value),
 		});
 	};
+
+	console.log(formBuilderFields);
 
 	return (
 		<div>

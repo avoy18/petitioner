@@ -267,10 +267,12 @@ class AV_Petitioner_Admin_Edit_UI
                     $field_data['type'] === 'wysiwyg'
                 ) {
                     $sanitized_field[$sub_key] = wp_kses_post($sub_value);
+                } elseif (is_bool($sub_value) || is_numeric($sub_value)) {
+                    $sanitized_field[$sub_key] = $sub_value;
+                } elseif (is_string($sub_value)) {
+                    $sanitized_field[$sub_key] = sanitize_text_field($sub_value);
                 } else {
-                    $sanitized_field[$sub_key] = is_scalar($sub_value)
-                        ? sanitize_text_field($sub_value)
-                        : $sub_value;
+                    $sanitized_field[$sub_key] = $sub_value;
                 }
             }
 

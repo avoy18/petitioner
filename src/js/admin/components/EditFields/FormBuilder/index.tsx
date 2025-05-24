@@ -1,26 +1,26 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import { useRef } from '@wordpress/element';
-import BuilderSettings from './BuilderSettings/';
+import BuilderSettings from './BuilderSettings';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
-
 import DynamicField from './DynamicField';
 
 function FormBuilderComponent() {
-	const formRef = useRef(null);
+	const formRef = useRef<HTMLDivElement | null>(null);
 
-	const handleDragStart = (event) => {
-		formRef.current.classList.add('is-dragging');
+	const handleDragStart = () => {
+		formRef?.current?.classList.add('is-dragging');
 	};
 
-	const handleDragEnd = (event) => {
-		formRef.current.classList.remove('is-dragging');
+	const handleDragEnd = () => {
+		formRef?.current?.classList.remove('is-dragging');
 	};
 
 	const { formBuilderFields } = useFormBuilderContext();
 
 	const formBuilderKeys = Object.keys(formBuilderFields);
-
+	console.log('form stuff here', formBuilderFields);
+	console.log('stringified', JSON.stringify(formBuilderFields));
 	return (
 		<>
 			<input
@@ -62,6 +62,10 @@ function FormBuilderComponent() {
 									formBuilderKeys.map((key) => {
 										const currentField =
 											formBuilderFields[key];
+
+										if (currentField.type === 'checkbox') {
+											console.log(currentField);
+										}
 										return (
 											<>
 												<span className="ptr-visual-position"></span>
@@ -70,10 +74,25 @@ function FormBuilderComponent() {
 													type={currentField?.type}
 													label={currentField?.label}
 													placeholder={
-														currentField?.placeholder
+														'placeholder' in
+														currentField
+															? currentField.placeholder
+															: undefined
 													}
-													value={currentField?.value}
-													onDragStart={handleDragStart}
+													value={
+														'value' in currentField
+															? currentField.value
+															: undefined
+													}
+													defaultValue={
+														'defaultValue' in
+														currentField
+															? currentField.defaultValue
+															: undefined
+													}
+													onDragStart={
+														handleDragStart
+													}
 													onDragEnd={handleDragEnd}
 												/>
 											</>

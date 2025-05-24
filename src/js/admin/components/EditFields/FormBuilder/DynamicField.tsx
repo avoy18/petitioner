@@ -7,16 +7,17 @@ export default function DynamicField({
 	type = 'text',
 	label = 'Field Label',
 	value = '',
+	defaultValue = false,
 	placeholder = '',
 	required = false,
-	onDragStart = () => true,
-	onDragEnd = () => true,
+	onDragStart = (): boolean | void => true,
+	onDragEnd = (): boolean | void => true,
 }) {
 	const { setBuilderEditScreen, builderEditScreen } = useFormBuilderContext();
 
 	const inputType = getFieldTypeGroup(type);
 
-	const handleFieldEdit = (event) => {
+	const handleFieldEdit = (event: React.MouseEvent) => {
 		event.preventDefault();
 		setBuilderEditScreen(name);
 	};
@@ -40,6 +41,7 @@ export default function DynamicField({
 					id={name}
 					name={name}
 					required={required}
+					checked={defaultValue === true}
 				/>
 				<label htmlFor={name}>{label}</label>
 			</div>

@@ -14,8 +14,6 @@ import {
 import Tabs from '@admin/components/shared/Tabs';
 
 function EditFieldsComponent() {
-	const { formState, updateFormState } = useEditFormContext();
-
 	const tabs = useMemo(
 		() => [
 			{
@@ -26,12 +24,7 @@ function EditFieldsComponent() {
 					</>
 				),
 				className: 'petition-tablink',
-				renderingEl: (
-					<FormBuilder
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				),
+				renderingEl: <FormBuilder />,
 			},
 			{
 				name: 'petition-details',
@@ -41,12 +34,7 @@ function EditFieldsComponent() {
 					</>
 				),
 				className: 'petition-tablink',
-				renderingEl: (
-					<PetitionDetails
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				),
+				renderingEl: <PetitionDetails />,
 			},
 			{
 				name: 'form-settings',
@@ -56,12 +44,7 @@ function EditFieldsComponent() {
 					</>
 				),
 				className: 'petition-tablink',
-				renderingEl: (
-					<FormSettings
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				),
+				renderingEl: <FormSettings />,
 			},
 			{
 				name: 'advanced-settings',
@@ -71,12 +54,7 @@ function EditFieldsComponent() {
 					</>
 				),
 				className: 'petition-tablink',
-				renderingEl: (
-					<AdvancedSettings
-						formState={formState}
-						updateFormState={updateFormState}
-					/>
-				),
+				renderingEl: <AdvancedSettings />,
 			},
 			{
 				name: 'submissions',
@@ -87,7 +65,7 @@ function EditFieldsComponent() {
 				),
 				className: 'petition-tablink',
 				renderingEl: (
-					<Submissions formID={window.petitionerData.form_id} />
+					<Submissions />
 				),
 			},
 		],
@@ -102,7 +80,7 @@ function EditFieldsComponent() {
 	);
 }
 
-export default function EditFields(props) {
+export default function EditFields() {
 	return (
 		<EditFormContextProvider>
 			<EditFieldsComponent />

@@ -6,7 +6,7 @@ import {
 } from '@wordpress/components';
 import { useState } from 'react';
 
-export default function ShortCodeArea(): JSX.Element | undefined {
+export default function ShortCodeArea() {
 	const formID = window?.petitionerData?.form_id;
 	const [isCopied, setIsCopied] = useState(false);
 
@@ -15,7 +15,7 @@ export default function ShortCodeArea(): JSX.Element | undefined {
 		setTimeout(() => setIsCopied(false), 3000);
 	};
 
-	if (!formID) return;
+	if (!formID) return false;
 
 	return (
 		<p

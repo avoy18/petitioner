@@ -21,11 +21,29 @@ type FieldType =
 
 type FieldGroup = 'input' | 'select' | 'checkbox' | string;
 
-export const getFieldTypeGroup = (type: FieldType): FieldGroup => {
-	if (['text', 'number', 'email', 'fname', 'lname'].includes(type))
-		return 'input';
-	if (['select', 'country'].includes(type)) return 'select';
-	if (['checkbox', 'accept_tos'].includes(type)) return 'checkbox';
+const fieldTypeToGroup: Record<string, FieldGroup> = {
+	text: 'input',
+	number: 'input',
+	email: 'input',
+	fname: 'input',
+	lname: 'input',
+	select: 'select',
+	country: 'select',
+	checkbox: 'checkbox',
+	accept_tos: 'checkbox',
+};
 
-	return type;
+export const getFieldTypeGroup = (type: FieldType): FieldGroup => {
+	return fieldTypeToGroup[type] ?? type;
+};
+
+export const isNonEmptyObject = <T extends object = Record<string, unknown>>(
+	value: unknown
+): value is T => {
+	return (
+		typeof value === 'object' &&
+		value !== null &&
+		!Array.isArray(value) &&
+		Object.keys(value).length > 0
+	);
 };
