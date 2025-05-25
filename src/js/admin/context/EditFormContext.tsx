@@ -8,7 +8,7 @@ import {
 	EditFormContextValue,
 	PetitionerData,
 	EditFormContextProviderProps,
-} from '../../types/edit-form.types';
+} from '../types/edit-form.types';
 
 const EditFormContext = createContext<EditFormContextValue | null>(null);
 

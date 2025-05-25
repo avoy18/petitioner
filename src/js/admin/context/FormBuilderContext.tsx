@@ -11,7 +11,7 @@ import {
 	BuilderFieldMap,
 	FormBuilderContextValue,
 	FormBuilderContextProviderProps,
-} from '../../types/form-builder.types';
+} from '../types/form-builder.types';
 
 export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 	null

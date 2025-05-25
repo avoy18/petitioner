@@ -1,8 +1,11 @@
-import CodeEditor from '../shared/CodeEditor';
-import ColorField from '../shared/ColorField';
+import CodeEditor from '@admin/components/shared/CodeEditor';
+import ColorField from '@admin/components/shared/ColorField';
+import { useSettingsFormContext } from '@admin/context/SettingsContext';
 
-export default function VisualSettings({ formState, updateFormState }) {
-	const defaultColors = window.petitionerData?.default_values?.colors || {
+export default function VisualSettings() {
+	const { formState, updateFormState, windowPetitionerData } = useSettingsFormContext();
+	
+	const defaultColors = windowPetitionerData.default_values.colors || {
 		primary: '#000',
 		dark: '#000',
 		grey: '#000',
@@ -67,7 +70,7 @@ export default function VisualSettings({ formState, updateFormState }) {
 					id={'petitioner_primary_color'}
 					color={formState?.primary_color}
 					defaultColor={defaultColors?.primary}
-					onColorChange={(newColor) =>
+					onColorChange={(newColor: string) =>
 						updateFormState('primary_color', newColor)
 					}
 				/>
@@ -81,7 +84,7 @@ export default function VisualSettings({ formState, updateFormState }) {
 					id={'petitioner_dark_color'}
 					color={formState?.dark_color}
 					defaultColor={defaultColors?.dark}
-					onColorChange={(newColor) =>
+					onColorChange={(newColor: string) =>
 						updateFormState('dark_color', newColor)
 					}
 				/>
@@ -95,7 +98,7 @@ export default function VisualSettings({ formState, updateFormState }) {
 					id={'petitioner_grey_color'}
 					color={formState?.grey_color}
 					defaultColor={defaultColors?.grey}
-					onColorChange={(newColor) =>
+					onColorChange={(newColor: string) =>
 						updateFormState('grey_color', newColor)
 					}
 				/>

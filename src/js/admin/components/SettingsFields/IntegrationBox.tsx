@@ -5,23 +5,18 @@ import {
 	CardFooter,
 	__experimentalText as Text,
 	__experimentalHeading as Heading,
-	__experimentalGrid as Grid,
 	Button,
 	Modal,
 	__experimentalDivider as Divider,
-	CheckboxControl,
-	TextControl,
-	ToggleControl,
 } from '@wordpress/components';
 
 import { useState } from '@wordpress/element';
 
 export default function IntegrationBox({
-	name = '',
 	title = 'reCAPTCHA',
 	description = 'Google reCAPTCHA integration',
 	enabled = false,
-	integrationFields = () => true,
+	integrationFields = null,
 }) {
 	const [isOpen, setOpen] = useState(false);
 	const openModal = () => setOpen(true);
@@ -33,7 +28,8 @@ export default function IntegrationBox({
 				<CardHeader>
 					<Heading level={4}>{title}</Heading>
 				</CardHeader>
-				<CardBody style={{'min-height': '80px'}}>
+				{/* @ts-ignore */}
+				<CardBody style={{ 'min-height': '80px' }}>
 					<Text>{description}</Text>
 				</CardBody>
 				<CardFooter>
@@ -52,11 +48,7 @@ export default function IntegrationBox({
 			</Card>
 
 			{isOpen && (
-				<Modal
-					size="large"
-					title={title}
-					onRequestClose={closeModal}
-				>
+				<Modal size="large" title={title} onRequestClose={closeModal}>
 					<Text>{description}</Text>
 					<Divider margin={5} />
 					{integrationFields}

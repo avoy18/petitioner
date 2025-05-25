@@ -6,8 +6,11 @@ import {
 
 import IntegrationBox from './IntegrationBox';
 import { __ } from '@wordpress/i18n';
+import { useSettingsFormContext } from '@admin/context/SettingsContext';
 
-export default function Integrations({ formState, updateFormState }) {
+export default function Integrations() {
+	const { formState, updateFormState } = useSettingsFormContext();
+
 	const integrations = [
 		{
 			name: 'recaptcha',
@@ -208,8 +211,7 @@ export default function Integrations({ formState, updateFormState }) {
 		{
 			name: 'akismet',
 			title: 'Akismet',
-			description:
-				'Akismet integration.',
+			description: 'Akismet integration.',
 			enabled: formState.enable_akismet,
 			integrationFields: (
 				<>

@@ -1,7 +1,7 @@
 import { useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { FormID } from 'src/js/types/edit-form.types';
-import { SubmissionItem } from '../../../../types/submissions.types';
+import { SubmissionItem } from '../../../types/submissions.types';
 
 export default function ResendButton(props: { item: SubmissionItem }) {
 	const { id, confirmation_token } = props.item;

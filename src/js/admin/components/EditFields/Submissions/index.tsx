@@ -8,7 +8,7 @@ import {
 	SubmissionID,
 	SubmissionStatus,
 	ChangeAction,
-} from '../../../../types/submissions.types';
+} from '../../../types/submissions.types';
 import { ApprovalState, CheckboxValue } from 'src/js/types/edit-form.types';
 
 export default function Submissions() {

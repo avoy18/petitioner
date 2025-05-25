@@ -1,5 +1,5 @@
 import { Button } from '@wordpress/components';
-import { ApprovalStatusProps } from '../../../../types/submissions.types';
+import { ApprovalStatusProps } from '../../../types/submissions.types';
 import ResendButton from './ResendButton';
 
 export default function ApprovalStatus(props: ApprovalStatusProps) {
