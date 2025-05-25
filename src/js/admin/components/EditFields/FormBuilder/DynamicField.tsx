@@ -17,7 +17,12 @@ export default function DynamicField({
 	onDragStart = (): boolean | void => true,
 	onDragEnd = (): boolean | void => true,
 }) {
-	const { setBuilderEditScreen, builderEditScreen } = useFormBuilderContext();
+	const {
+		setBuilderEditScreen,
+		builderEditScreen,
+		formBuilderFields,
+		removeFormBuilderField,
+	} = useFormBuilderContext();
 
 	const inputType = getFieldTypeGroup(type as FieldType);
 
@@ -31,15 +36,21 @@ export default function DynamicField({
 	const fieldClassName = `ptr-fake-field ptr-fake-field--${inputType} ${!isActive ? '' : 'ptr-fake-field--active'}`;
 
 	const FieldActions = useCallback(() => {
-		const handleFieldDelete = (event: React.MouseEvent) => {
+		const currentField = formBuilderFields[name];
+
+		if (!currentField) {
+			return null;
+		}
+
+		const handleFieldRemoval = (event: React.MouseEvent) => {
 			event.preventDefault();
 			if (
 				window.confirm(
-					`Are you sure you want to delete the ${label} field?`
+					`Are you sure you want to remove the ${label} field?`
 				)
 			) {
-				// Logic to delete the field goes here
-				console.log(`Field ${name} deleted.`);
+				removeFormBuilderField(name);
+				setBuilderEditScreen('');
 			}
 		};
 
@@ -60,8 +71,8 @@ export default function DynamicField({
 						isDestructive={true}
 						variant="secondary"
 						size="small"
-						label={`Delete the ${label} field`}
-						onClick={handleFieldDelete}
+						label={`Remove the ${label} field`}
+						onClick={handleFieldRemoval}
 					/>
 				)}
 			</div>

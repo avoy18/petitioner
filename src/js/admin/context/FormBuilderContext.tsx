@@ -104,6 +104,17 @@ export function FormBuilderContextProvider({
 		[]
 	);
 
+	const removeFormBuilderField = useCallback(
+		<K extends keyof BuilderFieldMap>(key: K) => {
+			setFormBuilderFields((prevState) => {
+				const newState = { ...prevState };
+				delete newState[key];
+				return newState;
+			});
+		},
+		[]
+	);
+
 	return (
 		<FormBuilderContext.Provider
 			value={{
@@ -111,6 +122,7 @@ export function FormBuilderContextProvider({
 				updateFormBuilderFields,
 				builderEditScreen,
 				setBuilderEditScreen,
+				removeFormBuilderField,
 			}}
 		>
 			{children}

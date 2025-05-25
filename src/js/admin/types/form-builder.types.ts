@@ -51,6 +51,7 @@ export interface FormBuilderContextValue {
 	updateFormBuilderFields: (key: string, value: BuilderField) => void;
 	builderEditScreen: string;
 	setBuilderEditScreen: React.Dispatch<React.SetStateAction<string>>;
+	removeFormBuilderField: (key: string) => void;
 }
 
 export interface FormBuilderContextProviderProps {
