@@ -6,10 +6,7 @@ import FormBuilder from './FormBuilder';
 import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
 import AdvancedSettings from './AdvancedSettings';
-import {
-	useEditFormContext,
-	EditFormContextProvider,
-} from '@admin/context/EditFormContext';
+import { EditFormContextProvider } from '@admin/context/EditFormContext';
 
 import Tabs from '@admin/components/shared/Tabs';
 
@@ -64,9 +61,7 @@ function EditFieldsComponent() {
 					</>
 				),
 				className: 'petition-tablink',
-				renderingEl: (
-					<Submissions />
-				),
+				renderingEl: <Submissions />,
 			},
 		],
 		[]

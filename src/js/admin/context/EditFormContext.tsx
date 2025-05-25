@@ -8,7 +8,7 @@ import {
 	EditFormContextValue,
 	PetitionerData,
 	EditFormContextProviderProps,
-} from './edit-form.types';
+} from '../../types/edit-form.types';
 
 const EditFormContext = createContext<EditFormContextValue | null>(null);
 
@@ -31,7 +31,7 @@ const normalizePetitionerData = () => {
 		show_country: false,
 		subject: '',
 		require_approval: false,
-		approval_state: 'approved',
+		approval_state: 'Confirmed',
 		letter: '',
 		add_legal_text: false,
 		legal_text: '',
@@ -42,7 +42,7 @@ const normalizePetitionerData = () => {
 		ty_email_subject: '',
 		from_field: '',
 		add_honeypot: true,
-		form_id: '',
+		form_id: null,
 	};
 
 	return { ...defaultData, ...rawData };

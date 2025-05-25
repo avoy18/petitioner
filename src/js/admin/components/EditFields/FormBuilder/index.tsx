@@ -61,10 +61,6 @@ function FormBuilderComponent() {
 									formBuilderKeys.map((key) => {
 										const currentField =
 											formBuilderFields[key];
-
-										if (currentField.type === 'checkbox') {
-											console.log(currentField);
-										}
 										return (
 											<>
 												<span className="ptr-visual-position"></span>

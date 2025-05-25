@@ -1,96 +1,31 @@
 import { useEffect, useState } from '@wordpress/element';
 import { Button, ButtonGroup } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
-
-function ResendAllButton() {
-	const { form_id = null } = window?.petitionerData;
-	const [isResentAll, setIsResentAll] = useState(false);
-
-	const handleResendAll = async () => {
-		// Check how many unconfirmed
-		const checkResponse = await fetch(
-			`${ajaxurl}?action=petitioner_check_unconfirmed_count`,
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-				body: new URLSearchParams({ form_id }),
-			}
-		);
-
-		const checkData = await checkResponse.json();
-		if (!checkData.success || !checkData.data.count) {
-			alert('No unconfirmed users found for this petition.');
-			return;
-		}
-
-		const count = checkData.data.count;
-
-		// Confirm with user
-		const confirmSend = window.confirm(
-			`This will resend confirmation emails to ${count} unconfirmed signees. Proceed?`
-		);
-
-		if (!confirmSend) return;
-
-		// Proceed with resend
-		const resendResponse = await fetch(
-			`${ajaxurl}?action=petitioner_resend_all_confirmation_emails`,
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-				body: new URLSearchParams({ form_id }),
-			}
-		);
-
-		const resendData = await resendResponse.json();
-		if (resendData.success) {
-			setIsResentAll(true);
-			setTimeout(() => setIsResentAll(false), 3000);
-		} else {
-			console.log(resendData.message || 'Failed to resend emails.');
-		}
-	};
-
-	return (
-		<>
-			<Button
-				disabled={isResentAll}
-				variant="primary"
-				onClick={handleResendAll}
-			>
-				{!isResentAll
-					? 'Resend all unconfirmed emails'
-					: 'Emails resent successfully'}
-			</Button>
-			<p>
-				<strong style={{ color: 'salmon' }}>Warning</strong>: This
-				action will resend confirmation emails to all unconfirmed
-				signees. Proceed with caution: sending a large number of emails
-				at once may negatively impact your domain’s reputation.
-			</p>
-		</>
-	);
-}
+import { ResendAllButton } from './ResendButton';
+import {
+	Submissions,
+	SubmissionItem,
+	SubmissionID,
+	SubmissionStatus,
+	ChangeAction,
+} from '../../../../types/submissions.types';
+import { ApprovalState, CheckboxValue } from 'src/js/types/edit-form.types';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
-	const [submissions, setSubmissions] = useState([]);
+
+	const requireApproval = window?.petitionerData
+		?.require_approval as CheckboxValue;
+	const approvalState = window.petitionerData.approval_state as ApprovalState;
+
+	const [submissions, setSubmissions] = useState<Submissions>([]);
 	const [total, setTotal] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [showApproval, setShowApproval] = useState(
-		window.petitionerData.require_approval
-	);
-	const [defaultApprovalState, setDefaultApprovalState] = useState(() => {
-		if (window?.petitionerData?.approval_state === 'Email') {
-			return 'Declined';
-		}
-
-		return window.petitionerData.approval_state;
-	});
+	const [showApproval, setShowApproval] = useState(requireApproval);
+	const [defaultApprovalState, setDefaultApprovalState] =
+		useState<ApprovalState>(() => {
+			return approvalState === 'Email' ? 'Declined' : approvalState;
+		});
 
 	const hasSubmissions = submissions.length > 0;
 
@@ -122,33 +57,19 @@ export default function Submissions() {
 
 	useEffect(() => {
 		window.addEventListener('onPtrApprovalChange', () => {
-			setShowApproval(window.petitionerData.require_approval);
-			setDefaultApprovalState(window.petitionerData.approval_state);
+			setShowApproval(requireApproval);
+
+			if (approvalState) {
+				setDefaultApprovalState(approvalState);
+			}
 		});
 	}, []);
 
-	// Handle pagination click
-	const handlePaginationClick = (page) => {
-		setCurrentPage(page);
-	};
-
-	const totalPages = Math.ceil(total / perPage);
-	const buttons = [];
-
-	for (let i = 1; i <= totalPages; i++) {
-		buttons.push(
-			<Button
-				variant={currentPage !== i ? 'secondary' : 'primary'}
-				key={i}
-				onClick={() => handlePaginationClick(i)}
-				data-page={i}
-			>
-				{i}
-			</Button>
-		);
-	}
-
-	const handleStatusChange = async (id, newStatus, changeAction) => {
+	const handleStatusChange = async (
+		id: SubmissionID,
+		newStatus: SubmissionStatus,
+		changeAction: ChangeAction
+	) => {
 		const question = `Are you sure you want to ${changeAction} this submission?`;
 
 		if (window.confirm(question)) {
@@ -176,6 +97,27 @@ export default function Submissions() {
 		}
 	};
 
+	// Handle pagination click
+	const handlePaginationClick = (page: number) => {
+		setCurrentPage(page);
+	};
+
+	const totalPages = Math.ceil(total / perPage);
+	const buttons = [];
+
+	for (let i = 1; i <= totalPages; i++) {
+		buttons.push(
+			<Button
+				variant={currentPage !== i ? 'secondary' : 'primary'}
+				key={i}
+				onClick={() => handlePaginationClick(i)}
+				data-page={i}
+			>
+				{i}
+			</Button>
+		);
+	}
+
 	const SubmissionList = () => {
 		return (
 			<tbody>
@@ -197,7 +139,7 @@ export default function Submissions() {
 						{showApproval && (
 							<td>
 								<ApprovalStatus
-									item={item}
+									item={item as SubmissionItem}
 									defaultApprovalState={defaultApprovalState}
 									onStatusChange={handleStatusChange}
 								/>
@@ -212,6 +154,7 @@ export default function Submissions() {
 	const ExportComponent = () => {
 		return (
 			<>
+				{/* @ts-ignore */}
 				<Button variant="primary" href={export_url}>
 					Export entries as CSV
 				</Button>
@@ -232,6 +175,7 @@ export default function Submissions() {
 					<thead>
 						{hasSubmissions ? (
 							<tr>
+								{/* @ts-ignore */}
 								<th width="20%">Email</th>
 								<th>First/Last name</th>
 								<th style={{ width: '100px' }}>Country</th>

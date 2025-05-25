@@ -1,7 +1,7 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import PTRichText from '@admin/components/shared/PTRichText';
 import DOMPurify from 'dompurify';
-import { WysiwygField, BuilderField } from '@admin/context/form-builder.types';
+import { WysiwygField, BuilderField } from 'src/js/types/form-builder.types';
 
 const isWysiwygField = (field: BuilderField): field is WysiwygField => {
 	return field.type === 'wysiwyg';

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 
 export default function BottomCallout() {
 	return (
@@ -22,7 +22,7 @@ export default function BottomCallout() {
 				</p>
 
 				<p>Cheers!</p>
-				<div class="ptr-action-buttons">
+				<div className="ptr-action-buttons">
 					<Button
 						icon="star-empty"
 						href="https://wordpress.org/support/plugin/petitioner/reviews/#new-post"

@@ -13,11 +13,11 @@ export default function FormSettings() {
 					required
 					type="number"
 					label="Signature goal *"
-					value={formState.goal}
+					value={Number(formState.goal)}
 					name="petitioner_goal"
 					id="petitioner_goal"
 					help="Select your target submission number. You can disable this in the general settings"
-					onChange={(value) => updateFormState('goal', value)}
+					onChange={(value) => updateFormState('goal', Number(value))}
 				/>
 			</p>
 
@@ -95,7 +95,7 @@ export default function FormSettings() {
 					label="Legal disclaimer"
 					id="petitioner_legal_text"
 					help="This will be displayed at the bottom of the form"
-					value={formState.legal_text}
+					value={formState.legal_text as string}
 					height={100}
 					onChange={(value) => updateFormState('legal_text', value)}
 				/>

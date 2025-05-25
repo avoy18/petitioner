@@ -1,4 +1,5 @@
-import { FieldType } from '@admin/context/form-builder.types';
+import { FieldType } from 'src/js/types/form-builder.types';
+
 export function safelyParseJSON(jsonString: string): Record<string, unknown> {
 	try {
 		return JSON.parse(jsonString);

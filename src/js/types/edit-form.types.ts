@@ -1,6 +1,17 @@
-type CheckboxValue = boolean;
-type TextValue = string | number;
-type NumberValue = number | null;
+export type CheckboxValue = boolean;
+export type TextValue = string | number;
+export type NumberValue = number | null;
+export type ApprovalState = 'Email' | 'Confirmed' | 'Declined';
+
+export type FormID = number|null;
+
+export type DefaultValues = {
+	from_field: string;
+	ty_email_subject: string;
+	ty_email: string;
+	ty_email_subject_confirm: string;
+	ty_email_confirm: string;
+};
 
 export type PetitionerData = {
 	title: TextValue;
@@ -12,7 +23,7 @@ export type PetitionerData = {
 	show_country: CheckboxValue;
 	subject: TextValue;
 	require_approval: CheckboxValue;
-	approval_state: 'Email' | 'Confirmed' | 'Declined';
+	approval_state: ApprovalState;
 	letter: TextValue;
 	add_legal_text: CheckboxValue;
 	legal_text: TextValue;
@@ -23,7 +34,8 @@ export type PetitionerData = {
 	ty_email_subject: TextValue;
 	from_field: TextValue;
 	add_honeypot: CheckboxValue;
-	form_id?: string | number;
+	form_id?: FormID;
+	default_values?: DefaultValues;
 };
 
 export interface EditFormContextValue {
@@ -38,11 +50,3 @@ export interface EditFormContextValue {
 export interface EditFormContextProviderProps {
 	children: React.ReactNode;
 }
-
-export type DefaultValues = {
-	from_field: string;
-	ty_email_subject: string;
-	ty_email: string;
-	ty_email_subject_confirm: string;
-	ty_email_confirm: string;
-};

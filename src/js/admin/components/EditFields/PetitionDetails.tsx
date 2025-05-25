@@ -4,7 +4,7 @@ import PTRichText from '../shared/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 
 /**
- * ✅ Petition Details Component
+ * Petition Details Component
  */
 export default function PetitionDetails() {
 	const { formState, updateFormState } = useEditFormContext();
@@ -95,7 +95,7 @@ export default function PetitionDetails() {
 				label="Petition letter"
 				id="petitioner_letter"
 				help="This will be the main content of the email sent to the representative."
-				value={formState.letter}
+				value={String(formState.letter)}
 				onChange={(value) => updateFormState('letter', value)}
 			/>
 		</>
