@@ -5,7 +5,7 @@ import {
 	ColorIndicator,
 } from '@wordpress/components';
 import { createPortal } from 'react-dom';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from '@wordpress/element';
 
 export default function ColorField(props) {
 	const {
@@ -83,11 +83,7 @@ export default function ColorField(props) {
 					</div>
 				)}
 
-				<input
-					type="hidden"
-					name={id}
-					value={color || defaultColor}
-				/>
+				<input type="hidden" name={id} value={color || defaultColor} />
 			</div>
 			<PickerOverlay />
 		</>

@@ -1,4 +1,4 @@
-export default function CodeEditor({ title, help, code }) {
+export default function CodeEditor({ title = '', help = '', code = '' }) {
 	return (
 		<div>
 			<p>
@@ -8,8 +8,8 @@ export default function CodeEditor({ title, help, code }) {
 			<textarea
 				name="petitioner_custom_css"
 				id="petitionerCode"
-				rows="10"
-				cols="50"
+				rows={10}
+				cols={50}
 				className="large-text code petitioner-code-editor"
 			>
 				{code}

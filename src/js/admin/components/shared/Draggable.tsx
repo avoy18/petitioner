@@ -1,13 +1,17 @@
 import { Draggable } from '@wordpress/components';
+import { DraggableProps } from '@wordpress/components/build-types/draggable/types';
 import { useState } from '@wordpress/element';
 
-export default function PtrDraggable({
-	id,
-	onDragStart,
-	onDragEnd,
-	onClick,
-	children,
-}) {
+type DraggableProps = {
+	id: string|undefined;
+	onDragStart: (event: React.DragEvent) => void;
+	onDragEnd: (event: React.DragEvent) => void;
+	onClick: (event: React.MouseEvent) => void;
+	children: React.ReactNode;
+};
+
+export default function PtrDraggable(props: DraggableProps) {
+	const { id, onDragStart, onDragEnd, onClick, children } = props;
 	const [selected, setSelected] = useState(false);
 	return (
 		<div
@@ -16,7 +20,7 @@ export default function PtrDraggable({
 			onClick={onClick}
 		>
 			<Draggable
-				elementId={id}
+				elementId={id ?? ''}
 				transferData={{}}
 				onDragStart={onDragStart}
 				onDragEnd={onDragEnd}

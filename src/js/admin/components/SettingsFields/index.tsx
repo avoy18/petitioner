@@ -4,14 +4,9 @@ import Tabs from '../shared/Tabs';
 import VisualSettings from './VisualSettings';
 import Integrations from './Integrations';
 
-import {
-	SettingsFormContextProvider,
-	useSettingsFormContext,
-} from '@admin/context/SettingsContext';
+import { SettingsFormContextProvider } from '@admin/context/SettingsContext';
 
 function SettingsFieldsComponent() {
-	const { formState, updateFormState } = useSettingsFormContext();
-
 	const tabs = [
 		{
 			name: 'visual',
@@ -21,12 +16,7 @@ function SettingsFieldsComponent() {
 				</>
 			),
 			className: 'petition-tablink',
-			renderingEl: (
-				<VisualSettings
-					formState={formState}
-					updateFormState={updateFormState}
-				/>
-			),
+			renderingEl: <VisualSettings />,
 		},
 		{
 			name: 'integrations',
