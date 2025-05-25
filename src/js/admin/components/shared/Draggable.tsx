@@ -18,6 +18,7 @@ export default function PtrDraggable(props: DraggableProps) {
 			style={{ opacity: selected ? '0.5' : '1' }}
 			id={id}
 			onClick={onClick}
+			className="ptr-draggable"
 		>
 			<Draggable
 				elementId={id ?? ''}

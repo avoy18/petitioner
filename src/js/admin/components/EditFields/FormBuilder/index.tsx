@@ -66,8 +66,8 @@ function FormBuilderComponent() {
 												<span className="ptr-visual-position"></span>
 												<DynamicField
 													name={key}
-													type={currentField?.type}
-													label={currentField?.label}
+													type={currentField.type}
+													label={currentField.label}
 													placeholder={
 														'placeholder' in
 														currentField
@@ -78,6 +78,12 @@ function FormBuilderComponent() {
 														'value' in currentField
 															? currentField.value
 															: undefined
+													}
+													required={
+														currentField.required
+													}
+													removable={
+														currentField.removable
 													}
 													defaultValue={
 														'defaultValue' in
