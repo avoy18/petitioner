@@ -123,13 +123,6 @@ class AV_Petitioner_Form_UI
             method="get"
             action="<?php echo esc_attr($action); ?>">
 
-            <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>">
-            <input type="hidden" name="nonce" value="<?php echo esc_attr($this->nonce); ?>" />
-
-            <?php if ($this->add_honeypot): ?>
-                <input type="text" name="ptr_info" style="display:none" />
-            <?php endif; ?>
-
             <?php
             if (is_array($form_fields)) {
                 foreach ($form_fields as $key => $field) {
@@ -149,6 +142,15 @@ class AV_Petitioner_Form_UI
                 }
             }
             ?>
+
+            <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>">
+            <input type="hidden" name="nonce" value="<?php echo esc_attr($this->nonce); ?>" />
+
+            <?php AV_Petitioner_Captcha::render_inputs(); ?>
+
+            <?php if ($this->add_honeypot): ?>
+                <input type="text" name="ptr_info" style="display:none" />
+            <?php endif; ?>
 
         </form>
     <?php
@@ -198,7 +200,7 @@ class AV_Petitioner_Form_UI
     {
         $field_label = !empty($field['label']) ? esc_html($field['label']) : '';
         $field_name  = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
-        if($name === 'country'){
+        if ($name === 'country') {
             $options = $this->country_list;
         } else {
             $options = !empty($field['options']) ? esc_html($field['options']) : [];
