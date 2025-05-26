@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.3.3
+Stable Tag: 0.3.4
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -81,6 +81,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 6. Submissions
 
 == Changelog ==
+
+= 0.3.4 =
+* Bugfix: fix an occasional error related to unnecessary nonce sanitization
 
 = 0.3.3 =
 * Submissions tab improvements, special thanks to [@Shahraz98](https://github.com/Shahraz98)

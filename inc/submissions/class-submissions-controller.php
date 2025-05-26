@@ -13,9 +13,9 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_handle_form_submit()
     {
-        $wpnonce = !empty($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        $wpnonce = !empty($_POST['nonce']) ? wp_unslash($_POST['nonce']) : '';
 
-        if (!isset($wpnonce) || !wp_verify_nonce($wpnonce, 'petitioner_form_nonce')) {
+        if (empty($wpnonce) || !wp_verify_nonce($wpnonce, 'petitioner_form_nonce')) {
             wp_send_json_error('Invalid nonce');
             wp_die();
         }

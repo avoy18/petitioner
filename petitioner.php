@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.3.3
+ * Version:           0.3.4
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
