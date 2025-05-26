@@ -11,7 +11,7 @@ function FormBuilderComponent() {
 	const { fieldOrder, setFieldOrder } = useFormBuilderContext();
 
 	const [draggedKey, setDraggedKey] = useState<number | null>(null);
-	// const [hoveredKey, setHoveredKey] = useState<number | null>(null);
+	const [hoveredKey, setHoveredKey] = useState<number | null>(null);
 
 	const handleDragStart = (e: React.DragEvent, index: number) => {
 		setDraggedKey(index);
@@ -20,33 +20,36 @@ function FormBuilderComponent() {
 	};
 
 	const handleDragEnd = () => {
+		if (
+			typeof draggedKey === 'number' &&
+			typeof hoveredKey === 'number' &&
+			draggedKey !== hoveredKey
+		) {
+			const updatedOrder = [...fieldOrder];
+			const [movedItem] = updatedOrder.splice(draggedKey, 1);
+
+			const adjustedIndex =
+				hoveredKey > draggedKey ? hoveredKey - 1 : hoveredKey;
+
+			updatedOrder.splice(adjustedIndex, 0, movedItem);
+			setFieldOrder(updatedOrder);
+		}
 		setDraggedKey(null);
-		// setHoveredKey(null);
+		setHoveredKey(null);
 		formRef.current?.classList.remove('is-dragging');
 	};
 
 	const { formBuilderFields } = useFormBuilderContext();
 
-	const VisualPositionIndicator = ({ id }) => {
-		const hoveredKey = id;
+	const VisualPositionIndicator = (props: { index: number }) => {
+		const { index } = props;
 
 		return (
 			<span
 				onDragOver={() => {
-					// setHoveredKey(id);
-					if (
-						typeof draggedKey === 'number' &&
-						typeof hoveredKey === 'number' &&
-						draggedKey !== hoveredKey
-					) {
-						const updatedOrder = [...fieldOrder];
-						const [movedItem] = updatedOrder.splice(draggedKey, 1);
-						updatedOrder.splice(hoveredKey, 0, movedItem);
-						setFieldOrder(updatedOrder);
-					}
+					setHoveredKey(index);
 				}}
-				id={id}
-				className={`ptr-visual-position ${hoveredKey == id ? 'active' : ''}`}
+				className={`ptr-visual-position ${hoveredKey == index ? 'active' : ''}`}
 			></span>
 		);
 	};
@@ -92,10 +95,11 @@ function FormBuilderComponent() {
 									fieldOrder.map((key, index) => {
 										const currentField =
 											formBuilderFields[key];
+
 										return (
 											<>
 												<VisualPositionIndicator
-													id={index}
+													index={index}
 												/>
 												<DynamicField
 													name={key}
@@ -137,7 +141,7 @@ function FormBuilderComponent() {
 									})}
 
 								<VisualPositionIndicator
-									id={fieldOrder?.length}
+									index={fieldOrder?.length}
 								/>
 							</div>
 						</PanelBody>
