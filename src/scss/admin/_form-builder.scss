@@ -6,6 +6,7 @@
 		border: 1px dashed transparent;
 		transition: 0.15s;
 		transition-delay: 0;
+		background: white;
 
 		&__label {
 			font-size: var(--ptr-admin-fs-sm);
@@ -67,7 +68,7 @@
 
 		&:hover {
 			cursor: pointer;
-			border: 1px dashed #000;
+			border: 1px dashed rgba(00, 00, 00, 0.3);
 		}
 
 		&:hover,

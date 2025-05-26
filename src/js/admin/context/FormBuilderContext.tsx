@@ -9,6 +9,7 @@ import { __ } from '@wordpress/i18n';
 
 import {
 	BuilderFieldMap,
+	BuilderField,
 	FormBuilderContextValue,
 	FormBuilderContextProviderProps,
 } from '../types/form-builder.types';
@@ -115,6 +116,12 @@ export function FormBuilderContextProvider({
 		[]
 	);
 
+	const defaultFieldOrder = Object.keys(formBuilderFields);
+
+	const [fieldOrder, setFieldOrder] = useState<string[]>(
+		defaultFieldOrder as string[]
+	);
+
 	return (
 		<FormBuilderContext.Provider
 			value={{
@@ -123,6 +130,8 @@ export function FormBuilderContextProvider({
 				builderEditScreen,
 				setBuilderEditScreen,
 				removeFormBuilderField,
+				fieldOrder,
+				setFieldOrder,
 			}}
 		>
 			{children}

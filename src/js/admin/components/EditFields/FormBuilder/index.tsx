@@ -1,5 +1,5 @@
 import { Panel, PanelBody } from '@wordpress/components';
-import { useRef } from '@wordpress/element';
+import { useRef, useState, useEffect } from '@wordpress/element';
 import BuilderSettings from './BuilderSettings';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
@@ -8,17 +8,48 @@ import DynamicField from './DynamicField';
 function FormBuilderComponent() {
 	const formRef = useRef<HTMLDivElement | null>(null);
 
-	const handleDragStart = () => {
-		formRef?.current?.classList.add('is-dragging');
+	const { fieldOrder, setFieldOrder } = useFormBuilderContext();
+
+	const [draggedKey, setDraggedKey] = useState<number | null>(null);
+	// const [hoveredKey, setHoveredKey] = useState<number | null>(null);
+
+	const handleDragStart = (e: React.DragEvent, index: number) => {
+		setDraggedKey(index);
+		e.dataTransfer.effectAllowed = 'move';
+		formRef.current?.classList.add('is-dragging');
 	};
 
 	const handleDragEnd = () => {
-		formRef?.current?.classList.remove('is-dragging');
+		setDraggedKey(null);
+		// setHoveredKey(null);
+		formRef.current?.classList.remove('is-dragging');
 	};
 
 	const { formBuilderFields } = useFormBuilderContext();
 
-	const formBuilderKeys = Object.keys(formBuilderFields);
+	const VisualPositionIndicator = ({ id }) => {
+		const hoveredKey = id;
+
+		return (
+			<span
+				onDragOver={() => {
+					// setHoveredKey(id);
+					if (
+						typeof draggedKey === 'number' &&
+						typeof hoveredKey === 'number' &&
+						draggedKey !== hoveredKey
+					) {
+						const updatedOrder = [...fieldOrder];
+						const [movedItem] = updatedOrder.splice(draggedKey, 1);
+						updatedOrder.splice(hoveredKey, 0, movedItem);
+						setFieldOrder(updatedOrder);
+					}
+				}}
+				id={id}
+				className={`ptr-visual-position ${hoveredKey == id ? 'active' : ''}`}
+			></span>
+		);
+	};
 
 	return (
 		<>
@@ -57,13 +88,15 @@ function FormBuilderComponent() {
 
 						<PanelBody>
 							<div className="ptr-field-wrapper">
-								{formBuilderKeys?.length > 0 &&
-									formBuilderKeys.map((key) => {
+								{fieldOrder?.length > 0 &&
+									fieldOrder.map((key, index) => {
 										const currentField =
 											formBuilderFields[key];
 										return (
 											<>
-												<span className="ptr-visual-position"></span>
+												<VisualPositionIndicator
+													id={index}
+												/>
 												<DynamicField
 													name={key}
 													type={currentField.type}
@@ -91,8 +124,11 @@ function FormBuilderComponent() {
 															? currentField.defaultValue
 															: undefined
 													}
-													onDragStart={
-														handleDragStart
+													onDragStart={(e) =>
+														handleDragStart(
+															e,
+															index
+														)
 													}
 													onDragEnd={handleDragEnd}
 												/>
@@ -100,7 +136,9 @@ function FormBuilderComponent() {
 										);
 									})}
 
-								<span className="ptr-visual-position"></span>
+								<VisualPositionIndicator
+									id={fieldOrder?.length}
+								/>
 							</div>
 						</PanelBody>
 					</Panel>

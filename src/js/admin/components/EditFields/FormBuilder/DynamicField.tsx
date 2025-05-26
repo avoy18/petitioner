@@ -14,8 +14,9 @@ export default function DynamicField({
 	placeholder = '',
 	required = false,
 	removable = false,
-	onDragStart = (): boolean | void => true,
-	onDragEnd = (): boolean | void => true,
+	onDragStart = (e: object): boolean | void => true,
+	onDragEnd = (e: object): boolean | void => true,
+	onDragOver = (e: object): boolean | void => true,
 }) {
 	const {
 		setBuilderEditScreen,
