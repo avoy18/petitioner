@@ -10,30 +10,22 @@ function FormBuilderComponent() {
 
 	const { fieldOrder, setFieldOrder } = useFormBuilderContext();
 
-	const [draggedKey, setDraggedKey] = useState<number | null>(null);
-	const [hoveredKey, setHoveredKey] = useState<number | null>(null);
+	const [draggedKey, setDraggedKey] = useState<string | null>(null);
+	const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
-	const handleDragStart = (e: React.DragEvent, index: number) => {
-		setDraggedKey(index);
+	const handleDragStart = (e: React.DragEvent, key: string) => {
+		setDraggedKey(key);
 		e.dataTransfer.effectAllowed = 'move';
+
+		const transparentImg = new Image();
+		transparentImg.src =
+			'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; // 1x1 transparent gif
+		e.dataTransfer.setDragImage(transparentImg, 0, 0);
+
 		formRef.current?.classList.add('is-dragging');
 	};
 
 	const handleDragEnd = () => {
-		if (
-			typeof draggedKey === 'number' &&
-			typeof hoveredKey === 'number' &&
-			draggedKey !== hoveredKey
-		) {
-			const updatedOrder = [...fieldOrder];
-			const [movedItem] = updatedOrder.splice(draggedKey, 1);
-
-			const adjustedIndex =
-				hoveredKey > draggedKey ? hoveredKey - 1 : hoveredKey;
-
-			updatedOrder.splice(adjustedIndex, 0, movedItem);
-			setFieldOrder(updatedOrder);
-		}
 		setDraggedKey(null);
 		setHoveredKey(null);
 		formRef.current?.classList.remove('is-dragging');
@@ -41,15 +33,45 @@ function FormBuilderComponent() {
 
 	const { formBuilderFields } = useFormBuilderContext();
 
-	const VisualPositionIndicator = (props: { index: number }) => {
-		const { index } = props;
+	const VisualPositionIndicator = (props: { fieldKey: string }) => {
+		const { fieldKey } = props;
+
+		const handleReorder = () => {
+			if (
+				typeof draggedKey === 'string' &&
+				typeof hoveredKey === 'string' &&
+				draggedKey !== hoveredKey
+			) {
+				const draggedIndex = fieldOrder.indexOf(draggedKey);
+				const hoveredIndex = fieldOrder.indexOf(hoveredKey);
+
+				if (draggedIndex === -1 || hoveredIndex === -1) {
+					console.warn(
+						`Dragged key (${draggedKey}) or hovered key (${hoveredKey}) not found in fieldOrder.`
+					);
+					return;
+				}
+
+				const updatedOrder = [...fieldOrder];
+				const [movedItem] = updatedOrder.splice(draggedIndex, 1);
+
+				const adjustedIndex =
+					hoveredIndex > draggedIndex
+						? hoveredIndex - 1
+						: hoveredIndex;
+
+				updatedOrder.splice(adjustedIndex, 0, movedItem);
+				setFieldOrder(updatedOrder);
+			}
+		};
 
 		return (
 			<span
 				onDragOver={() => {
-					setHoveredKey(index);
+					setHoveredKey(fieldKey);
+					handleReorder();
 				}}
-				className={`ptr-visual-position ${hoveredKey == index ? 'active' : ''}`}
+				className={`ptr-visual-position ${hoveredKey == fieldKey ? 'active' : ''}`}
 			></span>
 		);
 	};
@@ -97,9 +119,9 @@ function FormBuilderComponent() {
 											formBuilderFields[key];
 
 										return (
-											<>
+											<div key={key}>
 												<VisualPositionIndicator
-													index={index}
+													fieldKey={key}
 												/>
 												<DynamicField
 													name={key}
@@ -129,20 +151,13 @@ function FormBuilderComponent() {
 															: undefined
 													}
 													onDragStart={(e) =>
-														handleDragStart(
-															e,
-															index
-														)
+														handleDragStart(e, key)
 													}
 													onDragEnd={handleDragEnd}
 												/>
-											</>
+											</div>
 										);
 									})}
-
-								<VisualPositionIndicator
-									index={fieldOrder?.length}
-								/>
 							</div>
 						</PanelBody>
 					</Panel>

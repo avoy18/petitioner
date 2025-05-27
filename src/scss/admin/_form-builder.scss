@@ -96,18 +96,21 @@
 
 			.ptr-visual-position {
 				width: 100%;
-				border: 1px solid #efefef;
-				background: #fbf0f0;
-				opacity: 0;
+				opacity: 0 !important;
 				height: 5px;
+				display: block;
 
 				&.active {
-					background: var(--ptr-admin-primary-color, #000);
+					background: var(--ptr-admin-color-primary, #000);
 				}
 			}
 
 			&.is-dragging {
 				cursor: grabbing;
+
+				.ptr-fake-field:hover {
+					border: 0px solid transparent;
+				}
 
 				.ptr-actions {
 					display: none;
@@ -136,5 +139,33 @@
 		display: none;
 		gap: 4px;
 		top: 2px;
+	}
+
+	.ptr-draggable {
+		opacity: 1;
+		position: relative;
+
+		&:after {
+			position: absolute;
+			content: "";
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: var(--ptr-admin-color-primary, #000);
+			border: 1px dashed var(--ptr-admin-color-primary, #000);
+			border-radius: var(--ptr-admin-input-border-radius, 4px);
+			opacity: 0;
+			transition: opacity 0.15s ease-in-out;
+			pointer-events: none;
+		}
+
+		&--selected {
+			overflow: hidden;
+
+			&:after {
+				opacity: 0.05;
+			}
+		}
 	}
 }
