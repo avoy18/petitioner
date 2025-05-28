@@ -61,8 +61,12 @@ function FieldList() {
 }
 
 function FormBuilderComponent() {
-	const { fieldOrder, setFieldOrder, formBuilderFields } =
-		useFormBuilderContext();
+	const {
+		fieldOrder,
+		setFieldOrder,
+		formBuilderFields,
+		addFormBuilderField,
+	} = useFormBuilderContext();
 
 	const handleDragEnd = (result: DropResult) => {
 		const { source, destination, draggableId } = result;
@@ -76,6 +80,8 @@ function FormBuilderComponent() {
 		) {
 			const newFieldId = generateUniqueFieldId();
 			const newField = createDefaultField(draggableId); // based on field type
+
+			addFormBuilderField(newFieldId, newField);
 
 			setFieldOrder((prev) => {
 				const updated = [...prev];
