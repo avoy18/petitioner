@@ -1,31 +1,100 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import { useRef, useState, useEffect } from '@wordpress/element';
-import BuilderSettings from './BuilderSettings';
-import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
-import DynamicField from './DynamicField';
-
 import {
 	DragDropContext,
 	Droppable,
 	Draggable,
 	DropResult,
 } from 'react-beautiful-dnd';
+import BuilderSettings from './BuilderSettings';
+import {
+	FormBuilderContextProvider,
+	DRAGGABLE_FIELD_TYPES,
+	useFormBuilderContext,
+} from '@admin/context/FormBuilderContext';
+import DynamicField from './DynamicField';
+
+function generateUniqueFieldId() {
+	return `field_${Date.now()}`;
+}
+
+function createDefaultField(type: string): BuilderField {
+	return {
+		type,
+		fieldName: `New ${type}`,
+		label: `${type} field`,
+		required: false,
+		removable: true,
+		...(type === 'checkbox' && { defaultValue: false }),
+		...(type === 'text' && { placeholder: 'Placeholder text' }),
+	} as BuilderField;
+}
+
+function FieldList() {
+	return (
+		<Droppable droppableId="field-palette" isDropDisabled={true}>
+			{(provided) => (
+				<div ref={provided.innerRef} {...provided.droppableProps}>
+					{DRAGGABLE_FIELD_TYPES.map((fieldType, index) => (
+						<Draggable
+							key={fieldType.key}
+							draggableId={fieldType.key}
+							index={index}
+						>
+							{(provided) => (
+								<div
+									ref={provided.innerRef}
+									{...provided.draggableProps}
+									{...provided.dragHandleProps}
+									className="field-palette-item"
+								>
+									{fieldType.fieldName}
+								</div>
+							)}
+						</Draggable>
+					))}
+					{provided.placeholder}
+				</div>
+			)}
+		</Droppable>
+	);
+}
 
 function FormBuilderComponent() {
 	const { fieldOrder, setFieldOrder, formBuilderFields } =
 		useFormBuilderContext();
 
 	const handleDragEnd = (result: DropResult) => {
-		const { destination, source } = result;
+		const { source, destination, draggableId } = result;
 
-		if (!destination || destination.index === source.index) return;
+		if (!destination) return;
 
-		const reordered = Array.from(fieldOrder);
-		const [movedItem] = reordered.splice(source.index, 1);
-		reordered.splice(destination.index, 0, movedItem);
+		// Dragged from the left palette into the form
+		if (
+			source.droppableId === 'field-palette' &&
+			destination.droppableId === 'form-fields'
+		) {
+			const newFieldId = generateUniqueFieldId();
+			const newField = createDefaultField(draggableId); // based on field type
 
-		setFieldOrder(reordered);
+			setFieldOrder((prev) => {
+				const updated = [...prev];
+				updated.splice(destination.index, 0, newFieldId);
+				return updated;
+			});
+			return;
+		}
+
+		// Regular reordering inside form
+		if (
+			source.droppableId === 'form-fields' &&
+			destination.droppableId === 'form-fields'
+		) {
+			const reordered = [...fieldOrder];
+			const [moved] = reordered.splice(source.index, 1);
+			reordered.splice(destination.index, 0, moved);
+			setFieldOrder(reordered);
+		}
 	};
 
 	return (
@@ -47,7 +116,8 @@ function FormBuilderComponent() {
 					className="ptr-form-builder__settings"
 					style={{ width: '30%' }}
 				>
-					<BuilderSettings />
+					{/* <BuilderSettings /> */}
+					<FieldList />
 				</div>
 				<div
 					className="ptr-form-builder__form"

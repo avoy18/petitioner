@@ -18,6 +18,29 @@ export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 	null
 );
 
+export const DRAGGABLE_FIELD_TYPES = [
+	{
+		key: 'country',
+		type: 'select',
+		fieldName: __('Country', 'petitioner'),
+		label: __('Country', 'petitioner'),
+		required: false,
+		removable: true,
+	},
+	{
+		key: 'accept_tos',
+		type: 'checkbox',
+		fieldName: 'Terms of service checkbox',
+		label: __(
+			'By submitting this form, I agree to the terms of service',
+			'petitioner'
+		),
+		defaultValue: false,
+		required: true,
+		removable: true,
+	},
+] as BuilderField[];
+
 const defaultBuilderFields: BuilderFieldMap = {
 	fname: {
 		type: 'text',
@@ -43,24 +66,24 @@ const defaultBuilderFields: BuilderFieldMap = {
 		required: true,
 		removable: false,
 	},
-	country: {
-		type: 'select',
-		fieldName: __('Country', 'petitioner'),
-		label: __('Country', 'petitioner'),
-		required: false,
-		removable: true,
-	},
-	accept_tos: {
-		type: 'checkbox',
-		fieldName: 'Terms of service checkbox',
-		label: __(
-			'By submitting this form, I agree to the terms of service',
-			'petitioner'
-		),
-		defaultValue: false,
-		required: true,
-		removable: true,
-	},
+	// country: {
+	// 	type: 'select',
+	// 	fieldName: __('Country', 'petitioner'),
+	// 	label: __('Country', 'petitioner'),
+	// 	required: false,
+	// 	removable: true,
+	// },
+	// accept_tos: {
+	// 	type: 'checkbox',
+	// 	fieldName: 'Terms of service checkbox',
+	// 	label: __(
+	// 		'By submitting this form, I agree to the terms of service',
+	// 		'petitioner'
+	// 	),
+	// 	defaultValue: false,
+	// 	required: true,
+	// 	removable: true,
+	// },
 	legal: {
 		type: 'wysiwyg',
 		fieldName: __('Legal text', 'petitioner'),

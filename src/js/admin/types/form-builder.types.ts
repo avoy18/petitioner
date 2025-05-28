@@ -7,6 +7,7 @@ export type FieldType =
 	| 'submit';
 
 interface BaseField {
+	key?: string;
 	type: FieldType;
 	fieldName: string;
 	label: string;
