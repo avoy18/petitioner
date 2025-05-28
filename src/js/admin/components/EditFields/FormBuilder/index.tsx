@@ -5,79 +5,31 @@ import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
 import DynamicField from './DynamicField';
 
+import {
+	DragDropContext,
+	Droppable,
+	Draggable,
+	DropResult,
+} from 'react-beautiful-dnd';
+
 function FormBuilderComponent() {
-	const formRef = useRef<HTMLDivElement | null>(null);
+	const { fieldOrder, setFieldOrder, formBuilderFields } =
+		useFormBuilderContext();
 
-	const { fieldOrder, setFieldOrder } = useFormBuilderContext();
+	const handleDragEnd = (result: DropResult) => {
+		const { destination, source } = result;
 
-	const [draggedKey, setDraggedKey] = useState<string | null>(null);
-	const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+		if (!destination || destination.index === source.index) return;
 
-	const handleDragStart = (e: React.DragEvent, key: string) => {
-		setDraggedKey(key);
-		e.dataTransfer.effectAllowed = 'move';
+		const reordered = Array.from(fieldOrder);
+		const [movedItem] = reordered.splice(source.index, 1);
+		reordered.splice(destination.index, 0, movedItem);
 
-		const transparentImg = new Image();
-		transparentImg.src =
-			'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; // 1x1 transparent gif
-		e.dataTransfer.setDragImage(transparentImg, 0, 0);
-
-		formRef.current?.classList.add('is-dragging');
-	};
-
-	const handleDragEnd = () => {
-		setDraggedKey(null);
-		setHoveredKey(null);
-		formRef.current?.classList.remove('is-dragging');
-	};
-
-	const { formBuilderFields } = useFormBuilderContext();
-
-	const VisualPositionIndicator = (props: { fieldKey: string }) => {
-		const { fieldKey } = props;
-
-		const handleReorder = () => {
-			if (
-				typeof draggedKey === 'string' &&
-				typeof hoveredKey === 'string' &&
-				draggedKey !== hoveredKey
-			) {
-				const draggedIndex = fieldOrder.indexOf(draggedKey);
-				const hoveredIndex = fieldOrder.indexOf(hoveredKey);
-
-				if (draggedIndex === -1 || hoveredIndex === -1) {
-					console.warn(
-						`Dragged key (${draggedKey}) or hovered key (${hoveredKey}) not found in fieldOrder.`
-					);
-					return;
-				}
-
-				const updatedOrder = [...fieldOrder];
-				const [movedItem] = updatedOrder.splice(draggedIndex, 1);
-
-				const adjustedIndex =
-					hoveredIndex > draggedIndex
-						? hoveredIndex - 1
-						: hoveredIndex;
-
-				updatedOrder.splice(adjustedIndex, 0, movedItem);
-				setFieldOrder(updatedOrder);
-			}
-		};
-
-		return (
-			<span
-				onDragOver={() => {
-					setHoveredKey(fieldKey);
-					handleReorder();
-				}}
-				className={`ptr-visual-position ${hoveredKey == fieldKey ? 'active' : ''}`}
-			></span>
-		);
+		setFieldOrder(reordered);
 	};
 
 	return (
-		<>
+		<DragDropContext onDragEnd={handleDragEnd}>
 			<input
 				type="hidden"
 				name="petitioner_form_fields"
@@ -98,7 +50,6 @@ function FormBuilderComponent() {
 					<BuilderSettings />
 				</div>
 				<div
-					ref={formRef}
 					className="ptr-form-builder__form"
 					style={{ width: '70%' }}
 				>
@@ -112,58 +63,82 @@ function FormBuilderComponent() {
 						</div>
 
 						<PanelBody>
-							<div className="ptr-field-wrapper">
-								{fieldOrder?.length > 0 &&
-									fieldOrder.map((key, index) => {
-										const currentField =
-											formBuilderFields[key];
+							<Droppable droppableId="form-fields">
+								{(provided) => (
+									<div
+										ref={provided.innerRef}
+										{...provided.droppableProps}
+										className="ptr-field-wrapper"
+									>
+										{fieldOrder.map((fieldKey, index) => {
+											const currentField =
+												formBuilderFields[fieldKey];
 
-										return (
-											<div key={key}>
-												<VisualPositionIndicator
-													fieldKey={key}
-												/>
-												<DynamicField
-													name={key}
-													type={currentField.type}
-													label={currentField.label}
-													placeholder={
-														'placeholder' in
-														currentField
-															? currentField.placeholder
-															: undefined
-													}
-													value={
-														'value' in currentField
-															? currentField.value
-															: undefined
-													}
-													required={
-														currentField.required
-													}
-													removable={
-														currentField.removable
-													}
-													defaultValue={
-														'defaultValue' in
-														currentField
-															? currentField.defaultValue
-															: undefined
-													}
-													onDragStart={(e) =>
-														handleDragStart(e, key)
-													}
-													onDragEnd={handleDragEnd}
-												/>
-											</div>
-										);
-									})}
-							</div>
+											const ptrProps = {
+												name: fieldKey,
+												type: currentField.type,
+												label: currentField.label,
+												placeholder:
+													'placeholder' in
+													currentField
+														? currentField.placeholder
+														: undefined,
+												value:
+													'value' in currentField
+														? currentField.value
+														: undefined,
+												required: currentField.required,
+												removable:
+													currentField.removable,
+												defaultValue:
+													'defaultValue' in
+													currentField
+														? currentField.defaultValue
+														: undefined,
+											};
+
+											return (
+												<Draggable
+													key={fieldKey}
+													draggableId={fieldKey}
+													index={index}
+												>
+													{(provided, snapshot) => (
+														<div
+															ref={
+																provided.innerRef
+															}
+															{...provided.draggableProps}
+															{...provided.dragHandleProps}
+															style={{
+																...provided
+																	.draggableProps
+																	.style,
+																opacity:
+																	snapshot.isDragging
+																		? 0.5
+																		: 1,
+															}}
+														>
+															<DynamicField
+																{...ptrProps}
+																name={fieldKey}
+															/>
+														</div>
+													)}
+												</Draggable>
+											);
+										})}
+
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
 						</PanelBody>
 					</Panel>
 				</div>
 			</div>
-		</>
+		</DragDropContext>
 	);
 }
 

@@ -1,4 +1,3 @@
-import PtrDraggable from '@admin/components/shared/Draggable';
 import { getFieldTypeGroup } from '@admin/utilities';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { FieldType } from '@admin/types/form-builder.types';
@@ -14,9 +13,6 @@ export default function DynamicField({
 	placeholder = '',
 	required = false,
 	removable = false,
-	onDragStart = (e: object): boolean | void => true,
-	onDragEnd = (e: object): boolean | void => true,
-	onDragOver = (e: object): boolean | void => true,
 }) {
 	const {
 		setBuilderEditScreen,
@@ -81,17 +77,15 @@ export default function DynamicField({
 	}, [label, handleFieldEdit]);
 
 	let FinalField = (
-		<div className={fieldClassName}>
-			<FieldActions />
+		<>
 			<p className="ptr-fake-field__label">{label}</p>
 			<div className="ptr-fake-field__input">{placeholder}</div>
-		</div>
+		</>
 	);
 
 	if (inputType === 'checkbox') {
 		FinalField = (
-			<div className={fieldClassName}>
-				<FieldActions />
+			<>
 				<input
 					type="checkbox"
 					id={name}
@@ -100,39 +94,24 @@ export default function DynamicField({
 					checked={defaultValue === true}
 				/>
 				<label htmlFor={name}>{label}</label>
-			</div>
+			</>
 		);
 	} else if (inputType === 'submit') {
-		FinalField = (
-			<div className={fieldClassName}>
-				<FieldActions />
-				<button>{label}</button>
-			</div>
-		);
+		FinalField = <button>{label}</button>;
 	} else if (inputType === 'wysiwyg') {
 		FinalField = (
-			<div className={fieldClassName}>
-				<FieldActions />
-				<div
-					dangerouslySetInnerHTML={{
-						__html: value,
-					}}
-				></div>
-			</div>
+			<div
+				dangerouslySetInnerHTML={{
+					__html: value,
+				}}
+			></div>
 		);
 	}
 
 	return (
-		<PtrDraggable
-			onDragStart={onDragStart}
-			onDragEnd={onDragEnd}
-			id={'draggable_' + name}
-			onClick={handleFieldEdit}
-		>
-			<>
-				{FinalField}
-				<FieldActions />
-			</>
-		</PtrDraggable>
+		<div onClick={handleFieldEdit} className={fieldClassName}>
+			<FieldActions />
+			{FinalField}
+		</div>
 	);
 }
