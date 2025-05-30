@@ -31,6 +31,7 @@
 		"@types/node": "^22.15.21",
 		"@types/react": "^19.1.5",
 		"@types/react-dom": "^19.1.5",
+		"@types/styled-components": "^5.1.34",
 		"@vitejs/plugin-legacy": "^5.4.2",
 		"@wordpress/scripts": "^29.0.0",
 		"concurrently": "^9.0.1",
@@ -42,6 +43,9 @@
 		"vite-plugin-static-copy": "^1.0.6"
 	},
 	"dependencies": {
+		"@dnd-kit/core": "^6.3.1",
+		"@dnd-kit/modifiers": "^9.0.0",
+		"@dnd-kit/sortable": "^10.0.0",
 		"@prettier/plugin-php": "^0.22.4",
 		"@wordpress/block-editor": "^14.2.0",
 		"@wordpress/blocks": "^13.7.0",
@@ -54,8 +58,8 @@
 		"dompurify": "^3.2.5",
 		"prettier": "^3.4.2",
 		"react": "^18.3.1",
-		"react-beautiful-dnd": "^13.1.1",
-		"react-dom": "^18.3.1"
+		"react-dom": "^18.3.1",
+		"styled-components": "^6.1.18"
 	},
 	"resolutions": {
 		"@types/react": "19.1.5",

@@ -1,18 +1,14 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import { useRef, useState, useEffect } from '@wordpress/element';
-import {
-	DragDropContext,
-	Droppable,
-	Draggable,
-	DropResult,
-} from 'react-beautiful-dnd';
+import DndSortableProvider from '@admin/context/DndSortableProvider';
+
 import BuilderSettings from './BuilderSettings';
 import {
 	FormBuilderContextProvider,
 	DRAGGABLE_FIELD_TYPES,
 	useFormBuilderContext,
 } from '@admin/context/FormBuilderContext';
-import DynamicField from './DynamicField';
+import SortableField from './SortableField';
 
 function generateUniqueFieldId() {
 	return `field_${Date.now()}`;
@@ -31,8 +27,9 @@ function createDefaultField(type: string): BuilderField {
 }
 
 function FieldList() {
+	return '';
 	return (
-		<Droppable droppableId="field-palette" isDropDisabled={true}>
+		<DndSortableProvider items={fieldOrder} onReorder={setFieldOrder}>
 			{(provided) => (
 				<div ref={provided.innerRef} {...provided.droppableProps}>
 					{DRAGGABLE_FIELD_TYPES.map((fieldType, index) => (
@@ -56,7 +53,7 @@ function FieldList() {
 					{provided.placeholder}
 				</div>
 			)}
-		</Droppable>
+		</DndSortableProvider>
 	);
 }
 
@@ -103,8 +100,10 @@ function FormBuilderComponent() {
 		}
 	};
 
+	console.log(fieldOrder);
+
 	return (
-		<DragDropContext onDragEnd={handleDragEnd}>
+		<DndSortableProvider items={fieldOrder} onReorder={setFieldOrder}>
 			<input
 				type="hidden"
 				name="petitioner_form_fields"
@@ -122,8 +121,8 @@ function FormBuilderComponent() {
 					className="ptr-form-builder__settings"
 					style={{ width: '30%' }}
 				>
-					{/* <BuilderSettings /> */}
 					<FieldList />
+					<BuilderSettings />
 				</div>
 				<div
 					className="ptr-form-builder__form"
@@ -139,82 +138,16 @@ function FormBuilderComponent() {
 						</div>
 
 						<PanelBody>
-							<Droppable droppableId="form-fields">
-								{(provided) => (
-									<div
-										ref={provided.innerRef}
-										{...provided.droppableProps}
-										className="ptr-field-wrapper"
-									>
-										{fieldOrder.map((fieldKey, index) => {
-											const currentField =
-												formBuilderFields[fieldKey];
-
-											const ptrProps = {
-												name: fieldKey,
-												type: currentField.type,
-												label: currentField.label,
-												placeholder:
-													'placeholder' in
-													currentField
-														? currentField.placeholder
-														: undefined,
-												value:
-													'value' in currentField
-														? currentField.value
-														: undefined,
-												required: currentField.required,
-												removable:
-													currentField.removable,
-												defaultValue:
-													'defaultValue' in
-													currentField
-														? currentField.defaultValue
-														: undefined,
-											};
-
-											return (
-												<Draggable
-													key={fieldKey}
-													draggableId={fieldKey}
-													index={index}
-												>
-													{(provided, snapshot) => (
-														<div
-															ref={
-																provided.innerRef
-															}
-															{...provided.draggableProps}
-															{...provided.dragHandleProps}
-															style={{
-																...provided
-																	.draggableProps
-																	.style,
-																opacity:
-																	snapshot.isDragging
-																		? 0.5
-																		: 1,
-															}}
-														>
-															<DynamicField
-																{...ptrProps}
-																name={fieldKey}
-															/>
-														</div>
-													)}
-												</Draggable>
-											);
-										})}
-
-										{provided.placeholder}
-									</div>
-								)}
-							</Droppable>
+							{fieldOrder.map((fieldKey) => {
+								return (
+									<SortableField id={fieldKey} />
+								);
+							})}
 						</PanelBody>
 					</Panel>
 				</div>
 			</div>
-		</DragDropContext>
+		</DndSortableProvider>
 	);
 }
 

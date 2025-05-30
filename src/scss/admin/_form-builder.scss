@@ -68,7 +68,7 @@
 
 		&:hover {
 			cursor: pointer;
-			border: 1px dashed rgba(00, 00, 00, 0.3);
+			// border: 1px dashed rgba(00, 00, 00, 0.3);
 		}
 
 		&:hover,
@@ -80,7 +80,7 @@
 
 		&--active,
 		&--active:hover {
-			border: 1px solid var(--ptr-admin-color-dark);
+			// border: 1px solid var(--ptr-admin-color-dark);
 		}
 	}
 
