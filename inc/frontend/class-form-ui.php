@@ -17,6 +17,7 @@ class AV_Petitioner_Form_UI
     public bool $add_honeypot;
     public string $consent_text;
     public array $form_fields;
+    public $field_order;
     public $nonce;
 
     public function __construct($form_id)
@@ -31,6 +32,7 @@ class AV_Petitioner_Form_UI
         $this->consent_text             = get_post_meta($this->form_id, '_petitioner_consent_text', true);
         $this->add_honeypot             = get_post_meta($this->form_id, '_petitioner_add_honeypot', true);
         $this->form_fields              = get_post_meta($this->form_id, '_petitioner_form_fields', false);
+        $this->field_order              = get_post_meta($this->form_id, '_petitioner_field_order', true);
         $this->country_list             = av_petitioner_get_countries();
     }
 
@@ -114,9 +116,18 @@ class AV_Petitioner_Form_UI
      */
     public function render_fields(): void
     {
-        $form_fields = $this->form_fields[0];
-        $form_fields = json_decode($form_fields, true);
-        $action = admin_url('admin-ajax.php') . '?action=petitioner_form_submit';
+        $form_fields    = $this->form_fields[0];
+        $form_fields    = json_decode($form_fields, true);
+        $action         = admin_url('admin-ajax.php') . '?action=petitioner_form_submit';
+
+        // Use field_order if available, otherwise fallback to array keys of $form_fields
+        if (!empty($this->field_order)) {
+            $field_order = json_decode($this->field_order);
+        } elseif (is_array($form_fields)) {
+            $field_order = array_keys($form_fields);
+        } else {
+            $field_order = [];
+        }
     ?>
         <form
             id="petitioner-form-<?php echo esc_attr($this->form_id); ?>"
@@ -124,8 +135,9 @@ class AV_Petitioner_Form_UI
             action="<?php echo esc_attr($action); ?>">
 
             <?php
-            if (is_array($form_fields)) {
-                foreach ($form_fields as $key => $field) {
+            if (is_array($form_fields) && is_array($field_order)) {
+                foreach ($field_order as $key) {
+                    $field      = $form_fields[$key] ?? [];
                     $field_type = !empty($field['type']) ? esc_html($field['type']) : '';
 
                     if ($field_type === 'checkbox') {
