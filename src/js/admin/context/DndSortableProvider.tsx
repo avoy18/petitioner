@@ -17,7 +17,7 @@ import { useState } from '@wordpress/element';
 type Props = {
 	items: string[];
 	onReorder: (newOrder: string[]) => void;
-	onInsert?: (type: string, position: number) => void;
+	onInsert?: (id: string, position: number) => void;
 	children: React.ReactNode;
 };
 

@@ -1,6 +1,6 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
-import { BuilderField } from '@admin/types/form-builder.types';
+import { BuilderField, BuilderFieldMap } from '@admin/types/form-builder.types';
 import BuilderSettings from './BuilderSettings';
 import {
 	FormBuilderContextProvider,
@@ -33,57 +33,33 @@ function FormBuilderComponent() {
 		addFormBuilderField,
 	} = useFormBuilderContext();
 
-	const handleDragEnd = (result: DropResult) => {
-		const { source, destination, draggableId } = result;
+	const handleFieldInsert = (id: string, position: number) => {
+		// get the field type from the draggable options
+		const newField = DRAGGABLE_FIELD_TYPES.find(
+			(field) => field.key === id
+		);
 
-		if (!destination) return;
+		const newFieldID = newField?.key;
 
-		// Dragged from the left palette into the form
-		if (
-			source.droppableId === 'field-palette' &&
-			destination.droppableId === 'form-fields'
-		) {
-			const newFieldId = generateUniqueFieldId();
-			const newField = createDefaultField(draggableId); // based on field type
-
-			addFormBuilderField(newFieldId, newField);
-
-			setFieldOrder((prev) => {
-				const updated = [...prev];
-				updated.splice(destination.index, 0, newFieldId);
-				return updated;
-			});
+		if (!newField || typeof newFieldID !== 'string') {
+			console.error('Field type not found:', id);
 			return;
 		}
 
-		// Regular reordering inside form
-		if (
-			source.droppableId === 'form-fields' &&
-			destination.droppableId === 'form-fields'
-		) {
-			const reordered = [...fieldOrder];
-			const [moved] = reordered.splice(source.index, 1);
-			reordered.splice(destination.index, 0, moved);
-			setFieldOrder(reordered);
-		}
-	};
+		addFormBuilderField(newFieldID, newField);
 
-	console.log(fieldOrder);
+		setFieldOrder((prev) => {
+			const updated = [...prev];
+			updated.splice(position, 0, newFieldID);
+			return updated;
+		});
+	};
 
 	return (
 		<DndSortableProvider
 			items={fieldOrder}
 			onReorder={setFieldOrder}
-			onInsert={(fieldType, position) => {
-				const newId = generateUniqueFieldId();
-				const newField = createDefaultField(fieldType);
-				addFormBuilderField(newId, newField);
-				setFieldOrder((prev) => {
-					const updated = [...prev];
-					updated.splice(position, 0, newId);
-					return updated;
-				});
-			}}
+			onInsert={handleFieldInsert}
 		>
 			<input
 				type="hidden"

@@ -131,7 +131,9 @@ export function FormBuilderContextProvider({
 	const removeFormBuilderField = useCallback(
 		<K extends keyof BuilderFieldMap>(key: K) => {
 			// remove from the order array
-			setFieldOrder((prevOrder) => prevOrder.filter((item) => item !== key));
+			setFieldOrder((prevOrder) =>
+				prevOrder.filter((item) => item !== key)
+			);
 
 			// remove from the fields map
 			setFormBuilderFields((prevState) => {
@@ -143,18 +145,19 @@ export function FormBuilderContextProvider({
 		[]
 	);
 
-	const addFormBuilderField = useCallback((id: string, field: BuilderField) => {
-		setFormBuilderFields((prevState) => ({
-			...prevState,
-			[id]: field,
-		}));
-	}, []);
+	const addFormBuilderField = useCallback(
+		(id: string, field: BuilderField) => {
+			setFormBuilderFields((prevState) => ({
+				...prevState,
+				[id]: field,
+			}));
+		},
+		[]
+	);
 
 	const defaultFieldOrder = Object.keys(formBuilderFields);
 
-	const [fieldOrder, setFieldOrder] = useState<string[]>(
-		defaultFieldOrder as string[]
-	);
+	const [fieldOrder, setFieldOrder] = useState<string[]>(defaultFieldOrder);
 
 	return (
 		<FormBuilderContext.Provider

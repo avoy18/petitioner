@@ -55,7 +55,7 @@ export interface FormBuilderContextValue {
 	removeFormBuilderField: (key: string) => void;
 	addFormBuilderField: (id: string, field: BuilderField) => void;
 	fieldOrder: string[];
-	setFieldOrder: (key: string[]) => void;
+	setFieldOrder: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export interface FormBuilderContextProviderProps {
