@@ -12,6 +12,7 @@ export function safelyParseJSON(jsonString: string): Record<string, unknown> {
 const fieldTypeToGroup = {
 	text: 'input',
 	email: 'input',
+	tel: 'input',
 	select: 'select',
 	checkbox: 'checkbox',
 	wysiwyg: 'wysiwyg',

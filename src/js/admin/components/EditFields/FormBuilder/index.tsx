@@ -9,22 +9,6 @@ import {
 } from '@admin/context/FormBuilderContext';
 import SortableField from './SortableField';
 
-function generateUniqueFieldId() {
-	return `field_${Date.now()}`;
-}
-
-function createDefaultField(type: string): BuilderField {
-	return {
-		type,
-		fieldName: `New ${type}`,
-		label: `${type} field`,
-		required: false,
-		removable: true,
-		...(type === 'checkbox' && { defaultValue: false }),
-		...(type === 'text' && { placeholder: 'Placeholder text' }),
-	} as BuilderField;
-}
-
 function FormBuilderComponent() {
 	const {
 		fieldOrder,

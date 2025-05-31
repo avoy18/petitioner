@@ -54,7 +54,7 @@
 		}
 
 		&--submit {
-			button {
+			> button {
 				border-radius: var(--ptr-admin-input-border-radius, 4px);
 				background-color: var(--ptr-admin-color-primary, #000);
 				border-color: var(--ptr-admin-color-primary, #000);
