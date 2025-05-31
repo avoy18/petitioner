@@ -90,7 +90,6 @@ export default function DynamicField({
 					type="checkbox"
 					id={name}
 					name={name}
-					required={required}
 					checked={defaultValue === true}
 				/>
 				<label htmlFor={name}>{label}</label>
