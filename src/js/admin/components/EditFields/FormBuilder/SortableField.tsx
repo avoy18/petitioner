@@ -68,8 +68,17 @@ export default function SortableField({ id }: Props) {
 				: undefined,
 	};
 
+	const adjustedTransform = transform
+		? {
+				x: transform.x,
+				y: transform.y,
+				scaleX: 1,
+				scaleY: 1,
+			}
+		: null;
+
 	const style = {
-		transform: CSS.Transform.toString(transform),
+		transform: CSS.Transform.toString(adjustedTransform),
 		transition: '0s',
 		opacity: isDragging ? 0.5 : 1,
 		zIndex: isDragging ? 1000 : 'auto',

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import DragHandle from '@admin/components/shared/DragHandle';
 import { __ } from '@wordpress/i18n';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
+import { ref } from 'process';
 
 const FieldPaletteWrapper = styled.div`
 	display: flex;
@@ -53,11 +54,13 @@ function PaletteDraggable({ id, label }: { id: string; label: string }) {
 		? {
 				...listeners,
 				...attributes,
+				ref: setNodeRef,
+				style,
 			}
 		: {};
 
 	return (
-		<FieldPaletteItem {...finalAttributes} ref={setNodeRef} style={style}>
+		<FieldPaletteItem {...finalAttributes}>
 			<DragHandle />
 			{label}
 		</FieldPaletteItem>

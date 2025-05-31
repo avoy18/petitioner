@@ -66,6 +66,11 @@ function FormBuilderComponent() {
 				name="petitioner_form_fields"
 				value={JSON.stringify(formBuilderFields)}
 			/>
+			<input
+				type="hidden"
+				name="petitioner_field_order"
+				value={JSON.stringify(fieldOrder)}
+			/>
 			<div
 				className="ptr-form-builder"
 				style={{
