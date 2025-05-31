@@ -5,6 +5,8 @@ import { DRAGGABLE_FIELD_TYPES } from '@admin/context/FormBuilderContext';
 import styled from 'styled-components';
 import DragHandle from '@admin/components/shared/DragHandle';
 import { __ } from '@wordpress/i18n';
+import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
+
 const FieldPaletteWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -23,23 +25,39 @@ const FieldPaletteItem = styled.div`
 `;
 
 function PaletteDraggable({ id, label }: { id: string; label: string }) {
+	const { fieldOrder } = useFormBuilderContext();
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
 		useDraggable({
 			id,
+			data: {
+				from: 'palette',
+				type: id,
+			},
 		});
+
+	const alreadyExists = fieldOrder.includes(id);
 
 	const style = {
 		transform: CSS.Translate.toString(transform),
 		opacity: isDragging ? 0.5 : 1,
+		zIndex: isDragging ? 1000 : 'auto',
+		cursor: isDragging ? 'grabbing' : 'grab',
 	};
 
+	if (alreadyExists) {
+		style.opacity = 0.5;
+		style.cursor = 'not-allowed';
+	}
+
+	const finalAttributes = !alreadyExists
+		? {
+				...listeners,
+				...attributes,
+			}
+		: {};
+
 	return (
-		<FieldPaletteItem
-			ref={setNodeRef}
-			style={style}
-			{...listeners}
-			{...attributes}
-		>
+		<FieldPaletteItem {...finalAttributes} ref={setNodeRef} style={style}>
 			<DragHandle />
 			{label}
 		</FieldPaletteItem>
@@ -51,7 +69,10 @@ export default function FieldList() {
 		<FieldPaletteWrapper>
 			<h3>{__('Available fields', 'petitioner')}</h3>
 			<p>
-				{__('Drag and drop fields to add to your form. Click on each field to edit its properties.', 'petitioner')}
+				{__(
+					'Drag and drop fields to add to your form. Click on each field to edit its properties.',
+					'petitioner'
+				)}
 			</p>
 			{DRAGGABLE_FIELD_TYPES.map((field) => (
 				<PaletteDraggable

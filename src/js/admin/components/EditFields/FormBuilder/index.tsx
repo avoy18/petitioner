@@ -25,8 +25,6 @@ function createDefaultField(type: string): BuilderField {
 	} as BuilderField;
 }
 
-
-
 function FormBuilderComponent() {
 	const {
 		fieldOrder,
@@ -73,7 +71,20 @@ function FormBuilderComponent() {
 	console.log(fieldOrder);
 
 	return (
-		<DndSortableProvider items={fieldOrder} onReorder={setFieldOrder}>
+		<DndSortableProvider
+			items={fieldOrder}
+			onReorder={setFieldOrder}
+			onInsert={(fieldType, position) => {
+				const newId = generateUniqueFieldId();
+				const newField = createDefaultField(fieldType);
+				addFormBuilderField(newId, newField);
+				setFieldOrder((prev) => {
+					const updated = [...prev];
+					updated.splice(position, 0, newId);
+					return updated;
+				});
+			}}
+		>
 			<input
 				type="hidden"
 				name="petitioner_form_fields"
@@ -108,9 +119,7 @@ function FormBuilderComponent() {
 
 						<PanelBody>
 							{fieldOrder.map((fieldKey) => {
-								return (
-									<SortableField id={fieldKey} />
-								);
+								return <SortableField id={fieldKey} />;
 							})}
 						</PanelBody>
 					</Panel>

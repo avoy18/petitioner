@@ -10,8 +10,8 @@ const DragHandle = styled.div.attrs(() => ({
 
 	&:before {
 		content: '⋮⋮';
-        font-weight: bold;
-        font-size: 18px;
+		font-weight: bold;
+		font-size: 18px;
 		// content: '≡';
 	}
 `;
