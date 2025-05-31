@@ -36,80 +36,6 @@ class AV_Petitioner_Form_UI
         $this->country_list             = av_petitioner_get_countries();
     }
 
-    public function render(): void
-    {
-?>
-
-        <form id="petitioner-form-<?php echo esc_attr($this->form_id); ?>" method="get"
-            action="<?php echo esc_attr(admin_url('admin-ajax.php') . '?action=petitioner_form_submit'); ?>">
-
-            <div class="petitioner__input">
-                <label for="petitioner_fname"><?php esc_html_e('First name', 'petitioner'); ?></label>
-                <input required type="text" id="petitioner_fname" name="petitioner_fname">
-            </div>
-
-            <div class="petitioner__input">
-                <label for="petitioner_lname"><?php esc_html_e('Last name', 'petitioner'); ?></label>
-                <input required type="text" id="petitioner_lname" name="petitioner_lname">
-            </div>
-
-            <div class="petitioner__input">
-                <label for="petitioner_email"><?php esc_html_e('Your email', 'petitioner'); ?></label>
-                <input required type="email" id="petitioner_email" name="petitioner_email">
-            </div>
-
-            <?php if ($this->show_country): ?>
-                <div class="petitioner__input">
-                    <label for="petitioner_country"><?php esc_html_e('Country', 'petitioner'); ?></label>
-                    <select required id="petitioner_country" name="petitioner_country">
-                        <option value="" default disabled><?php esc_html_e('Country', 'petitioner'); ?></option>
-                        <?php foreach ($this->country_list as $country): ?>
-                            <option value="<?php echo $country; ?>">
-                                <?php echo $country; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($this->send_to_representative): ?>
-                <div class="petitioner__input petitioner__input--checkbox">
-                    <label for="petitioner_bcc"><?php esc_html_e('BCC me on the email', 'petitioner'); ?></label>
-                    <input type="checkbox" id="petitioner_bcc" name="petitioner_bcc">
-                </div>
-            <?php endif; ?>
-
-            <?php if ($this->add_consent_checkbox): ?>
-                <div class="petitioner__input petitioner__input--checkbox">
-                    <label for="petitioner_accept_tos">
-                        <?php echo !empty($this->consent_text) ? wp_kses_post($this->consent_text) : __('By submitting this form, I agree to the terms of service', 'petitioner'); ?>
-                    </label>
-                    <input type="checkbox" id="petitioner_accept_tos" name="petitioner_accept_tos">
-                </div>
-            <?php endif; ?>
-
-            <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>" />
-            <input type="hidden" name="nonce" value="<?php echo esc_attr($this->nonce); ?>" />
-
-            <?php if ($this->add_legal_text): ?>
-                <div class="petitioner-legal petitioner-disclaimer-text">
-                    <?php
-                    $parsed_legal = wpautop($this->legal_text);
-                    echo !empty($parsed_legal) ? wp_kses_post($parsed_legal) : ''; ?>
-                </div>
-            <?php endif; ?>
-
-            <?php AV_Petitioner_Captcha::render_inputs(); ?>
-
-            <?php if ($this->add_honeypot): ?>
-                <input type="text" name="ptr_info" style="display:none" />
-            <?php endif; ?>
-
-            <button type="submit" class="petitioner__btn petitioner__btn--submit"><?php esc_html_e('Sign this petition', 'petitioner'); ?></button>
-        </form>
-    <?php
-    }
-
     /**
      * Render the form fields, captchas, etc.
      * @return void
@@ -158,7 +84,7 @@ class AV_Petitioner_Form_UI
          * @return array Modified field order array.
          */
         $field_order    = apply_filters('av_petitioner_field_order', $field_order, $this->form_id);
-    ?>
+?>
         <form
             id="petitioner-form-<?php echo esc_attr($this->form_id); ?>"
             method="get"
@@ -213,7 +139,10 @@ class AV_Petitioner_Form_UI
         $extra_attributes = '';
 
         if ($field_type === 'tel') {
-            $extra_attributes = ' title="" pattern="[0-9\s\-\(\)]*"';
+            $extra_attributes = sprintf(
+                ' title="%s" inputmode="numeric" pattern="[0-9\s\-\(\)]*"',
+                esc_attr(__('Only numbers, spaces, dashes or parentheses are allowed.', 'petitioner'))
+            );
         }
 
         /**
@@ -245,6 +174,7 @@ class AV_Petitioner_Form_UI
                 <?php echo $required; ?>
                 type="<?php echo esc_attr($field_type) ?>"
                 id="<?php echo $field_name; ?>"
+                <?php echo esc_attr($extra_attributes); ?>
                 name="<?php echo $field_name; ?>">
         </div>
 
