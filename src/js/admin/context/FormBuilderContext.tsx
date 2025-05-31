@@ -128,24 +128,19 @@ export function FormBuilderContextProvider({
 		[]
 	);
 
-	const removeFormBuilderField = useCallback(
-		<K extends keyof BuilderFieldMap>(key: K) => {
-			// remove from the order array
-			setFieldOrder((prevOrder) =>
-				prevOrder.filter((item) => item !== key)
-			);
+	const removeFormBuilderField = <K extends keyof BuilderFieldMap>(
+		key: K
+	) => {
+		// remove from the order array
+		setFieldOrder((prevOrder) => prevOrder.filter((item) => item !== key));
 
-			// remove from the fields map
-			setFormBuilderFields((prevState) => {
-				const newState = { ...prevState };
-				delete newState[key];
-				return newState;
-			});
-
-			setBuilderEditScreen('default');
-		},
-		[]
-	);
+		// remove from the fields map
+		setFormBuilderFields((prevState) => {
+			const newState = { ...prevState };
+			delete newState[key];
+			return newState;
+		});
+	};
 
 	const addFormBuilderField = useCallback(
 		(id: string, field: BuilderField) => {

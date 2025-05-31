@@ -2,7 +2,6 @@ import { getFieldTypeGroup } from '@admin/utilities';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { FieldType } from '@admin/types/form-builder.types';
 import { Button } from '@wordpress/components';
-import { useCallback } from '@wordpress/element';
 
 export default function DynamicField({
 	name = '',
@@ -32,7 +31,7 @@ export default function DynamicField({
 
 	const fieldClassName = `ptr-fake-field ptr-fake-field--${inputType} ${!isActive ? '' : 'ptr-fake-field--active'}`;
 
-	const FieldActions = useCallback(() => {
+	const FieldActions = () => {
 		const currentField = formBuilderFields[name];
 
 		if (!currentField) {
@@ -47,7 +46,7 @@ export default function DynamicField({
 				)
 			) {
 				removeFormBuilderField(name);
-				setBuilderEditScreen('');
+				setBuilderEditScreen('default');
 			}
 		};
 
@@ -74,7 +73,7 @@ export default function DynamicField({
 				)}
 			</div>
 		);
-	}, [label, handleFieldEdit]);
+	};
 
 	let FinalField = (
 		<>
@@ -108,7 +107,13 @@ export default function DynamicField({
 	}
 
 	return (
-		<div onClick={handleFieldEdit} className={fieldClassName}>
+		<div
+			onClick={(e: React.MouseEvent) => {
+				if ((e.target as HTMLElement).closest('.ptr-actions')) return;
+				handleFieldEdit(e);
+			}}
+			className={fieldClassName}
+		>
 			<FieldActions />
 			{FinalField}
 		</div>

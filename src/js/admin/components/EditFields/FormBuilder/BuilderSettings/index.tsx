@@ -59,7 +59,7 @@ export default function BuilderSettings() {
 	const ScreenComponent = screenKeys.includes(currentType as ScreenType)
 		? screens[currentType as ScreenType]
 		: screens.default;
-
+	console.log(builderEditScreen);
 	return (
 		<BuilderSettingsWrapper>
 			{builderEditScreen != 'default' && (
