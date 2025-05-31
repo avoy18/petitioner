@@ -113,6 +113,17 @@ class AV_Petitioner_Admin_Edit_UI
             "field_order"                   =>  !empty($meta_values['field_order']) ? json_decode($meta_values['field_order']) : null,
         ];
 
+        /**
+         * Filter to modify the form fields before rendering in the admin panel.
+         *
+         * This allows plugins or themes to add, remove, or modify fields.
+         *
+         * @param array $form_fields Array of form fields.
+         * @param int $form_id ID of the form being rendered.
+         * @return array Modified form fields.
+         */
+        $petitioner_info['form_fields'] = apply_filters('av_petitioner_form_fields_admin', $petitioner_info['form_fields'], $post->ID);
+
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 ?>
         <div class="petitioner-admin__form ptr-is-loading">

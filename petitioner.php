@@ -25,6 +25,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-template.php';
@@ -43,3 +44,5 @@ new AV_Email_Confirmations();
 register_activation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_activation'));
 register_deactivation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_deactivation'));
 register_uninstall_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_uninstall'));
+
+AV_Petitioner_Form_Migrator::migrate_form_fields_to_1point0();

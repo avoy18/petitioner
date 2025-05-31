@@ -27,6 +27,10 @@ export const DRAGGABLE_FIELD_TYPES = [
 		value: '',
 		required: false,
 		removable: true,
+		description: __(
+			'Allows users to enter their phone number. The pattern is set to allow only digits.',
+			'petitioner'
+		),
 	},
 	{
 		key: 'country',
