@@ -45,11 +45,6 @@ function PaletteDraggable({ id, label }: { id: string; label: string }) {
 		cursor: isDragging ? 'grabbing' : 'grab',
 	};
 
-	if (alreadyExists) {
-		style.opacity = 0.5;
-		style.cursor = 'not-allowed';
-	}
-
 	const finalAttributes = !alreadyExists
 		? {
 				...listeners,
@@ -57,7 +52,12 @@ function PaletteDraggable({ id, label }: { id: string; label: string }) {
 				ref: setNodeRef,
 				style,
 			}
-		: {};
+		: {
+				style: {
+					opacity: 0.5,
+					cursor: 'not-allowed',
+				},
+			};
 
 	return (
 		<FieldPaletteItem {...finalAttributes}>

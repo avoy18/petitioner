@@ -31,6 +31,7 @@ class AV_Petitioner_Admin_Edit_UI
         'from_field'              => '_petitioner_from_field',
         'add_honeypot'            => '_petitioner_add_honeypot',
         'form_fields'             => '_petitioner_form_fields',
+        'field_order'             => '_petitioner_field_order',
     ];
 
     public function __construct()
@@ -109,6 +110,7 @@ class AV_Petitioner_Admin_Edit_UI
             ],
             // new way of handling the form fields
             "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
+            "field_order"                   =>  !empty($meta_values['field_order']) ? json_decode($meta_values['field_order']) : null,
         ];
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -190,6 +192,8 @@ class AV_Petitioner_Admin_Edit_UI
                 $value = (int) $value;
             } elseif ($key === 'form_fields') {
                 $value = $this->sanitize_form_fields($value);
+            } elseif ($key === 'field_order') {
+                // $value = $this->sanitize_form_fields($value);
             } else {
                 $value = sanitize_text_field($value);
             }

@@ -104,7 +104,7 @@ const defaultBuilderFields: BuilderFieldMap = {
 export function FormBuilderContextProvider({
 	children,
 }: FormBuilderContextProviderProps) {
-	const { form_fields = {} } = window.petitionerData;
+	const { form_fields = {}, field_order = [] } = window.petitionerData;
 
 	const startingFormFields = isNonEmptyObject(form_fields)
 		? (form_fields as BuilderFieldMap)
@@ -155,7 +155,10 @@ export function FormBuilderContextProvider({
 		[]
 	);
 
-	const defaultFieldOrder = Object.keys(formBuilderFields);
+	const defaultFieldOrder =
+		Array.isArray(field_order) && field_order.length
+			? field_order
+			: Object.keys(formBuilderFields);
 
 	const [fieldOrder, setFieldOrder] = useState<string[]>(defaultFieldOrder);
 
