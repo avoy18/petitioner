@@ -141,6 +141,8 @@ export function FormBuilderContextProvider({
 				delete newState[key];
 				return newState;
 			});
+
+			setBuilderEditScreen('default');
 		},
 		[]
 	);
