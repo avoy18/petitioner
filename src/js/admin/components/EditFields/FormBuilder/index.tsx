@@ -1,7 +1,6 @@
 import { Panel, PanelBody } from '@wordpress/components';
-import { useRef, useState, useEffect } from '@wordpress/element';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
-
+import { BuilderField } from '@admin/types/form-builder.types';
 import BuilderSettings from './BuilderSettings';
 import {
 	FormBuilderContextProvider,
@@ -26,36 +25,7 @@ function createDefaultField(type: string): BuilderField {
 	} as BuilderField;
 }
 
-function FieldList() {
-	return '';
-	return (
-		<DndSortableProvider items={fieldOrder} onReorder={setFieldOrder}>
-			{(provided) => (
-				<div ref={provided.innerRef} {...provided.droppableProps}>
-					{DRAGGABLE_FIELD_TYPES.map((fieldType, index) => (
-						<Draggable
-							key={fieldType.key}
-							draggableId={fieldType.key}
-							index={index}
-						>
-							{(provided) => (
-								<div
-									ref={provided.innerRef}
-									{...provided.draggableProps}
-									{...provided.dragHandleProps}
-									className="field-palette-item"
-								>
-									{fieldType.fieldName}
-								</div>
-							)}
-						</Draggable>
-					))}
-					{provided.placeholder}
-				</div>
-			)}
-		</DndSortableProvider>
-	);
-}
+
 
 function FormBuilderComponent() {
 	const {
@@ -121,7 +91,6 @@ function FormBuilderComponent() {
 					className="ptr-form-builder__settings"
 					style={{ width: '30%' }}
 				>
-					<FieldList />
 					<BuilderSettings />
 				</div>
 				<div

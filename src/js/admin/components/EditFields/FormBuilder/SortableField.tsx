@@ -2,6 +2,7 @@ import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { useSortable, defaultAnimateLayoutChanges } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import DynamicField from './DynamicField';
+import DragHandle from '@admin/components/shared/DragHandle';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -13,6 +14,14 @@ const Wrapper = styled.div`
 	&.ptr-active,
 	&.ptr-active:hover {
 		border: 1px solid var(--ptr-admin-color-dark);
+	}
+
+	.ptr-drag-handle {
+		position: absolute;
+		left: 4px;
+		top: 50%;
+		transform: translateY(-50%);
+		opacity: 0;
 	}
 
 	&:hover {
@@ -27,20 +36,6 @@ const Wrapper = styled.div`
 	}
 `;
 
-const DragHandle = styled.div.attrs(() => ({
-	className: 'ptr-drag-handle',
-}))`
-	cursor: grab;
-	padding: 4px;
-	font-size: 18px;
-	user-select: none;
-	position: absolute;
-	left: 4px;
-	top: 50%;
-	transform: translateY(-50%);
-	opacity: 0;
-`;
-
 type Props = {
 	id: string;
 	children?: React.ReactNode;
@@ -48,16 +43,11 @@ type Props = {
 
 export default function SortableField({ id }: Props) {
 	const { formBuilderFields, builderEditScreen } = useFormBuilderContext();
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		isDragging,
-	} = useSortable({
-		id,
-		animateLayoutChanges: defaultAnimateLayoutChanges,
-	});
+	const { attributes, listeners, setNodeRef, transform, isDragging } =
+		useSortable({
+			id,
+			animateLayoutChanges: defaultAnimateLayoutChanges,
+		});
 
 	const currentField = formBuilderFields[id];
 
@@ -91,9 +81,7 @@ export default function SortableField({ id }: Props) {
 			ref={setNodeRef}
 			style={style}
 		>
-			<DragHandle {...attributes} {...listeners}>
-				≡
-			</DragHandle>
+			<DragHandle {...attributes} {...listeners} />
 			<DynamicField {...ptrProps} />
 		</Wrapper>
 	);

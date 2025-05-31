@@ -3,12 +3,14 @@ import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { Button, TextControl } from '@wordpress/components';
 import { getFieldTypeGroup } from '@admin/utilities';
 import { __ } from '@wordpress/i18n';
+import styled from 'styled-components';
 
 import EditInput from './EditInput';
 import EditDropdown from './EditDropdown';
 import EditCheckbox from './EditCheckbox';
 import EditContent from './EditContent';
 import EditSubmit from './EditSubmit';
+import FieldList from './FieldList';
 
 const screenKeys = [
 	'input',
@@ -19,6 +21,24 @@ const screenKeys = [
 ] as const;
 
 type ScreenType = (typeof screenKeys)[number];
+
+const BuilderSettingsWrapper = styled.div`
+	padding: var(--ptr-admin-spacing-md);
+	background-color: var(--ptr-admin-color-light);
+	border-radius: 8px;
+	border: 1px solid rgba(00, 00, 00, 0.1);
+	margin-right: var(--ptr-admin-spacing-md);
+
+	h3,
+	p {
+		margin-top: 0;
+		margin-bottom: var(--ptr-admin-spacing-md);
+	}
+
+	button {
+		margin-bottom: var(--ptr-admin-spacing-md);
+	}
+`;
 
 export default function BuilderSettings() {
 	const { formBuilderFields, builderEditScreen, setBuilderEditScreen } =
@@ -33,7 +53,7 @@ export default function BuilderSettings() {
 		checkbox: () => <EditCheckbox />,
 		wysiwyg: () => <EditContent />,
 		submit: () => <EditSubmit />,
-		default: () => <InputList />,
+		default: () => <FieldList />,
 	};
 
 	const ScreenComponent = screenKeys.includes(currentType as ScreenType)
@@ -41,7 +61,7 @@ export default function BuilderSettings() {
 		: screens.default;
 
 	return (
-		<div>
+		<BuilderSettingsWrapper>
 			{builderEditScreen != 'default' && (
 				<>
 					<Button
@@ -56,26 +76,21 @@ export default function BuilderSettings() {
 						{__('Back', 'petitioner')}
 					</Button>
 
-					<h4>
+					<h3>
 						{__('Editing: ', 'petitioner')}
 						{currentField?.fieldName}
-					</h4>
+					</h3>
+
+					<p>
+						{__(
+							'Edit the properties of this field below.',
+							'petitioner'
+						)}
+					</p>
 				</>
 			)}
 
 			<ScreenComponent />
-		</div>
-	);
-}
-
-function InputList() {
-	return (
-		<div
-			style={{
-				padding: '16px 24px 0px 0px',
-			}}
-		>
-			Click on one of the inputs on the right to show it's field settings.
-		</div>
+		</BuilderSettingsWrapper>
 	);
 }
