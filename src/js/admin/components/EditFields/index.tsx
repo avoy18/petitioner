@@ -14,16 +14,6 @@ function EditFieldsComponent() {
 	const tabs = useMemo(
 		() => [
 			{
-				name: 'form-builder',
-				title: (
-					<>
-						<Dashicon icon="welcome-write-blog" /> Form builder
-					</>
-				),
-				className: 'petition-tablink',
-				renderingEl: <FormBuilder />,
-			},
-			{
 				name: 'petition-details',
 				title: (
 					<>
@@ -34,14 +24,14 @@ function EditFieldsComponent() {
 				renderingEl: <PetitionDetails />,
 			},
 			{
-				name: 'form-settings',
+				name: 'form-builder',
 				title: (
 					<>
-						<Dashicon icon="welcome-write-blog" /> Form settings
+						<Dashicon icon="welcome-write-blog" /> Form fields
 					</>
 				),
 				className: 'petition-tablink',
-				renderingEl: <FormSettings />,
+				renderingEl: <FormBuilder />,
 			},
 			{
 				name: 'advanced-settings',

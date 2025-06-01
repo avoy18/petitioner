@@ -23,6 +23,20 @@ export default function PetitionDetails() {
 			</p>
 
 			<p>
+				<TextControl
+					style={{ width: '100%' }}
+					required
+					type="number"
+					label="Signature goal *"
+					value={Number(formState.goal)}
+					name="petitioner_goal"
+					id="petitioner_goal"
+					help="Select your target submission number. You can disable this in the general settings"
+					onChange={(value) => updateFormState('goal', Number(value))}
+				/>
+			</p>
+
+			<p>
 				<input
 					checked={formState.send_to_representative}
 					type="checkbox"

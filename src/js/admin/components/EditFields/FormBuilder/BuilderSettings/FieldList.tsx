@@ -73,7 +73,7 @@ export default function FieldList() {
 			<h3>{__('Available fields', 'petitioner')}</h3>
 			<p>
 				{__(
-					'Drag and drop fields to add to your form. Click on each field to edit its properties.',
+					'Below is a list of additional fields you can add to your form.',
 					'petitioner'
 				)}
 			</p>

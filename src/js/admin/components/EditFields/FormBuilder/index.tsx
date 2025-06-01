@@ -1,6 +1,5 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
-import { BuilderField, BuilderFieldMap } from '@admin/types/form-builder.types';
 import BuilderSettings from './BuilderSettings';
 import {
 	FormBuilderContextProvider,
@@ -8,6 +7,19 @@ import {
 	useFormBuilderContext,
 } from '@admin/context/FormBuilderContext';
 import SortableField from './SortableField';
+import styled from 'styled-components';
+import { __ } from '@wordpress/i18n';
+const StyledPanel = styled(Panel)`
+	margin-top: var(--ptr-admin-spacing-md, 16px);
+
+	.components-panel__body {
+		padding: 0px;
+	}
+
+	.ptr-form-builder__form {
+		margin-left: var(--ptr-admin-spacing-md);
+	}
+`;
 
 function FormBuilderComponent() {
 	const {
@@ -45,51 +57,53 @@ function FormBuilderComponent() {
 			onReorder={setFieldOrder}
 			onInsert={handleFieldInsert}
 		>
-			<input
-				type="hidden"
-				name="petitioner_form_fields"
-				value={JSON.stringify(formBuilderFields)}
-			/>
-			<input
-				type="hidden"
-				name="petitioner_field_order"
-				value={JSON.stringify(fieldOrder)}
-			/>
-			<div
-				className="ptr-form-builder"
-				style={{
-					display: 'flex',
-					flexDirection: 'row',
-					padding: '24px 16px',
-				}}
-			>
-				<div
-					className="ptr-form-builder__settings"
-					style={{ width: '30%' }}
-				>
-					<BuilderSettings />
+			<StyledPanel>
+				<div className="ptr-form-builder__form-header">
+					<h3>{__('Form builder', 'petitioner')}</h3>
+					<p>
+						{__(
+							"Drag and drop fields to build your form. Click on each field to edit it's properties",
+							'petitioner'
+						)}
+					</p>
 				</div>
-				<div
-					className="ptr-form-builder__form"
-					style={{ width: '70%' }}
-				>
-					<Panel>
-						<div className="ptr-form-builder__form-header">
-							<h3>Form builder</h3>
-							<p>
-								Drag and drop fields to build your form. Click
-								on each field to edit it's properties
-							</p>
-						</div>
 
-						<PanelBody>
+				<PanelBody>
+					<input
+						type="hidden"
+						name="petitioner_form_fields"
+						value={JSON.stringify(formBuilderFields)}
+					/>
+					<input
+						type="hidden"
+						name="petitioner_field_order"
+						value={JSON.stringify(fieldOrder)}
+					/>
+					<div
+						className="ptr-form-builder"
+						style={{
+							display: 'flex',
+							flexDirection: 'row',
+							padding: '24px 16px',
+						}}
+					>
+						<div
+							className="ptr-form-builder__settings"
+							style={{ width: '30%' }}
+						>
+							<BuilderSettings />
+						</div>
+						<div
+							className="ptr-form-builder__form"
+							style={{ width: '70%' }}
+						>
 							{fieldOrder.map((fieldKey) => {
 								return <SortableField id={fieldKey} />;
 							})}
-						</PanelBody>
-					</Panel>
-				</div>
-			</div>
+						</div>
+					</div>
+				</PanelBody>
+			</StyledPanel>
 		</DndSortableProvider>
 	);
 }

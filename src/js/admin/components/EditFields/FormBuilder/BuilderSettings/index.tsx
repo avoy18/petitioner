@@ -24,10 +24,10 @@ type ScreenType = (typeof screenKeys)[number];
 
 const BuilderSettingsWrapper = styled.div`
 	padding: var(--ptr-admin-spacing-md);
-	background-color: var(--ptr-admin-color-light);
 	border-radius: 8px;
 	border: 1px solid rgba(00, 00, 00, 0.1);
-	margin-right: var(--ptr-admin-spacing-md);
+	background-color: var(--ptr-admin-color-light);
+	position: relative;
 
 	h3,
 	p {
