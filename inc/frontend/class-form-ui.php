@@ -18,12 +18,10 @@ class AV_Petitioner_Form_UI
     public string $consent_text;
     public array $form_fields;
     public $field_order;
-    public $nonce;
 
     public function __construct($form_id)
     {
         $this->form_id                  = $form_id;
-        $this->nonce                    = wp_create_nonce('petitioner_form_nonce');
         $this->send_to_representative   = get_post_meta($this->form_id, '_petitioner_send_to_representative', true);
         $this->show_country             = get_post_meta($this->form_id, '_petitioner_show_country', true);
         $this->add_legal_text           = get_post_meta($this->form_id, '_petitioner_add_legal_text', true);
@@ -112,7 +110,8 @@ class AV_Petitioner_Form_UI
             ?>
 
             <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>">
-            <input type="hidden" name="nonce" value="<?php echo esc_attr($this->nonce); ?>" />
+
+            <?php wp_nonce_field('petitioner_form_nonce', 'petitioner_nonce'); ?>
 
             <?php AV_Petitioner_Captcha::render_inputs(); ?>
 
