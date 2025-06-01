@@ -110,7 +110,7 @@ class AV_Petitioner_Admin_Edit_UI
             ],
             // new way of handling the form fields
             "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
-            "field_order"                   =>  !empty($meta_values['field_order']) ? json_decode($meta_values['field_order']) : null,
+            "field_order"                   =>  !empty($meta_values['field_order']) ? $this->sanitize_array($meta_values['field_order'], false) : null,
         ];
 
         /**
@@ -204,7 +204,7 @@ class AV_Petitioner_Admin_Edit_UI
             } elseif ($key === 'form_fields') {
                 $value = $this->sanitize_form_fields($value);
             } elseif ($key === 'field_order') {
-                // $value = $this->sanitize_form_fields($value);
+                $value = $this->sanitize_array($value);
             } else {
                 $value = sanitize_text_field($value);
             }
@@ -257,12 +257,14 @@ class AV_Petitioner_Admin_Edit_UI
     public function sanitize_form_fields($value, $stringify = true)
     {
         if (!is_string($value)) {
+            av_ptr_error_log('Error sanitizing the form fields - not a string');
             return '';
         }
 
         $decoded = json_decode($value, true);
 
         if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+            av_ptr_error_log('Error sanitizing the form fields - not a proper JSON');
             return '';
         }
 
@@ -299,5 +301,25 @@ class AV_Petitioner_Admin_Edit_UI
         }
 
         return $sanitized;
+    }
+
+    public function sanitize_array(string|array $json_items_raw, bool $stringify = true): string|array
+    {
+        if (is_array($json_items_raw)) {
+            $array_items = $json_items_raw;
+        } else {
+            $array_items = json_decode($json_items_raw, true);
+        }
+
+        if (!is_array($array_items)) {
+            av_ptr_error_log('Error sanitizing the array');
+            return $stringify ? '[]' : [];
+        }
+
+        $sanitized = array_map(fn($item) => sanitize_text_field((string) $item), $array_items);
+
+        return $stringify
+            ? wp_slash(wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+            : $sanitized;
     }
 }

@@ -19,7 +19,22 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_PLUGIN_VERSION', '0.3.3');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.3.4');
+
+if (!function_exists('av_ptr_error_log')) {
+
+    function av_ptr_error_log($data)
+    {
+        if (defined('WP_DEBUG') && WP_DEBUG === true && defined('PETITIONER_DEBUG') && PETITIONER_DEBUG === true) {
+            $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] ?? 'global';
+
+            error_log(wp_json_encode([
+                'data'      => $data,
+                'caller'    => $caller
+            ], JSON_PRETTY_PRINT));
+        }
+    }
+}
 
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
