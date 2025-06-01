@@ -131,47 +131,16 @@ class AV_Petitioner_Form_UI
      */
     public function render_basic_field(string $name, array $field): void
     {
-        $field_type     = !empty($field['type']) ? esc_html($field['type']) : 'text';
-        $field_label    = !empty($field['label']) ? esc_html($field['label']) : '';
-        $required       = !empty($field['required']) ? 'required' : '';
-        $field_name     = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
-
-        $extra_attributes = '';
-
-        if ($field_type === 'tel') {
-            $extra_attributes = sprintf(
-                ' title="%s" inputmode="numeric" pattern="[0-9\s\-\(\)]*"',
-                esc_attr(__('Only numbers, spaces, dashes or parentheses are allowed.', 'petitioner'))
-            );
-        }
-
-        /**
-         * Filter to add extra HTML attributes to form fields.
-         *
-         * This can be used to add attributes like `pattern`, `title`, `maxlength`, etc.
-         *
-         * @example
-         * add_filter('av_petitioner_field_extra_attributes', function($attributes, $type, $name, $label) {
-         *     if ($type === 'tel') {
-         *         $attributes .= ' pattern="[0-9\s\-\(\)]*" title="Please enter a valid phone number"';
-         *     }
-         *     return $attributes;
-         * }, 10, 4);
-         *
-         * @param string $extra_attributes Extra attributes to be added to the field markup.
-         * @param string $field_type       Type of the field (e.g., text, email, number, tel).
-         * @param string $field_name       Name (key) of the field.
-         * @param string $field_label      Human-readable label of the field.
-         * @return string Modified extra attributes string.
-         */
-        $extra_attributes = apply_filters('av_petitioner_field_extra_attributes', $extra_attributes, $field_type, $field_name, $field_label);
+        $field_type         = !empty($field['type']) ? esc_html($field['type']) : 'text';
+        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
+        $extra_attributes   = $this->get_extra_attributes($field);
     ?>
         <div class="petitioner__input">
             <label for="<?php echo $field_name; ?>">
                 <?php echo $field_label; ?>
             </label>
             <input
-                <?php echo $required; ?>
                 type="<?php echo esc_attr($field_type) ?>"
                 id="<?php echo $field_name; ?>"
                 <?php echo esc_attr($extra_attributes); ?>
@@ -183,22 +152,29 @@ class AV_Petitioner_Form_UI
 
     public function render_checkbox_field(string $name, array $field): void
     {
-        $field_label = !empty($field['label']) ? esc_html($field['label']) : '';
-        $field_name  = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
+        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
+        $extra_attributes   = $this->get_extra_attributes($field);
     ?>
         <div class="petitioner__input petitioner__input--checkbox">
             <label for="<?php echo $field_name; ?>">
                 <?php echo $field_label; ?>
             </label>
-            <input type="checkbox" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>">
+            <input
+                type="checkbox"
+                id="<?php echo $field_name; ?>"
+                name="<?php echo $field_name; ?>"
+                <?php echo esc_attr($extra_attributes); ?> />
         </div>
     <?php
     }
 
     public function render_select_field(string $name, array $field): void
     {
-        $field_label = !empty($field['label']) ? esc_html($field['label']) : '';
-        $field_name  = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
+        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
+        $extra_attributes   = $this->get_extra_attributes($field);
+
         if ($name === 'country') {
             $options = $this->country_list;
         } else {
@@ -209,13 +185,20 @@ class AV_Petitioner_Form_UI
             <label for="<?php echo $field_name; ?>">
                 <?php echo $field_label; ?>
             </label>
-            <select id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>">
+
+            <select
+                id="<?php echo $field_name; ?>"
+                name="<?php echo $field_name; ?>"
+                <?php echo esc_attr($extra_attributes); ?>>
+
                 <option value="" default disabled><?php esc_html_e('Select', 'petitioner'); ?></option>
+
                 <?php foreach ($options as $option): ?>
                     <option value="<?php echo esc_attr($option); ?>">
                         <?php echo esc_html($option); ?>
                     </option>
                 <?php endforeach; ?>
+
             </select>
         </div>
     <?php
@@ -242,5 +225,35 @@ class AV_Petitioner_Form_UI
             <?php echo $field_label; ?>
         </button>
 <?php
+    }
+
+    public function get_extra_attributes(array $field): string
+    {
+        $attributes = [];
+
+        if (!empty($field['required'])) {
+            $attributes[] = 'required';
+        }
+
+        $final_attributes = implode(' ', $attributes);
+
+        /**
+         * Filter to add extra HTML attributes to form fields.
+         *
+         * This can be used to add attributes like `pattern`, `title`, `maxlength`, etc.
+         *
+         * @example
+         * add_filter('av_petitioner_get_field_attributes', function($attributes, $field) {
+         *     if ($type === 'tel') {
+         *         $attributes .= ' pattern="[0-9\s\-\(\)]*" title="Please enter a valid phone number"';
+         *     }
+         *     return $attributes;
+         * }, 10, 4);
+         *
+         * @param string $extra_attributes Extra attributes to be added to the field markup.
+         * @param array $field The field array itself
+         * @return string Modified extra attributes string.
+         */
+        return apply_filters('av_petitioner_get_field_attributes', $final_attributes, $field);
     }
 }

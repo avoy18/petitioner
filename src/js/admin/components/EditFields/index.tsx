@@ -1,7 +1,6 @@
 import { Dashicon } from '@wordpress/components';
 import { useMemo } from '@wordpress/element';
 import Submissions from './Submissions';
-import FormSettings from './FormSettings';
 import FormBuilder from './FormBuilder';
 import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
@@ -27,7 +26,7 @@ function EditFieldsComponent() {
 				name: 'form-builder',
 				title: (
 					<>
-						<Dashicon icon="welcome-write-blog" /> Form fields
+						<Dashicon icon="welcome-widgets-menus" /> Form builder
 					</>
 				),
 				className: 'petition-tablink',
