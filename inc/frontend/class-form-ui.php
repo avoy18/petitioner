@@ -111,8 +111,6 @@ class AV_Petitioner_Form_UI
 
             <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>">
 
-            <?php wp_nonce_field('petitioner_form_nonce', 'petitioner_nonce'); ?>
-
             <?php AV_Petitioner_Captcha::render_inputs(); ?>
 
             <?php if ($this->add_honeypot): ?>

@@ -148,6 +148,11 @@ class AV_Petitioner_Setup
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
 
         AV_Petitioner_Captcha::enqueue_scripts();
+
+        wp_localize_script('petitioner-script', 'petitionerFormSettings', [
+            'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
+            'nonce'         => wp_create_nonce('petitioner_form_nonce'),
+        ]);
     }
 
     public function generate_custom_css()
