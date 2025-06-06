@@ -5,57 +5,53 @@ import FormBuilder from './FormBuilder';
 import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
 import AdvancedSettings from './AdvancedSettings';
+import Tabs from '@admin/components/shared/Tabs';
 import { EditFormContextProvider } from '@admin/context/EditFormContext';
 
-import Tabs from '@admin/components/shared/Tabs';
+export const tabs = [
+	{
+		name: 'petition-details',
+		title: (
+			<>
+				<Dashicon icon="email-alt" /> Petition details
+			</>
+		),
+		className: 'petition-tablink',
+		renderingEl: <PetitionDetails />,
+	},
+	{
+		name: 'form-builder',
+		title: (
+			<>
+				<Dashicon icon="welcome-widgets-menus" /> Form builder
+			</>
+		),
+		className: 'petition-tablink',
+		renderingEl: <FormBuilder />,
+	},
+	{
+		name: 'advanced-settings',
+		title: (
+			<>
+				<Dashicon icon="admin-settings" /> Advanced settings
+			</>
+		),
+		className: 'petition-tablink',
+		renderingEl: <AdvancedSettings />,
+	},
+	{
+		name: 'submissions',
+		title: (
+			<>
+				<Dashicon icon="editor-ul" /> Submissions
+			</>
+		),
+		className: 'petition-tablink',
+		renderingEl: <Submissions />,
+	},
+];
 
 function EditFieldsComponent() {
-	const tabs = useMemo(
-		() => [
-			{
-				name: 'petition-details',
-				title: (
-					<>
-						<Dashicon icon="email-alt" /> Petition details
-					</>
-				),
-				className: 'petition-tablink',
-				renderingEl: <PetitionDetails />,
-			},
-			{
-				name: 'form-builder',
-				title: (
-					<>
-						<Dashicon icon="welcome-widgets-menus" /> Form builder
-					</>
-				),
-				className: 'petition-tablink',
-				renderingEl: <FormBuilder />,
-			},
-			{
-				name: 'advanced-settings',
-				title: (
-					<>
-						<Dashicon icon="admin-settings" /> Advanced settings
-					</>
-				),
-				className: 'petition-tablink',
-				renderingEl: <AdvancedSettings />,
-			},
-			{
-				name: 'submissions',
-				title: (
-					<>
-						<Dashicon icon="editor-ul" /> Submissions
-					</>
-				),
-				className: 'petition-tablink',
-				renderingEl: <Submissions />,
-			},
-		],
-		[]
-	);
-
 	return (
 		<>
 			<Tabs tabs={tabs} />

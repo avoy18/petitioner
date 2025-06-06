@@ -96,4 +96,10 @@ module.exports = defineConfig({
 			// Add as many as needed
 		},
 	},
+	test: {
+		globals: true,
+		environment: 'happy-dom',
+		setupFiles: './tests/setup.ts',
+		include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+	},
 });

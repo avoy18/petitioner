@@ -24,6 +24,8 @@ export default function Tabs(props: TabPanelProps) {
 				{tabs.map((el) => {
 					return (
 						<div
+							key={el.name}
+							data-testid={`ptr-tab-${el.name}`}
 							className={`petitioner-tab petitioner-tab ${activeTab === el.name ? 'active' : ''}`}
 						>
 							{el.renderingEl}
