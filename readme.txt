@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.4.0
+Stable Tag: 0.4.1
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -82,10 +82,16 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 2. Petition letter (frontend)
 3. Gutenberg block
 4. Edit page
-5. Form settings
-6. Submissions
+5. Form builder
+6. Advanced settings
+7. Submissions
+8. Settings
+9. Integrations
 
 == Changelog ==
+
+= 0.4.1 =
+* Bugfix: Ensure plugin version is always set in the database and automatically re-run database migrations if missing or old
 
 = 0.4.0 =
 * Brand new drag and drop form builder
