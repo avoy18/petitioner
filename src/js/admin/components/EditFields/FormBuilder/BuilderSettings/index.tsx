@@ -61,7 +61,7 @@ export default function BuilderSettings() {
 		: screens.default;
 	console.log(builderEditScreen);
 	return (
-		<BuilderSettingsWrapper>
+		<BuilderSettingsWrapper data-testid="ptr-builder-settings">
 			{builderEditScreen != 'default' && (
 				<>
 					<Button
@@ -76,7 +76,7 @@ export default function BuilderSettings() {
 						{__('Back', 'petitioner')}
 					</Button>
 
-					<h3>
+					<h3 data-testid="ptr-builder-settings-title">
 						{__('Editing: ', 'petitioner')}
 						{currentField?.fieldName}
 					</h3>

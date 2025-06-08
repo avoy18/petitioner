@@ -98,7 +98,12 @@ function FormBuilderComponent() {
 							style={{ width: '70%' }}
 						>
 							{fieldOrder.map((fieldKey) => {
-								return <SortableField id={fieldKey} />;
+								return (
+									<SortableField
+										key={fieldKey}
+										id={fieldKey}
+									/>
+								);
 							})}
 						</div>
 					</div>

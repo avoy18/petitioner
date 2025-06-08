@@ -1,18 +1,22 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import EditFields, { tabs } from '@admin/components/EditFields';
 
-window.petitionerData = {
-	form_id: 123,
-	form_fields: {
-		fname: { type: 'text', label: 'First name' },
-		lname: { type: 'text', label: 'Last name' },
-		email: { type: 'email', label: 'Email' },
-	},
-	field_order: ['fname', 'lname', 'email'],
-};
-
 describe('Edit fields', () => {
+	const defaultPetitionerData = {
+		form_id: 123,
+		form_fields: {
+			fname: { type: 'text', label: 'First name' },
+			lname: { type: 'text', label: 'Last name' },
+			email: { type: 'email', label: 'Email' },
+		},
+		field_order: ['fname', 'lname', 'email'],
+	};
+
+	beforeEach(() => {
+		window.petitionerData = structuredClone(defaultPetitionerData);
+	});
+
 	it('Tabs are rendered', () => {
 		render(<EditFields />);
 

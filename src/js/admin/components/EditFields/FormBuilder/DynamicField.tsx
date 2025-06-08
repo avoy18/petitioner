@@ -113,6 +113,7 @@ export default function DynamicField({
 				handleFieldEdit(e);
 			}}
 			className={fieldClassName}
+			data-testid={`ptr-fake-field-${name}`}
 		>
 			<FieldActions />
 			{FinalField}

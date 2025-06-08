@@ -1,8 +1,7 @@
-import React from 'react';
 import { TextControl, SelectControl } from '@wordpress/components';
 import PTRichText from '@admin/components/shared/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
-import { DefaultValues } from 'src/js/types/edit-form.types';
+import { DefaultValues } from '@admin/types/edit-form.types';
 
 /*
  * Normalize the default values from the raw data
