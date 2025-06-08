@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
 class AV_Petitioner_Captcha
 {
     public static function enqueue_scripts()

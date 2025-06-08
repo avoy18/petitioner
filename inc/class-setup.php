@@ -54,6 +54,8 @@ class AV_Petitioner_Setup
     {
         add_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
         AV_Petitioner_Submissions_Model::create_db_table();
+
+        AV_Petitioner_Form_Migrator::migrate_all_forms_to_builder();
     }
 
     /**
@@ -71,7 +73,12 @@ class AV_Petitioner_Setup
         // Check if the plugin is updated
         $current_version = get_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
 
-        if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
+        if (empty($current_version)) {
+            // Fresh install setup
+            // Update the database schema or perform any other necessary updates
+            AV_Petitioner_Submissions_Model::create_db_table();
+            update_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
+        } else if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
             // Update the database schema or perform any other necessary updates
             AV_Petitioner_Submissions_Model::create_db_table();
             update_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
@@ -148,6 +155,11 @@ class AV_Petitioner_Setup
         wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
 
         AV_Petitioner_Captcha::enqueue_scripts();
+
+        wp_localize_script('petitioner-script', 'petitionerFormSettings', [
+            'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
+            'nonce'         => wp_create_nonce('petitioner_form_nonce'),
+        ]);
     }
 
     public function generate_custom_css()

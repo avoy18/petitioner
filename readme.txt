@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.3.4
+Stable Tag: 0.4.1
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -20,6 +20,11 @@ Petitioner is a WordPress plugin that allows you to create petitions and send th
 ### Features:
 **Unlimited petitions** 
 Create and manage an unlimited number of petitions.
+
+**Drag and drop form builder**
+* Add/remove/reorder fields based on your needs
+* Add rich text to the form for disclaimers and legal text
+* Edit field's label, placeholder, and required state
 
 **Control submission behaviour**
 * Email functionality: Automatically send petition letters to representatives via email.
@@ -77,10 +82,27 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 2. Petition letter (frontend)
 3. Gutenberg block
 4. Edit page
-5. Form settings
-6. Submissions
+5. Form builder
+6. Advanced settings
+7. Submissions
+8. Settings
+9. Integrations
 
 == Changelog ==
+
+= 0.4.1 =
+* Bugfix: Ensure plugin version is always set in the database and automatically re-run database migrations if missing or old
+
+= 0.4.0 =
+* Brand new drag and drop form builder
+    * Add/remove/reorder the form fields
+    * Automatic migration from the old editing experience
+    * Edit individual field settings
+    * Add rich text to the form
+    * Add new optional fields
+* Moved admin js to typescript
+* Add basic testing
+* Bug fixes: fixing the bug with the nonce field not validating on some environments
 
 = 0.3.4 =
 * Bugfix: fix an occasional error related to unnecessary nonce sanitization

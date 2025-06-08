@@ -13,9 +13,7 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_handle_form_submit()
     {
-        $wpnonce = !empty($_POST['nonce']) ? wp_unslash($_POST['nonce']) : '';
-
-        if (empty($wpnonce) || !wp_verify_nonce($wpnonce, 'petitioner_form_nonce')) {
+        if (!check_ajax_referer('petitioner_form_nonce', 'petitioner_nonce', false)) {
             wp_send_json_error('Invalid nonce');
             wp_die();
         }
@@ -30,6 +28,10 @@ class AV_Petitioner_Submissions_Controller
         $fname                      = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
         $lname                      = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
         $country                    = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
+        $phone                      = isset($_POST['petitioner_phone']) ? sanitize_text_field(wp_unslash($_POST['petitioner_phone'])) : '';
+        $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
+        $city                       = isset($_POST['petitioner_city']) ? sanitize_text_field(wp_unslash($_POST['petitioner_city'])) : '';
+        $postal_code                = isset($_POST['petitioner_postal_code']) ? sanitize_text_field(wp_unslash($_POST['petitioner_postal_code'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status            = __('Confirmed', 'petitioner');
@@ -84,6 +86,10 @@ class AV_Petitioner_Submissions_Controller
             'fname'             => $fname,
             'lname'             => $lname,
             'country'           => $country,
+            'phone'             => $phone,
+            'street_address'    => $street_address,
+            'city'              => $city,
+            'postal_code'       => $postal_code,
             'bcc_yourself'      => $bcc ? 1 : 0,
             'newsletter'        => $newsletter_opt_in ? 1 : 0,
             'hide_name'         => $hide_name ? 1 : 0,
@@ -95,6 +101,17 @@ class AV_Petitioner_Submissions_Controller
         if ($confirmation_token) {
             $data['confirmation_token'] = $confirmation_token;
         }
+
+        /**
+         * Filter the form submission data before it is saved.
+         *
+         * This allows modification of the submission data (e.g. sanitization, additional metadata)
+         * before the submission is created and stored.
+         *
+         * @param array $data Associative array of submission data (field values and metadata).
+         * @return array Modified submission data.
+         */
+        $data = apply_filters('av_petitioner_submission_data_pre_save', $data);
 
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
 

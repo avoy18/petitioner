@@ -46,9 +46,12 @@ export default class PetitionerForm {
 			'.petitioner-modal__backdrop'
 		);
 
-		// AJAX action path
-		this.actionPath = this.formEl?.action ?? '';
+		const { actionPath = '', nonce = '' } = window?.petitionerFormSettings;
 
+		// AJAX action path
+		this.actionPath = actionPath || this.formEl?.action || '';
+		this.nonce = nonce;
+		
 		// Captcha
 		this.captchaValidated = false;
 
@@ -143,7 +146,10 @@ export default class PetitionerForm {
 		}
 
 		this.wrapper.classList.add('petitioner--loading');
+
 		const formData = new FormData(this.formEl);
+
+		formData.append('petitioner_nonce', this.nonce);
 
 		fetch(this.actionPath, {
 			method: 'POST',

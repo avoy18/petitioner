@@ -30,6 +30,8 @@ class AV_Petitioner_Admin_Edit_UI
         'ty_email_subject'        => '_petitioner_ty_email_subject',
         'from_field'              => '_petitioner_from_field',
         'add_honeypot'            => '_petitioner_add_honeypot',
+        'form_fields'             => '_petitioner_form_fields',
+        'field_order'             => '_petitioner_field_order',
     ];
 
     public function __construct()
@@ -105,13 +107,29 @@ class AV_Petitioner_Admin_Edit_UI
                 'ty_email_subject_confirm'      => AV_Petitioner_Email_Template::get_default_ty_subject(true),
                 'ty_email_confirm'              => AV_Petitioner_Email_Template::get_default_ty_email(true),
                 "from_field"                    => AV_Petitioner_Email_Template::get_default_from_field(),
-            ]
+            ],
+            // new way of handling the form fields
+            "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
+            "field_order"                   =>  !empty($meta_values['field_order']) ? $this->sanitize_array($meta_values['field_order'], false) : null,
         ];
+
+        /**
+         * Filter to modify the form fields before rendering in the admin panel.
+         *
+         * This allows plugins or themes to add, remove, or modify fields.
+         *
+         * @param array $form_fields Array of form fields.
+         * @param int $form_id ID of the form being rendered.
+         * @return array Modified form fields.
+         */
+        $petitioner_info['form_fields'] = apply_filters('av_petitioner_form_fields_admin', $petitioner_info['form_fields'], $post->ID);
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 ?>
         <div class="petitioner-admin__form ptr-is-loading">
-            <script id="petitioner-json-data" type="text/json"><?php echo $data_attributes; ?></script>
+            <script id="petitioner-json-data" type="text/json">
+                <?php echo $data_attributes; ?>
+            </script>
             <div id="petitioner-admin-form"></div>
         </div>
 <?php
@@ -180,13 +198,16 @@ class AV_Petitioner_Admin_Edit_UI
             } elseif ($key === 'cc_emails' || $key === 'email') {
                 $value = $this->sanitize_emails($value);
             } elseif (in_array($key, $checkboxes)) {
-                $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
+                $value = $value === "on" ? 1 : 0;
             } elseif ($key === 'goal') {
-                $value = (int) $value; // Ensure numeric values are stored as integers
+                $value = (int) $value;
+            } elseif ($key === 'form_fields') {
+                $value = $this->sanitize_form_fields($value);
+            } elseif ($key === 'field_order') {
+                $value = $this->sanitize_array($value);
             } else {
                 $value = sanitize_text_field($value);
             }
-
             update_post_meta($post_id, self::META_FIELDS[$key], $value);
         }
     }
@@ -217,5 +238,88 @@ class AV_Petitioner_Admin_Edit_UI
             unset($actions["view"]);
         }
         return $actions;
+    }
+
+    /**
+     * Sanitize a JSON-encoded string representing form fields configuration.
+     *
+     * This method decodes the input JSON, sanitizes each field's sub-properties,
+     * and re-encodes the structure. For fields of type 'wysiwyg', it allows limited HTML
+     * in the 'value' key using wp_kses_post(). All other scalar values are sanitized
+     * using sanitize_text_field().
+     *
+     * @param string $value JSON-encoded string of form fields.
+     * @param bool   $returns_string Optional. Whether to return the sanitized data as a JSON-encoded string.
+     *                               Defaults to false.
+     * @return array|string Sanitized data. Returns an array if $returns_string is false, or a JSON-encoded
+     *                      string if $returns_string is true. Returns an empty string if the input JSON is invalid.
+     */
+    public function sanitize_form_fields($value, $stringify = true)
+    {
+        if (!is_string($value)) {
+            av_ptr_error_log('Error sanitizing the form fields - not a string');
+            return '';
+        }
+
+        $decoded = json_decode($value, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+            av_ptr_error_log('Error sanitizing the form fields - not a proper JSON');
+            return '';
+        }
+
+        $sanitized = [];
+
+        foreach ($decoded as $field_key => $field_data) {
+            if (!is_array($field_data)) {
+                continue;
+            }
+
+            $sanitized_field = [];
+
+            foreach ($field_data as $sub_key => $sub_value) {
+                if (
+                    $sub_key === 'value' &&
+                    isset($field_data['type']) &&
+                    $field_data['type'] === 'wysiwyg'
+                ) {
+                    $sanitized_field[$sub_key] = wp_kses_post($sub_value);
+                } elseif (is_bool($sub_value) || is_numeric($sub_value)) {
+                    $sanitized_field[$sub_key] = $sub_value; // Keep booleans and numbers as is
+                } elseif (is_string($sub_value)) {
+                    $sanitized_field[$sub_key] = sanitize_text_field($sub_value);
+                } else {
+                    $sanitized_field[$sub_key] = $sub_value;
+                }
+            }
+
+            $sanitized[$field_key] = $sanitized_field;
+        }
+
+        if ($stringify) {
+            return wp_slash(wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+
+        return $sanitized;
+    }
+
+    public function sanitize_array(string|array $json_items_raw, bool $stringify = true): string|array
+    {
+        if (is_array($json_items_raw)) {
+            $array_items = $json_items_raw;
+        } else {
+            $array_items = json_decode($json_items_raw, true);
+        }
+
+        if (!is_array($array_items)) {
+            av_ptr_error_log('Error sanitizing the array');
+            return $stringify ? '[]' : [];
+        }
+
+        $sanitized = array_map(fn($item) => sanitize_text_field((string) $item), $array_items);
+
+        return $stringify
+            ? wp_slash(wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+            : $sanitized;
     }
 }

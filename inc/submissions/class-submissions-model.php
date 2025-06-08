@@ -26,6 +26,10 @@ class AV_Petitioner_Submissions_Model
             email varchar(255) NOT NULL,
             country varchar(255) NOT NULL,
             salutation varchar(255),
+            phone varchar(50),
+            street_address varchar(255),
+            city varchar(255),
+            postal_code varchar(50),
             bcc_yourself tinyint(1) DEFAULT 0,
             newsletter tinyint(1) DEFAULT 0,
             hide_name tinyint(1) DEFAULT 0,
@@ -147,6 +151,10 @@ class AV_Petitioner_Submissions_Model
             '%s', // lname
             '%s', // country
             '%d', // bcc_yourself
+            '%s', // phone
+            '%s', // street_address
+            '%s', // city
+            '%s', // postal_code
             '%d', // newsletter
             '%d', // hide_name
             '%d', // accept_tos

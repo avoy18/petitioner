@@ -1,0 +1,14 @@
+@mixin tabs {
+	.petition-tablink.components-tab-panel__tabs-item {
+		display: flex;
+		gap: 4px;
+	}
+
+	.petitioner-tab {
+		display: none;
+	}
+
+	.petitioner-tab.active {
+		display: block;
+	}
+}

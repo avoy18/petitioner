@@ -1,11 +1,15 @@
 <?php
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
 /**
  * Class AV_Petitioner_Akismet
  *
  * This class integrates the Akismet service with the Petitioner plugin.
  * Akismet is used to detect and filter spam submissions.
  *
-*/
+ */
 class AV_Petitioner_Akismet
 {
     public static function check_with_akismet($email, $fname, $lname, $country, $form_id)
