@@ -54,6 +54,8 @@ class AV_Petitioner_Setup
     {
         add_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
         AV_Petitioner_Submissions_Model::create_db_table();
+
+        AV_Petitioner_Form_Migrator::migrate_all_forms_to_builder();
     }
 
     /**

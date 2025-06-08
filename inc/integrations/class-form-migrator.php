@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_Form_Migrator
 {
-    public static function migrate_form_fields_to_1point0()
+    public static function migrate_form_fields_to_builder_filters()
     {
         add_filter('av_petitioner_form_fields', ['AV_Petitioner_Form_Migrator', 'migrate_form_fields'], 5, 2);
         add_filter('av_petitioner_form_fields_admin', ['AV_Petitioner_Form_Migrator', 'migrate_form_fields'], 5, 2);
@@ -118,5 +118,23 @@ class AV_Petitioner_Form_Migrator
         }
 
         return $form_fields;
+    }
+
+    /**
+     * Go through each petition and manually migrate forms on activation
+     */
+    public static function migrate_all_forms_to_builder()
+    {
+        $forms = get_posts([
+            'post_type'   => 'petitioner-petition',
+            'numberposts' => 1000,
+            'post_status' => 'any',
+        ]);
+
+        foreach ($forms as $form) {
+            $form_id = $form->ID;
+            $existing_fields = get_post_meta($form_id, '_petitioner_form_fields', true);
+            self::migrate_form_fields($existing_fields, $form_id);
+        }
     }
 }
