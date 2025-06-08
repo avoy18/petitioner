@@ -73,7 +73,12 @@ class AV_Petitioner_Setup
         // Check if the plugin is updated
         $current_version = get_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
 
-        if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
+        if (empty($current_version)) {
+            // Fresh install setup
+            // Update the database schema or perform any other necessary updates
+            AV_Petitioner_Submissions_Model::create_db_table();
+            update_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
+        } else if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
             // Update the database schema or perform any other necessary updates
             AV_Petitioner_Submissions_Model::create_db_table();
             update_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
