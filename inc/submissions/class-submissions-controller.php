@@ -331,23 +331,49 @@ class AV_Petitioner_Submissions_Controller
         // Open output stream for writing
         $output = fopen('php://output', 'w');
 
-        // Output the column headings (customize as per your table structure)
-        fputcsv($output, array('ID', 'First Name', 'Last Name', 'Email', 'Country', 'Salutation', 'BCC Yourself', 'Newsletter', 'Hide Name', 'Accept TOS', 'Submitted At'));
+        // Output the column headings (matches DB schema)
+        fputcsv($output, array(
+            'ID',
+            'Form ID',
+            'First Name',
+            'Last Name',
+            'Email',
+            'Country',
+            'Salutation',
+            'Phone',
+            'Street Address',
+            'City',
+            'Postal Code',
+            'BCC Yourself',
+            'Newsletter',
+            'Hide Name',
+            'Accept TOS',
+            'Approval Status',
+            'Submitted At',
+            'Confirmation Token'
+        ));
 
         // Loop over the rows and output them as CSV
         foreach ($results as $row) {
             fputcsv($output, array(
                 $row->id,
+                $row->form_id,
                 $row->fname,
                 $row->lname,
                 $row->email,
                 $row->country,
                 $row->salutation,
+                $row->phone,
+                $row->street_address,
+                $row->city,
+                $row->postal_code,
                 $row->bcc_yourself,
                 $row->newsletter,
                 $row->hide_name,
                 $row->accept_tos,
-                $row->submitted_at
+                $row->approval_status,
+                $row->submitted_at,
+                $row->confirmation_token
             ));
         }
 
