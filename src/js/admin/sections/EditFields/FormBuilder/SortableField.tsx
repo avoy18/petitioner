@@ -2,7 +2,7 @@ import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { useSortable, defaultAnimateLayoutChanges } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import DynamicField from './DynamicField';
-import DragHandle from '@admin/components/shared/DragHandle';
+import DragHandle from '@admin/components/DragHandle';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`

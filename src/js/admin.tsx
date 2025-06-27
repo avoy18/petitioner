@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
-import EditFields from '@admin/components/EditFields';
-import SettingsFields from '@admin/components/SettingsFields';
-import ShortcodeArea from '@admin/components/ShortcodeArea';
+import EditFields from '@admin/sections/EditFields';
+import SettingsFields from '@admin/sections/SettingsFields';
+import ShortcodeArea from '@admin/sections/ShortcodeArea';
 
 import '../scss/admin.scss';
 import { safelyParseJSON } from '@admin/utilities';

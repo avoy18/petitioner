@@ -1,5 +1,5 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import PTRichText from '@admin/components/shared/PTRichText';
+import PTRichText from '@admin/components/PTRichText';
 import DOMPurify from 'dompurify';
 import { WysiwygField, BuilderField } from '@admin/types/form-builder.types';
 

@@ -1,9 +1,7 @@
 import { Dashicon } from '@wordpress/components';
-import { useState, useCallback } from 'react';
-import Tabs from '../shared/Tabs';
+import Tabs from '@admin/components/Tabs';
 import VisualSettings from './VisualSettings';
 import Integrations from './Integrations';
-
 import { SettingsFormContextProvider } from '@admin/context/SettingsContext';
 
 function SettingsFieldsComponent() {

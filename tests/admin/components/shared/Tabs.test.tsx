@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import Tabs from '@admin/components/shared/Tabs';
+import Tabs from '@admin/components/Tabs';
 
 const tabs = [
 	{

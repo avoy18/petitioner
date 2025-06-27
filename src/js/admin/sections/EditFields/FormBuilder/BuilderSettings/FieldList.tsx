@@ -3,7 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { DRAGGABLE_FIELD_TYPES } from '@admin/context/FormBuilderContext';
 import styled from 'styled-components';
-import DragHandle from '@admin/components/shared/DragHandle';
+import DragHandle from '@admin/components/DragHandle';
 import { __ } from '@wordpress/i18n';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { ref } from 'process';
