@@ -1,5 +1,5 @@
-import CodeEditor from '@admin/components/shared/CodeEditor';
-import ColorField from '@admin/components/shared/ColorField';
+import CodeEditor from '@admin/components/CodeEditor';
+import ColorField from '@admin/components/ColorField';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 
 export default function VisualSettings() {

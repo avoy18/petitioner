@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.4.2
+Stable Tag: 0.4.3
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -89,6 +89,15 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.4.3 =
+* Editing labels:
+    * Added UI for editing the thank you message on the petition (shows up after you submit the form)
+    * Added a filter to override other random strings
+* Code refactoring: made some changes to the structure
+* Minor UI tweaks:
+    * You can now close the popup with an ESC key
+    * Added explicit color to the close button to fix styling for some users
 
 = 0.4.2 =
 * Bugfix: add the new fields to the CSV export

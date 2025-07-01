@@ -96,29 +96,6 @@
 		flex-direction: column;
 		gap: 4px;
 	}
-	
-	.ptr-color-picker {
-		position: relative;
-		display: inline-block;
-
-		.color-picker__button {
-			--wp-components-color-accent: #333;
-			--wp-components-color-accent-hover: #333;
-			display: flex;
-			gap: 8px;
-		}
-
-		&__palette {
-			padding: 4px;
-			border-radius: 4px;
-			background: white;
-			position: absolute;
-			top: 0;
-			right: 0;
-			z-index: 2;
-			transform: translate(calc(100% + 36px), calc(-100% + 36px));
-		}
-	}
 
 	.ptr-field-panel {
 		width: 100%;

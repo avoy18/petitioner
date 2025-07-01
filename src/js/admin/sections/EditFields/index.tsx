@@ -1,11 +1,10 @@
 import { Dashicon } from '@wordpress/components';
-import { useMemo } from '@wordpress/element';
 import Submissions from './Submissions';
 import FormBuilder from './FormBuilder';
 import PetitionDetails from './PetitionDetails';
 import BottomCallout from './BottomCallout';
 import AdvancedSettings from './AdvancedSettings';
-import Tabs from '@admin/components/shared/Tabs';
+import Tabs from '@admin/components/Tabs';
 import { EditFormContextProvider } from '@admin/context/EditFormContext';
 
 export const tabs = [

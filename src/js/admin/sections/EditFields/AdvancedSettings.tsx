@@ -1,7 +1,8 @@
 import { TextControl, SelectControl } from '@wordpress/components';
-import PTRichText from '@admin/components/shared/PTRichText';
+import PTRichText from '@admin/components/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 import { DefaultValues } from '@admin/types/edit-form.types';
+import { __ } from '@wordpress/i18n';
 
 /*
  * Normalize the default values from the raw data
@@ -11,9 +12,14 @@ import { DefaultValues } from '@admin/types/edit-form.types';
  * @returns An object with default values for the form fields.
  */
 const normalizeDefaultValues = (raw: unknown): DefaultValues => {
-	const DEFAULT_SUBJECT = 'Thank you for signing the {{petition_title}}';
-	const DEFAULT_CONTENT =
-		'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
+	const DEFAULT_SUBJECT = __(
+		'Thank you for signing the {{petition_title}}',
+		'petitioner'
+	);
+	const DEFAULT_CONTENT = __(
+		'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.',
+		'petitioner'
+	);
 
 	const defaultValues: DefaultValues = {
 		from_field: '',
@@ -21,6 +27,8 @@ const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 		ty_email: DEFAULT_CONTENT,
 		ty_email_subject_confirm: DEFAULT_SUBJECT,
 		ty_email_confirm: DEFAULT_CONTENT,
+		success_message_title: '',
+		success_message: '',
 	};
 
 	if (typeof raw !== 'object' || raw === null) {
@@ -69,6 +77,10 @@ export default function AdvancedSettings() {
 
 	const { subject: defaultTYSubject, content: defaultTYEmailContent } =
 		getThankYouDefaults(defaultValues, formState.approval_state);
+
+	const defaultSuccessMessageTitle =
+		defaultValues?.success_message_title || '';
+	const defaultSuccessMessageContent = defaultValues?.success_message || '';
 
 	return (
 		<>
@@ -257,6 +269,68 @@ export default function AdvancedSettings() {
 								: defaultTYEmailContent
 						}
 						onChange={(value) => updateFormState('ty_email', value)}
+						height={150}
+					/>
+				</>
+			)}
+
+			<p>
+				<input
+					checked={formState.override_success_message}
+					type="checkbox"
+					name="petitioner_override_success_message"
+					id="petitioner_override_success_message"
+					className="widefat"
+					onChange={(e) =>
+						updateFormState(
+							'override_success_message',
+							e.target.checked
+						)
+					}
+				/>
+				<label htmlFor="petitioner_override_success_message">
+					Override success message?
+					<br />
+					<small>
+						Use this to customize the success message shown after
+						submitting a petition.
+					</small>
+				</label>
+			</p>
+
+			{formState.override_success_message && (
+				<>
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							type="text"
+							label="Success message title"
+							value={
+								formState?.success_message_title.length > 0
+									? formState.success_message_title
+									: defaultSuccessMessageTitle
+							}
+							name="petitioner_success_message_title"
+							id="petitioner_success_message_title"
+							onChange={(value) =>
+								updateFormState('success_message_title', value)
+							}
+						/>
+					</p>
+					<PTRichText
+						label="Success message content"
+						id="petitioner_success_message"
+						help={
+							'This will be the content of the success message shown after submitting a petition.'
+						}
+						value={
+							formState?.success_message?.length > 0
+								? formState.success_message
+								: defaultSuccessMessageContent
+						}
+						onChange={(value) =>
+							updateFormState('success_message', value)
+						}
 						height={150}
 					/>
 				</>

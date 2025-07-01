@@ -1,8 +1,8 @@
 export default class ReCaptcha {
-	constructor(petitionForm) {
+	constructor(petitionForm: HTMLDivElement | HTMLFormElement) {
 		if (
-			typeof petitionerCaptcha !== 'undefined' &&
-			petitionerCaptcha.recaptchaSiteKey
+			typeof window.petitionerCaptcha !== 'undefined' &&
+			window.petitionerCaptcha.recaptchaSiteKey
 		) {
 			const recaptchaField = petitionForm.querySelector(
 				'[name="petitioner-g-recaptcha-response"]'
@@ -21,7 +21,7 @@ export default class ReCaptcha {
 
 					grecaptcha.ready(function () {
 						grecaptcha
-							.execute(petitionerCaptcha.recaptchaSiteKey, {
+							.execute(window.petitionerCaptcha.recaptchaSiteKey, {
 								// action: 'submit',
 							})
 							.then((token) => {

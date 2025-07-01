@@ -1,6 +1,5 @@
-import React from 'react';
 import { TextControl } from '@wordpress/components';
-import PTRichText from '../shared/PTRichText';
+import PTRichText from '@admin/components/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 
 /**

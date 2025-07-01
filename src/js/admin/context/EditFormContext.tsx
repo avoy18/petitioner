@@ -40,6 +40,9 @@ const normalizePetitionerData = () => {
 		override_ty_email: false,
 		ty_email: '',
 		ty_email_subject: '',
+		override_success_message: false,
+		success_message_title: '',
+		success_message: '',
 		from_field: '',
 		add_honeypot: true,
 		form_id: null,
@@ -63,7 +66,7 @@ export function EditFormContextProvider({
 		show_country = false,
 		subject = '',
 		require_approval = false,
-		approval_state = 'approved',
+		approval_state = 'Confirmed',
 		letter = '',
 		add_legal_text = false,
 		consent_text = '',
@@ -75,6 +78,9 @@ export function EditFormContextProvider({
 		ty_email_subject = '',
 		from_field = '',
 		add_honeypot = true,
+		override_success_message = false,
+		success_message_title = '',
+		success_message = '',
 	} = petitionerData;
 
 	const [formState, setFormState] = useState({
@@ -98,6 +104,9 @@ export function EditFormContextProvider({
 		ty_email_subject,
 		from_field,
 		add_honeypot,
+		override_success_message,
+		success_message_title,
+		success_message,
 	});
 
 	const updateFormState = useCallback(
