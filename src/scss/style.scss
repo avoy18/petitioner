@@ -362,6 +362,7 @@ $spacer-xl: 32px;
 		justify-content: center;
 		align-items: center;
 		transition: 0.1s;
+		color: var(--ptr-color-dark);
 
 		&:hover {
 			cursor: pointer;
