@@ -1,5 +1,11 @@
 export default class Turnstile {
-	constructor(petitionForm) {
+	private form: HTMLDivElement | HTMLFormElement;
+	private turnstileField: HTMLInputElement | null;
+	private turnstileContainer: HTMLElement | null;
+	private widgetId: string | null = null;
+	private callbackFunction: (() => void) | null = null;
+
+	constructor(petitionForm: HTMLDivElement | HTMLFormElement) {
 		this.form = petitionForm;
 		this.turnstileField = this.form.querySelector(
 			'[name="petitioner-turnstile-response"]'
@@ -10,7 +16,7 @@ export default class Turnstile {
 
 		if (
 			typeof turnstile === 'undefined' ||
-			!petitionerCaptcha?.turnstileSiteKey ||
+			!window.petitionerCaptcha?.turnstileSiteKey ||
 			!this.turnstileContainer
 		) {
 			// console.warn('❌ petitioner - Turnstile is not enabled or missing.');

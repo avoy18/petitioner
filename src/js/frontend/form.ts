@@ -10,6 +10,7 @@ type ApiResponse = {
 	};
 };
 
+
 /**
  * @class PetitionerForm
  *
@@ -33,7 +34,7 @@ export default class PetitionerForm {
 	private wrapper: HTMLDivElement;
 	private responseTitle: HTMLHeadingElement | null;
 	private responseText: HTMLParagraphElement | null;
-	private formEl: HTMLFormElement | null;
+	private formEl: HTMLDivElement | null;
 	private viewLetterBTN: HTMLButtonElement | null;
 	private petitionerModal: HTMLDivElement | null;
 	private modalClose: HTMLButtonElement | null;
@@ -95,17 +96,17 @@ export default class PetitionerForm {
 	}
 
 	private initializeCaptcha(): void {
-		if (typeof petitionerCaptcha === 'undefined') return;
+		if (typeof window.petitionerCaptcha === 'undefined') return;
 
-		if (petitionerCaptcha.enableRecaptcha && this.formEl) {
+		if (window.petitionerCaptcha.enableRecaptcha && this.formEl) {
 			new ReCaptcha(this.formEl);
 		}
 
-		if (petitionerCaptcha.enableHcaptcha && this.formEl) {
+		if (window.petitionerCaptcha.enableHcaptcha && this.formEl) {
 			this.hcaptcha = new HCaptcha(this.formEl);
 		}
 
-		if (petitionerCaptcha.enableTurnstile && this.formEl) {
+		if (window.petitionerCaptcha.enableTurnstile && this.formEl) {
 			this.turnstile = new Turnstile(this.formEl);
 		}
 	}

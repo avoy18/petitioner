@@ -1,3 +1,4 @@
+import { CaptchaValidationCallback } from './types/frontend';
 /**
  * hCaptcha logic
  *
@@ -24,14 +25,14 @@ declare global {
 	const hcaptcha: HCaptchaSDK | undefined;
 }
 
-export default class HCaptcha implements CaptchaProvider {
-	private form: HTMLFormElement;
+export default class HCaptcha {
+	private form: HTMLDivElement | HTMLFormElement;
 	private hcaptchaField: HTMLInputElement | null;
 	private hcaptchaContainer: HTMLElement | null;
 	private widgetId: string | null = null;
 	private callbackFunction: CaptchaValidationCallback | null = null;
 
-	constructor(currentForm: HTMLFormElement) {
+	constructor(currentForm: HTMLDivElement | HTMLFormElement) {
 		this.form = currentForm;
 		this.hcaptchaField = this.form.querySelector<HTMLInputElement>(
 			'[name="petitioner-h-captcha-response"]'
@@ -51,8 +52,8 @@ export default class HCaptcha implements CaptchaProvider {
 	private isHCaptchaReady(): boolean {
 		return !!(
 			typeof hcaptcha !== 'undefined' &&
-			petitionerCaptcha?.enableHcaptcha &&
-			petitionerCaptcha?.hcaptchaSiteKey &&
+			window.petitionerCaptcha?.enableHcaptcha &&
+			window.petitionerCaptcha?.hcaptchaSiteKey &&
 			this.hcaptchaContainer
 		);
 	}
@@ -60,14 +61,14 @@ export default class HCaptcha implements CaptchaProvider {
 	private initHCaptcha(): void {
 		if (
 			!hcaptcha ||
-			!petitionerCaptcha?.hcaptchaSiteKey ||
+			!window.petitionerCaptcha?.hcaptchaSiteKey ||
 			!this.hcaptchaContainer
 		) {
 			return;
 		}
 
 		this.widgetId = hcaptcha.render(this.hcaptchaContainer, {
-			sitekey: petitionerCaptcha.hcaptchaSiteKey,
+			sitekey: window.petitionerCaptcha.hcaptchaSiteKey,
 			size: 'invisible',
 			callback: this.handleSuccess.bind(this),
 		});
