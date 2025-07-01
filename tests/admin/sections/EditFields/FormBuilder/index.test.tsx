@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import FormBuilder from '@admin/components/EditFields/FormBuilder';
+import FormBuilder from '@admin/sections/EditFields/FormBuilder';
 
 describe('Form builder fields', () => {
 	const defaultPetitionerData = {

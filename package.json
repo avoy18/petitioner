@@ -10,7 +10,8 @@
 		"dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
 		"deploy": "yarn build-all && node -e 'require(\"./vite.config.ts\").deploy()'",
 		"dev-all": "concurrently \"yarn dev\" \"yarn dev:gutenberg\"",
-		"build-all": "concurrently \"yarn build:gutenberg\" \"yarn build\""
+		"build-all": "concurrently \"yarn build:gutenberg\" \"yarn build\"",
+		"test": "vitest run --environment happy-dom"
 	},
 	"repository": {
 		"type": "git",

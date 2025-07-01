@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
-import EditFields, { tabs } from '@admin/components/EditFields';
+import EditFields, { tabs } from '@admin/sections/EditFields';
 
 describe('Edit fields', () => {
 	const defaultPetitionerData = {
