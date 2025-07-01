@@ -10,11 +10,15 @@ class AV_Petitioner_Labels
      * @param string $key The key of the label to retrieve
      * @return string The label text
      */
-    public static function get($key)
+    public static function get($key, $form_id = null)
     {
         self::$defaults = [
+            'could_not_submit'               => __('Could not submit the form.', 'petitioner'),
             'error_generic'                  => __('Something went wrong. Please try again.', 'petitioner'),
             'error_required'                 => __('This field is required.', 'petitioner'),
+            'invalid_nonce'                  => __('Invalid nonce.', 'petitioner'),
+            'flagged_as_spam'                => __('Your submission has been flagged as spam.', 'petitioner'),
+            'already_signed'                 => __('Looks like you\'ve already signed this petition!', 'petitioner'),
             'ty_email_subject'               => AV_Petitioner_Email_Template::get_default_ty_subject(),
             'ty_email'                       => AV_Petitioner_Email_Template::get_default_ty_email(),
             'ty_email_subject_confirm'       => AV_Petitioner_Email_Template::get_default_ty_subject(true),
@@ -32,6 +36,22 @@ class AV_Petitioner_Labels
             return '';
         }
 
+        if ($form_id !== null) {
+            return self::get_form_label($key, $form_id);
+        }
+
         return isset(self::$defaults[$key]) ? self::$defaults[$key] : '';
+    }
+
+    /**
+     * Get a label for a specific form
+     *
+     * @param string $key The key of the label to retrieve
+     * @param int $form_id The ID of the form
+     * @return string The label text
+     */
+    public static function get_form_label($key, $form_id)
+    {
+        return get_post_meta('' . $form_id, '_petitioner_' . $key, true) ?: self::get($key);
     }
 }

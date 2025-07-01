@@ -2,6 +2,14 @@ import ReCaptcha from './recaptcha';
 import HCaptcha from './hcaptcha';
 import Turnstile from './turnstile';
 
+type ApiResponse = {
+	success: boolean;
+	data: {
+		title: string;
+		message: string;
+	};
+};
+
 /**
  * @class PetitionerForm
  *
@@ -130,13 +138,13 @@ export default class PetitionerForm {
 	}
 
 	private showResponseMSG(
-		title: string = 'Something went wrong',
-		text: string = 'Please try again',
+		messaging: { title: string; message: string },
 		isSuccess: boolean = false
 	): void {
 		this.wrapper.classList.add('petitioner--submitted');
+		const { title, message } = messaging || { title: '', message: '' };
 		if (this.responseTitle) this.responseTitle.innerText = title;
-		if (this.responseText) this.responseText.innerText = text;
+		if (this.responseText) this.responseText.innerHTML = message;
 	}
 
 	private toggleModal(isShow: boolean = true): void {
@@ -219,13 +227,9 @@ export default class PetitionerForm {
 			})
 			.then((res: ApiResponse) => {
 				if (res.success) {
-					this.showResponseMSG('Thank you!', res.data, true);
+					this.showResponseMSG(res.data, true);
 				} else {
-					this.showResponseMSG(
-						'Could not submit the form.',
-						res.data,
-						false
-					);
+					this.showResponseMSG(res.data, false);
 				}
 				this.handleSubmissionComplete(formData);
 			})

@@ -14,12 +14,18 @@ class AV_Petitioner_Submissions_Controller
     public static function api_handle_form_submit()
     {
         if (!check_ajax_referer('petitioner_form_nonce', 'petitioner_nonce', false)) {
-            wp_send_json_error('Invalid nonce');
+            wp_send_json_error([
+                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                'message'   => AV_Petitioner_Labels::get('invalid_nonce'),
+            ]);
             wp_die();
         }
 
         if (!empty($_POST['ptr_info'])) {
-            wp_send_json_error('Invalid submission data');
+            wp_send_json_error([
+                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                'message'   => AV_Petitioner_Labels::get('error_generic'),
+            ]);
             wp_die();
         }
 
@@ -59,7 +65,10 @@ class AV_Petitioner_Submissions_Controller
         );
 
         if ($akismet_is_spam) {
-            wp_send_json_error(__('Your submission has been flagged as spam.', 'petitioner'));
+            wp_send_json_error([
+                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                'message'   => AV_Petitioner_Labels::get('flagged_as_spam'),
+            ]);
         }
 
         // todo: add these
@@ -71,7 +80,10 @@ class AV_Petitioner_Submissions_Controller
         $email_exists = AV_Petitioner_Submissions_Model::check_duplicate_email($email, $form_id);
 
         if ($email_exists) {
-            wp_send_json_error(__('Looks like you\'ve already signed this petition!', 'petitioner'));
+            wp_send_json_error([
+                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                'message'   => AV_Petitioner_Labels::get('already_signed'),
+            ]);
         }
 
         $confirmation_token = null;
@@ -154,9 +166,15 @@ class AV_Petitioner_Submissions_Controller
 
         // Check if the insert was successful
         if ($submission_id === false || $send_emails === false) {
-            wp_send_json_error(__('Error saving submission. Please try again.', 'petitioner'));
+            wp_send_json_error([
+                'title'   => AV_Petitioner_Labels::get('could_not_submit'),
+                'message' => AV_Petitioner_Labels::get('error_generic'),
+            ]);
         } else {
-            wp_send_json_success(__('Your signature has been added!', 'petitioner'));
+            wp_send_json_success([
+                'title'     => AV_Petitioner_Labels::get('success_message_title', $form_id),
+                'message'   => AV_Petitioner_Labels::get('success_message', $form_id),
+            ]);
         }
 
         wp_die();
