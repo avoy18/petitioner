@@ -66,7 +66,7 @@ export function EditFormContextProvider({
 		show_country = false,
 		subject = '',
 		require_approval = false,
-		approval_state = 'approved',
+		approval_state = 'Confirmed',
 		letter = '',
 		add_legal_text = false,
 		consent_text = '',

@@ -67,12 +67,12 @@ class AV_Petitioner_Frontend_UI
 
         if (!$petitioner_show_letter) return;
     ?>
-        <button class="petitioner__btn petitioner__btn--letter"><?php esc_html_e('View the letter', 'petitioner'); ?></button>
+        <button class="petitioner__btn petitioner__btn--letter"><?php echo esc_html(AV_Petitioner_Labels::get('view_the_letter')); ?></button>
 
         <div class="petitioner-modal">
             <span class="petitioner-modal__backdrop"></span>
             <div class="petitioner-modal__letter">
-                <button class="petitioner-modal__close">&times; <span><?php esc_html_e('Close modal', 'petitioner') ?></span></button>
+                <button class="petitioner-modal__close">&times; <span><?php echo esc_html(AV_Petitioner_Labels::get('close_modal')); ?></span></button>
                 <h3><?php echo esc_html($petitioner_subject); ?></h3>
                 <div class="petitioner-modal__inner">
                     <?php
@@ -80,7 +80,7 @@ class AV_Petitioner_Frontend_UI
                     echo wp_kses_post($parsed_letter); ?>
                 </div>
                 <hr />
-                <p><?php esc_html_e('{Your name will be here}', 'petitioner'); ?></p>
+                <p><?php echo esc_html(AV_Petitioner_Labels::get('your_name_here')); ?></p>
             </div>
         </div>
     <?php
@@ -112,14 +112,14 @@ class AV_Petitioner_Frontend_UI
             <div class="petitioner__col">
                 <span class="petitioner__num"><?php echo esc_html($total_submissions . PHP_EOL); ?></span>
                 <span class="petitioner__numlabel">
-                    <?php esc_html_e('Signatures', 'petitioner'); ?>
+                    <?php echo esc_html(AV_Petitioner_Labels::get('signatures')); ?>
                     <small>(<?php echo esc_html($progress . '%'); ?>)</small>
                 </span>
             </div>
 
             <div class="petitioner__col petitioner__col--end">
                 <span class="petitioner__num"><?php echo esc_html($goal . PHP_EOL); ?></span>
-                <span class="petitioner__numlabel"><?php esc_html_e('Goal', 'petitioner'); ?></span>
+                <span class="petitioner__numlabel"><?php echo esc_html(AV_Petitioner_Labels::get('goal')); ?></span>
             </div>
 
         </div>

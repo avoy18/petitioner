@@ -12,9 +12,14 @@ import { __ } from '@wordpress/i18n';
  * @returns An object with default values for the form fields.
  */
 const normalizeDefaultValues = (raw: unknown): DefaultValues => {
-	const DEFAULT_SUBJECT = __('Thank you for signing the {{petition_title}}', 'petitioner');
-	const DEFAULT_CONTENT =
-		__('Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.', 'petitioner');
+	const DEFAULT_SUBJECT = __(
+		'Thank you for signing the {{petition_title}}',
+		'petitioner'
+	);
+	const DEFAULT_CONTENT = __(
+		'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.',
+		'petitioner'
+	);
 
 	const defaultValues: DefaultValues = {
 		from_field: '',
@@ -299,8 +304,7 @@ export default function AdvancedSettings() {
 						<TextControl
 							style={{ width: '100%' }}
 							type="text"
-							required
-							label="Success message title *"
+							label="Success message title"
 							value={
 								formState?.success_message_title.length > 0
 									? formState.success_message_title
@@ -314,7 +318,7 @@ export default function AdvancedSettings() {
 						/>
 					</p>
 					<PTRichText
-						label="Thank you message content"
+						label="Success message content"
 						id="petitioner_success_message"
 						help={
 							'This will be the content of the success message shown after submitting a petition.'

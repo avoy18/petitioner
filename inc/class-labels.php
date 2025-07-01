@@ -26,6 +26,11 @@ class AV_Petitioner_Labels
             'from_field'                     => AV_Petitioner_Email_Template::get_default_from_field(),
             'success_message_title'          => __('Thank you!', 'petitioner'),
             'success_message'                => __('Your submission has been received.', 'petitioner'),
+            'your_name_here'                 => __('{Your name will be here}', 'petitioner'),
+            'view_the_letter'                => __('View the letter', 'petitioner'),
+            'close_modal'                    => __('Close modal', 'petitioner'),
+            'signatures'                     => __('Signatures', 'petitioner'),
+            'goal'                           => __('Goal', 'petitioner'),
         ];
 
         self::$defaults = apply_filters('av_petitioner_labels_defaults', self::$defaults);
