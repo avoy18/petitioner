@@ -33,7 +33,14 @@ class AV_Petitioner_Labels
             'goal'                           => __('Goal', 'petitioner'),
         ];
 
+        /**
+         * Filter to modify the default labels for the plugin.
+         *
+         * @param array $defaults Array of default labels.
+         * @return array Modified default labels.
+         */
         self::$defaults = apply_filters('av_petitioner_labels_defaults', self::$defaults);
+
         // If the key exists in the defaults, return it
         // Otherwise, return an empty string
         if (empty($key)) {
