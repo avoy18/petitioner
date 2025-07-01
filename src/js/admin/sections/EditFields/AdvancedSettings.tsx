@@ -2,6 +2,7 @@ import { TextControl, SelectControl } from '@wordpress/components';
 import PTRichText from '@admin/components/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 import { DefaultValues } from '@admin/types/edit-form.types';
+import { __ } from '@wordpress/i18n';
 
 /*
  * Normalize the default values from the raw data
@@ -11,9 +12,9 @@ import { DefaultValues } from '@admin/types/edit-form.types';
  * @returns An object with default values for the form fields.
  */
 const normalizeDefaultValues = (raw: unknown): DefaultValues => {
-	const DEFAULT_SUBJECT = 'Thank you for signing the {{petition_title}}';
+	const DEFAULT_SUBJECT = __('Thank you for signing the {{petition_title}}', 'petitioner');
 	const DEFAULT_CONTENT =
-		'Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.';
+		__('Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.', 'petitioner');
 
 	const defaultValues: DefaultValues = {
 		from_field: '',
@@ -22,7 +23,7 @@ const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 		ty_email_subject_confirm: DEFAULT_SUBJECT,
 		ty_email_confirm: DEFAULT_CONTENT,
 		success_message_title: '',
-		success_message: ''
+		success_message: '',
 	};
 
 	if (typeof raw !== 'object' || raw === null) {
@@ -72,7 +73,8 @@ export default function AdvancedSettings() {
 	const { subject: defaultTYSubject, content: defaultTYEmailContent } =
 		getThankYouDefaults(defaultValues, formState.approval_state);
 
-	const defaultSuccessMessageTitle = defaultValues?.success_message_title || '';
+	const defaultSuccessMessageTitle =
+		defaultValues?.success_message_title || '';
 	const defaultSuccessMessageContent = defaultValues?.success_message || '';
 
 	return (
