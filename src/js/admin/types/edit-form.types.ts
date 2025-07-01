@@ -11,6 +11,8 @@ export type DefaultValues = {
 	ty_email: string;
 	ty_email_subject_confirm: string;
 	ty_email_confirm: string;
+	success_message_title: string;
+	success_message: string;
 };
 
 export type PetitionerData = {
@@ -36,6 +38,9 @@ export type PetitionerData = {
 	add_honeypot: CheckboxValue;
 	form_id?: FormID;
 	default_values?: DefaultValues;
+	success_message_title?: TextValue;
+	override_success_message?: CheckboxValue;
+	success_message?: TextValue;
 };
 
 export interface EditFormContextValue {

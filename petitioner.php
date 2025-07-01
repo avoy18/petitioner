@@ -52,6 +52,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-edit-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-settings-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/utilities.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-labels.php';
 
 $petitioner_setup = new AV_Petitioner_Setup();
 new AV_Email_Confirmations();

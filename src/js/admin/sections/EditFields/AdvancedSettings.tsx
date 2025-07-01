@@ -21,6 +21,8 @@ const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 		ty_email: DEFAULT_CONTENT,
 		ty_email_subject_confirm: DEFAULT_SUBJECT,
 		ty_email_confirm: DEFAULT_CONTENT,
+		success_message_title: '',
+		success_message: ''
 	};
 
 	if (typeof raw !== 'object' || raw === null) {
@@ -69,6 +71,9 @@ export default function AdvancedSettings() {
 
 	const { subject: defaultTYSubject, content: defaultTYEmailContent } =
 		getThankYouDefaults(defaultValues, formState.approval_state);
+
+	const defaultSuccessMessageTitle = defaultValues?.success_message_title || '';
+	const defaultSuccessMessageContent = defaultValues?.success_message || '';
 
 	return (
 		<>
@@ -257,6 +262,69 @@ export default function AdvancedSettings() {
 								: defaultTYEmailContent
 						}
 						onChange={(value) => updateFormState('ty_email', value)}
+						height={150}
+					/>
+				</>
+			)}
+
+			<p>
+				<input
+					checked={formState.override_success_message}
+					type="checkbox"
+					name="petitioner_override_success_message"
+					id="petitioner_override_success_message"
+					className="widefat"
+					onChange={(e) =>
+						updateFormState(
+							'override_success_message',
+							e.target.checked
+						)
+					}
+				/>
+				<label htmlFor="petitioner_override_success_message">
+					Override success message?
+					<br />
+					<small>
+						Use this to customize the success message shown after
+						submitting a petition.
+					</small>
+				</label>
+			</p>
+
+			{formState.override_success_message && (
+				<>
+					<p>
+						<TextControl
+							style={{ width: '100%' }}
+							type="text"
+							required
+							label="Success message title *"
+							value={
+								formState?.success_message_title.length > 0
+									? formState.success_message_title
+									: defaultSuccessMessageTitle
+							}
+							name="petitioner_success_message_title"
+							id="petitioner_success_message_title"
+							onChange={(value) =>
+								updateFormState('success_message_title', value)
+							}
+						/>
+					</p>
+					<PTRichText
+						label="Thank you message content"
+						id="petitioner_success_message"
+						help={
+							'This will be the content of the success message shown after submitting a petition.'
+						}
+						value={
+							formState?.success_message?.length > 0
+								? formState.success_message
+								: defaultSuccessMessageContent
+						}
+						onChange={(value) =>
+							updateFormState('success_message', value)
+						}
 						height={150}
 					/>
 				</>
