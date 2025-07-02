@@ -25,8 +25,6 @@ jobs:
             # This MUST come before setting up Node.js caching.
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
-              with:
-                  version: 10
 
             # 3. Sets up a Node.js environment and configures caching for pnpm.
             # This will dramatically speed up dependency installation on subsequent runs.
