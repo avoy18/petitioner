@@ -26,7 +26,7 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
               with:
-                  version: 8 # You can specify a pnpm version, like 8 or 'latest'
+                  version: 10
 
             # 3. Sets up a Node.js environment and configures caching for pnpm.
             # This will dramatically speed up dependency installation on subsequent runs.
