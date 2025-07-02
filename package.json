@@ -8,9 +8,9 @@
 		"build": "vite build",
 		"build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
 		"dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
-		"deploy": "yarn build-all && node -e 'require(\"./vite.config.ts\").deploy()'",
-		"dev-all": "concurrently \"yarn dev\" \"yarn dev:gutenberg\"",
-		"build-all": "concurrently \"yarn build:gutenberg\" \"yarn build\"",
+		"deploy": "pnpm build-all && node -e 'require(\"./vite.config.ts\").deploy()'",
+		"dev-all": "concurrently \"pnpm dev\" \"pnpm dev:gutenberg\"",
+		"build-all": "concurrently \"pnpm build:gutenberg\" \"pnpm build\"",
 		"test": "vitest run --environment happy-dom"
 	},
 	"repository": {
@@ -55,6 +55,7 @@
 		"@dnd-kit/core": "^6.3.1",
 		"@dnd-kit/modifiers": "^9.0.0",
 		"@dnd-kit/sortable": "^10.0.0",
+		"@dnd-kit/utilities": "^3.2.2",
 		"@prettier/plugin-php": "^0.22.4",
 		"@wordpress/block-editor": "^14.2.0",
 		"@wordpress/blocks": "^13.7.0",
@@ -74,5 +75,5 @@
 		"@types/react": "19.1.5",
 		"@types/react-dom": "19.1.5"
 	},
-	"packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+	"packageManager": "pnpm@10.0.0"
 }

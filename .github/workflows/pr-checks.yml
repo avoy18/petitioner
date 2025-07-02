@@ -1,0 +1,48 @@
+name: PR Checks
+
+# Controls when the workflow will run
+on:
+    # Triggers the workflow on push or pull request events but only for the "main" branch
+    pull_request:
+        types: [opened, synchronize, reopened]
+        branches:
+            - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+    # This workflow contains a single job called "build-and-test"
+    build-and-test:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # 2. This action installs the pnpm package manager and makes the `pnpm` command available.
+            # This MUST come before setting up Node.js caching.
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            # 3. Sets up a Node.js environment and configures caching for pnpm.
+            # This will dramatically speed up dependency installation on subsequent runs.
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22.x' # Use a major version to avoid frequent updates
+                  cache: 'pnpm'
+
+            # 4. Install dependencies using the lockfile for reproducibility.
+            # This step will be very fast if the cache from the previous step is hit.
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            # 5. Run the build command as defined in your package.json
+            - name: Build project
+              run: pnpm run build
+
+            # 6. Run the test command as defined in your package.json
+            - name: Run tests
+              run: pnpm run test
