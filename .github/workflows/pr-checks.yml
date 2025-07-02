@@ -1,58 +1,50 @@
-name: PR Checks (pnpm)
+name: PR Checks
 
+# Controls when the workflow will run
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
+    # Triggers the workflow on push or pull request events but only for the "main" branch
+    pull_request:
+        types: [opened, synchronize, reopened]
+        branches:
+            - main
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    # This workflow contains a single job called "build-and-test"
+    build-and-test:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.16.0'
-          cache: 'pnpm'
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      # Replace the 'Install pnpm' step with this:
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest # Or a specific version like 8.x
-          run_install: false # We'll run pnpm install in a separate step
+            # 2. This action installs the pnpm package manager and makes the `pnpm` command available.
+            # This MUST come before setting up Node.js caching.
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 8 # You can specify a pnpm version, like 8 or 'latest'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+            # 3. Sets up a Node.js environment and configures caching for pnpm.
+            # This will dramatically speed up dependency installation on subsequent runs.
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22.x' # Use a major version to avoid frequent updates
+                  cache: 'pnpm'
 
-      - name: Build project
-        run: pnpm run build
+            # 4. Install dependencies using the lockfile for reproducibility.
+            # This step will be very fast if the cache from the previous step is hit.
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+            # 5. Run the build command as defined in your package.json
+            - name: Build project
+              run: pnpm run build
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.16.0'
-          cache: 'pnpm'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest # Or a specific version like 8.x
-          run_install: false # We'll run pnpm install in a separate step
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests
-        run: pnpm run test
+            # 6. Run the test command as defined in your package.json
+            - name: Run tests
+              run: pnpm run test
