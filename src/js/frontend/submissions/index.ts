@@ -76,7 +76,9 @@ export default class PetitionerSubmissions {
 		this.renderer = new SubmissionsRenderer({
 			wrapper: this.wrapper,
 			submissions: this.submissions,
-			onPageChange: () => {},
+			onPageChange: (pageNum) => {
+				alert(`Page changed: ${pageNum}`);
+			},
 			fetchData: async (page: number) => {
 				// Fetch data for the specified page
 				return this.fetchSubmissions();

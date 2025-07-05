@@ -69,16 +69,42 @@ export default class SubmissionsRenderer {
 		let paginationHTML = '<div class="ptr-pagination">';
 
 		// Previous button
-		paginationHTML += `<button onclick="${this.options.onPageChange(this.options.currentPage - 1)}" class="ptr-pagination__prev" data-page="prev" ${totalPages <= 1 ? 'disabled' : ''}> << </button>`;
+		paginationHTML += `<button class="ptr-pagination__prev" data-page="${this.options.currentPage - 1}" ${this.options.currentPage === 1 ? 'disabled' : ''}> &lt;&lt; </button>`;
 
 		for (let i = 1; i <= totalPages; i++) {
-			paginationHTML += `<button onclick="${this.options.onPageChange(i)}" class="ptr-pagination__item ${i === this.options.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+			paginationHTML += `<button class="ptr-pagination__item ${i === this.options.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
 		}
 
 		// Next button
-		paginationHTML += `<button onclick="${this.options.onPageChange(this.options.currentPage + 1)}" class="ptr-pagination__next" data-page="next" ${totalPages <= 1 ? 'disabled' : ''}> >> </button>`;
+		paginationHTML += `<button class="ptr-pagination__next" data-page="${this.options.currentPage + 1}" ${this.options.currentPage === totalPages ? 'disabled' : ''}> &gt;&gt; </button>`;
 
 		paginationHTML += '</div>';
+
+		// Attach event listeners after rendering
+		setTimeout(() => {
+			const wrapper =
+				this.options.wrapper.querySelector('.ptr-pagination');
+			if (wrapper) {
+				wrapper.querySelectorAll('button[data-page]').forEach((btn) => {
+					btn.addEventListener('click', (e) => {
+						const page = parseInt(
+							(e.currentTarget as HTMLElement).getAttribute(
+								'data-page'
+							) || '',
+							10
+						);
+						if (
+							!isNaN(page) &&
+							page >= 1 &&
+							page <= totalPages &&
+							page !== this.options.currentPage
+						) {
+							this.options.onPageChange(page);
+						}
+					});
+				});
+			}
+		}, 0);
 
 		return paginationHTML;
 	}
