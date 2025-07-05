@@ -1,6 +1,7 @@
 import ReCaptcha from './recaptcha';
 import HCaptcha from './hcaptcha';
 import Turnstile from './turnstile';
+import type { PetitionerWrapperElement } from './types/frontend';
 
 type ApiResponse = {
 	success: boolean;
@@ -31,10 +32,10 @@ type ApiResponse = {
  * ```
  */
 export default class PetitionerForm {
-	private wrapper: HTMLDivElement;
+	private wrapper: PetitionerWrapperElement;
 	private responseTitle: HTMLHeadingElement | null;
 	private responseText: HTMLParagraphElement | null;
-	private formEl: HTMLDivElement | null;
+	private formEl: HTMLElement | null;
 	private viewLetterBTN: HTMLButtonElement | null;
 	private petitionerModal: HTMLDivElement | null;
 	private modalClose: HTMLButtonElement | null;
@@ -42,11 +43,11 @@ export default class PetitionerForm {
 	private actionPath: string;
 	private nonce: string;
 	private captchaValidated: boolean = false;
-	private hcaptcha: CaptchaProvider | null = null;
-	private turnstile: CaptchaProvider | null = null;
+	private hcaptcha: object | null = null;
+	private turnstile: object | null = null;
 	private _escListener: ((e: KeyboardEvent) => void) | null = null;
 
-	constructor(wrapper: HTMLDivElement) {
+	constructor(wrapper: PetitionerWrapperElement) {
 		this.wrapper = wrapper;
 		this.responseTitle = null;
 		this.responseText = null;

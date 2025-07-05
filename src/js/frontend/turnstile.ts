@@ -1,11 +1,11 @@
 export default class Turnstile {
-	private form: HTMLDivElement | HTMLFormElement;
+	private form: HTMLElement;
 	private turnstileField: HTMLInputElement | null;
 	private turnstileContainer: HTMLElement | null;
 	private widgetId: string | null = null;
 	private callbackFunction: (() => void) | null = null;
 
-	constructor(petitionForm: HTMLDivElement | HTMLFormElement) {
+	constructor(petitionForm: HTMLElement) {
 		this.form = petitionForm;
 		this.turnstileField = this.form.querySelector(
 			'[name="petitioner-turnstile-response"]'

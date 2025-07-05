@@ -1,5 +1,5 @@
 export default class ReCaptcha {
-	constructor(petitionForm: HTMLDivElement | HTMLFormElement) {
+	constructor(petitionForm: HTMLElement | HTMLFormElement) {
 		if (
 			typeof window.petitionerCaptcha !== 'undefined' &&
 			window.petitionerCaptcha.recaptchaSiteKey

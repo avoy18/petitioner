@@ -26,13 +26,13 @@ declare global {
 }
 
 export default class HCaptcha {
-	private form: HTMLDivElement | HTMLFormElement;
+	private form: HTMLElement;
 	private hcaptchaField: HTMLInputElement | null;
 	private hcaptchaContainer: HTMLElement | null;
 	private widgetId: string | null = null;
 	private callbackFunction: CaptchaValidationCallback | null = null;
 
-	constructor(currentForm: HTMLDivElement | HTMLFormElement) {
+	constructor(currentForm: HTMLElement) {
 		this.form = currentForm;
 		this.hcaptchaField = this.form.querySelector<HTMLInputElement>(
 			'[name="petitioner-h-captcha-response"]'

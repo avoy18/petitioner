@@ -1,5 +1,7 @@
 // Global type definitions for Petitioner Form
 
+export type PetitionerWrapperElement = HTMLElement | null;
+
 export type PetitionerFormSettings = {
 	actionPath?: string;
 	nonce?: string;
