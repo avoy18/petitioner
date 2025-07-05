@@ -1,6 +1,10 @@
 import type { SubmissionItem, Submissions } from './consts';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * @class SubmissionsRenderer
+ * Renders the submissions list and handles pagination.
+ */
 export default class SubmissionsRenderer {
 	constructor(
 		private options: {
@@ -42,7 +46,7 @@ export default class SubmissionsRenderer {
         </section>`;
 	}
 
-	private renderSubmissionsList() {
+	public renderSubmissionsList() {
 		if (
 			!this.options.submissions ||
 			this.options.submissions.length === 0
@@ -57,11 +61,11 @@ export default class SubmissionsRenderer {
 			.join(', ');
 	}
 
-	private renderSubmissionItem(submission: SubmissionItem): string {
+	public renderSubmissionItem(submission: SubmissionItem): string {
 		return `<span class="submissions__item">${submission.fname} ${submission.lname}</span>`;
 	}
 
-	private renderPagination(): string {
+	public renderPagination(): string {
 		if (!this.options.total || !this.options.perPage) {
 			return '';
 		}

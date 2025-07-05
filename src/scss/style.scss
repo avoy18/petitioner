@@ -52,6 +52,9 @@ $spacer-xl: 32px;
 	--ptr-progress-radius: #{$spacer-xs};
 	--ptr-progress-inner-bg: var(--ptr-color-primary);
 
+	// misc
+	--ptr-transition-duration: 0.2s;
+
 	padding: var(--ptr-spacing-y) var(--ptr-spacing-x);
 	background-color: var(--ptr-wrapper-bg);
 	border-radius: var(--ptr-wrapper-radius);
@@ -98,8 +101,8 @@ $spacer-xl: 32px;
 			background-size: 1rem;
 			cursor: pointer;
 			transition:
-				border-color 0.2s,
-				background-color 0.2s;
+				border-color var(--ptr-transition-duration),
+				background-color var(--ptr-transition-duration);
 			line-height: var(--ptr-input-line-height);
 
 			&:focus {
@@ -146,8 +149,8 @@ $spacer-xl: 32px;
 				display: inline-block;
 				cursor: pointer;
 				transition:
-					background-color 0.2s,
-					border-color 0.2s;
+					background-color var(--ptr-transition-duration),
+					border-color var(--ptr-transition-duration);
 				padding: 0px;
 				flex-shrink: 0;
 
@@ -413,7 +416,44 @@ $spacer-xl: 32px;
 }
 
 .petitioner-submissions {
+
 	.submissions__item {
 		display: inline;
+	}
+
+	.ptr-pagination {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		margin-top: $spacer-lg;
+		gap: $spacer-xs;
+	}
+
+	.ptr-pagination button {
+		background-color: var(--ptr-color-grey);
+		border: none;
+		border-radius: var(--ptr-input-border-radius);
+		padding: var(--ptr-input-spacing-y) var(--ptr-input-spacing-x);
+		cursor: pointer;
+		font-size: var(--ptr-fs-sm);
+		color: var(--ptr-color-dark);
+		transition: background-color var(--ptr-transition-duration);
+
+		&.active {
+			background-color: var(--ptr-color-primary);
+			color: white;
+		}
+
+		&:hover {
+			background-color: var(--ptr-color-dark);
+			color: white;
+		}
+
+		&[disabled] {
+			background-color: var(--ptr-color-grey);
+			color: var(--ptr-color-dark);
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
 	}
 }
