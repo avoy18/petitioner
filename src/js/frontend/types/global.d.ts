@@ -1,4 +1,4 @@
-import { PetitionerCaptcha, PetitionerFormSettings } from './frontend';
+import { PetitionerCaptcha, PetitionerFormSettings } from './form/consts';
 
 declare global {
     interface Window {

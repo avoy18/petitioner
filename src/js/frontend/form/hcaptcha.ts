@@ -1,4 +1,4 @@
-import { CaptchaValidationCallback } from './types/frontend';
+import { CaptchaValidationCallback } from './consts';
 /**
  * hCaptcha logic
  *

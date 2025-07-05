@@ -132,7 +132,7 @@ class AV_Petitioner_Shortcodes
             'per_page'  => $per_page,
         ];
 
-        echo '<div class="petitioner-submissions"';
+        echo '<div class="petitioner petitioner-submissions"';
         echo ' data-ptr-settings="' . esc_attr(json_encode($settings)) . '"';
         echo '>';
         echo '<div>';

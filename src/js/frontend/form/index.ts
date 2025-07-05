@@ -1,7 +1,7 @@
 import ReCaptcha from './recaptcha';
 import HCaptcha from './hcaptcha';
 import Turnstile from './turnstile';
-import type { PetitionerWrapperElement } from './types/frontend';
+import type { PetitionerWrapperElement } from './consts';
 
 type ApiResponse = {
 	success: boolean;
