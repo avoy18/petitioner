@@ -101,7 +101,6 @@ class AV_Petitioner_Submissions_Model
         $where = ['form_id = %d'];
         $params = [$form_id];
 
-        av_ptr_error_log($settings);
         if (!empty($query)) {
             foreach ($query as $k => $v) {
                 if (preg_match('/^[a-zA-Z0-9_]+$/', $k) && in_array($k, $allowed_fields)) {
