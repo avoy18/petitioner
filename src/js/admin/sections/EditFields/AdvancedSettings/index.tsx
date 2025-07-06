@@ -87,18 +87,26 @@ export default function AdvancedSettings() {
 			<CheckboxInput
 				checked={!!formState.add_honeypot}
 				name="petitioner_add_honeypot"
-				label={__("Add a honeypot field to the form for better spam protection?")}
-				onChange={(e) => updateFormState('add_honeypot', e.target.checked)}
+				label={__(
+					'Add a honeypot field to the form for better spam protection?',
+					'petitioner'
+				)}
+				onChange={(e) =>
+					updateFormState('add_honeypot', e.target.checked)
+				}
 			/>
 
 			<p>
 				<TextControl
 					style={{ width: '100%' }}
-					label="From field"
+					label={__('From field', 'petitioner')}
 					value={formState.from_field}
 					defaultValue={defaultFromField}
 					type="email"
-					help={`This is the email address that will appear in the 'From' field of the email. If empty will default to ${defaultFromField}.`}
+					help={__(
+						`This is the email address that will appear in the 'From' field of the email. If empty will default to ${defaultFromField}.`,
+						'petitioner'
+					)}
 					name="petitioner_from_field"
 					id="petitioner_from_field"
 					onChange={(value) => updateFormState('from_field', value)}
@@ -108,9 +116,10 @@ export default function AdvancedSettings() {
 			<CheckboxInput
 				checked={formState.require_approval}
 				name="petitioner_require_approval"
-				label={__("Require approval for submissions?")}
+				label={__('Require approval for submissions?', 'petitioner')}
 				help={__(
-					"When enabled, submissions will be saved as drafts and will require approval or an email confirmation before being published."
+					'When enabled, submissions will be saved as drafts and will require approval or an email confirmation before being published.',
+					'petitioner'
 				)}
 				onChange={(e) => {
 					const isChecked = e.target.checked;
@@ -134,19 +143,28 @@ export default function AdvancedSettings() {
 						value={formState.approval_state}
 						id="petitioner_approval_state"
 						name="petitioner_approval_state"
-						label="Approval behavior"
+						label={__('Approval behavior', 'petitioner')}
 						options={[
 							{
 								value: 'Email',
-								label: 'Automatic: Confirmed by email',
+								label: __(
+									'Automatic: Confirmed by email',
+									'petitioner'
+								),
 							},
 							{
 								value: 'Confirmed',
-								label: 'Manual: confirmed by default',
+								label: __(
+									'Manual: confirmed by default',
+									'petitioner'
+								),
 							},
 							{
 								value: 'Declined',
-								label: 'Manual: needs approval by default',
+								label: __(
+									'Manual: needs approval by default',
+									'petitioner'
+								),
 							},
 						]}
 						onChange={(value) => {
@@ -168,18 +186,20 @@ export default function AdvancedSettings() {
 			<CheckboxInput
 				checked={formState.override_ty_email}
 				name="petitioner_override_ty_email"
-				label={__("Override the confirmation email?")}
+				label={__('Override the confirmation email?', 'petitioner')}
 				help={
 					<>
 						{__(
-							'Use this to customize the thank you email sent when submitting a petition.'
+							'Use this to customize the thank you email sent when submitting a petition.',
+							'petitioner'
 						)}
 						{confirmEmails && formState.override_ty_email && (
 							<>
 								<br />
 								<strong style={{ color: 'salmon' }}>
 									{__(
-										'Make sure to include the email confirmation variable.'
+										'Make sure to include the email confirmation variable.',
+										'petitioner'
 									)}{' '}
 									{'{{confirmation_link}}'}
 								</strong>
@@ -199,7 +219,10 @@ export default function AdvancedSettings() {
 							style={{ width: '100%' }}
 							type="text"
 							required
-							label="Thank you email subject *"
+							label={__(
+								'Thank you email subject *',
+								'petitioner'
+							)}
 							value={
 								formState?.ty_email_subject.length > 0
 									? formState.ty_email_subject
@@ -213,13 +236,14 @@ export default function AdvancedSettings() {
 						/>
 					</p>
 					<PTRichText
-						label="Thank you email content"
+						label={__('Thank you email content', 'petitioner')}
 						id="petitioner_ty_email"
 						help={
 							<div>
-								This will be the content of the thank you email
-								sent to the signer. You can use the following
-								dynamic tags:
+								{__(
+									'This will be the content of the thank you email sent to the signer. You can use the following dynamic tags:',
+									'petitioner'
+								)}
 								<br />
 								<div className="ptr-code-snippets">
 									<input disabled value={`{{user_name}}`} />
@@ -254,13 +278,17 @@ export default function AdvancedSettings() {
 
 			<CheckboxInput
 				name="petitioner_override_success_message"
-				label={__("Override success message?")}
+				label={__('Override success message?', 'petitioner')}
 				help={__(
-					'Use this to customize the success message shown after submitting a petition.'
+					'Use this to customize the success message shown after submitting a petition.',
+					'petitioner'
 				)}
 				checked={formState.override_success_message}
 				onChange={(e) =>
-					updateFormState('override_success_message', e.target.checked)
+					updateFormState(
+						'override_success_message',
+						e.target.checked
+					)
 				}
 			/>
 
@@ -270,7 +298,7 @@ export default function AdvancedSettings() {
 						<TextControl
 							style={{ width: '100%' }}
 							type="text"
-							label="Success message title"
+							label={__('Success message title', 'petitioner')}
 							value={
 								formState?.success_message_title.length > 0
 									? formState.success_message_title
@@ -284,11 +312,12 @@ export default function AdvancedSettings() {
 						/>
 					</p>
 					<PTRichText
-						label="Success message content"
+						label={__('Success message content', 'petitioner')}
 						id="petitioner_success_message"
-						help={
-							'This will be the content of the success message shown after submitting a petition.'
-						}
+						help={__(
+							'This will be the content of the success message shown after submitting a petition.',
+							'petitioner'
+						)}
 						value={
 							formState?.success_message?.length > 0
 								? formState.success_message
@@ -304,9 +333,13 @@ export default function AdvancedSettings() {
 
 			<CheckboxInput
 				name="petitioner_hide_last_names"
-				label={__("Hide signee's last names on the frontend")}
+				label={__(
+					"Hide signee's last names on the frontend",
+					'petitioner'
+				)}
 				help={__(
-					'This will only show the first letter of their last name on the submission list. For example: John D.'
+					'This will only show the first letter of their last name on the submission list. For example: John D.',
+					'petitioner'
 				)}
 				checked={formState.hide_last_names}
 				onChange={(e) =>
