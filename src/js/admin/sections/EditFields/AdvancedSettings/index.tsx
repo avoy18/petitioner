@@ -3,7 +3,7 @@ import PTRichText from '@admin/components/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 import type { DefaultValues } from '@admin/sections/EditFields/consts';
 import { __ } from '@wordpress/i18n';
-
+import CheckboxInput from '@admin/components/CheckboxInput';
 /*
  * Normalize the default values from the raw data
  * to ensure they match the expected structure.
@@ -84,21 +84,12 @@ export default function AdvancedSettings() {
 
 	return (
 		<>
-			<p>
-				<input
-					checked={!!formState.add_honeypot}
-					type="checkbox"
-					name="petitioner_add_honeypot"
-					id="petitioner_add_honeypot"
-					className="widefat"
-					onChange={(e) =>
-						updateFormState('add_honeypot', e.target.checked)
-					}
-				/>
-				<label htmlFor="petitioner_add_honeypot">
-					Add a honeypot field to the form for better spam protection?
-				</label>
-			</p>
+			<CheckboxInput
+				checked={!!formState.add_honeypot}
+				name="petitioner_add_honeypot"
+				label={__("Add a honeypot field to the form for better spam protection?")}
+				onChange={(e) => updateFormState('add_honeypot', e.target.checked)}
+			/>
 
 			<p>
 				<TextControl
@@ -114,38 +105,28 @@ export default function AdvancedSettings() {
 				/>
 			</p>
 
-			<p>
-				<input
-					checked={formState.require_approval}
-					type="checkbox"
-					name="petitioner_require_approval"
-					id="petitioner_require_approval"
-					className="widefat"
-					onChange={(e) => {
-						const isChecked = e.target.checked;
-						updateFormState('require_approval', isChecked);
-						updateFormState('approval_state', 'Email');
+			<CheckboxInput
+				checked={formState.require_approval}
+				name="petitioner_require_approval"
+				label={__("Require approval for submissions?")}
+				help={__(
+					"When enabled, submissions will be saved as drafts and will require approval or an email confirmation before being published."
+				)}
+				onChange={(e) => {
+					const isChecked = e.target.checked;
+					updateFormState('require_approval', isChecked);
+					updateFormState('approval_state', 'Email');
 
-						window.petitionerData.require_approval = isChecked;
-						// Trigger custom event
-						const evt = new CustomEvent('onPtrApprovalChange', {
-							detail: {
-								requireApproval: isChecked,
-							},
-						});
-						window.dispatchEvent(evt);
-					}}
-				/>
-				<label htmlFor="petitioner_require_approval">
-					Require approval for submissions?
-				</label>
-				<br />
-				<small>
-					When enabled, submissions will be saved as drafts and will
-					require approval or an email confirmation before being
-					published.
-				</small>
-			</p>
+					window.petitionerData.require_approval = isChecked;
+					// Trigger custom event
+					const evt = new CustomEvent('onPtrApprovalChange', {
+						detail: {
+							requireApproval: isChecked,
+						},
+					});
+					window.dispatchEvent(evt);
+				}}
+			/>
 
 			{formState.require_approval && (
 				<p>
@@ -184,35 +165,32 @@ export default function AdvancedSettings() {
 				</p>
 			)}
 
-			<p>
-				<input
-					checked={formState.override_ty_email}
-					type="checkbox"
-					name="petitioner_override_ty_email"
-					id="petitioner_override_ty_email"
-					className="widefat"
-					onChange={(e) =>
-						updateFormState('override_ty_email', e.target.checked)
-					}
-				/>
-				<label htmlFor="petitioner_override_ty_email">
-					Override the confirmation email?
-					<br />
-					<small>
-						Use this to customize the thank you email sent when
-						submitting a petition.
+			<CheckboxInput
+				checked={formState.override_ty_email}
+				name="petitioner_override_ty_email"
+				label={__("Override the confirmation email?")}
+				help={
+					<>
+						{__(
+							'Use this to customize the thank you email sent when submitting a petition.'
+						)}
 						{confirmEmails && formState.override_ty_email && (
 							<>
 								<br />
 								<strong style={{ color: 'salmon' }}>
-									Make sure to include the email confirmation
-									variable. {'{{confirmation_link}}'}
+									{__(
+										'Make sure to include the email confirmation variable.'
+									)}{' '}
+									{'{{confirmation_link}}'}
 								</strong>
 							</>
 						)}
-					</small>
-				</label>
-			</p>
+					</>
+				}
+				onChange={(e) =>
+					updateFormState('override_ty_email', e.target.checked)
+				}
+			/>
 
 			{formState.override_ty_email && (
 				<>
@@ -274,29 +252,17 @@ export default function AdvancedSettings() {
 				</>
 			)}
 
-			<p>
-				<input
-					checked={formState.override_success_message}
-					type="checkbox"
-					name="petitioner_override_success_message"
-					id="petitioner_override_success_message"
-					className="widefat"
-					onChange={(e) =>
-						updateFormState(
-							'override_success_message',
-							e.target.checked
-						)
-					}
-				/>
-				<label htmlFor="petitioner_override_success_message">
-					Override success message?
-					<br />
-					<small>
-						Use this to customize the success message shown after
-						submitting a petition.
-					</small>
-				</label>
-			</p>
+			<CheckboxInput
+				name="petitioner_override_success_message"
+				label={__("Override success message?")}
+				help={__(
+					'Use this to customize the success message shown after submitting a petition.'
+				)}
+				checked={formState.override_success_message}
+				onChange={(e) =>
+					updateFormState('override_success_message', e.target.checked)
+				}
+			/>
 
 			{formState.override_success_message && (
 				<>
@@ -335,6 +301,18 @@ export default function AdvancedSettings() {
 					/>
 				</>
 			)}
+
+			<CheckboxInput
+				name="petitioner_hide_last_names"
+				label={__("Hide signee's last names on the frontend")}
+				help={__(
+					'This will only show the first letter of their last name on the submission list. For example: John D.'
+				)}
+				checked={formState.hide_last_names}
+				onChange={(e) =>
+					updateFormState('hide_last_names', e.target.checked)
+				}
+			/>
 		</>
 	);
 }

@@ -41,6 +41,7 @@ export type PetitionerData = {
 	success_message_title?: TextValue;
 	override_success_message?: CheckboxValue;
 	success_message?: TextValue;
+    hide_last_names: boolean
 };
 
 export interface EditFormContextValue {

@@ -245,7 +245,7 @@ class AV_Petitioner_Submissions_Controller
             wp_die();
         }
 
-        $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_name', true);
+        $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
         $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'city', 'postal_code', 'hide_name', 'submitted_at'];
@@ -268,7 +268,7 @@ class AV_Petitioner_Submissions_Controller
             }
 
             if ($hide_last_name) {
-                $submission->lname = '';
+                $submission->lname = mb_substr($submission->lname, 0, 1);
             }
 
             return $submission;

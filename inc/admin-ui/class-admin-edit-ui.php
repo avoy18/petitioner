@@ -35,6 +35,7 @@ class AV_Petitioner_Admin_Edit_UI
         'add_honeypot'              => '_petitioner_add_honeypot',
         'form_fields'               => '_petitioner_form_fields',
         'field_order'               => '_petitioner_field_order',
+        'hide_last_names'           => '_petitioner_hide_last_names'
     ];
 
     public function __construct()
@@ -107,6 +108,7 @@ class AV_Petitioner_Admin_Edit_UI
             "success_message_title"         => sanitize_text_field($meta_values['success_message_title']),
             "from_field"                    => sanitize_text_field($meta_values['from_field']),
             "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
+            "hide_last_names"               => (bool) $meta_values['hide_last_names'],
             "default_values"                => [
                 "ty_email_subject"              => AV_Petitioner_Labels::get('ty_email_subject'),
                 "ty_email"                      => AV_Petitioner_Labels::get('ty_email'),
@@ -194,6 +196,7 @@ class AV_Petitioner_Admin_Edit_UI
             'add_honeypot',
             'override_ty_email',
             'override_success_message',
+            'hide_last_names'
         ];
 
         $wysiwyg_fields = [
