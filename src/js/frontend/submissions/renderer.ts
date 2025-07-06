@@ -6,23 +6,51 @@ import { __ } from '@wordpress/i18n';
  * Renders the submissions list and handles pagination.
  */
 export default class SubmissionsRenderer {
+	private paginationDiv: HTMLDivElement;
+	private submissionListDiv: HTMLDivElement;
+
 	constructor(
 		private options: {
 			wrapper: HTMLElement;
-			submissions: Submissions | null;
+			submissions: Submissions; // initial submissions
 			perPage?: number;
 			total?: number;
-			currentPage: number;
-			onPageChange: (page: number) => void;
+			currentPage: number; // initial page
+			onPageChange: (page: number) => Promise<Submissions>;
 		}
 	) {
-		this.options.total = 20;
-		this.options.perPage = 10;
+		this.options.total = this.options.total || 20;
+		this.options.perPage = this.options.perPage || 10;
 		this.options.currentPage = this.options.currentPage || 1;
+
+		this.submissionListDiv = document.createElement('div');
+		this.submissionListDiv.className = 'submissions__list';
+
+		this.paginationDiv = document.createElement('div');
+		this.paginationDiv.className = 'submissions__pagination';
 
 		if (!this.options.wrapper) {
 			throw new Error('Element not found');
 		}
+	}
+
+	private attachEventListeners() {
+		if (!this.paginationDiv) return;
+
+		this.paginationDiv.addEventListener('click', async (event) => {
+			const target = event.target as HTMLElement;
+
+			if (target.tagName === 'BUTTON') {
+				const page = parseInt(target.dataset.page || '1', 10);
+				if (!isNaN(page)) {
+					this.options.currentPage = page;
+					const newSubmissions =
+						await this.options.onPageChange(page);
+					this.options.submissions = newSubmissions;
+					this.update();
+				}
+			}
+		});
 	}
 
 	public render() {
@@ -30,20 +58,25 @@ export default class SubmissionsRenderer {
 			return;
 		}
 
-		this.options.wrapper.innerHTML = this.getTemplate();
+		this.options.wrapper.appendChild(this.submissionListDiv);
+		this.options.wrapper.appendChild(this.paginationDiv);
+
+		this.submissionListDiv.innerHTML = this.renderSubmissionsList();
+		this.paginationDiv.innerHTML = this.renderPagination();
+
+		this.attachEventListeners();
 	}
 
-	private getTemplate(): string {
-		if (!this.options.submissions) {
-			return '';
-		}
+	public update() {
+		// Update the submissions list
+		this.submissionListDiv.innerHTML = this.renderSubmissionsList();
 
-		return `<section>
-            <div class="submissions__list">
-                <p>${this.renderSubmissionsList()}</p>
-            </div>
-            <div class="submissions__pagination">${this.renderPagination()}</div>
-        </section>`;
+		// Update the pagination
+		this.paginationDiv.querySelectorAll('.active').forEach((btn) => {
+			btn.classList.remove('active');
+		});
+
+		this.paginationDiv.querySelector(`[data-page="${this.options.currentPage}"]`)?.classList.add('active');
 	}
 
 	public renderSubmissionsList() {
@@ -69,46 +102,20 @@ export default class SubmissionsRenderer {
 		if (!this.options.total || !this.options.perPage) {
 			return '';
 		}
-		const totalPages = Math.ceil(this.options.total / this.options.perPage);
-		let paginationHTML = '<div class="ptr-pagination">';
 
-		// Previous button
-		paginationHTML += `<button class="ptr-pagination__prev" data-page="${this.options.currentPage - 1}" ${this.options.currentPage === 1 ? 'disabled' : ''}> &lt;&lt; </button>`;
+		const totalPages = Math.ceil(this.options.total / this.options.perPage);
+
+		if (totalPages <= 1) {
+			return '';
+		}
+
+		let paginationHTML = '<div class="ptr-pagination">';
 
 		for (let i = 1; i <= totalPages; i++) {
 			paginationHTML += `<button class="ptr-pagination__item ${i === this.options.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
 		}
 
-		// Next button
-		paginationHTML += `<button class="ptr-pagination__next" data-page="${this.options.currentPage + 1}" ${this.options.currentPage === totalPages ? 'disabled' : ''}> &gt;&gt; </button>`;
-
 		paginationHTML += '</div>';
-
-		// Attach event listeners after rendering
-		setTimeout(() => {
-			const wrapper =
-				this.options.wrapper.querySelector('.ptr-pagination');
-			if (wrapper) {
-				wrapper.querySelectorAll('button[data-page]').forEach((btn) => {
-					btn.addEventListener('click', (e) => {
-						const page = parseInt(
-							(e.currentTarget as HTMLElement).getAttribute(
-								'data-page'
-							) || '',
-							10
-						);
-						if (
-							!isNaN(page) &&
-							page >= 1 &&
-							page <= totalPages &&
-							page !== this.options.currentPage
-						) {
-							this.options.onPageChange(page);
-						}
-					});
-				});
-			}
-		}, 0);
 
 		return paginationHTML;
 	}

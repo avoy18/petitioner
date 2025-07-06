@@ -1,41 +1,24 @@
 import { safelyParseJSON } from '@js/utilities';
 import SubmissionsRenderer from '@js/frontend/submissions/renderer';
-import type { SubmissionSettings } from './consts';
+import type { SubmissionSettings, Submissions } from './consts';
 
-const submissionData = {
-	total: 22,
-	data: [
-		{
-			id: 1,
-			fname: 'Anton',
-			lname: 'Voytenko',
-			date: '2023-10-01',
-		},
-		{
-			id: 2,
-			fname: 'John',
-			lname: 'Doe',
-			date: '2023-10-02',
-		},
-		{
-			id: 2,
-			fname: 'John',
-			lname: 'Doe',
-			date: '2023-10-02',
-		},
-		{
-			id: 2,
-			fname: 'John',
-			lname: 'Doe',
-			date: '2023-10-02',
-		},
-	],
-};
+declare global {
+	interface Window {
+		petitionerSubmissionSettings: {
+			actionPath: string;
+			nonce: string;
+		};
+	}
+}
 
 export default class PetitionerSubmissions {
 	private settings?: SubmissionSettings;
-	private submissions?: Record<string, unknown>[];
+	private submissions: Submissions | undefined;
 	private renderer?: SubmissionsRenderer;
+	private ajaxurl: string;
+	private nonce: string;
+	private currentPage: number = 1;
+	private totalResults: number = 10;
 
 	constructor(private wrapper: HTMLElement) {
 		if (!this.wrapper) {
@@ -43,9 +26,15 @@ export default class PetitionerSubmissions {
 		}
 
 		const settings = this.wrapper.dataset.ptrSettings;
+		this.ajaxurl = window?.petitionerSubmissionSettings?.actionPath || '';
+		this.nonce = window?.petitionerSubmissionSettings?.nonce || '';
+
+		if (!this.ajaxurl || !this.nonce) {
+			throw new Error('AJAX URL or nonce is not defined in settings');
+		}
 
 		if (!settings) {
-			return;
+			throw new Error('Wrapper is missing data-ptr-settings attribute');
 		}
 
 		const settingsJSON = safelyParseJSON(settings);
@@ -71,36 +60,47 @@ export default class PetitionerSubmissions {
 			return;
 		}
 
-		this.submissions = await this.fetchSubmissions();
+		await this.fetchSubmissions();
 
-		this.renderer = new SubmissionsRenderer({
-			wrapper: this.wrapper,
-			submissions: this.submissions,
-			onPageChange: (pageNum) => {
-				alert(`Page changed: ${pageNum}`);
-			},
-			fetchData: async (page: number) => {
-				// Fetch data for the specified page
-				return this.fetchSubmissions();
-			},
-		});
+		if (
+			typeof this.submissions === 'object' &&
+			this.submissions?.length > 0
+		) {
+			this.renderer = new SubmissionsRenderer({
+				wrapper: this.wrapper,
+				submissions: this.submissions,
+				perPage: this.settings.per_page,
+				total: this.totalResults,
+				currentPage: this.currentPage,
+				onPageChange: async (pageNum: number) => {
+					this.currentPage = pageNum;
+					await this.fetchSubmissions();
+					return this.submissions ?? [];
+				},
+			});
 
-		this.renderer.render();
+			this.renderer.render();
+		}
 	}
 
 	private async fetchSubmissions() {
-		return [
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-			...submissionData.data,
-		];
+		const submissions = await fetch(
+			`${this.ajaxurl}&form_id=${this.settings?.form_id}&per_page=${this.settings?.per_page}&page=${this.currentPage}`
+		);
+
+		if (!submissions.ok) {
+			throw new Error('Failed to fetch submissions');
+		}
+
+		const response = await submissions.json();
+
+		if (!response.success) {
+			throw new Error('Failed to fetch submissions: ' + response.data);
+		}
+
+		console.log('Fetched submissions:', response.data);
+
+		this.totalResults = Number(response.data.total) || 0;
+		this.submissions = response.data.submissions || [];
 	}
 }

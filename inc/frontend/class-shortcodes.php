@@ -116,8 +116,8 @@ class AV_Petitioner_Shortcodes
     public function render_submissions_list($atts)
     {
         $atts = shortcode_atts([
-            'id'        => null,
-            'per_page'  => 10,
+            'id'            => null,
+            'per_page'      => 50
         ], $atts, 'petitioner-submissions');
 
         $form_id    = absint($atts['id']);
@@ -128,8 +128,8 @@ class AV_Petitioner_Shortcodes
         }
 
         $settings = [
-            'form_id'   => $form_id,
-            'per_page'  => $per_page,
+            'form_id'    => $form_id,
+            'per_page'   => $per_page
         ];
 
         echo '<div class="petitioner petitioner-submissions"';

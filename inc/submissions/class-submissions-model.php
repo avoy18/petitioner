@@ -49,32 +49,87 @@ class AV_Petitioner_Submissions_Model
         dbDelta($sql);
     }
 
-    public static function get_form_submissions($form_id, $per_page, $offset)
+    /**
+     * Retrieves form submissions with pagination and filtering options.
+     *
+     * This method fetches submissions for a specific form ID, allowing for pagination
+     * and optional filtering based on provided settings.
+     *
+     * @param int $form_id The ID of the form to retrieve submissions for.
+     * @param array $settings Optional settings for pagination and filtering.
+     * @return array An array containing the submissions and total count.
+     */
+    public static function get_form_submissions($form_id, $settings)
     {
         global $wpdb;
 
-        // Get the submissions for the specified form_id with LIMIT and OFFSET for pagination
-        $submissions = $wpdb->get_results(
-            $wpdb->prepare(
-                'SELECT * FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d LIMIT %d OFFSET %d',
-                $form_id,
-                $per_page,
-                $offset
-            )
-        );
+        $per_page = isset($settings['per_page']) ? absint($settings['per_page']) : 10;
+        $offset   = isset($settings['offset']) ? absint($settings['offset']) : 0;
+        $fields   = isset($settings['fields']) ? $settings['fields'] : '*';
+        $query    = isset($settings['query']) ? $settings['query'] : [];
 
-        // Get the total count of submissions for the form
-        $total_submissions = $wpdb->get_var(
-            $wpdb->prepare(
-                'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
-                $form_id
-            )
-        );
+        // Validate fields
+        $allowed_fields = [
+            'id',
+            'form_id',
+            'fname',
+            'lname',
+            'email',
+            'country',
+            'salutation',
+            'phone',
+            'street_address',
+            'city',
+            'postal_code',
+            'bcc_yourself',
+            'newsletter',
+            'hide_name',
+            'accept_tos',
+            'approval_status',
+            'submitted_at',
+            'confirmation_token'
+        ];
 
-        return array(
+        if ($fields !== '*') {
+            $fields_arr = array_intersect($fields, $allowed_fields);
+            $fields = implode(', ', $fields_arr);
+            if (empty($fields)) {
+                $fields = '*';
+            }
+        }
+
+        $where = ['form_id = %d'];
+        $params = [$form_id];
+
+        av_ptr_error_log($settings);
+        if (!empty($query)) {
+            foreach ($query as $k => $v) {
+                if (preg_match('/^[a-zA-Z0-9_]+$/', $k) && in_array($k, $allowed_fields)) {
+                    $where[] = "`$k` = %s";
+                    $params[] = $v;
+                }
+            }
+        }
+       
+        $where_sql = implode(' AND ', $where);
+
+        // Get submissions
+        $sql = "SELECT $fields FROM {$wpdb->prefix}av_petitioner_submissions WHERE $where_sql LIMIT %d OFFSET %d";
+        $params_with_limit = array_merge($params, [$per_page, $offset]);
+        $submissions = $wpdb->get_results($wpdb->prepare($sql, ...$params_with_limit));
+
+        // Get total count (do NOT include limit/offset)
+        $count_sql = "SELECT COUNT(*) FROM {$wpdb->prefix}av_petitioner_submissions WHERE $where_sql";
+        $total_submissions = $wpdb->get_var($wpdb->prepare($count_sql, ...$params));
+
+        if ($total_submissions === null) {
+            $total_submissions = 0; // Ensure we return 0 if no submissions found
+        }
+
+        return [
             'submissions'   => $submissions,
             'total'         => $total_submissions,
-        );
+        ];
     }
 
     public static function get_unconfirmed_submissions($form_id)

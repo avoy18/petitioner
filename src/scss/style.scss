@@ -427,6 +427,7 @@ $spacer-xl: 32px;
 		align-items: center;
 		margin-top: $spacer-lg;
 		gap: $spacer-xs;
+		flex-wrap: wrap;
 	}
 
 	.ptr-pagination button {
