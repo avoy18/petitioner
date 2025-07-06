@@ -2,14 +2,14 @@ import { useEffect, useState } from '@wordpress/element';
 import { Button, ButtonGroup } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
-import {
+import type {
 	Submissions,
 	SubmissionItem,
 	SubmissionID,
 	SubmissionStatus,
 	ChangeAction,
-} from '../../../types/submissions.types';
-import { ApprovalState, CheckboxValue } from 'src/js/types/edit-form.types';
+} from './consts';
+import type { ApprovalState, CheckboxValue } from '@admin/sections/EditFields/consts';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -70,7 +70,7 @@ export default function Submissions() {
 		newStatus: SubmissionStatus,
 		changeAction: ChangeAction
 	) => {
-		const question = `Are you sure you want to ${changeAction} this submission?`;
+		const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
 
 		if (window.confirm(question)) {
 			const finalAjaxURL = `${ajaxurl}?action=petitioner_change_status`;

@@ -5,11 +5,11 @@ import {
 	useCallback,
 } from '@wordpress/element';
 
-import {
+import type {
 	WindowSettingsData,
 	SettingsFormData,
 	SettingsFormContextValue,
-} from '@admin/types/settings.types';
+} from '@admin/sections/SettingsFields/consts';
 
 export const SettingsFormContext =
 	createContext<SettingsFormContextValue | null>(null);

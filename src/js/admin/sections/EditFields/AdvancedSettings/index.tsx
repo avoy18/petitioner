@@ -1,7 +1,7 @@
 import { TextControl, SelectControl } from '@wordpress/components';
 import PTRichText from '@admin/components/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
-import { DefaultValues } from '@admin/types/edit-form.types';
+import type { DefaultValues } from '@admin/sections/EditFields/consts';
 import { __ } from '@wordpress/i18n';
 
 /*

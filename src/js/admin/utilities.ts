@@ -1,4 +1,4 @@
-import { FieldType } from '@admin/types/form-builder.types';
+import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
 
 const fieldTypeToGroup = {
 	text: 'input',

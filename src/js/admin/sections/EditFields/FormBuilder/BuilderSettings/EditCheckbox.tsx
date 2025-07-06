@@ -1,7 +1,7 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { TextControl, CheckboxControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { CheckboxField, BuilderField } from '@admin/types/form-builder.types';
+import type { CheckboxField, BuilderField } from '@admin/sections/EditFields/FormBuilder/consts';
 
 function isCheckboxField(field: BuilderField): field is CheckboxField {
 	return field.type === 'checkbox';

@@ -1,5 +1,5 @@
 import { Button } from '@wordpress/components';
-import { ApprovalStatusProps } from '../../../types/submissions.types';
+import type { ApprovalStatusProps } from './consts';
 import ResendButton from './ResendButton';
 
 export default function ApprovalStatus(props: ApprovalStatusProps) {
@@ -28,7 +28,7 @@ export default function ApprovalStatus(props: ApprovalStatusProps) {
 							currentStatus === 'Confirmed'
 								? 'Declined'
 								: 'Confirmed',
-							changeAction.toLowerCase()
+							changeAction
 						);
 					}}
 				>

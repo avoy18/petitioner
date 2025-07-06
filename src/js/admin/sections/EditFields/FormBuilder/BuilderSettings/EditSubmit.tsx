@@ -1,7 +1,7 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { TextControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { BuilderField, SubmitField } from '@admin/types/form-builder.types';
+import type { BuilderField, SubmitField } from '@admin/sections/EditFields/FormBuilder/consts';
 
 const isSubmitField = (field: BuilderField): field is SubmitField => {
 	return field.type === 'submit';

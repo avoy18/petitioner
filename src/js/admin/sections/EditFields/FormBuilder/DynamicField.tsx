@@ -1,6 +1,6 @@
 import { getFieldTypeGroup } from '@admin/utilities';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import { FieldType } from '@admin/types/form-builder.types';
+import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
 import { Button } from '@wordpress/components';
 
 export default function DynamicField({

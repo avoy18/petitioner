@@ -12,7 +12,7 @@ import {
 	BuilderField,
 	FormBuilderContextValue,
 	FormBuilderContextProviderProps,
-} from '../types/form-builder.types';
+} from '@admin/sections/EditFields/FormBuilder/consts';
 
 export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 	null

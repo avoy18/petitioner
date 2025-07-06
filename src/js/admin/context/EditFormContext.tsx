@@ -4,11 +4,11 @@ import {
 	useState,
 	useCallback,
 } from '@wordpress/element';
-import {
+import type {
 	EditFormContextValue,
 	PetitionerData,
 	EditFormContextProviderProps,
-} from '../types/edit-form.types';
+} from '@admin/sections/EditFields/consts';
 
 const EditFormContext = createContext<EditFormContextValue | null>(null);
 

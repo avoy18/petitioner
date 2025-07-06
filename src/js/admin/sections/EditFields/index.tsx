@@ -1,9 +1,9 @@
 import { Dashicon } from '@wordpress/components';
 import Submissions from './Submissions';
 import FormBuilder from './FormBuilder';
-import PetitionDetails from './PetitionDetails';
-import BottomCallout from './BottomCallout';
-import AdvancedSettings from './AdvancedSettings';
+import PetitionDetails from '@admin/sections/EditFields/PetitionDetails';
+import BottomCallout from '@admin/sections/EditFields/BottomCallout';
+import AdvancedSettings from '@admin/sections/EditFields/AdvancedSettings';
 import Tabs from '@admin/components/Tabs';
 import { EditFormContextProvider } from '@admin/context/EditFormContext';
 

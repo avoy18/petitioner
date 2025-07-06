@@ -1,7 +1,7 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { TextControl, CheckboxControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { BuilderField, TextField } from '@admin/types/form-builder.types';
+import type { BuilderField, TextField } from '@admin/sections/EditFields/FormBuilder/consts';
 
 const isInputField = (field: BuilderField): field is TextField => {
 	return field.type === 'text' || field.type === 'email'  || field.type === 'tel';

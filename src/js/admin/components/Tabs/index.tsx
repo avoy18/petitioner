@@ -1,6 +1,6 @@
 import { TabPanel } from '@wordpress/components';
 import { useState, useCallback } from 'react';
-import { TabPanelProps } from '@admin/types/shared.types';
+import type { TabPanelProps } from './consts';
 
 export default function Tabs(props: TabPanelProps) {
 	const { tabs, onTabSelect = () => {} } = props;
