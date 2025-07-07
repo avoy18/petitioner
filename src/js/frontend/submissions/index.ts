@@ -1,5 +1,7 @@
 import { safelyParseJSON } from '@js/utilities';
-import SubmissionsRenderer from '@js/frontend/submissions/renderer';
+import SubmissionsRenderer, {
+	SubmissionsRendererTable,
+} from '@js/frontend/submissions/renderer';
 import type { SubmissionSettings, Submissions } from './consts';
 
 declare global {
@@ -19,6 +21,7 @@ export default class PetitionerSubmissions {
 	private nonce: string;
 	private currentPage: number = 1;
 	private totalResults: number = 10;
+	private labels: { [key: string]: string } | {};
 
 	constructor(private wrapper: HTMLElement) {
 		if (!this.wrapper) {
@@ -28,6 +31,7 @@ export default class PetitionerSubmissions {
 		const settings = this.wrapper.dataset.ptrSettings;
 		this.ajaxurl = window?.petitionerSubmissionSettings?.actionPath || '';
 		this.nonce = window?.petitionerSubmissionSettings?.nonce || '';
+		this.labels = {};
 
 		if (!this.ajaxurl || !this.nonce) {
 			throw new Error('AJAX URL or nonce is not defined in settings');
@@ -43,7 +47,8 @@ export default class PetitionerSubmissions {
 			!settingsJSON ||
 			typeof settingsJSON !== 'object' ||
 			!settingsJSON.form_id ||
-			!settingsJSON.per_page
+			!settingsJSON.per_page ||
+			!settingsJSON.style
 		) {
 			throw new Error(
 				'Invalid settings provided for PetitionerSubmissions'
@@ -66,12 +71,22 @@ export default class PetitionerSubmissions {
 			typeof this.submissions === 'object' &&
 			this.submissions?.length > 0
 		) {
-			this.renderer = new SubmissionsRenderer({
+			const RenderClass =
+				this.settings.style === 'simple'
+					? SubmissionsRenderer
+					: SubmissionsRendererTable;
+
+			this.renderer = new RenderClass({
 				wrapper: this.wrapper,
 				submissions: this.submissions,
 				perPage: this.settings.per_page,
 				total: this.totalResults,
 				currentPage: this.currentPage,
+				labels: this.labels,
+				fields: this.settings.fields
+					? this.settings.fields.split(',').map((f) => f.trim())
+					: [],
+				pagination: this.settings.show_pagination,
 				onPageChange: async (pageNum: number) => {
 					this.currentPage = pageNum;
 					await this.fetchSubmissions();
@@ -83,10 +98,23 @@ export default class PetitionerSubmissions {
 		}
 	}
 
+	private buildURL() {
+		const url = new URL(this.ajaxurl, window.location.origin);
+
+		url.searchParams.set('form_id', String(this.settings?.form_id));
+		url.searchParams.set('per_page', String(this.settings?.per_page));
+		url.searchParams.set('page', String(this.currentPage));
+
+		if (this.settings?.fields) {
+			url.searchParams.set('fields', this.settings.fields);
+		}
+
+		return url.toString();
+	}
+
 	private async fetchSubmissions() {
-		const submissions = await fetch(
-			`${this.ajaxurl}&form_id=${this.settings?.form_id}&per_page=${this.settings?.per_page}&page=${this.currentPage}`
-		);
+		const fetchURL = this.buildURL();
+		const submissions = await fetch(fetchURL);
 
 		if (!submissions.ok) {
 			throw new Error('Failed to fetch submissions');
@@ -98,9 +126,8 @@ export default class PetitionerSubmissions {
 			throw new Error('Failed to fetch submissions: ' + response.data);
 		}
 
-		console.log('Fetched submissions:', response.data);
-
 		this.totalResults = Number(response.data.total) || 0;
 		this.submissions = response.data.submissions || [];
+		this.labels = response.data.labels || [];
 	}
 }

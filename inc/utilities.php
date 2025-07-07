@@ -209,3 +209,32 @@ function av_petitioner_get_countries(): array
         __("Zimbabwe", "petitioner")
     ];
 }
+
+/**
+ * Returns an associative array of fields and their user edited labels for the specific form
+ */
+function av_petitioner_get_form_labels($form_id = '', $label_ids = []): array
+{
+    $final_labels = [
+        'name'          => AV_Petitioner_Labels::get('name')
+    ];
+
+    $form_fields = get_post_meta($form_id, '_petitioner_form_fields', true);
+
+    $fields_parsed = json_decode($form_fields, true);
+
+    if (!is_array($fields_parsed)) {
+        av_ptr_error_log('Could not extract labels for the form # ' . $form_id);
+        return [];
+    }
+
+    foreach ($label_ids as $id) {
+        if (!empty($fields_parsed[$id]) && !empty($fields_parsed[$id]['label'])) {
+            $final_labels[$id] = $fields_parsed[$id]['label'];
+        }
+    }
+
+    $final_labels['submitted_at'] = AV_Petitioner_Labels::get('created_at');
+
+    return $final_labels;
+}

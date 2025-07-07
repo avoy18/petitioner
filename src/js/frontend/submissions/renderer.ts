@@ -1,4 +1,8 @@
-import type { SubmissionItem, Submissions } from './consts';
+import type {
+	SubmissionItem,
+	Submissions,
+	SubmissionRendererOptions,
+} from './consts';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -6,21 +10,10 @@ import { __ } from '@wordpress/i18n';
  * Renders the submissions list and handles pagination.
  */
 export default class SubmissionsRenderer {
-	private paginationDiv: HTMLDivElement;
-	private submissionListDiv: HTMLDivElement;
+	public paginationDiv: HTMLDivElement;
+	public submissionListDiv: HTMLDivElement;
 
-	constructor(
-		private options: {
-			wrapper: HTMLElement;
-			submissions: Submissions; // initial submissions
-			perPage?: number;
-			total?: number;
-			currentPage: number; // initial page
-			onPageChange: (page: number) => Promise<Submissions>;
-		}
-	) {
-		this.options.total = this.options.total || 20;
-		this.options.perPage = this.options.perPage || 10;
+	constructor(public options: SubmissionRendererOptions) {
 		this.options.currentPage = this.options.currentPage || 1;
 
 		this.submissionListDiv = document.createElement('div');
@@ -34,7 +27,7 @@ export default class SubmissionsRenderer {
 		}
 	}
 
-	private attachEventListeners() {
+	public attachEventListeners() {
 		if (!this.paginationDiv) return;
 
 		this.paginationDiv.addEventListener('click', async (event) => {
@@ -76,7 +69,9 @@ export default class SubmissionsRenderer {
 			btn.classList.remove('active');
 		});
 
-		this.paginationDiv.querySelector(`[data-page="${this.options.currentPage}"]`)?.classList.add('active');
+		this.paginationDiv
+			.querySelector(`[data-page="${this.options.currentPage}"]`)
+			?.classList.add('active');
 	}
 
 	public renderSubmissionsList() {
@@ -95,11 +90,11 @@ export default class SubmissionsRenderer {
 	}
 
 	public renderSubmissionItem(submission: SubmissionItem): string {
-		return `<span class="submissions__item">${submission.fname} ${submission.lname}</span>`;
+		return `<span class="submissions__item">${submission.name}</span>`;
 	}
 
 	public renderPagination(): string {
-		if (!this.options.total || !this.options.perPage) {
+		if (!this.options.total || !this.options.perPage || !this.options.pagination) {
 			return '';
 		}
 
@@ -118,5 +113,91 @@ export default class SubmissionsRenderer {
 		paginationHTML += '</div>';
 
 		return paginationHTML;
+	}
+}
+
+export class SubmissionsRendererTable extends SubmissionsRenderer {
+	constructor(public options: SubmissionRendererOptions) {
+		super(options);
+	}
+
+	public render() {
+		if (!this.options.submissions) {
+			return;
+		}
+
+		this.options.wrapper.appendChild(this.submissionListDiv);
+		this.options.wrapper.appendChild(this.paginationDiv);
+		this.options.wrapper.style=this.getWrapperStyles()
+		this.submissionListDiv.innerHTML = this.renderSubmissionsList();
+		this.paginationDiv.innerHTML = this.renderPagination();
+
+		this.attachEventListeners();
+	}
+
+	public renderSubmissionsList() {
+		if (
+			!this.options.submissions ||
+			this.options.submissions.length === 0
+		) {
+			return '';
+		}
+
+		const labels = this.prepareLabels();
+
+		const list = this.options.submissions
+			.map((submission) => {
+				return this.renderSubmissionItem(submission);
+			})
+			.join('');
+
+		return `
+		<div class="submissions__item submissions__item--heading">
+			${labels
+				.map((key) => {
+					return `<div>${key}</div>`;
+				})
+				.join('')}
+		</div>
+		${list}`;
+	}
+
+	public prepareLabels() {
+		// get 1 entry from submissions and map out existing fields
+		const labels: string[] = [];
+		const submissionEntry = this.options.submissions[0];
+
+		Object.keys(submissionEntry).forEach((key: string) => {
+			if (!this.options.labels?.[key] || !this.options.fields.includes(key)) {
+				return;
+			}
+
+			labels.push(this.options.labels?.[key]);
+		});
+
+		return labels;
+	}
+
+	public renderSubmissionItem(submission: SubmissionItem): string {
+		const filteredKeys = Object.keys(submission).filter(
+			(key) => key in this.options.labels && this.options.fields.includes(key)
+		);
+
+		return `<div class="submissions__item">
+			${filteredKeys
+				.map((key) => {
+					return `<div>${key === 'fname' ? `${submission.fname} ${submission.lname}` : submission?.[key]}</div>`;
+				})
+				.join('')}
+		</div>`;
+	}
+
+	/**
+	 * 
+	 * @returns string final CSS for the wrapper
+	 */
+	public getWrapperStyles() {
+		const labels = this.prepareLabels();
+		return `--ptr-submission-columns: ${labels.length}`
 	}
 }

@@ -115,27 +115,46 @@ class AV_Petitioner_Shortcodes
      */
     public function render_submissions_list($atts)
     {
+        $available_styles = ['simple', 'table'];
+        $available_fields = ['name', 'country', 'date', 'postal_code', 'submitted_at'];
+
         $atts = shortcode_atts([
-            'id'            => null,
-            'per_page'      => 50
+            'id'                => null,
+            'per_page'          => 20,
+            'style'             => 'simple',
+            'fields'            => 'name,country,submitted_at',
+            'show_pagination'   => "true",
         ], $atts, 'petitioner-submissions');
 
         $form_id    = absint($atts['id']);
-        $per_page   = absint($atts['per_page']);
 
         if (!$form_id) {
             return '';
         }
 
+        $per_page   = absint($atts['per_page']);
+        $style      = in_array($atts['style'], $available_styles) ? $atts['style'] : 'simple';
+
+        // Remove spaces and split fields
+        $fields_raw = str_replace(' ', '', $atts['fields']);
+        $fields_arr = explode(',', $fields_raw);
+
+        // Filter only available fields
+        $fields = array_values(array_intersect($fields_arr, $available_fields));
+
+        $show_pagination = filter_var($atts['show_pagination'], FILTER_VALIDATE_BOOLEAN);
+
         $settings = [
-            'form_id'    => $form_id,
-            'per_page'   => $per_page
+            'form_id'           => $form_id,
+            'per_page'          => $per_page,
+            'style'             => $style,
+            'fields'            => implode(',', $fields),
+            'show_pagination'   => $show_pagination
         ];
 
-        echo '<div class="petitioner petitioner-submissions"';
+        echo '<div class="petitioner petitioner-submissions petitioner-submissions--' . $style . '"';
         echo ' data-ptr-settings="' . esc_attr(json_encode($settings)) . '"';
         echo '>';
         echo '<div>';
-        
     }
 }

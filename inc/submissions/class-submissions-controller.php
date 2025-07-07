@@ -261,7 +261,15 @@ class AV_Petitioner_Submissions_Controller
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);
 
-        $final_submissions = array_map(function ($submission) use ($hide_last_name) {
+        $labels = av_petitioner_get_form_labels($form_id, [
+            'name',
+            'country',
+            'city',
+            'postal_code',
+            'submitted_at'
+        ]);
+
+        $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
             if ($submission->hide_name) {
                 $submission->fname = __('Anonymous', 'petitioner');
                 $submission->lname = '';
@@ -271,11 +279,24 @@ class AV_Petitioner_Submissions_Controller
                 $submission->lname = mb_substr($submission->lname, 0, 1);
             }
 
-            return $submission;
+            $modified_submission = [
+                'name'          => $submission->fname . ' ' . $submission->lname
+            ];
+
+            foreach ($labels as $k => $v) {
+                if ($k === 'name') {
+                    continue;
+                }
+
+                $modified_submission[$k] = $submission->{$k};
+            }
+
+            return $modified_submission;
         }, $result['submissions']);
 
         // Return the results as a JSON response
         wp_send_json_success([
+            'labels'        => $labels,
             'submissions'   => $final_submissions,
             'total'         => $result['total'],
             'total_pages'   => $total_pages,

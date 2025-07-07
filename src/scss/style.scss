@@ -416,7 +416,6 @@ $spacer-xl: 32px;
 }
 
 .petitioner-submissions {
-
 	.submissions__item {
 		display: inline;
 	}
@@ -455,6 +454,54 @@ $spacer-xl: 32px;
 			color: var(--ptr-color-dark);
 			opacity: 0.5;
 			cursor: not-allowed;
+		}
+	}
+
+	&--table {
+		--ptr-submission-columns: 4;
+
+		.submissions__list {
+			display: grid;
+			grid-auto-rows: minmax(40px, auto); // adjust row height as needed
+		}
+
+		.submissions__item {
+			display: contents;
+
+			&--heading {
+				div {
+					font-weight: bold;
+				}
+			}
+		}
+
+		.submissions__item > div {
+			display: block;
+			padding: $spacer-xs $spacer-sm;
+			border-bottom: 1px solid var(--ptr-color-grey);
+			font-size: var(--ptr-fs-sm);
+			word-break: break-word;
+		}
+
+		// Set the number and width of columns
+		.submissions__list,
+		.submissions__heading {
+			grid-template-columns: repeat(var(--ptr-submission-columns), 1fr);
+		}
+
+		@media (max-width: $tablet) {
+			.submissions__list,
+			.submissions__heading {
+				display: block;
+			}
+			.submissions__item {
+				display: flex;
+				flex-direction: column;
+			}
+			.submissions__item > div {
+				border-bottom: none;
+				padding: $spacer-xs 0;
+			}
 		}
 	}
 }
