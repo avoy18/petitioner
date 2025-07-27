@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.4.3
+Stable Tag: 0.4.4
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,6 +40,12 @@ Create and manage an unlimited number of petitions.
 * WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
 * Gutenberg integration with a custom petition block!
 * Several shortcodes to take your petitions to the next level
+    * Form shortcode
+    * Petition goal #
+    * Progress bar
+    * Petition letter popup
+    * Current submission count
+    * Submissions in multiple styles and configurations
 
 **Spam protection features**
 * Captcha integrations: reCAPTCHA, hCaptcha, and Cloudflare Turnstile
@@ -89,6 +95,13 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.4.4 =
+* Add option to render submissions on the frontend
+    * Add a new shortcode: 
+        * `[petitioner-submissions id="{form id}" style="{simple or table}" per_page="{number of entries per page}" show_pagination="{true or false}"]`
+    * Add multiple styles and configurations
+    * Allow hiding last names through petition settings
 
 = 0.4.3 =
 * Editing labels:
