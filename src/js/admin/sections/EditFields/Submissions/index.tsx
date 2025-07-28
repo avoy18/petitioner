@@ -2,6 +2,8 @@ import { useEffect, useState } from '@wordpress/element';
 import { Button, ButtonGroup } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
+import ShortcodeElement from '@admin/components/ShortcodeElement';
+import { __ } from '@wordpress/i18n';
 import type {
 	Submissions,
 	SubmissionItem,
@@ -9,7 +11,11 @@ import type {
 	SubmissionStatus,
 	ChangeAction,
 } from './consts';
-import type { ApprovalState, CheckboxValue } from '@admin/sections/EditFields/consts';
+import type {
+	ApprovalState,
+	CheckboxValue,
+} from '@admin/sections/EditFields/consts';
+import { ExportButtonWrapper } from './styled';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -153,12 +159,22 @@ export default function Submissions() {
 
 	const ExportComponent = () => {
 		return (
-			<>
+			<ExportButtonWrapper>
+				<ShortcodeElement
+					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
+					label={__('Shortcode', 'petitioner')}
+					help={__(
+						'Use this shortcode to display submissions on any page or post.',
+						'petitioner'
+					)}
+					fieldName="petitioner_shortcode"
+					width="250px"
+				/>
 				{/* @ts-ignore */}
 				<Button variant="primary" href={export_url}>
-					Export entries as CSV
+					{__('Export entries as CSV', 'petitioner')}
 				</Button>
-			</>
+			</ExportButtonWrapper>
 		);
 	};
 
