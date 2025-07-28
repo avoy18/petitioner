@@ -484,16 +484,56 @@ $spacer-xl: 32px;
 		}
 
 		// Set the number and width of columns
-		.submissions__list,
-		.submissions__heading {
+		.submissions__list {
 			grid-template-columns: repeat(var(--ptr-submission-columns), 1fr);
 		}
 
+		.submissions__item__inner strong {
+			display: none;
+		}
+
 		@media (max-width: $tablet) {
-			.submissions__list,
-			.submissions__heading {
-				display: block;
+			.submissions__item {
+				position: relative;
+
+				&__inner {
+					display: flex;
+					justify-content: space-between;
+					gap: $spacer-xs;
+				}
+
+				&:after {
+					content: '';
+					display: block;
+					position: absolute;
+					left: 0;
+					right: 0;
+					top: 100%;
+					width: 100%;
+					height: 1px;
+					background-color: var(--ptr-color-grey);
+					margin-top: $spacer-sm;
+				}
+
+				&:last-of-type:after {
+					display: none;
+				}
 			}
+
+			.submissions__item__inner strong {
+				display: inline;
+			}
+
+			.submissions__item.submissions__item--heading {
+				display: none;
+			}
+
+			.submissions__list {
+				display: flex;
+				flex-direction: column;
+				gap: $spacer-lg;
+			}
+
 			.submissions__item {
 				display: flex;
 				flex-direction: column;

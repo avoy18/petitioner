@@ -186,7 +186,10 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 		return `<div class="submissions__item">
 			${filteredKeys
 				.map((key) => {
-					return `<div>${key === 'fname' ? `${submission.fname} ${submission.lname}` : submission?.[key]}</div>`;
+					return `<div class="submissions__item__inner">
+						<strong>${this.options.labels?.[key] || key}:</strong>
+						${key === 'fname' ? `${submission.fname} ${submission.lname}` : submission?.[key]}
+					</div>`;
 				})
 				.join('')}
 		</div>`;
