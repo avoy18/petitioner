@@ -165,7 +165,9 @@ class AV_Petitioner_Setup
             wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
         }
 
-        wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
+        wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
+
+        wp_enqueue_script('petitioner-script');
 
         AV_Petitioner_Captcha::enqueue_scripts();
 

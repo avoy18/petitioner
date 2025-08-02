@@ -152,9 +152,12 @@ class AV_Petitioner_Shortcodes
             'show_pagination'   => $show_pagination
         ];
 
+        ob_start();
         echo '<div class="petitioner petitioner-submissions petitioner-submissions--' . $style . '"';
         echo ' data-ptr-settings="' . esc_attr(json_encode($settings)) . '"';
         echo '>';
         echo '<div>';
+
+        return ob_get_clean();
     }
 }

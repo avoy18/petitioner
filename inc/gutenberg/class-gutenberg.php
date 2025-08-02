@@ -20,11 +20,7 @@ class AV_Petitioner_Gutenberg
             AV_PETITIONER_PLUGIN_VERSION
         );
 
-        av_ptr_error_log(AV_PETITIONER_PLUGIN_DIR . '/dist-gutenberg/blocks/form');
-
         register_block_type(AV_PETITIONER_PLUGIN_DIR . '/dist-gutenberg/blocks/form', [
-            'style' => 'petitioner-form-style',
-            'editor_style' => 'petitioner-form-style',
             'attributes' => [
                 'formId' => [
                     'type'    => 'string',
@@ -56,11 +52,17 @@ class AV_Petitioner_Gutenberg
                 ],
             ],
             'render_callback' => function ($attributes) {
-                if (empty($attributes['formId'])) return;
+                if (empty($attributes['formId'])) return 'HII';
 
                 $form_id = $attributes['formId'];
 
-                return do_shortcode('[petitioner-submissions id="' . esc_attr($form_id) . '"]');
+                $shortcode_result = do_shortcode('[petitioner-submissions id="' . esc_attr($form_id) . '"]');
+
+                if (empty($shortcode_result)) {
+                    return '<p>' . esc_html__('No submissions found for this form.', 'petitioner') . '</p>';
+                }
+
+                return $shortcode_result;
             }
         ]);
     }
