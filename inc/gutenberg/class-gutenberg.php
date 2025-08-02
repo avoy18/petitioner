@@ -69,6 +69,20 @@ class AV_Petitioner_Gutenberg
                 'showPagination' => [
                     'type'    => 'boolean',
                     'default' => true
+                ],
+                'availableStyles' => [
+                    'type'    => 'array',
+                    'default' => AV_Petitioner_Shortcodes::get_available_styles(),
+                    'items'   => [
+                        'type' => 'string'
+                    ]
+                ],
+                'availableFields' => [
+                    'type'    => 'array',
+                    'default' => AV_Petitioner_Shortcodes::get_available_fields(),
+                    'items'   => [
+                        'type' => 'string'
+                    ]
                 ]
             ],
             'render_callback' => function ($attributes) {

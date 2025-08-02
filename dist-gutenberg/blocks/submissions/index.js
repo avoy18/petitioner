@@ -1899,7 +1899,9 @@ function Edit({
     perPage = 10,
     style = 'simple',
     fields = [],
-    showPagination = true
+    showPagination = true,
+    availableFields,
+    availableStyles
   } = attributes;
   const blockAtts = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps)();
   const fetchPetitions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useCallback)(() => {

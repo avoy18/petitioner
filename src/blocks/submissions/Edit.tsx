@@ -23,6 +23,8 @@ export default function Edit({
 		style = 'simple',
 		fields = [],
 		showPagination = true,
+		availableFields,
+		availableStyles,
 	} = attributes;
 	const blockAtts = useBlockProps();
 

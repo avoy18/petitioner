@@ -5,6 +5,8 @@ export type PetitionFormBlockAttributes = {
     style: 'simple' | 'table';
     fields: string[];
     showPagination: boolean;
+    availableFields: string[];
+    availableStyles: string[];
 };
 
 export type PetitionerSubmissionsProps = {
