@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "petitioner/form",
+	"version": "0.1.0",
+	"title": "Petitioner Form",
+	"category": "petitioner-blocks",
+	"icon": "align-center",
+	"description": "A form for collecting petitions",
+	"supports": {
+		"html": true,
+		"anchor": true,
+		"customClassName": true,
+		"styles": false,
+		"color": {
+			"background": false,
+			"text": false
+		}
+	},
+	"textdomain": "petitioner",
+	"editorScript": "file:./index.js"
+}

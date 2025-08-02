@@ -6,8 +6,8 @@
 	"scripts": {
 		"dev": "vite build --watch",
 		"build": "vite build",
-		"build:gutenberg": "wp-scripts build src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
-		"dev:gutenberg": "wp-scripts start src/gutenberg/form/index.js --output-path=dist-gutenberg --output-filename=petitionerFormBlock.js",
+		"build:gutenberg": "wp-scripts build --output-path=dist-gutenberg",
+		"dev:gutenberg": "wp-scripts start --output-path=dist-gutenberg",
 		"deploy": "pnpm build-all && node -e 'require(\"./vite.config.ts\").deploy()'",
 		"dev-all": "concurrently \"pnpm dev\" \"pnpm dev:gutenberg\"",
 		"build-all": "concurrently \"pnpm build:gutenberg\" \"pnpm build\"",
