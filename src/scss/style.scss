@@ -457,6 +457,10 @@ $spacer-xl: 32px;
 		}
 	}
 
+	&--simple {
+		border: 1px solid var(--ptr-color-grey);
+	}
+
 	&--table {
 		--ptr-submission-columns: 4;
 
