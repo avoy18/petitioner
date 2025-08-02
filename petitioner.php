@@ -50,6 +50,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-form-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-shortcodes.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-edit-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-settings-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/gutenberg/class-gutenberg.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/utilities.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-labels.php';

@@ -7,6 +7,12 @@
   "category": "petitioner-blocks",
   "icon": "align-center",
   "description": "A form for collecting petitions",
+  "attributes": {
+    "formId": {
+      "type": "string",
+      "default": ""
+    }
+  },
   "supports": {
     "html": true,
     "anchor": true,
@@ -18,5 +24,7 @@
     }
   },
   "textdomain": "petitioner",
-  "editorScript": "file:./index.js"
+  "editorScript": "file:./index.js",
+  "editorStyle": "petitioner-form-style",
+  "style": "petitioner-form-style"
 }
