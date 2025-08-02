@@ -2,14 +2,23 @@
 import ServerSideRender from '@wordpress/server-side-render';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import type { Petition, FormId, Attributes } from '../form/consts';
-import form from 'dist-gutenberg/blocks/form';
+import type { Petition, Attributes } from '../form/consts';
+import styled from 'styled-components';
+
+const StyledMessageBox = styled.div`
+	padding: 24px;
+	background: #efefef;
+	border-radius: 4px;
+	margin-bottom: 16px;
+`;
 
 export type PetitionerBlockAttributes = {
 	title?: string;
 	blockName: string;
 	allPetitions?: Petition[];
 	attributes: Attributes;
+	customPreviewMessage?: React.ReactNode;
+	noPreview?: boolean;
 };
 
 export default function ServerComponent({
@@ -17,12 +26,14 @@ export default function ServerComponent({
 	blockName = 'petitioner/form',
 	attributes,
 	allPetitions = [],
+	customPreviewMessage,
+	noPreview = false,
 }: PetitionerBlockAttributes) {
 	const { formId = '', newPetitionLink = '' } = attributes;
 
 	if (!formId) {
 		return (
-			<div style={{ padding: '24px', background: '#efefef' }}>
+			<StyledMessageBox>
 				<p>
 					<small>{title}</small>
 				</p>
@@ -32,13 +43,13 @@ export default function ServerComponent({
 						'petitioner'
 					)}
 				</p>
-			</div>
+			</StyledMessageBox>
 		);
 	}
 
 	if (!allPetitions.length) {
 		return (
-			<div style={{ padding: '24px', background: '#efefef' }}>
+			<StyledMessageBox>
 				<p>
 					<small>{title}</small>
 				</p>
@@ -51,13 +62,23 @@ export default function ServerComponent({
 				<Button variant="secondary" href={newPetitionLink || ''}>
 					{__('Create your first petition', 'petitioner')}
 				</Button>
-			</div>
+			</StyledMessageBox>
 		);
 	}
 
 	return (
 		<div style={{ pointerEvents: 'none' }}>
-			<ServerSideRender block={blockName} attributes={attributes} />
+			{!noPreview ? (
+				<ServerSideRender block={blockName} attributes={attributes} />
+			) : (
+				<StyledMessageBox>
+					{' '}
+					<p>
+						<small>{title}</small>
+					</p>
+					<p>{customPreviewMessage}</p>
+				</StyledMessageBox>
+			)}
 		</div>
 	);
 }

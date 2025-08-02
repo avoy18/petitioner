@@ -23,7 +23,6 @@
       "text": false
     }
   },
-  "textdomain": "petitioner",
   "editorScript": "file:./index.js",
   "editorStyle": "petitioner-form-style",
   "style": "petitioner-form-style"

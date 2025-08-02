@@ -17,8 +17,6 @@
 			"text": false
 		}
 	},
-	"textdomain": "petitioner",
 	"editorScript": "file:./index.js",
-	"viewScript": "petitioner-script",
 	"editorStyle": "petitioner-form-style"
 }

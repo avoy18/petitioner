@@ -115,8 +115,8 @@ class AV_Petitioner_Shortcodes
      */
     public function render_submissions_list($atts)
     {
-        $available_styles = ['simple', 'table'];
-        $available_fields = ['name', 'country', 'date', 'postal_code', 'submitted_at'];
+        $available_styles = self::get_available_styles();
+        $available_fields = self::get_available_fields();
 
         $atts = shortcode_atts([
             'id'                => null,
@@ -156,8 +156,18 @@ class AV_Petitioner_Shortcodes
         echo '<div class="petitioner petitioner-submissions petitioner-submissions--' . $style . '"';
         echo ' data-ptr-settings="' . esc_attr(json_encode($settings)) . '"';
         echo '>';
-        echo '<div>';
+        echo '</div>';
 
         return ob_get_clean();
+    }
+
+    static public function get_available_styles()
+    {
+        return ['simple', 'table'];
+    }
+
+    static public function get_available_fields()
+    {
+        return ['name', 'country', 'date', 'postal_code', 'submitted_at'];
     }
 }

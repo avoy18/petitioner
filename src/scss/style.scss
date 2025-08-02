@@ -463,6 +463,7 @@ $spacer-xl: 32px;
 
 	&--table {
 		--ptr-submission-columns: 4;
+		padding-inline: 0;
 
 		.submissions__list {
 			display: grid;
