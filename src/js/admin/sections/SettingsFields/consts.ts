@@ -25,7 +25,7 @@ export type DefaultValues = {
 		dark: string;
 		grey: string;
 	};
-	labels: {}
+	labels: Record<string, string>;
 };
 
 export interface WindowSettingsData extends SettingsFormData {

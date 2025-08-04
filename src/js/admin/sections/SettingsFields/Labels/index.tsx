@@ -1,17 +1,16 @@
 import { __ } from '@wordpress/i18n';
-import {
-	__experimentalText as Text,
-	__experimentalHeading as Heading,
-} from '@wordpress/components';
-
 import { StyledHeading, StyledText } from './styled';
-
 import TextInput from '@admin/components/TextInput';
-import { safelyParseJSON } from '@js/utilities';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 import { useState } from '@wordpress/element';
+import type { TextLabelProps } from './consts';
 
-function TextLabel({ label, initialValue, onChange }) {
+function TextLabel({
+	label,
+	initialValue,
+	defaultValue,
+	onChange,
+}: TextLabelProps) {
 	const [value, setValue] = useState(initialValue || '');
 
 	return (
@@ -19,6 +18,7 @@ function TextLabel({ label, initialValue, onChange }) {
 			id={label}
 			label={label}
 			value={value}
+			placeholder={defaultValue}
 			onChange={setValue}
 			onBlur={() => onChange(label, value)}
 		/>
@@ -26,13 +26,17 @@ function TextLabel({ label, initialValue, onChange }) {
 }
 
 export default function Labels() {
-	const { windowPetitionerData, formState, updateFormState } = useSettingsFormContext();
+	const { windowPetitionerData, formState } = useSettingsFormContext();
 	const { label_overrides } = formState;
-	const defaultLabels = windowPetitionerData.default_values?.labels;
+	const defaultLabels = windowPetitionerData.default_values?.labels || {};
 	const labelKeys = Object.keys(defaultLabels);
 
 	const [overrides, setOverrides] = useState(label_overrides || {});
-	const updateOverrides = (key, value) => {
+
+	const updateOverrides = (key: string, value: string) => {
+		// dont save if its empty of same as default
+		if (!value || value == defaultLabels?.[key]) return;
+
 		const newOverrides = { ...overrides, [key]: value };
 		setOverrides(newOverrides);
 	};
@@ -50,13 +54,14 @@ export default function Labels() {
 			</StyledText>
 
 			{labelKeys.map((key) => {
-				const overrideValue = overrides[key] || defaultLabels[key];
+				const overrideValue = overrides[key] ?? '';
 
 				return (
 					<TextLabel
 						label={key}
 						initialValue={overrideValue}
-						onChange={(key: string, val: string) => updateOverrides(key, val)}
+						defaultValue={defaultLabels?.[key]}
+						onChange={(key, val) => updateOverrides(key, val)}
 					/>
 				);
 			})}
