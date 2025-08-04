@@ -249,6 +249,7 @@ class AV_Petitioner_Admin_Settings_UI
             'ty_email_subject_confirm',
             'ty_email_confirm',
             'from_field',
+            'id',
         ];
 
         // filter out the unwanted labels
