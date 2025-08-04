@@ -71,6 +71,7 @@ export default function Labels() {
 			})}
 
 			<input
+				data-testid="petitioner_label_overrides"
 				type="hidden"
 				name="petitioner_label_overrides"
 				value={JSON.stringify(overrides)}
