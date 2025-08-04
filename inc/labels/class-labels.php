@@ -1,5 +1,13 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
+/**
+ * Stores all of the static labels of the plugin
+ * and provides filters to override them
+ */
 class AV_Petitioner_Labels
 {
     public static $defaults = [];

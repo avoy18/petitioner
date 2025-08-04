@@ -53,7 +53,8 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-settings-ui.ph
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/gutenberg/class-gutenberg.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/utilities.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-labels.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-labels.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-label-overrides.php';
 
 $petitioner_setup = new AV_Petitioner_Setup();
 new AV_Email_Confirmations();
@@ -61,4 +62,5 @@ new AV_Email_Confirmations();
 register_activation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_activation'));
 register_deactivation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_deactivation'));
 register_uninstall_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_uninstall'));
+
 AV_Petitioner_Form_Migrator::migrate_form_fields_to_builder_filters();
