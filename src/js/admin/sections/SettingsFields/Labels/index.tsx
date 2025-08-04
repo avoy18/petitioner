@@ -34,10 +34,14 @@ export default function Labels() {
 	const [overrides, setOverrides] = useState(label_overrides || {});
 
 	const updateOverrides = (key: string, value: string) => {
-		// dont save if its empty of same as default
-		if (!value || value == defaultLabels?.[key]) return;
 
 		const newOverrides = { ...overrides, [key]: value };
+
+		// dont save if its empty of same as default
+		if (!value || value == defaultLabels?.[key]) {
+			delete newOverrides[key];
+		}
+
 		setOverrides(newOverrides);
 	};
 
