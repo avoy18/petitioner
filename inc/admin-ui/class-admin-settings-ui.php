@@ -29,7 +29,8 @@ class AV_Petitioner_Admin_Settings_UI
         'turnstile_site_key'        => 'petitioner_turnstile_site_key',
         'turnstile_secret_key'      => 'petitioner_turnstile_secret_key',
         'enable_akismet'            => 'petitioner_enable_akismet',
-        'form_fields'               => 'petitioner_form_fields'
+        'form_fields'               => 'petitioner_form_fields',
+        'label_overrides'           => 'petitioner_label_overrides',
     ];
 
     function __construct()
@@ -122,6 +123,7 @@ class AV_Petitioner_Admin_Settings_UI
         wp_nonce_field("save_petition_settings", "petitioner_settings_nonce");
         // Retrieve current meta values
         $option_values      = $this->get_option_fields();
+
         // Sanitize values for safe use in HTML attributes
         $petitioner_info    = [
             'show_letter'               => (bool) $option_values['show_letter'],
@@ -141,8 +143,10 @@ class AV_Petitioner_Admin_Settings_UI
             'turnstile_site_key'        => sanitize_text_field($option_values['turnstile_site_key']),
             'turnstile_secret_key'      => sanitize_text_field($option_values['turnstile_secret_key']),
             'enable_akismet'            => (bool) $option_values['enable_akismet'],
+            'label_overrides'           => !empty($option_values['label_overrides']) ? $this->sanitize_array($option_values['label_overrides'], false) : [],
             "default_values"                => [
-                "colors"              => $this->default_colors
+                "colors"              => $this->default_colors,
+                "labels"              => $this->get_default_labels()
             ]
         ];
 
@@ -201,6 +205,8 @@ class AV_Petitioner_Admin_Settings_UI
         foreach ($meta_values as $key => $value) {
             if (in_array($key, $checkboxes)) {
                 $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
+            } else if ($key === 'label_overrides') {
+                $value = $this->sanitize_array($value, false);
             } else if ($key === 'custom_css') {
                 $value = wp_strip_all_tags($value);
             } else {
@@ -209,5 +215,43 @@ class AV_Petitioner_Admin_Settings_UI
 
             update_option(self::OPTION_FIELDS[$key], $value);
         }
+    }
+
+    public function sanitize_array(string|array $json_items_raw, bool $stringify = true): string|array
+    {
+        if (is_array($json_items_raw)) {
+            $array_items = $json_items_raw;
+        } else {
+            $array_items = json_decode($json_items_raw, true);
+        }
+
+        if (!is_array($array_items)) {
+            av_ptr_error_log('Error sanitizing the array');
+            return $stringify ? '[]' : [];
+        }
+
+        $sanitized = array_map(fn($item) => sanitize_text_field((string) $item), $array_items);
+
+        return $stringify
+            ? wp_slash(wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+            : $sanitized;
+    }
+
+    public function get_default_labels()
+    {
+        $do_not_include = [
+            'ty_email_subject',
+            'ty_email',
+            'ty_email_subject_confirm',
+            'ty_email_confirm',
+            'from_field',
+        ];
+
+        // filter out the unwanted labels
+        $default_labels = array_filter(AV_Petitioner_Labels::get_all(), function ($v, $k) use ($do_not_include) {
+            return !in_array($k, $do_not_include);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        return $default_labels;
     }
 }
