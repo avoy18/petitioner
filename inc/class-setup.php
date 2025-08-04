@@ -25,27 +25,40 @@ class AV_Petitioner_Setup
         add_action('init', function () {
             // cpt
             $this->register_post_types();
+
             // edit admin fields
-            new AV_Petitioner_Admin_Edit_UI();
-            // // shortcodes
-            new AV_Petitioner_Shortcodes();
-            // // settings admin fields
-            new AV_Petitioner_Admin_Settings_UI();
+            if (class_exists('AV_Petitioner_Admin_Edit_UI')) {
+                new AV_Petitioner_Admin_Edit_UI();
+            }
+
+            // shortcodes
+            if (class_exists('AV_Petitioner_Shortcodes')) {
+                new AV_Petitioner_Shortcodes();
+            }
+
+            // settings admin fields
+            if (class_exists('AV_Petitioner_Admin_Settings_UI')) {
+                new AV_Petitioner_Admin_Settings_UI();
+            }
+
+            // register blocks
+            if (class_exists('AV_Petitioner_Gutenberg')) {
+                new AV_Petitioner_Gutenberg();
+            }
         });
 
         // api endpoints
         add_action('wp_ajax_petitioner_form_submit', array('AV_Petitioner_Submissions_Controller', 'api_handle_form_submit'));
         add_action('wp_ajax_nopriv_petitioner_form_submit', array('AV_Petitioner_Submissions_Controller', 'api_handle_form_submit'));
         add_action('wp_ajax_petitioner_fetch_submissions', array('AV_Petitioner_Submissions_Controller', 'api_fetch_form_submissions'));
+        add_action('wp_ajax_petitioner_get_submissions', array('AV_Petitioner_Submissions_Controller', 'api_get_form_submissions'));
+        add_action('wp_ajax_nopriv_petitioner_get_submissions', array('AV_Petitioner_Submissions_Controller', 'api_get_form_submissions'));
         add_action('wp_ajax_petitioner_change_status', array('AV_Petitioner_Submissions_Controller', 'api_change_submission_status'));
         add_action('wp_ajax_petitioner_resend_confirmation_email', ['AV_Petitioner_Submissions_Controller', 'api_resend_confirmation_email']);
         add_action('wp_ajax_petitioner_resend_all_confirmation_emails', ['AV_Petitioner_Submissions_Controller', 'api_resend_all_confirmation_emails']);
         add_action('wp_ajax_petitioner_check_unconfirmed_count', ['AV_Petitioner_Submissions_Controller', 'api_check_unconfirmed_count']);
 
         add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_Submissions_Controller', 'admin_petitioner_export_csv'));
-
-        // gutenberg
-        add_action('init', array($this, 'register_petition_form_block'));
     }
     /**
      * Plugin activation callback.
@@ -152,13 +165,20 @@ class AV_Petitioner_Setup
             wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
         }
 
-        wp_enqueue_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
+        wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', array(), AV_PETITIONER_PLUGIN_VERSION, true);
+
+        wp_enqueue_script('petitioner-script');
 
         AV_Petitioner_Captcha::enqueue_scripts();
 
         wp_localize_script('petitioner-script', 'petitionerFormSettings', [
             'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
             'nonce'         => wp_create_nonce('petitioner_form_nonce'),
+        ]);
+
+        wp_localize_script('petitioner-script', 'petitionerSubmissionSettings', [
+            'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_get_submissions',
+            'nonce'         => wp_create_nonce('petitioner_submissions_nonce'),
         ]);
     }
 
@@ -214,45 +234,5 @@ class AV_Petitioner_Setup
 
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array('wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components'), AV_PETITIONER_PLUGIN_VERSION, true);
-    }
-
-    public function register_petition_form_block()
-    {
-        wp_register_script(
-            'petitioner-form-block',
-            plugin_dir_url(dirname(__FILE__)) . 'dist-gutenberg/petitionerFormBlock.js',
-            array('wp-blocks', 'wp-element', 'wp-editor', 'wp-i18n'),
-            AV_PETITIONER_PLUGIN_VERSION,
-            array()
-        );
-
-        wp_register_style(
-            'petitioner-form-style',
-            plugin_dir_url(dirname(__FILE__)) . 'dist/main.css',
-            array(),
-            AV_PETITIONER_PLUGIN_VERSION
-        );
-
-        register_block_type('petitioner/form', array(
-            'editor_script'     => 'petitioner-form-block',
-            'editor_style'      => 'petitioner-form-style',
-            'attributes' => array(
-                'formId' => array(
-                    'type'        => 'string',
-                    'default'     => null
-                ),
-                'newPetitionLink' => array(
-                    'type'      => 'text',
-                    'default'   => admin_url('post-new.php?post_type=petitioner-petition')
-                ),
-            ),
-            'render_callback'   => function ($attributes) {
-                if (empty($attributes['formId'])) return;
-
-                $form_id = $attributes['formId'];
-
-                return do_shortcode('[petitioner-form id="' . esc_attr($form_id) . '"]');
-            }
-        ));
     }
 }

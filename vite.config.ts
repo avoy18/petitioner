@@ -64,7 +64,7 @@ module.exports = defineConfig({
 				// '@wordpress/editor'
 			],
 			input: {
-				main: path.resolve(__dirname, 'src/js/main.js'),
+				main: path.resolve(__dirname, 'src/js/main.ts'),
 				admin: path.resolve(__dirname, 'src/js/admin.tsx'),
 			},
 			output: {
@@ -93,6 +93,7 @@ module.exports = defineConfig({
 	resolve: {
 		alias: {
 			'@admin': path.resolve(__dirname, 'src/js/admin/'),
+			'@js': path.resolve(__dirname, 'src/js/'),
 			// Add as many as needed
 		},
 	},

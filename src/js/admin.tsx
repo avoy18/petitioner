@@ -4,7 +4,7 @@ import SettingsFields from '@admin/sections/SettingsFields';
 import ShortcodeArea from '@admin/sections/ShortcodeArea';
 
 import '../scss/admin.scss';
-import { safelyParseJSON } from '@admin/utilities';
+import { safelyParseJSON } from '@js/utilities';
 
 declare global {
 	interface Window {

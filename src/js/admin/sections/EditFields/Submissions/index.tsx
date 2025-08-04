@@ -2,14 +2,20 @@ import { useEffect, useState } from '@wordpress/element';
 import { Button, ButtonGroup } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
-import {
+import ShortcodeElement from '@admin/components/ShortcodeElement';
+import { __ } from '@wordpress/i18n';
+import type {
 	Submissions,
 	SubmissionItem,
 	SubmissionID,
 	SubmissionStatus,
 	ChangeAction,
-} from '../../../types/submissions.types';
-import { ApprovalState, CheckboxValue } from 'src/js/types/edit-form.types';
+} from './consts';
+import type {
+	ApprovalState,
+	CheckboxValue,
+} from '@admin/sections/EditFields/consts';
+import { ExportButtonWrapper } from './styled';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -70,7 +76,7 @@ export default function Submissions() {
 		newStatus: SubmissionStatus,
 		changeAction: ChangeAction
 	) => {
-		const question = `Are you sure you want to ${changeAction} this submission?`;
+		const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
 
 		if (window.confirm(question)) {
 			const finalAjaxURL = `${ajaxurl}?action=petitioner_change_status`;
@@ -153,12 +159,22 @@ export default function Submissions() {
 
 	const ExportComponent = () => {
 		return (
-			<>
+			<ExportButtonWrapper>
+				<ShortcodeElement
+					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
+					label={__('Shortcode', 'petitioner')}
+					help={__(
+						'Use this shortcode to display submissions on any page or post.',
+						'petitioner'
+					)}
+					fieldName="petitioner_shortcode"
+					width="250px"
+				/>
 				{/* @ts-ignore */}
 				<Button variant="primary" href={export_url}>
-					Export entries as CSV
+					{__('Export entries as CSV', 'petitioner')}
 				</Button>
-			</>
+			</ExportButtonWrapper>
 		);
 	};
 

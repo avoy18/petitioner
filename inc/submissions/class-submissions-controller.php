@@ -198,7 +198,10 @@ class AV_Petitioner_Submissions_Controller
         }
 
         // Fetch submissions and total count using the new method
-        $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, $per_page, $offset);
+        $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
+            'per_page' => $per_page,
+            'offset'   => $offset
+        ]);
 
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);
@@ -211,6 +214,95 @@ class AV_Petitioner_Submissions_Controller
             'current_page' => $page,
             'per_page' => $per_page,
         ));
+
+        wp_die();
+    }
+
+    /**
+     * Fetch form submissions for the API
+     * 
+     * This function is used for non-logged-in users to fetch form submissions.
+     * It retrieves the form ID and pagination information from the request,
+     * validates the form ID, and then fetches the submissions using the
+     * AV_Petitioner_Submissions_Model::get_form_submissions method.
+     */
+    public static function api_get_form_submissions()
+    {
+        // if (!check_ajax_referer('petitioner_submissions_nonce', 'petitioner_nonce', false)) {
+        //     wp_send_json_error(AV_Petitioner_Labels::get('invalid_nonce'));
+        //     wp_die();
+        // }
+
+        // Get the form ID and pagination info from the request
+        $page       = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $per_page   = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
+        $offset     = ($page - 1) * $per_page;
+        $form_id    = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
+
+        // Check if form_id is valid
+        if (!$form_id) {
+            wp_send_json_error('Invalid form ID.');
+            wp_die();
+        }
+
+        $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
+
+        // Fetch submissions and total count using the new method
+        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'city', 'postal_code', 'hide_name', 'submitted_at'];
+        $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
+            'per_page'          => $per_page,
+            'offset'            => $offset,
+            'fields'            => $fields,
+            'query'             => [
+                'approval_status' => 'Confirmed',
+            ],
+        ]);
+
+        // Calculate the total number of pages
+        $total_pages = ceil($result['total'] / $per_page);
+
+        $labels = av_petitioner_get_form_labels($form_id, [
+            'name',
+            'country',
+            'city',
+            'postal_code',
+            'submitted_at'
+        ]);
+
+        $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
+            if ($submission->hide_name) {
+                $submission->fname = __('Anonymous', 'petitioner');
+                $submission->lname = '';
+            }
+
+            if ($hide_last_name) {
+                $submission->lname = mb_substr($submission->lname, 0, 1);
+            }
+
+            $modified_submission = [
+                'name'          => $submission->fname . ' ' . $submission->lname
+            ];
+
+            foreach ($labels as $k => $v) {
+                if ($k === 'name') {
+                    continue;
+                }
+
+                $modified_submission[$k] = $submission->{$k};
+            }
+
+            return $modified_submission;
+        }, $result['submissions']);
+
+        // Return the results as a JSON response
+        wp_send_json_success([
+            'labels'        => $labels,
+            'submissions'   => $final_submissions,
+            'total'         => $result['total'],
+            'total_pages'   => $total_pages,
+            'current_page'  => $page,
+            'per_page'      => $per_page,
+        ]);
 
         wp_die();
     }

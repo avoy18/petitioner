@@ -4,11 +4,11 @@ import {
 	useState,
 	useCallback,
 } from '@wordpress/element';
-import {
+import type {
 	EditFormContextValue,
 	PetitionerData,
 	EditFormContextProviderProps,
-} from '../types/edit-form.types';
+} from '@admin/sections/EditFields/consts';
 
 const EditFormContext = createContext<EditFormContextValue | null>(null);
 
@@ -46,6 +46,7 @@ const normalizePetitionerData = () => {
 		from_field: '',
 		add_honeypot: true,
 		form_id: null,
+		hide_last_names: true
 	};
 
 	return { ...defaultData, ...rawData };
@@ -81,6 +82,7 @@ export function EditFormContextProvider({
 		override_success_message = false,
 		success_message_title = '',
 		success_message = '',
+		hide_last_names = true,
 	} = petitionerData;
 
 	const [formState, setFormState] = useState({
@@ -107,6 +109,7 @@ export function EditFormContextProvider({
 		override_success_message,
 		success_message_title,
 		success_message,
+		hide_last_names
 	});
 
 	const updateFormState = useCallback(

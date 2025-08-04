@@ -31,6 +31,9 @@ class AV_Petitioner_Labels
             'close_modal'                    => __('Close modal', 'petitioner'),
             'signatures'                     => __('Signatures', 'petitioner'),
             'goal'                           => __('Goal', 'petitioner'),
+            'id'                             => __('ID', 'petitioner'),
+            'created_at'                     => __('Submission date', 'petitioner'),
+            'name'                           => __('Name', 'petitioner')
         ];
 
         /**
