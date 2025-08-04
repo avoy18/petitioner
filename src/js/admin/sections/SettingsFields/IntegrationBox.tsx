@@ -57,6 +57,7 @@ export default function IntegrationBox({
 						style={{ marginTop: 16 }}
 						variant="secondary"
 						onClick={closeModal}
+						data-testid="petitioner_modal_close"
 					>
 						Close
 					</Button>
