@@ -143,8 +143,8 @@ class AV_Petitioner_Admin_Settings_UI
             'turnstile_site_key'        => sanitize_text_field($option_values['turnstile_site_key']),
             'turnstile_secret_key'      => sanitize_text_field($option_values['turnstile_secret_key']),
             'enable_akismet'            => (bool) $option_values['enable_akismet'],
-            'label_overrides'           => !empty($option_values['label_overrides']) ? $this->sanitize_array($option_values['label_overrides'], false) : [],
-            "default_values"                => [
+            'label_overrides'           => !empty($option_values['label_overrides']) ? json_decode($option_values['label_overrides']) : [],
+            'default_values'                => [
                 "colors"              => $this->default_colors,
                 "labels"              => $this->get_default_labels()
             ]
@@ -206,7 +206,7 @@ class AV_Petitioner_Admin_Settings_UI
             if (in_array($key, $checkboxes)) {
                 $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
             } else if ($key === 'label_overrides') {
-                $value = $this->sanitize_array($value, false);
+                $value = $this->sanitize_array($value);
             } else if ($key === 'custom_css') {
                 $value = wp_strip_all_tags($value);
             } else {
@@ -223,17 +223,21 @@ class AV_Petitioner_Admin_Settings_UI
             $array_items = $json_items_raw;
         } else {
             $array_items = json_decode($json_items_raw, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($array_items)) {
+                av_ptr_error_log('Invalid JSON input');
+                return $stringify ? '{}' : [];
+            }
         }
 
-        if (!is_array($array_items)) {
-            av_ptr_error_log('Error sanitizing the array');
-            return $stringify ? '[]' : [];
-        }
+        $sanitized = [];
 
-        $sanitized = array_map(fn($item) => sanitize_text_field((string) $item), $array_items);
+        foreach ($array_items as $key => $val) {
+            $sanitized[$key] = sanitize_text_field((string) $val);
+        }
 
         return $stringify
-            ? wp_slash(wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+            ? wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             : $sanitized;
     }
 
