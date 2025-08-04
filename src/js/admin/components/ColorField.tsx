@@ -94,7 +94,7 @@ export default function ColorField({
 
 		const paletteHeight = 396;
 
-		const wouldBeTop = buttonRect.top - (paletteHeight);
+		const wouldBeTop = buttonRect.top - paletteHeight;
 		const wouldBeBottom = wouldBeTop + paletteHeight;
 
 		let adjustmentTop = 0;
@@ -135,10 +135,7 @@ export default function ColorField({
 					<ColorIndicator colorValue={color || defaultColor} />
 					{label}
 				</ColorPickerButton>
-				<Palette
-					$topValue={pickerTopValue}
-					$isOpen={isPickerOpen}
-				>
+				<Palette $topValue={pickerTopValue} $isOpen={isPickerOpen}>
 					<ColorPicker
 						color={color || defaultColor}
 						onChange={(newColor) => {
@@ -149,7 +146,7 @@ export default function ColorField({
 					/>
 				</Palette>
 
-				<input type="hidden" name={id} value={color || defaultColor} />
+				<input data-testid="hidden_color_input" type="hidden" name={id} value={color || defaultColor} />
 			</PtrColorPicker>
 			<PickerOverlay />
 		</>
