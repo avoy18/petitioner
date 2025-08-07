@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.4.4
+Stable Tag: 0.4.5
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -27,6 +27,7 @@ Create and manage an unlimited number of petitions.
 * Edit field's label, placeholder, and required state
 
 **Control submission behaviour**
+* Show submissions on the frontend in a few different styles
 * Email functionality: Automatically send petition letters to representatives via email.
 * Ability to store submissions without sending emails to the rep.
 * Ability to manually approve/deny petitions and set the default approval behavior (approved by default or declined)
@@ -95,6 +96,10 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.4.5 =
+* Make signee's BCC disabled by default
+* Add a new filter: `av_petitioner_mailer_settings`
 
 = 0.4.4 =
 * Add option to render submissions on the frontend
