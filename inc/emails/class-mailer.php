@@ -145,7 +145,7 @@ class AV_Petitioner_Mailer
         // Translators: %s is the user's name
         $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
 
-        $headers = AV_Petitioner_Email_Controller::build_headers($this->from_field, $this->target_cc_emails, $this->user_email);
+        $headers = AV_Petitioner_Email_Controller::build_headers($this->from_field, $this->target_cc_emails, ($this->bcc ? $this->user_email : ''));
 
         // Send the email
         $the_args = [
