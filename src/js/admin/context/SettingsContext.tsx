@@ -34,12 +34,14 @@ const normalizeSettingsData = (
 	turnstile_site_key: raw?.turnstile_site_key ?? '',
 	turnstile_secret_key: raw?.turnstile_secret_key ?? '',
 	enable_akismet: raw?.enable_akismet ?? true,
+	label_overrides: raw?.label_overrides ?? {},
 	default_values: raw?.default_values ?? {
 		colors: {
 			primary: '',
 			dark: '',
 			grey: '',
 		},
+		labels: {}
 	},
 });
 
@@ -70,6 +72,7 @@ export const SettingsFormContextProvider = ({
 		turnstile_site_key,
 		turnstile_secret_key,
 		enable_akismet,
+		label_overrides,
 	} = windowPetitionerData;
 
 	const [formState, setFormState] = useState<SettingsFormData>({
@@ -90,6 +93,7 @@ export const SettingsFormContextProvider = ({
 		turnstile_site_key,
 		turnstile_secret_key,
 		enable_akismet,
+		label_overrides,
 	});
 
 	const updateFormState = useCallback(

@@ -45,6 +45,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_Gutenberg')) {
                 new AV_Petitioner_Gutenberg();
             }
+
+            // add label overrides
+            if (class_exists('AV_Petitioner_Label_Overrides')) {
+                new AV_Petitioner_Label_Overrides();
+            }
         });
 
         // api endpoints

@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.4.5
+ * Version:           0.4.6
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_PLUGIN_VERSION', '0.4.5');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.4.6');
 
 if (!function_exists('av_ptr_error_log')) {
 
@@ -53,12 +53,15 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-settings-ui.ph
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/gutenberg/class-gutenberg.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/utilities.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-labels.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-labels.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-label-overrides.php';
 
 $petitioner_setup = new AV_Petitioner_Setup();
+
 new AV_Email_Confirmations();
 
 register_activation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_activation'));
 register_deactivation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_deactivation'));
 register_uninstall_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_uninstall'));
+
 AV_Petitioner_Form_Migrator::migrate_form_fields_to_builder_filters();

@@ -1,5 +1,13 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
+/**
+ * Stores all of the static labels of the plugin
+ * and provides filters to override them
+ */
 class AV_Petitioner_Labels
 {
     public static $defaults = [];
@@ -12,7 +20,38 @@ class AV_Petitioner_Labels
      */
     public static function get($key, $form_id = null)
     {
-        self::$defaults = [
+        self::$defaults = self::get_all();
+
+        /**
+         * Filter to modify the default labels for the plugin.
+         *
+         * @param array $defaults Array of default labels.
+         * @return array Modified default labels.
+         */
+        self::$defaults = apply_filters('av_petitioner_labels_defaults', self::$defaults);
+
+        // If the key exists in the defaults, return it
+        // Otherwise, return an empty string
+        if (empty($key)) {
+            av_ptr_error_log('AV_Petitioner_Labels::get called with empty key');
+            return '';
+        }
+
+        if ($form_id !== null) {
+            return self::get_form_label($key, $form_id);
+        }
+
+        return isset(self::$defaults[$key]) ? self::$defaults[$key] : '';
+    }
+
+    /**
+     * Get all labels
+     *
+     * @return array An array of all labels
+     */
+    public static function get_all()
+    {
+        return [
             'could_not_submit'               => __('Could not submit the form.', 'petitioner'),
             'error_generic'                  => __('Something went wrong. Please try again.', 'petitioner'),
             'error_required'                 => __('This field is required.', 'petitioner'),
@@ -35,27 +74,6 @@ class AV_Petitioner_Labels
             'created_at'                     => __('Submission date', 'petitioner'),
             'name'                           => __('Name', 'petitioner')
         ];
-
-        /**
-         * Filter to modify the default labels for the plugin.
-         *
-         * @param array $defaults Array of default labels.
-         * @return array Modified default labels.
-         */
-        self::$defaults = apply_filters('av_petitioner_labels_defaults', self::$defaults);
-
-        // If the key exists in the defaults, return it
-        // Otherwise, return an empty string
-        if (empty($key)) {
-            av_ptr_error_log('AV_Petitioner_Labels::get called with empty key');
-            return '';
-        }
-
-        if ($form_id !== null) {
-            return self::get_form_label($key, $form_id);
-        }
-
-        return isset(self::$defaults[$key]) ? self::$defaults[$key] : '';
     }
 
     /**

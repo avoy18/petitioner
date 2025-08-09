@@ -16,6 +16,7 @@ export interface SettingsFormData {
 	turnstile_site_key: string;
 	turnstile_secret_key: string;
 	enable_akismet: boolean;
+	label_overrides: Record<string, string>;
 }
 
 export type DefaultValues = {
@@ -24,6 +25,7 @@ export type DefaultValues = {
 		dark: string;
 		grey: string;
 	};
+	labels: Record<string, string>;
 };
 
 export interface WindowSettingsData extends SettingsFormData {
