@@ -88,6 +88,15 @@ export const DRAGGABLE_FIELD_TYPES = [
 		required: false,
 		removable: true,
 	},
+	{
+		key: 'comments',
+		type: 'textarea',
+		fieldName: __('Comments', 'petitioner'),
+		label: __('Comments', 'petitioner'),
+		placeholder: '',
+		required: false,
+		removable: true,
+	}
 ] as BuilderField[];
 
 const defaultBuilderFields: BuilderFieldMap = {

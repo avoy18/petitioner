@@ -2,10 +2,35 @@ import { getFieldTypeGroup } from '@admin/utilities';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
 import { Button } from '@wordpress/components';
+import styled from 'styled-components';
+
+const FakeFieldLabel = styled.p`
+	min-height: 18px;
+	font-size: 14px;
+	color: rgba(var(--ptr-admin-color-dark), 0.6);
+	background: #fff;
+	margin-bottom: 0;
+`;
+
+const FakeField = styled.div`
+	border: 1px solid var(--ptr-admin-color-grey, #ccc);
+	width: 100%;
+	min-height: 37px;
+	padding: var(--ptr-admin-spacing-sm, 4px);
+	border-radius: var(--ptr-admin-input-border-radius, 4px);
+	box-sizing: border-box;
+	font-size: var(--ptr-admin-fs-sm);
+	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);
+	pointer-events: none;
+`;
+
+const StyledTextarea = styled(FakeField)`
+	min-height: 100px;
+`;
 
 export default function DynamicField({
 	name = '',
-	type = 'text',
+	inputType = 'text',
 	label = 'Field Label',
 	value = '',
 	defaultValue = false,
@@ -19,8 +44,6 @@ export default function DynamicField({
 		formBuilderFields,
 		removeFormBuilderField,
 	} = useFormBuilderContext();
-
-	const inputType = getFieldTypeGroup(type as FieldType);
 
 	const handleFieldEdit = (event: React.MouseEvent) => {
 		event.preventDefault();
@@ -77,8 +100,8 @@ export default function DynamicField({
 
 	let FinalField = (
 		<>
-			<p className="ptr-fake-field__label">{label}</p>
-			<div className="ptr-fake-field__input">{placeholder}</div>
+			<FakeFieldLabel>{label}</FakeFieldLabel>
+			<FakeField>{placeholder}</FakeField>
 		</>
 	);
 
@@ -96,6 +119,13 @@ export default function DynamicField({
 		);
 	} else if (inputType === 'submit') {
 		FinalField = <button>{label}</button>;
+	} else if (inputType === 'textarea') {
+		FinalField = (
+			<>
+				<FakeFieldLabel>{label}</FakeFieldLabel>
+				<StyledTextarea>{placeholder}</StyledTextarea>
+			</>
+		);
 	} else if (inputType === 'wysiwyg') {
 		FinalField = (
 			<div
