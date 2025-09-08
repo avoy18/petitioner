@@ -30,6 +30,7 @@ class AV_Petitioner_Submissions_Model
             street_address varchar(255),
             city varchar(255),
             postal_code varchar(50),
+            comments text,
             bcc_yourself tinyint(1) DEFAULT 0,
             newsletter tinyint(1) DEFAULT 0,
             hide_name tinyint(1) DEFAULT 0,
@@ -81,13 +82,14 @@ class AV_Petitioner_Submissions_Model
             'street_address',
             'city',
             'postal_code',
+            'comments',
             'bcc_yourself',
             'newsletter',
             'hide_name',
             'accept_tos',
             'approval_status',
             'submitted_at',
-            'confirmation_token'
+            'confirmation_token',
         ];
 
         if ($fields !== '*') {
@@ -209,6 +211,7 @@ class AV_Petitioner_Submissions_Model
             'street_address'    => '%s',
             'city'              => '%s',
             'postal_code'       => '%s',
+            'comments'          => '%s',
             'bcc_yourself'      => '%d',
             'newsletter'        => '%d',
             'hide_name'         => '%d',
