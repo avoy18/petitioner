@@ -27,7 +27,7 @@ class AV_Petitioner_Frontend_UI
         <div class="petitioner">
             <?php
             $this->render_title($form_id);
-            $this->render_goal($form_id);
+            $this->render_goal($form_id, get_option('petitioner_show_goal', true));
             $this->render_modal($form_id);
 
             // $form_handler->render();
@@ -86,11 +86,10 @@ class AV_Petitioner_Frontend_UI
     <?php
     }
 
-    public function render_goal($form_id)
+    public function render_goal($form_id, $show_goal = true)
     {
-        $petitioner_show_goal   = get_option('petitioner_show_goal', true);
 
-        if (!$petitioner_show_goal) return;
+        if (!$show_goal) return;
 
         $petitioner_goal        = get_post_meta($form_id, '_petitioner_goal', true);
         $goal                   = intval($petitioner_goal);
