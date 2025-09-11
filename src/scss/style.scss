@@ -70,7 +70,7 @@ $spacer-xl: 32px;
 			font-size: var(--ptr-label-font-size);
 		}
 
-		input:not([type="checkbox"]) {
+		input:not([type="checkbox"]), textarea {
 			outline: none;
 			border-radius: var(--ptr-input-border-radius);
 			border-color: var(--ptr-input-border-color);
