@@ -8,6 +8,7 @@ const fieldTypeToGroup = {
 	checkbox: 'checkbox',
 	wysiwyg: 'wysiwyg',
 	submit: 'submit',
+	comments: 'textarea',
 };
 
 export type FieldGroup = (typeof fieldTypeToGroup)[FieldType];

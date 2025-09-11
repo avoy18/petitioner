@@ -8,23 +8,6 @@
 		transition-delay: 0;
 		background: white;
 
-		&__label {
-			font-size: var(--ptr-admin-fs-sm);
-			margin-top: 0px;
-			margin-bottom: 0px;
-		}
-
-		&__input {
-			border: 1px solid var(--ptr-admin-color-grey, #ccc);
-			width: 100%;
-			min-height: 37px;
-			padding: var(--ptr-admin-spacing-sm, 4px);
-			border-radius: var(--ptr-admin-input-border-radius, 4px);
-			box-sizing: border-box;
-			font-size: var(--ptr-admin-fs-sm);
-			color: rgba(var(--ptr-admin-color-dark, #000), 0.6);
-		}
-
 		&--input,
 		&--checkbox,
 		&--content {
@@ -76,11 +59,6 @@
 			.ptr-actions {
 				display: flex;
 			}
-		}
-
-		&--active,
-		&--active:hover {
-			// border: 1px solid var(--ptr-admin-color-dark);
 		}
 	}
 

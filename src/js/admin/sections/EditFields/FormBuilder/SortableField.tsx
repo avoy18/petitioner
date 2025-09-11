@@ -53,7 +53,7 @@ export default function SortableField({ id }: Props) {
 
 	const ptrProps = {
 		name: id,
-		type: currentField.type,
+		inputType: currentField.type,
 		label: currentField.label,
 		placeholder:
 			'placeholder' in currentField

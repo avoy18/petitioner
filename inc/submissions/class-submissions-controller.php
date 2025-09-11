@@ -38,6 +38,7 @@ class AV_Petitioner_Submissions_Controller
         $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
         $city                       = isset($_POST['petitioner_city']) ? sanitize_text_field(wp_unslash($_POST['petitioner_city'])) : '';
         $postal_code                = isset($_POST['petitioner_postal_code']) ? sanitize_text_field(wp_unslash($_POST['petitioner_postal_code'])) : '';
+        $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status            = __('Confirmed', 'petitioner');
@@ -102,6 +103,7 @@ class AV_Petitioner_Submissions_Controller
             'street_address'    => $street_address,
             'city'              => $city,
             'postal_code'       => $postal_code,
+            'comments'          => $comments,
             'bcc_yourself'      => $bcc ? 1 : 0,
             'newsletter'        => $newsletter_opt_in ? 1 : 0,
             'hide_name'         => $hide_name ? 1 : 0,

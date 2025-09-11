@@ -18,6 +18,7 @@ const screenKeys = [
 	'checkbox',
 	'wysiwyg',
 	'submit',
+	'textarea',
 ] as const;
 
 type ScreenType = (typeof screenKeys)[number];
@@ -45,10 +46,11 @@ export default function BuilderSettings() {
 		useFormBuilderContext();
 
 	const currentField = formBuilderFields[builderEditScreen];
-	const currentType = getFieldTypeGroup(currentField?.type);
+	const currentType = currentField?.type;
 
 	const screens: Record<ScreenType | 'default', () => any> = {
 		input: () => <EditInput />,
+		textarea: () => <EditInput />,
 		select: () => <EditDropdown />,
 		checkbox: () => <EditCheckbox />,
 		wysiwyg: () => <EditContent />,
@@ -59,7 +61,7 @@ export default function BuilderSettings() {
 	const ScreenComponent = screenKeys.includes(currentType as ScreenType)
 		? screens[currentType as ScreenType]
 		: screens.default;
-	console.log(builderEditScreen);
+
 	return (
 		<BuilderSettingsWrapper data-testid="ptr-builder-settings">
 			{builderEditScreen != 'default' && (
