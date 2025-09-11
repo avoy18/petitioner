@@ -1,1 +1,308 @@
-(()=>{"use strict";var e={n:t=>{var n=t&&t.__esModule?()=>t.default:()=>t;return e.d(n,{a:n}),n},d:(t,n)=>{for(var o in n)e.o(n,o)&&!e.o(t,o)&&Object.defineProperty(t,o,{enumerable:!0,get:n[o]})},o:(e,t)=>Object.prototype.hasOwnProperty.call(e,t)};const t=window.wp.blocks,n=window.wp.i18n,o=window.wp.blockEditor,i=window.wp.serverSideRender;var r=e.n(i);const s=window.wp.data,l=window.wp.components,d=window.wp.element,c=window.ReactJSXRuntime;(0,t.registerBlockType)("petitioner/form",{title:(0,n.__)("Petitioner Form","petitioner"),icon:"forms",category:"widgets",edit:function({attributes:e,setAttributes:t}){const{formId:n,newPetitionLink:i}=e,a=(0,o.useBlockProps)(),p=(0,d.useCallback)(()=>(0,s.useSelect)(e=>e("core").getEntityRecords("postType","petitioner-petition",{per_page:-1,_fields:"title,id"}),[]),[])()||[],u=[{label:"Please select your petition",value:""}];p.forEach(e=>{let t=e.title.raw;t.length>40&&(t=t.substring(0,40)+"...");const n={label:t,value:e.id};u.push(n)});const w=(0,d.useCallback)(()=>p.length?n?(0,c.jsx)("div",{style:{pointerEvents:"none"},children:(0,c.jsx)(r(),{block:"petitioner/form",attributes:e})}):(0,c.jsxs)("div",{style:{padding:"24px",background:"#efefef"},children:[(0,c.jsx)("p",{children:(0,c.jsx)("small",{children:"Petitioner form"})}),(0,c.jsx)("p",{children:"Use the dropdown in the block settings to select your petition."})]}):(0,c.jsxs)("div",{style:{padding:"24px",background:"#efefef"},children:[(0,c.jsx)("p",{children:(0,c.jsx)("small",{children:"Petitioner form"})}),(0,c.jsx)("p",{children:"Looks like you haven't added any forms yet!"}),(0,c.jsx)(l.Button,{variant:"secondary",href:i||"",children:"Create your first petition"})]}),[p,n,e,i]);return(0,c.jsxs)("div",{...a,children:[(0,c.jsx)(o.InspectorControls,{children:(0,c.jsx)(l.PanelBody,{children:(0,c.jsx)(l.SelectControl,{label:"Selected Petition",value:n,options:u,onChange:e=>t({formId:e})})})}),(0,c.jsx)(w,{})]})},save:()=>null})})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/blocks/form/Edit.tsx":
+/*!**********************************!*\
+  !*** ./src/blocks/form/Edit.tsx ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Edit)
+/* harmony export */ });
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/server-side-render */ "@wordpress/server-side-render");
+/* harmony import */ var _wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+// @ts-ignore
+
+// @ts-ignore
+
+
+
+
+
+function Edit({
+  attributes,
+  setAttributes
+}) {
+  const {
+    formId,
+    newPetitionLink
+  } = attributes;
+  const blockAtts = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.useBlockProps)();
+  const fetchPetitions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useCallback)(() => {
+    return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
+      // @ts-ignore
+      return select('core').getEntityRecords('postType', 'petitioner-petition', {
+        per_page: -1,
+        _fields: 'title,id'
+      });
+    }, []);
+  }, []);
+  const allPetitions = fetchPetitions() || [];
+  const petitionOptions = [{
+    label: 'Please select your petition',
+    value: ''
+  }];
+  allPetitions.forEach(el => {
+    let label = el.title.raw;
+    const limit = 40;
+    if (label.length > limit) {
+      label = label.substring(0, limit) + '...';
+    }
+    const objToPush = {
+      label,
+      value: el.id
+    };
+    petitionOptions.push(objToPush);
+  });
+  const FinalComponent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useCallback)(() => {
+    if (!allPetitions.length) {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        style: {
+          padding: '24px',
+          background: '#efefef'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("small", {
+            children: "Petitioner form"
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+          children: "Looks like you haven't added any forms yet!"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          variant: "secondary",
+          href: newPetitionLink || '',
+          children: "Create your first petition"
+        })]
+      });
+    }
+    if (!formId) {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        style: {
+          padding: '24px',
+          background: '#efefef'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("small", {
+            children: "Petitioner form"
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+          children: "Use the dropdown in the block settings to select your petition."
+        })]
+      });
+    }
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      style: {
+        pointerEvents: 'none'
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_1___default()), {
+        block: "petitioner/form",
+        attributes: attributes
+      })
+    });
+  }, [allPetitions, formId, attributes, newPetitionLink]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+    ...blockAtts,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_0__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.PanelBody, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+          label: "Selected Petition",
+          value: formId,
+          options: petitionOptions,
+          onChange: el => setAttributes({
+            formId: el
+          })
+        })
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(FinalComponent, {})]
+  });
+}
+
+/***/ }),
+
+/***/ "@wordpress/block-editor":
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ }),
+
+/***/ "@wordpress/blocks":
+/*!********************************!*\
+  !*** external ["wp","blocks"] ***!
+  \********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["blocks"];
+
+/***/ }),
+
+/***/ "@wordpress/components":
+/*!************************************!*\
+  !*** external ["wp","components"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["data"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/i18n":
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ }),
+
+/***/ "@wordpress/server-side-render":
+/*!******************************************!*\
+  !*** external ["wp","serverSideRender"] ***!
+  \******************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["serverSideRender"];
+
+/***/ }),
+
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["ReactJSXRuntime"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+/*!**********************************!*\
+  !*** ./src/blocks/form/index.ts ***!
+  \**********************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Edit */ "./src/blocks/form/Edit.tsx");
+
+
+
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)('petitioner/form', {
+  title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Petitioner Form', 'petitioner'),
+  icon: 'forms',
+  category: 'widgets',
+  edit: _Edit__WEBPACK_IMPORTED_MODULE_2__["default"],
+  save: () => null
+});
+})();
+
+/******/ })()
+;
+//# sourceMappingURL=index.js.map
