@@ -13,7 +13,9 @@ import EditSubmit from './EditSubmit';
 import FieldList from './FieldList';
 
 const screenKeys = [
-	'input',
+	'email',
+	'tel',
+	'text',
 	'select',
 	'checkbox',
 	'wysiwyg',
@@ -49,7 +51,9 @@ export default function BuilderSettings() {
 	const currentType = currentField?.type;
 
 	const screens: Record<ScreenType | 'default', () => any> = {
-		input: () => <EditInput />,
+		email: () => <EditInput />,
+		tel: () => <EditInput />,
+		text: () => <EditInput />,
 		textarea: () => <EditInput />,
 		select: () => <EditDropdown />,
 		checkbox: () => <EditCheckbox />,
