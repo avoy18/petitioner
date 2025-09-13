@@ -7,11 +7,12 @@ import {
 import { isNonEmptyObject } from '@admin/utilities';
 import { __ } from '@wordpress/i18n';
 
-import {
+import type {
 	BuilderFieldMap,
 	BuilderField,
 	FormBuilderContextValue,
 	FormBuilderContextProviderProps,
+	FieldOrderItems
 } from '@admin/sections/EditFields/FormBuilder/consts';
 
 export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
@@ -216,7 +217,7 @@ export function FormBuilderContextProvider({
 			? field_order
 			: Object.keys(formBuilderFields);
 
-	const [fieldOrder, setFieldOrder] = useState<string[]>(defaultFieldOrder);
+	const [fieldOrder, setFieldOrder] = useState<FieldOrderItems>(defaultFieldOrder);
 
 	return (
 		<FormBuilderContext.Provider

@@ -6,9 +6,12 @@ import {
 	DRAGGABLE_FIELD_TYPES,
 	useFormBuilderContext,
 } from '@admin/context/FormBuilderContext';
+import { getIDNoPrefix } from './BuilderSettings/FieldList';
 import SortableField from './SortableField';
 import styled from 'styled-components';
 import { __ } from '@wordpress/i18n';
+import type { FieldOrderItems } from '@admin/sections/EditFields/FormBuilder/consts';
+
 const StyledPanel = styled(Panel)`
 	margin-top: var(--ptr-admin-spacing-md, 16px);
 
@@ -29,7 +32,9 @@ function FormBuilderComponent() {
 		addFormBuilderField,
 	} = useFormBuilderContext();
 
-	const handleFieldInsert = (id: string, position: number) => {
+	const handleFieldInsert = (rawID: string, position: number) => {
+		const id = getIDNoPrefix(rawID);
+
 		// get the field type from the draggable options
 		const newField = DRAGGABLE_FIELD_TYPES.find(
 			(field) => field.fieldKey === id
@@ -51,10 +56,14 @@ function FormBuilderComponent() {
 		});
 	};
 
+	const handleReorder = (newOrder: FieldOrderItems) => {
+		setFieldOrder([...newOrder]);
+	};
+
 	return (
 		<DndSortableProvider
 			items={fieldOrder}
-			onReorder={setFieldOrder}
+			onReorder={handleReorder}
 			onInsert={handleFieldInsert}
 		>
 			<StyledPanel>

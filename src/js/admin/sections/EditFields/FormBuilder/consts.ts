@@ -61,3 +61,5 @@ export interface FormBuilderContextValue {
 export interface FormBuilderContextProviderProps {
 	children: React.ReactNode;
 }
+
+export type FieldOrderItems = string[];
