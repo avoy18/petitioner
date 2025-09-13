@@ -79,8 +79,8 @@ export default function FieldList() {
 			</p>
 			{DRAGGABLE_FIELD_TYPES.map((field) => (
 				<PaletteDraggable
-					key={field.key}
-					id={field.key as string}
+					key={field.fieldKey}
+					id={field.fieldKey as string}
 					label={field.fieldName}
 				/>
 			))}

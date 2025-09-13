@@ -20,7 +20,7 @@ export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 
 export const DRAGGABLE_FIELD_TYPES = [
 	{
-		key: 'phone',
+		fieldKey: 'phone',
 		type: 'tel',
 		fieldName: __('Phone #', 'petitioner'),
 		label: __('Phone #', 'petitioner'),
@@ -33,7 +33,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		),
 	},
 	{
-		key: 'country',
+		fieldKey: 'country',
 		type: 'select',
 		fieldName: __('Country', 'petitioner'),
 		label: __('Country', 'petitioner'),
@@ -41,7 +41,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		removable: true,
 	},
 	{
-		key: 'street_address',
+		fieldKey: 'street_address',
 		type: 'text',
 		fieldName: __('Street address', 'petitioner'),
 		label: __('Street address', 'petitioner'),
@@ -50,7 +50,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		removable: true,
 	},
 	{
-		key: 'city',
+		fieldKey: 'city',
 		type: 'text',
 		fieldName: __('City', 'petitioner'),
 		label: __('City', 'petitioner'),
@@ -59,7 +59,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		removable: true,
 	},
 	{
-		key: 'postal_code',
+		fieldKey: 'postal_code',
 		type: 'text',
 		fieldName: __('Postal code', 'petitioner'),
 		label: __('Postal code', 'petitioner'),
@@ -68,7 +68,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		removable: true,
 	},
 	{
-		key: 'accept_tos',
+		fieldKey: 'accept_tos',
 		type: 'checkbox',
 		fieldName: 'Terms of service checkbox',
 		label: __(
@@ -80,7 +80,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		removable: true,
 	},
 	{
-		key: 'legal',
+		fieldKey: 'legal',
 		type: 'wysiwyg',
 		fieldName: __('Legal text', 'petitioner'),
 		label: '',
@@ -89,14 +89,14 @@ export const DRAGGABLE_FIELD_TYPES = [
 		removable: true,
 	},
 	{
-		key: 'comments',
+		fieldKey: 'comments',
 		type: 'textarea',
 		fieldName: __('Comments', 'petitioner'),
 		label: __('Comments', 'petitioner'),
 		placeholder: '',
 		required: false,
 		removable: true,
-	}
+	},
 ] as BuilderField[];
 
 const defaultBuilderFields: BuilderFieldMap = {
@@ -202,10 +202,11 @@ export function FormBuilderContextProvider({
 
 	const addFormBuilderField = useCallback(
 		(id: string, field: BuilderField) => {
-			setFormBuilderFields((prevState) => ({
-				...prevState,
-				[id]: field,
-			}));
+			setFormBuilderFields((prevState) => {
+				const newField = { ...field };
+				delete newField['fieldKey'];
+				return { ...prevState, [id]: newField };
+			});
 		},
 		[]
 	);

@@ -32,10 +32,10 @@ function FormBuilderComponent() {
 	const handleFieldInsert = (id: string, position: number) => {
 		// get the field type from the draggable options
 		const newField = DRAGGABLE_FIELD_TYPES.find(
-			(field) => field.key === id
+			(field) => field.fieldKey === id
 		);
 
-		const newFieldID = newField?.key;
+		const newFieldID = newField?.fieldKey;
 
 		if (!newField || typeof newFieldID !== 'string') {
 			console.error('Field type not found:', id);
