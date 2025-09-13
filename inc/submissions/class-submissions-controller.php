@@ -38,6 +38,7 @@ class AV_Petitioner_Submissions_Controller
         $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
         $city                       = isset($_POST['petitioner_city']) ? sanitize_text_field(wp_unslash($_POST['petitioner_city'])) : '';
         $postal_code                = isset($_POST['petitioner_postal_code']) ? sanitize_text_field(wp_unslash($_POST['petitioner_postal_code'])) : '';
+        $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status            = __('Confirmed', 'petitioner');
@@ -102,6 +103,7 @@ class AV_Petitioner_Submissions_Controller
             'street_address'    => $street_address,
             'city'              => $city,
             'postal_code'       => $postal_code,
+            'comments'          => $comments,
             'bcc_yourself'      => $bcc ? 1 : 0,
             'newsletter'        => $newsletter_opt_in ? 1 : 0,
             'hide_name'         => $hide_name ? 1 : 0,
@@ -260,7 +262,7 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'city', 'postal_code', 'hide_name', 'submitted_at'];
+        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
         $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
             'per_page'          => $per_page,
             'offset'            => $offset,
@@ -278,7 +280,8 @@ class AV_Petitioner_Submissions_Controller
             'country',
             'city',
             'postal_code',
-            'submitted_at'
+            'comments',
+            'submitted_at',
         ]);
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {

@@ -102,6 +102,8 @@ class AV_Petitioner_Form_UI
                         $this->render_select_field($key, $field);
                     } elseif ($field_type === 'wysiwyg') {
                         $this->render_wysiwyg_field($key, $field);
+                    } elseif ($field_type === 'textarea') {
+                        $this->render_textarea($key, $field);
                     } else {
                         $this->render_basic_field($key, $field);
                     }
@@ -211,6 +213,26 @@ class AV_Petitioner_Form_UI
             class="<?php echo $field_name; ?> petitioner-disclaimer-text">
             <?php echo $field_value; ?>
         </div>
+    <?php
+    }
+
+    public function render_textarea(string $name, array $field): void
+    {
+        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
+        $extra_attributes   = $this->get_extra_attributes($field);
+        $placeholder        = !empty($field['placeholder']) ? esc_html($field['placeholder']) : '';
+    ?>
+        <div class="petitioner__input">
+            <label for="<?php echo $field_name; ?>">
+                <?php echo $field_label; ?>
+            </label>
+            <textarea
+                id="<?php echo $field_name; ?>"
+                <?php echo esc_attr($extra_attributes); ?>
+                name="<?php echo $field_name; ?>"><?php echo $placeholder; ?></textarea>
+        </div>
+
     <?php
     }
 

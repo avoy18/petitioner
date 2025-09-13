@@ -1,18 +1,15 @@
-// DndSortableProvider.tsx
 import {
 	DndContext,
 	PointerSensor,
 	useSensor,
 	useSensors,
 	DragEndEvent,
-	DragStartEvent,
 } from '@dnd-kit/core';
 import {
 	SortableContext,
 	verticalListSortingStrategy,
 	arrayMove,
 } from '@dnd-kit/sortable';
-import { useState } from '@wordpress/element';
 
 type Props = {
 	items: string[];
@@ -28,15 +25,10 @@ export default function DndSortableProvider({
 	children,
 }: Props) {
 	const sensors = useSensors(useSensor(PointerSensor));
-	const [activeId, setActiveId] = useState<string | null>(null);
-	const handleDragStart = (event: DragStartEvent) => {
-		setActiveId(event.active.id as string);
-	};
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
 		if (!over) {
-			setActiveId(null);
 			return;
 		}
 
@@ -53,13 +45,11 @@ export default function DndSortableProvider({
 			const newIndex = items.indexOf(over.id as string);
 			onReorder(arrayMove(items, oldIndex, newIndex));
 		}
-		setActiveId(null);
 	};
 
 	return (
 		<DndContext
 			sensors={sensors}
-			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
 		>
 			<SortableContext

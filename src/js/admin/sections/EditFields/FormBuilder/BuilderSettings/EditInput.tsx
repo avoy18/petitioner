@@ -4,7 +4,7 @@ import { useState } from '@wordpress/element';
 import type { BuilderField, TextField } from '@admin/sections/EditFields/FormBuilder/consts';
 
 const isInputField = (field: BuilderField): field is TextField => {
-	return field.type === 'text' || field.type === 'email'  || field.type === 'tel';
+	return field.type === 'text' || field.type === 'email'  || field.type === 'tel' || field.type === 'textarea';
 };
 
 export default function EditInput() {

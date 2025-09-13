@@ -94,7 +94,11 @@ export default class SubmissionsRenderer {
 	}
 
 	public renderPagination(): string {
-		if (!this.options.total || !this.options.perPage || !this.options.pagination) {
+		if (
+			!this.options.total ||
+			!this.options.perPage ||
+			!this.options.pagination
+		) {
 			return '';
 		}
 
@@ -128,7 +132,7 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 
 		this.options.wrapper.appendChild(this.submissionListDiv);
 		this.options.wrapper.appendChild(this.paginationDiv);
-		this.options.wrapper.style=this.getWrapperStyles()
+		this.options.wrapper.style = this.getWrapperStyles();
 		this.submissionListDiv.innerHTML = this.renderSubmissionsList();
 		this.paginationDiv.innerHTML = this.renderPagination();
 
@@ -168,7 +172,10 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 		const submissionEntry = this.options.submissions[0];
 
 		Object.keys(submissionEntry).forEach((key: string) => {
-			if (!this.options.labels?.[key] || !this.options.fields.includes(key)) {
+			if (
+				!this.options.labels?.[key] ||
+				!this.options.fields.includes(key)
+			) {
 				return;
 			}
 
@@ -180,15 +187,20 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 
 	public renderSubmissionItem(submission: SubmissionItem): string {
 		const filteredKeys = Object.keys(submission).filter(
-			(key) => key in this.options.labels && this.options.fields.includes(key)
+			(key) =>
+				key in this.options.labels && this.options.fields.includes(key)
 		);
 
 		return `<div class="submissions__item">
 			${filteredKeys
 				.map((key) => {
+					const renderedValue =
+						key === 'fname'
+							? `${submission.fname} ${submission.lname}`
+							: submission?.[key];
 					return `<div class="submissions__item__inner">
 						<strong>${this.options.labels?.[key] || key}:</strong>
-						${key === 'fname' ? `${submission.fname} ${submission.lname}` : submission?.[key]}
+						${renderedValue ? renderedValue : ''}
 					</div>`;
 				})
 				.join('')}
@@ -196,11 +208,11 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 	}
 
 	/**
-	 * 
+	 *
 	 * @returns string final CSS for the wrapper
 	 */
 	public getWrapperStyles() {
 		const labels = this.prepareLabels();
-		return `--ptr-submission-columns: ${labels.length}`
+		return `--ptr-submission-columns: ${labels.length}`;
 	}
 }

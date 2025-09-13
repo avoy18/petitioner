@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.4.6
+Stable Tag: 0.5.0
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -22,38 +22,38 @@ Petitioner is a WordPress plugin that allows you to create petitions and send th
 Create and manage an unlimited number of petitions.
 
 **Drag and drop form builder**
-* Add/remove/reorder fields based on your needs
-* Add rich text to the form for disclaimers and legal text
-* Edit field's label, placeholder, and required state
+- Add/remove/reorder fields based on your needs
+- Add rich text to the form for disclaimers and legal text
+- Edit field's label, placeholder, and required state
 
 **Control submission behaviour**
-* Show submissions on the frontend in a few different styles
-* Email functionality: Automatically send petition letters to representatives via email.
-* Ability to store submissions without sending emails to the rep.
-* Ability to manually approve/deny petitions and set the default approval behavior (approved by default or declined)
-* Option to confirm emails via email
-* Customize email confirmations, petition letters, and thank you emails
-* Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
+- Show submissions on the frontend in a few different styles
+- Email functionality: Automatically send petition letters to representatives via email.
+- Ability to store submissions without sending emails to the rep.
+- Ability to manually approve/deny petitions and set the default approval behavior (approved by default or declined)
+- Option to confirm emails via email
+- Customize email confirmations, petition letters, and thank you emails
+- Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
 
 **Design & layout features**
-* The plugin features a modern, mobile-friendly design for a seamless user experience.
-* Color customizations & custom CSS options
-* WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
-* Gutenberg integration with a custom petition block!
-* Several shortcodes to take your petitions to the next level
-    * Form shortcode
-    * Petition goal #
-    * Progress bar
-    * Petition letter popup
-    * Current submission count
-    * Submissions in multiple styles and configurations
+- The plugin features a modern, mobile-friendly design for a seamless user experience.
+- Color customizations & custom CSS options
+- WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
+- Gutenberg integration with a custom petition block!
+- Several shortcodes to take your petitions to the next level
+- - Form shortcode
+- - Petition goal #
+- - Progress bar
+- - Petition letter popup
+- - Current submission count
+- - Submissions in multiple styles and configurations
 
 **Spam protection features**
-* Captcha integrations: reCAPTCHA, hCaptcha, and Cloudflare Turnstile
-* Akismet integration - handle spam seamlessly without adding any js libraries
-* Honeypot field
-* Email confirmations
-* Compatible with all of the popular SMTP plugins (uses wp_mail behind the scenes)
+- Captcha integrations: reCAPTCHA, hCaptcha, and Cloudflare Turnstile
+- Akismet integration - handle spam seamlessly without adding any js libraries
+- Honeypot field
+- Email confirmations
+- Compatible with all of the popular SMTP plugins (uses wp_mail behind the scenes)
 
 
 == Development and Source Code ==
@@ -96,6 +96,12 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.5.0 =
+* New comment textarea field
+* Allow showing the progress bar via a shortcode even if it's disabled in the general settings
+* Additional display options on the submission component, you can now show more fields. Improved the block controls and also how it handles empty values.
+* Bug: fixed the issue with form builder not reordering in some cases
 
 = 0.4.6 =
 * Add option to edit all of the labels via the plugin settings

@@ -30,6 +30,7 @@ class AV_Petitioner_Submissions_Model
             street_address varchar(255),
             city varchar(255),
             postal_code varchar(50),
+            comments text,
             bcc_yourself tinyint(1) DEFAULT 0,
             newsletter tinyint(1) DEFAULT 0,
             hide_name tinyint(1) DEFAULT 0,
@@ -81,13 +82,14 @@ class AV_Petitioner_Submissions_Model
             'street_address',
             'city',
             'postal_code',
+            'comments',
             'bcc_yourself',
             'newsletter',
             'hide_name',
             'accept_tos',
             'approval_status',
             'submitted_at',
-            'confirmation_token'
+            'confirmation_token',
         ];
 
         if ($fields !== '*') {
@@ -109,7 +111,7 @@ class AV_Petitioner_Submissions_Model
                 }
             }
         }
-       
+
         $where_sql = implode(' AND ', $where);
 
         // Get submissions
@@ -195,33 +197,36 @@ class AV_Petitioner_Submissions_Model
     public static function create_submission(array $data)
     {
         global $wpdb;
-
         $table = $wpdb->prefix . 'av_petitioner_submissions';
 
-        $formats = [
-            '%d', // form_id
-            '%s', // email
-            '%s', // fname
-            '%s', // lname
-            '%s', // country
-            '%d', // bcc_yourself
-            '%s', // phone
-            '%s', // street_address
-            '%s', // city
-            '%s', // postal_code
-            '%d', // newsletter
-            '%d', // hide_name
-            '%d', // accept_tos
-            '%s', // submitted_at
-            '%s', // approval_status
-            '%s', // confirmation_token (optional)
+        $field_formats = [
+            'id'                => '%d',
+            'form_id'           => '%d',
+            'fname'             => '%s',
+            'lname'             => '%s',
+            'email'             => '%s',
+            'country'           => '%s',
+            'salutation'        => '%s',
+            'phone'             => '%s',
+            'street_address'    => '%s',
+            'city'              => '%s',
+            'postal_code'       => '%s',
+            'comments'          => '%s',
+            'bcc_yourself'      => '%d',
+            'newsletter'        => '%d',
+            'hide_name'         => '%d',
+            'accept_tos'        => '%d',
+            'approval_status'   => '%s',
+            'submitted_at'      => '%s',
+            'confirmation_token' => '%s',
         ];
 
-        // Only use formats up to the number of fields provided
-        $used_formats = array_slice($formats, 0, count($data));
+        $formats = [];
+        foreach ($data as $key => $value) {
+            $formats[] = $field_formats[$key] ?? '%s'; // fallback safe
+        }
 
-        $inserted = $wpdb->insert($table, $data, $used_formats);
-
+        $inserted = $wpdb->insert($table, $data, $formats);
         return $inserted ? $wpdb->insert_id : false;
     }
 

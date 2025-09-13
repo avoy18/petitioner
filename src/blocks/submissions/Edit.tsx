@@ -10,8 +10,9 @@ import { useSelect } from '@wordpress/data';
 import { useCallback } from '@wordpress/element';
 import PetitionSelect from '../components/PetitionSelect';
 import ServerComponent from '../components/ServerComponent';
-import type { PetitionerSubmissionsProps } from './consts';
+import type { PetitionerSubmissionsProps, FieldType } from './consts';
 import { __ } from '@wordpress/i18n';
+import { FormTokenField } from '@wordpress/components';
 
 export default function Edit({
 	attributes,
@@ -23,8 +24,8 @@ export default function Edit({
 		style = 'simple',
 		fields = [],
 		showPagination = true,
-		availableFields,
-		availableStyles,
+		availableFields = [],
+		// availableStyles,
 	} = attributes;
 	const blockAtts = useBlockProps();
 
@@ -80,23 +81,16 @@ export default function Edit({
 							setAttributes({ showPagination: value })
 						}
 					/>
-					<TextControl
+					<FormTokenField
 						label={__('Fields to show', 'petitioner')}
-						value={fields.join(', ')}
-						onChange={(value) => {
-							const newFields = value
-								.split(',')
-								.map((field) => field.trim())
-								.filter((field) => field);
-							setAttributes({ fields: newFields });
+						value={fields}
+						suggestions={availableFields}
+						onChange={(value ) => {
+							setAttributes({ fields: value});
 						}}
-						type="text"
+						__experimentalExpandOnFocus={true}
 						placeholder={__(
 							'separated by comma, e.g. name, country, submitted_at',
-							'petitioner'
-						)}
-						help={__(
-							'Available fields: name, country, postal_code, submitted_at',
 							'petitioner'
 						)}
 					/>

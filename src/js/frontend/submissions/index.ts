@@ -128,6 +128,8 @@ export default class PetitionerSubmissions {
 
 		this.totalResults = Number(response.data.total) || 0;
 		this.submissions = response.data.submissions || [];
+		console.log(this.submissions);
+		console.log(this.submissions);
 		this.labels = response.data.labels || [];
 	}
 }

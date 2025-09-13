@@ -7,7 +7,7 @@ export type FieldType =
 	| 'submit';
 
 interface BaseField {
-	key?: string;
+	fieldKey?: string;
 	type: FieldType;
 	fieldName: string;
 	label: string;
@@ -61,3 +61,5 @@ export interface FormBuilderContextValue {
 export interface FormBuilderContextProviderProps {
 	children: React.ReactNode;
 }
+
+export type FieldOrderItems = string[];
