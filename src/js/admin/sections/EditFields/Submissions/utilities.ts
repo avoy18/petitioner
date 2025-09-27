@@ -20,7 +20,7 @@ export const fetchSubmissions = async ({
 	finalQuery.set('form_id', String(formID));
 	finalQuery.set('per_page', String(perPage));
 
-	if (order) {
+	if (order && ['asc', 'desc'].indexOf(order)) {
 		finalQuery.set('order', order);
 	}
 
