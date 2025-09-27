@@ -10,11 +10,13 @@ import type {
 	SubmissionID,
 	SubmissionStatus,
 	ChangeAction,
+	FetchSettings,
 } from './consts';
 import type {
 	ApprovalState,
 	CheckboxValue,
 } from '@admin/sections/EditFields/consts';
+import { fetchSubmissions, updateSubmissions } from './utilities';
 import { ExportButtonWrapper } from './styled';
 
 export default function Submissions() {
@@ -38,21 +40,17 @@ export default function Submissions() {
 	const perPage = 100;
 
 	const fetchData = async () => {
-		const finalAjaxURL = `${ajaxurl}?action=petitioner_fetch_submissions&page=${currentPage}&form_id=${form_id}&per_page=${perPage}`;
-
-		try {
-			const response = await fetch(finalAjaxURL);
-			const data = await response.json();
-
-			if (data.success) {
-				setTotal(data.data.total);
-				setSubmissions(data.data.submissions);
-			} else {
-				console.error('Failed to fetch data');
-			}
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
+		return fetchSubmissions({
+			action: 'fetch_submissions',
+			currentPage,
+			formID: form_id as FetchSettings['formID'],
+			perPage,
+			onSuccess: (data) => {
+				console.log(data);
+				setTotal(data.total);
+				setSubmissions(data.submissions);
+			},
+		});
 	};
 
 	useEffect(() => {
@@ -82,7 +80,7 @@ export default function Submissions() {
 			const finalAjaxURL = `${ajaxurl}?action=petitioner_change_status`;
 			try {
 				const finalData = new FormData();
-				finalData.append('id', id);
+				finalData.append('id', String(id));
 				finalData.append('status', newStatus);
 
 				const response = await fetch(finalAjaxURL, {
