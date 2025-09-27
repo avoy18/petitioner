@@ -124,6 +124,16 @@ class AV_Petitioner_Admin_Edit_UI
         ];
 
         /**
+         * Filter to modify petitioner data that is sent to the edit screen
+         * 
+         *
+         * @param array $petitioner_info Array of the data
+         * @param int $form_id ID of the form being rendered.
+         * @return array Modified $petitioner_info data.
+         */
+        $petitioner_info = apply_filters('av_petitioner_info_edit', $petitioner_info, $post->ID);
+
+        /**
          * Filter to modify the form fields before rendering in the admin panel.
          *
          * This allows plugins or themes to add, remove, or modify fields.
@@ -133,6 +143,8 @@ class AV_Petitioner_Admin_Edit_UI
          * @return array Modified form fields.
          */
         $petitioner_info['form_fields'] = apply_filters('av_petitioner_form_fields_admin', $petitioner_info['form_fields'], $post->ID);
+
+        $petitioner_info['active_tab']  = !empty($_GET['ptr_active_tab']) ? $_GET['ptr_active_tab'] : 'default';
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 ?>
