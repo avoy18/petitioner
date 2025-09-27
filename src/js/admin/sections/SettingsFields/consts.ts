@@ -17,6 +17,7 @@ export interface SettingsFormData {
 	turnstile_secret_key: string;
 	enable_akismet: boolean;
 	label_overrides: Record<string, string>;
+	active_tab?: string;
 }
 
 export type DefaultValues = {

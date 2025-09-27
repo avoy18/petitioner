@@ -43,6 +43,7 @@ export const updateSearchParams = (key: string, value?: string) => {
 export const updateActiveTabURL = (newTab: string, tabKeys: string[]) => {
 	if (tabKeys.indexOf(newTab) == -1 || tabKeys[0] == newTab) {
 		updateSearchParams('ptr_active_tab');
+		return;
 	}
 
 	updateSearchParams('ptr_active_tab', newTab);

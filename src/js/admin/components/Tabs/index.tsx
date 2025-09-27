@@ -4,17 +4,22 @@ import type { TabPanelProps, Tab } from './consts';
 import { updateActiveTabURL } from '@admin/utilities';
 
 export default function Tabs(props: TabPanelProps) {
-	const { tabs, onTabSelect = () => {}, defaultTab = '', updateURL = false } = props;
+	const {
+		tabs,
+		onTabSelect = () => {},
+		defaultTab = '',
+		updateURL = false,
+	} = props;
 	const tabKeys = tabs.map((tab) => tab.name);
 	const [activeTab, setActiveTab] = useState(() => {
-		return defaultTab in tabKeys ? defaultTab : '';
+		return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : '';
 	});
 
 	const handleTabSelect = useCallback((tabName: Tab['name']) => {
 		setActiveTab(tabName);
 		onTabSelect(tabName, tabKeys);
 
-		if(updateURL) {
+		if (updateURL) {
 			updateActiveTabURL(tabName, tabKeys);
 		}
 	}, []);
