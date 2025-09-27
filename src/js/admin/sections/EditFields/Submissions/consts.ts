@@ -35,10 +35,11 @@ export type ApprovalStatusProps = {
 export type Submissions = SubmissionItem[];
 
 export type FetchSettings = {
-	action: string;
 	currentPage?: number;
 	formID: FormID;
 	perPage?: number;
+    order?: 'asc'|'desc';
+    orderby: keyof SubmissionItem;
 	onSuccess: (fetchData: { total: number; submissions: Submissions }) => void;
 };
 

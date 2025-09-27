@@ -1,10 +1,11 @@
 import type { FetchSettings, UpdateSettings } from './consts';
 
 export const fetchSubmissions = async ({
-	action = 'fetch_submissions',
 	currentPage = 1,
 	formID,
 	perPage = 100,
+	order,
+	orderby,
 	onSuccess = (data) => {},
 }: FetchSettings) => {
 	if (!formID) {
@@ -14,10 +15,18 @@ export const fetchSubmissions = async ({
 
 	const finalQuery = new URLSearchParams();
 
-	finalQuery.set('action', `petitioner__${action}`);
+	finalQuery.set('action', `petitioner_fetch_submissions`);
 	finalQuery.set('page', String(currentPage));
 	finalQuery.set('form_id', String(formID));
 	finalQuery.set('per_page', String(perPage));
+
+	if (order) {
+		finalQuery.set('order', order);
+	}
+
+	if (orderby) {
+		finalQuery.set('orderby', orderby);
+	}
 
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`);
@@ -34,7 +43,7 @@ export const fetchSubmissions = async ({
 };
 
 export const updateSubmissions = async ({
-    data,
+	data,
 	onSuccess = () => {},
 }: UpdateSettings) => {
 	if (!data?.id) {
@@ -51,7 +60,7 @@ export const updateSubmissions = async ({
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',
-            body: finalData
+			body: finalData,
 		});
 
 		const response = await request.json();
