@@ -1,14 +1,22 @@
 import { TabPanel } from '@wordpress/components';
 import { useState, useCallback } from 'react';
-import type { TabPanelProps } from './consts';
+import type { TabPanelProps, Tab } from './consts';
+import { updateActiveTabURL } from '@admin/utilities';
 
 export default function Tabs(props: TabPanelProps) {
-	const { tabs, onTabSelect = () => {} } = props;
-	const [activeTab, setActiveTab] = useState('general');
+	const { tabs, onTabSelect = () => {}, defaultTab = '', updateURL = false } = props;
+	const tabKeys = tabs.map((tab) => tab.name);
+	const [activeTab, setActiveTab] = useState(() => {
+		return defaultTab in tabKeys ? defaultTab : '';
+	});
 
-	const handleTabSelect = useCallback((tabName: string) => {
+	const handleTabSelect = useCallback((tabName: Tab['name']) => {
 		setActiveTab(tabName);
-		onTabSelect(tabName);
+		onTabSelect(tabName, tabKeys);
+
+		if(updateURL) {
+			updateActiveTabURL(tabName, tabKeys);
+		}
 	}, []);
 
 	return (
@@ -17,6 +25,7 @@ export default function Tabs(props: TabPanelProps) {
 				onSelect={handleTabSelect}
 				// @ts-ignore: extra properties like `renderingEl` are safe but not part of Gutenberg TabPanel's type
 				tabs={tabs}
+				initialTabName={activeTab}
 			>
 				{(tab) => <></>}
 			</TabPanel>
