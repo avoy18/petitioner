@@ -52,9 +52,16 @@ export const updateSubmissions = async ({
 	}
 
 	const finalQuery = new URLSearchParams();
+
 	finalQuery.set('action', 'petitioner_update_submissions');
 
-	const finalData = new FormData(data);
+	const finalData = new FormData();
+
+	Object.entries(data).forEach(([key, value]) => {
+		if (value !== undefined && value !== null) {
+			finalData.append(key, String(value));
+		}
+	});
 	// finalData.append('status', newStatus);
 
 	try {

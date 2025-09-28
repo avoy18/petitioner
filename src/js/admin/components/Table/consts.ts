@@ -6,13 +6,15 @@ export type HeadingProps = {
 
 export type SortDirection = 'asc' | 'desc' | null;
 
+export type OnSortArgs = {
+	order?: SortDirection | null;
+	orderby?: HeadingProps['id'] | null;
+};
+
 export type TableProps = {
 	headings: HeadingProps[];
 	rows: React.ReactNode[][];
 	emptyMessage?: string;
 	className?: string;
-	onSort?: (args: {
-		order?: SortDirection | null;
-		orderby?: HeadingProps['id'] | null;
-	}) => void;
+	onSort?: (args: OnSortArgs) => void;
 };

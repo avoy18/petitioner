@@ -24,7 +24,7 @@ export function Table({
 			order: sortDirection,
 			orderby: sort,
 		});
-	}, []);
+	}, [sort, sortDirection]);
 
 	return (
 		<table

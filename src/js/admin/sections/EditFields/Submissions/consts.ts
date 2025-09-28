@@ -34,16 +34,19 @@ export type ApprovalStatusProps = {
 
 export type Submissions = SubmissionItem[];
 
+export type Order = 'desc' | 'asc';
+export type OrderBy = keyof SubmissionItem;
+
 export type FetchSettings = {
 	currentPage?: number;
 	formID: FormID;
 	perPage?: number;
-    order?: 'asc'|'desc';
-    orderby: keyof SubmissionItem;
+	order?: Order;
+	orderby?: OrderBy;
 	onSuccess: (fetchData: { total: number; submissions: Submissions }) => void;
 };
 
 export type UpdateSettings = {
 	data: Partial<SubmissionItem>;
-	onSuccess: (fetchData: { total: number; }) => void;
+	onSuccess: (fetchData: { total: number }) => void;
 };

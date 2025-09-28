@@ -11,6 +11,8 @@ import type {
 	SubmissionStatus,
 	ChangeAction,
 	FetchSettings,
+	Order,
+	OrderBy,
 } from './consts';
 import type {
 	ApprovalState,
@@ -19,6 +21,7 @@ import type {
 import { fetchSubmissions, updateSubmissions } from './utilities';
 import { ExportButtonWrapper } from './styled';
 import { Table } from '@admin/components/Table';
+import type { OnSortArgs } from '@admin/components/Table/consts';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -30,6 +33,8 @@ export default function Submissions() {
 	const [submissions, setSubmissions] = useState<Submissions>([]);
 	const [total, setTotal] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [order, setOrder] = useState<Order | null>();
+	const [orderby, setOrderBy] = useState<OrderBy | null>();
 	const [showApproval, setShowApproval] = useState(requireApproval);
 	const [defaultApprovalState, setDefaultApprovalState] =
 		useState<ApprovalState>(() => {
@@ -41,8 +46,8 @@ export default function Submissions() {
 	const perPage = 100;
 
 	const fetchData = async () => {
+		console.log('fetch')
 		return fetchSubmissions({
-			action: 'fetch_submissions',
 			currentPage,
 			formID: form_id as FetchSettings['formID'],
 			perPage,
@@ -51,6 +56,8 @@ export default function Submissions() {
 				setTotal(data.total);
 				setSubmissions(data.submissions);
 			},
+			order,
+			orderby,
 		});
 	};
 
@@ -58,7 +65,7 @@ export default function Submissions() {
 		if (!form_id) return;
 
 		fetchData();
-	}, [currentPage, form_id]);
+	}, [currentPage, form_id, order, orderby]);
 
 	useEffect(() => {
 		window.addEventListener('onPtrApprovalChange', () => {
@@ -183,6 +190,11 @@ export default function Submissions() {
 		return itemRow;
 	});
 
+	const handleSortChange = ({ order, orderby }: OnSortArgs) => {
+		setOrder(order);
+		setOrderBy(orderby as OrderBy);
+	};
+
 	return (
 		<div id="AV_Petitioner_Submissions">
 			<div>
@@ -192,7 +204,11 @@ export default function Submissions() {
 
 			<div className="petitioner-admin__entries">
 				<p>Total: {total}</p>
-				<Table headings={headingData} rows={headingRows} />
+				<Table
+					headings={headingData}
+					rows={headingRows}
+					onSort={handleSortChange}
+				/>
 			</div>
 			<br />
 			{hasSubmissions && <ResendAllButton />}
