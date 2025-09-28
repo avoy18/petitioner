@@ -10,12 +10,18 @@ import type {
 	SubmissionID,
 	SubmissionStatus,
 	ChangeAction,
+	FetchSettings,
+	Order,
+	OrderBy,
 } from './consts';
 import type {
 	ApprovalState,
 	CheckboxValue,
 } from '@admin/sections/EditFields/consts';
+import { fetchSubmissions, updateSubmissions } from './utilities';
 import { ExportButtonWrapper } from './styled';
+import { Table } from '@admin/components/Table';
+import type { OnSortArgs } from '@admin/components/Table/consts';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -27,6 +33,8 @@ export default function Submissions() {
 	const [submissions, setSubmissions] = useState<Submissions>([]);
 	const [total, setTotal] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [order, setOrder] = useState<Order | null>();
+	const [orderby, setOrderBy] = useState<OrderBy | null>();
 	const [showApproval, setShowApproval] = useState(requireApproval);
 	const [defaultApprovalState, setDefaultApprovalState] =
 		useState<ApprovalState>(() => {
@@ -38,28 +46,24 @@ export default function Submissions() {
 	const perPage = 100;
 
 	const fetchData = async () => {
-		const finalAjaxURL = `${ajaxurl}?action=petitioner_fetch_submissions&page=${currentPage}&form_id=${form_id}&per_page=${perPage}`;
-
-		try {
-			const response = await fetch(finalAjaxURL);
-			const data = await response.json();
-
-			if (data.success) {
-				setTotal(data.data.total);
-				setSubmissions(data.data.submissions);
-			} else {
-				console.error('Failed to fetch data');
-			}
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
+		return fetchSubmissions({
+			currentPage,
+			formID: form_id as FetchSettings['formID'],
+			perPage,
+			order,
+			orderby,
+			onSuccess: (data) => {
+				setTotal(data.total);
+				setSubmissions(data.submissions);
+			},
+		});
 	};
 
 	useEffect(() => {
 		if (!form_id) return;
 
 		fetchData();
-	}, [currentPage, form_id]);
+	}, [currentPage, form_id, order, orderby]);
 
 	useEffect(() => {
 		window.addEventListener('onPtrApprovalChange', () => {
@@ -82,7 +86,7 @@ export default function Submissions() {
 			const finalAjaxURL = `${ajaxurl}?action=petitioner_change_status`;
 			try {
 				const finalData = new FormData();
-				finalData.append('id', id);
+				finalData.append('id', String(id));
 				finalData.append('status', newStatus);
 
 				const response = await fetch(finalAjaxURL, {
@@ -124,39 +128,6 @@ export default function Submissions() {
 		);
 	}
 
-	const SubmissionList = () => {
-		return (
-			<tbody>
-				{submissions.map((item) => (
-					<tr key={item.id}>
-						<td>{item.email}</td>
-						<td>
-							{item.fname} {item.lname}
-						</td>
-						<td>{item.country}</td>
-						<td>
-							<small>
-								{item.accept_tos === '1' ? '✅' : '❌'}
-							</small>
-						</td>
-						<td>
-							<small>{item.submitted_at}</small>
-						</td>
-						{showApproval && (
-							<td>
-								<ApprovalStatus
-									item={item as SubmissionItem}
-									defaultApprovalState={defaultApprovalState}
-									onStatusChange={handleStatusChange}
-								/>
-							</td>
-						)}
-					</tr>
-				))}
-			</tbody>
-		);
-	};
-
 	const ExportComponent = () => {
 		return (
 			<ExportButtonWrapper>
@@ -178,6 +149,51 @@ export default function Submissions() {
 		);
 	};
 
+	const headingData = [
+		{ id: 'email', label: __('Email', 'petitioner'), width: '20%' },
+		{ id: 'name', label: __('First/Last name', 'petitioner') },
+		{ id: 'country', label: __('Country', 'petitioner'), width: '100px' },
+		// { id: 'bcc', label: __('BCC', 'petitioner'), width: '30px' }, // optional
+		{ id: 'consent', label: __('Consent', 'petitioner'), width: '60px' },
+		{ id: 'submitted_at', label: __('Submitted at', 'petitioner') },
+	];
+
+	if (showApproval) {
+		headingData.push({
+			id: 'status',
+			label: __('Status', 'petitioner'),
+			width: '200px',
+		});
+	}
+
+	const headingRows = submissions.map((item) => {
+		const itemRow: React.ReactNode[] = [
+			item.email,
+			`${item.fname} ${item.lname}`,
+			item.country,
+			item.accept_tos === '1' ? '✅' : '❌',
+			item.submitted_at,
+		];
+
+		if (showApproval) {
+			itemRow.push(
+				<ApprovalStatus
+					item={item as SubmissionItem}
+					defaultApprovalState={defaultApprovalState}
+					onStatusChange={handleStatusChange}
+				/>
+			);
+		}
+
+		return itemRow;
+	});
+
+	const handleSortChange = ({ order, orderby }: OnSortArgs) => {
+		setOrder(order);
+		setOrderBy(orderby as OrderBy);
+		setCurrentPage(1);
+	};
+
 	return (
 		<div id="AV_Petitioner_Submissions">
 			<div>
@@ -187,34 +203,11 @@ export default function Submissions() {
 
 			<div className="petitioner-admin__entries">
 				<p>Total: {total}</p>
-				<table className="wp-list-table widefat fixed striped table-view-list posts">
-					<thead>
-						{hasSubmissions ? (
-							<tr>
-								{/* @ts-ignore */}
-								<th width="20%">Email</th>
-								<th>First/Last name</th>
-								<th style={{ width: '100px' }}>Country</th>
-								{/* <th style={{ width: '30px' }}>BCC</th> */}
-								<th style={{ width: '60px' }}>Consent</th>
-								<th>Submitted at</th>
-								{showApproval && (
-									<th style={{ width: '200px' }}>Status</th>
-								)}
-							</tr>
-						) : (
-							<tr></tr>
-						)}
-					</thead>
-
-					{hasSubmissions ? (
-						<SubmissionList />
-					) : (
-						<td style={{ width: '100%', textAlign: 'center' }}>
-							Your submissions will show up here
-						</td>
-					)}
-				</table>
+				<Table
+					headings={headingData}
+					rows={headingRows}
+					onSort={handleSortChange}
+				/>
 			</div>
 			<br />
 			{hasSubmissions && <ResendAllButton />}

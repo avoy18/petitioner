@@ -41,7 +41,7 @@ describe('Tabs sharable component', () => {
 
 			await user.click(link);
 
-			expect(mockHandleTab).toHaveBeenCalledWith(tab.name);
+			expect(mockHandleTab).toHaveBeenCalledWith(tab.name, tabs.map(t => t.name));
 
 			// Check that the corresponding tab content appears
 			const contentRegex = new RegExp(
