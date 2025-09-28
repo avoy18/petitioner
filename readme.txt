@@ -98,6 +98,12 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 == Changelog ==
 
 = 0.5.0 =
+* Improved submissions
+    * Added sorting of submissions in admin
+* Tabs now remember the state on refresh
+* Improved the code structure overall
+
+= 0.5.0 =
 * New comment textarea field
 * Allow showing the progress bar via a shortcode even if it's disabled in the general settings
 * Additional display options on the submission component, you can now show more fields. Improved the block controls and also how it handles empty values.
