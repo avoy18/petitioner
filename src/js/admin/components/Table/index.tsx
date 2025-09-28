@@ -14,17 +14,25 @@ export function Table({
 	const [sort, setSort] = useState<HeadingProps['id'] | null>(null);
 	const [sortDirection, setSortDirection] = useState<SortDirection>();
 
-	const handleSortChange = useCallback((id: HeadingProps['id']) => {
-		setSort(id);
-		setSortDirection((prev) =>
-			sort === id ? (prev === 'desc' ? 'asc' : 'desc') : 'desc'
-		);
+	const handleSortChange = useCallback(
+		(id: HeadingProps['id']) => {
+			setSort(id);
 
-		onSort({
-			order: sortDirection,
-			orderby: sort,
-		});
-	}, [sort, sortDirection]);
+			const newDirection =
+				sort === id
+					? sortDirection === 'desc'
+						? 'asc'
+						: 'desc'
+					: 'desc';
+			setSortDirection(newDirection);
+
+			onSort({
+				order: newDirection,
+				orderby: id,
+			});
+		},
+		[sort, sortDirection]
+	);
 
 	return (
 		<table

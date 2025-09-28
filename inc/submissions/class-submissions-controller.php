@@ -200,10 +200,12 @@ class AV_Petitioner_Submissions_Controller
     public static function api_fetch_form_submissions()
     {
         // Get the form ID and pagination info from the request
-        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-        $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
-        $offset = ($page - 1) * $per_page;
-        $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
+        $page           = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $per_page       = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
+        $offset         = ($page - 1) * $per_page;
+        $form_id        = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
+        $order          = isset($_GET['order']) ? ($_GET['order'] === 'desc' ? 'desc' : 'asc') : null;
+        $orderby        = isset($_GET['orderby']) ? $_GET['orderby'] : '';
 
         // Check if form_id is valid
         if (!$form_id) {
@@ -212,10 +214,23 @@ class AV_Petitioner_Submissions_Controller
         }
 
         // Fetch submissions and total count using the new method
-        $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
+        $fetch_settings = [
             'per_page' => $per_page,
-            'offset'   => $offset
-        ]);
+            'offset'   => $offset,
+        ];
+
+        if ($order) {
+            $fetch_settings['order'] = $order;
+        }
+
+        $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
+
+        if ($orderby && !empty($allowed_fields[$orderby])) {
+            $fetch_settings['orderby']  = $orderby;
+        }
+
+
+        $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, $fetch_settings);
 
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);
@@ -252,6 +267,8 @@ class AV_Petitioner_Submissions_Controller
         $per_page   = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
         $offset     = ($page - 1) * $per_page;
         $form_id    = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
+        $order      = isset($_GET['order']) ? ($_GET['order'] === 'desc' ? 'desc' : 'asc') : null;
+        $orderby    = isset($_GET['orderby']) ? $_GET['orderby'] : '';
 
         // Check if form_id is valid
         if (!$form_id) {
@@ -263,14 +280,25 @@ class AV_Petitioner_Submissions_Controller
 
         // Fetch submissions and total count using the new method
         $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
-        $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
+
+        $fetch_settings = [
             'per_page'          => $per_page,
             'offset'            => $offset,
             'fields'            => $fields,
             'query'             => [
                 'approval_status' => 'Confirmed',
             ],
-        ]);
+        ];
+
+        if ($order) {
+            $fetch_settings['order'] = $order;
+        }
+
+        if ($orderby && !empty($fields[$orderby])) {
+            $fetch_settings['orderby'] = $orderby;
+        }
+
+        $result = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, $fetch_settings);
 
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);

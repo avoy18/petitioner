@@ -41,8 +41,8 @@ export type FetchSettings = {
 	currentPage?: number;
 	formID: FormID;
 	perPage?: number;
-	order?: Order;
-	orderby?: OrderBy;
+	order?: Order | null;
+	orderby?: OrderBy | null;
 	onSuccess: (fetchData: { total: number; submissions: Submissions }) => void;
 };
 

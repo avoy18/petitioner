@@ -6,6 +6,27 @@ if (!defined('ABSPATH')) {
 
 class AV_Petitioner_Submissions_Model
 {
+    public static $ALLOWED_FIELDS = [
+        'id',
+        'form_id',
+        'fname',
+        'lname',
+        'email',
+        'country',
+        'salutation',
+        'phone',
+        'street_address',
+        'city',
+        'postal_code',
+        'comments',
+        'bcc_yourself',
+        'newsletter',
+        'hide_name',
+        'accept_tos',
+        'approval_status',
+        'submitted_at',
+        'confirmation_token',
+    ];
 
     public static function table_name()
     {
@@ -112,27 +133,7 @@ class AV_Petitioner_Submissions_Model
         $orderby  = isset($settings['orderby']) ? $settings['orderby'] : 'submitted_at';
 
         // Validate fields
-        $allowed_fields = [
-            'id',
-            'form_id',
-            'fname',
-            'lname',
-            'email',
-            'country',
-            'salutation',
-            'phone',
-            'street_address',
-            'city',
-            'postal_code',
-            'comments',
-            'bcc_yourself',
-            'newsletter',
-            'hide_name',
-            'accept_tos',
-            'approval_status',
-            'submitted_at',
-            'confirmation_token',
-        ];
+        $allowed_fields = self::$ALLOWED_FIELDS;
 
         if ($fields !== '*') {
             $fields_arr = array_intersect($fields, $allowed_fields);
