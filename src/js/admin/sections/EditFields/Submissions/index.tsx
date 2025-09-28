@@ -18,6 +18,7 @@ import type {
 } from '@admin/sections/EditFields/consts';
 import { fetchSubmissions, updateSubmissions } from './utilities';
 import { ExportButtonWrapper } from './styled';
+import { Table } from '@admin/components/Table';
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -176,6 +177,44 @@ export default function Submissions() {
 		);
 	};
 
+	const headingData = [
+		{ key: 'email', label: 'Email', width: '20%' },
+		{ key: 'name', label: 'First/Last name' },
+		{ key: 'country', label: 'Country', width: '100px' },
+		// { key: 'bcc', label: 'BCC', width: '30px' }, // optional
+		{ key: 'consent', label: 'Consent', width: '60px' },
+		{ key: 'submitted_at', label: 'Submitted at' },
+	];
+
+	if (showApproval) {
+		headingData.push({
+			key: 'status',
+			label: 'Status',
+			width: '200px',
+		});
+	}
+
+	const headingRows = submissions.map((item) => {
+		const itemRow = [
+			item.email,
+			`${item.fname} ${item.lname}`,
+			item.country,
+			item.accept_tos === '1' ? '✅' : '❌',
+			item.submitted_at,
+		];
+
+		if (showApproval) {
+			itemRow.push(
+				<ApprovalStatus
+					item={item as SubmissionItem}
+					defaultApprovalState={defaultApprovalState}
+					onStatusChange={handleStatusChange}
+				/>
+			);
+		}
+		return itemRow;
+	});
+
 	return (
 		<div id="AV_Petitioner_Submissions">
 			<div>
@@ -185,34 +224,7 @@ export default function Submissions() {
 
 			<div className="petitioner-admin__entries">
 				<p>Total: {total}</p>
-				<table className="wp-list-table widefat fixed striped table-view-list posts">
-					<thead>
-						{hasSubmissions ? (
-							<tr>
-								{/* @ts-ignore */}
-								<th width="20%">Email</th>
-								<th>First/Last name</th>
-								<th style={{ width: '100px' }}>Country</th>
-								{/* <th style={{ width: '30px' }}>BCC</th> */}
-								<th style={{ width: '60px' }}>Consent</th>
-								<th>Submitted at</th>
-								{showApproval && (
-									<th style={{ width: '200px' }}>Status</th>
-								)}
-							</tr>
-						) : (
-							<tr></tr>
-						)}
-					</thead>
-
-					{hasSubmissions ? (
-						<SubmissionList />
-					) : (
-						<td style={{ width: '100%', textAlign: 'center' }}>
-							Your submissions will show up here
-						</td>
-					)}
-				</table>
+				<Table headings={headingData} rows={headingRows} />
 			</div>
 			<br />
 			{hasSubmissions && <ResendAllButton />}
