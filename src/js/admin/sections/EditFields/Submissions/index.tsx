@@ -46,7 +46,6 @@ export default function Submissions() {
 	const perPage = 100;
 
 	const fetchData = async () => {
-		console.log('fetch');
 		return fetchSubmissions({
 			currentPage,
 			formID: form_id as FetchSettings['formID'],
@@ -54,7 +53,6 @@ export default function Submissions() {
 			order,
 			orderby,
 			onSuccess: (data) => {
-				console.log(data);
 				setTotal(data.total);
 				setSubmissions(data.submissions);
 			},
@@ -65,7 +63,7 @@ export default function Submissions() {
 		if (!form_id) return;
 
 		fetchData();
-	}, [currentPage, form_id]);
+	}, [currentPage, form_id, order, orderby]);
 
 	useEffect(() => {
 		window.addEventListener('onPtrApprovalChange', () => {
@@ -191,10 +189,9 @@ export default function Submissions() {
 	});
 
 	const handleSortChange = ({ order, orderby }: OnSortArgs) => {
-		console.log('sort change',  order, orderby )
 		setOrder(order);
 		setOrderBy(orderby as OrderBy);
-		fetchData();
+		setCurrentPage(1);
 	};
 
 	return (

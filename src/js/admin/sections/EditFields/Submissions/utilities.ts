@@ -29,7 +29,6 @@ export const fetchSubmissions = async ({
 	}
 
 	try {
-		console.log(`${ajaxurl}?${finalQuery.toString()}`)
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`);
 		const response = await request.json();
 
