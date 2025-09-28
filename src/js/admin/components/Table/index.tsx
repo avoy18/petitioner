@@ -1,14 +1,30 @@
-import { TableHeading } from './styled';
-import type { TableProps } from './consts';
-import { Icon, Button } from '@wordpress/components';
+import { TableHeading, HeadingLabel } from './styled';
+import type { TableProps, SortDirection, HeadingProps } from './consts';
+import { useState, useCallback } from '@wordpress/element';
 
 export function Table({
 	headings,
 	rows,
 	emptyMessage = 'No data available',
 	className = '',
+	onSort = () => {},
 }: TableProps) {
 	const hasRows = rows.length > 0;
+
+	const [sort, setSort] = useState<HeadingProps['id'] | null>(null);
+	const [sortDirection, setSortDirection] = useState<SortDirection>();
+
+	const handleSortChange = useCallback((id: HeadingProps['id']) => {
+		setSort(id);
+		setSortDirection((prev) =>
+			sort === id ? (prev === 'desc' ? 'asc' : 'desc') : 'desc'
+		);
+
+		onSort({
+			order: sortDirection,
+			orderby: sort,
+		});
+	}, []);
 
 	return (
 		<table
@@ -16,11 +32,30 @@ export function Table({
 		>
 			<thead>
 				<tr>
-					{headings.map(({ width, label }, idx) => (
-						<TableHeading key={idx} $width={width}>
-							{label} 
-                            {/* <Icon icon={'sort'} /> */}
-							{/* <span className="dashicon dashicons dashicons-sort" /> */}
+					{headings.map(({ id, width, label }, idx) => (
+						<TableHeading
+							key={id}
+							$width={width}
+							className={
+								sort !== id ? '' : `sorted ${sortDirection}`
+							}
+							onClick={() => {
+								handleSortChange(id);
+							}}
+						>
+							<HeadingLabel>
+								{label}
+								<div className="sorting-indicators">
+									<span
+										className="sorting-indicator asc"
+										aria-hidden="true"
+									></span>
+									<span
+										className="sorting-indicator desc"
+										aria-hidden="true"
+									></span>
+								</div>
+							</HeadingLabel>
 						</TableHeading>
 					))}
 				</tr>

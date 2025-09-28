@@ -123,39 +123,6 @@ export default function Submissions() {
 		);
 	}
 
-	const SubmissionList = () => {
-		return (
-			<tbody>
-				{submissions.map((item) => (
-					<tr key={item.id}>
-						<td>{item.email}</td>
-						<td>
-							{item.fname} {item.lname}
-						</td>
-						<td>{item.country}</td>
-						<td>
-							<small>
-								{item.accept_tos === '1' ? '✅' : '❌'}
-							</small>
-						</td>
-						<td>
-							<small>{item.submitted_at}</small>
-						</td>
-						{showApproval && (
-							<td>
-								<ApprovalStatus
-									item={item as SubmissionItem}
-									defaultApprovalState={defaultApprovalState}
-									onStatusChange={handleStatusChange}
-								/>
-							</td>
-						)}
-					</tr>
-				))}
-			</tbody>
-		);
-	};
-
 	const ExportComponent = () => {
 		return (
 			<ExportButtonWrapper>
@@ -178,24 +145,24 @@ export default function Submissions() {
 	};
 
 	const headingData = [
-		{ key: 'email', label: 'Email', width: '20%' },
-		{ key: 'name', label: 'First/Last name' },
-		{ key: 'country', label: 'Country', width: '100px' },
-		// { key: 'bcc', label: 'BCC', width: '30px' }, // optional
-		{ key: 'consent', label: 'Consent', width: '60px' },
-		{ key: 'submitted_at', label: 'Submitted at' },
+		{ id: 'email', label: __('Email', 'petitioner'), width: '20%' },
+		{ id: 'name', label: __('First/Last name', 'petitioner') },
+		{ id: 'country', label: __('Country', 'petitioner'), width: '100px' },
+		// { id: 'bcc', label: __('BCC', 'petitioner'), width: '30px' }, // optional
+		{ id: 'consent', label: __('Consent', 'petitioner'), width: '60px' },
+		{ id: 'submitted_at', label: __('Submitted at', 'petitioner') },
 	];
 
 	if (showApproval) {
 		headingData.push({
-			key: 'status',
-			label: 'Status',
+			id: 'status',
+			label: __('Status', 'petitioner'),
 			width: '200px',
 		});
 	}
 
 	const headingRows = submissions.map((item) => {
-		const itemRow = [
+		const itemRow: React.ReactNode[] = [
 			item.email,
 			`${item.fname} ${item.lname}`,
 			item.country,
@@ -212,6 +179,7 @@ export default function Submissions() {
 				/>
 			);
 		}
+
 		return itemRow;
 	});
 
