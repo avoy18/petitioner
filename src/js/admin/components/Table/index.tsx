@@ -1,13 +1,15 @@
-import { TableHeading, HeadingLabel } from './styled';
+import { TableHeading, HeadingLabel, StyledTable } from './styled';
 import type { TableProps, SortDirection, HeadingProps } from './consts';
-import { useState, useCallback } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 
 export function Table({
 	headings,
 	rows,
 	emptyMessage = 'No data available',
 	className = '',
+	clickable = false,
 	onSort = () => {},
+	onItemSelect = () => {},
 }: TableProps) {
 	const hasRows = rows.length > 0;
 
@@ -29,7 +31,8 @@ export function Table({
 	};
 
 	return (
-		<table
+		<StyledTable
+			$clickable={clickable}
 			className={`wp-list-table widefat fixed striped table-view-list posts ${className}`}
 		>
 			<thead>
@@ -65,8 +68,8 @@ export function Table({
 
 			{hasRows ? (
 				<tbody>
-					{rows.map((cells, rowIdx) => (
-						<tr key={rowIdx}>
+					{rows.map(({ cells, id }, rowIdx) => (
+						<tr onClick={() => onItemSelect(id)} key={id}>
 							{cells.map((cell, cellIdx) => (
 								<td key={cellIdx}>{cell}</td>
 							))}
@@ -85,6 +88,6 @@ export function Table({
 					</tr>
 				</tbody>
 			)}
-		</table>
+		</StyledTable>
 	);
 }
