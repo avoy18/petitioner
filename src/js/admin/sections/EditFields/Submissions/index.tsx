@@ -166,8 +166,8 @@ export default function Submissions() {
 		});
 	}
 
-	const headingRows = submissions.map((item) => {
-		const itemRow: React.ReactNode[] = [
+	const tableRows = submissions.map((item) => {
+		const cells: React.ReactNode[] = [
 			item.email,
 			`${item.fname} ${item.lname}`,
 			item.country,
@@ -176,7 +176,7 @@ export default function Submissions() {
 		];
 
 		if (showApproval) {
-			itemRow.push(
+			cells.push(
 				<ApprovalStatus
 					item={item as SubmissionItem}
 					defaultApprovalState={defaultApprovalState}
@@ -185,7 +185,10 @@ export default function Submissions() {
 			);
 		}
 
-		return itemRow;
+		return {
+			id: item.id,
+			cells,
+		};
 	});
 
 	const handleSortChange = ({ order, orderby }: OnSortArgs) => {
@@ -205,8 +208,9 @@ export default function Submissions() {
 				<p>Total: {total}</p>
 				<Table
 					headings={headingData}
-					rows={headingRows}
+					rows={tableRows}
 					onSort={handleSortChange}
+					clickable={true}
 				/>
 			</div>
 			<br />

@@ -11,10 +11,17 @@ export type OnSortArgs = {
 	orderby?: HeadingProps['id'] | null;
 };
 
+export type TableRow = {
+	cells: React.ReactNode[];
+	id: string | number;
+};
+
 export type TableProps = {
 	headings: HeadingProps[];
-	rows: React.ReactNode[][];
+	rows: TableRow[];
 	emptyMessage?: string;
 	className?: string;
+	clickable?: boolean;
 	onSort?: (args: OnSortArgs) => void;
+	onItemSelect?: (id: TableRow['id']) => void;
 };
