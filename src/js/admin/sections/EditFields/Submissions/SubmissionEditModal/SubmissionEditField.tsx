@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import {
 	TextControl,
 	SelectControl,
@@ -5,18 +6,21 @@ import {
 	CheckboxControl,
 	// __experimentalDivider as Divider,
 } from '@wordpress/components';
-import { getHumanValue, getSubmissionValType } from '../utilities';
-import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
+import { normalizeDefaultValues } from '@admin/sections/EditFields/AdvancedSettings';
+import type {
+	FieldType,
+	FieldKey,
+} from '@admin/sections/EditFields/FormBuilder/consts';
 
 export default function SubmissionEditField({
+	label,
 	type,
 	value,
 	onChange,
-	isEmpty = false,
 }: {
+	label: FieldKey;
 	type: Omit<FieldType, 'submit' | 'wysiwyg'>;
 	value: string;
-	isEmpty: boolean;
 	onChange: (newVal: string) => void;
 }) {
 	if (type === 'checkbox') {
@@ -30,13 +34,25 @@ export default function SubmissionEditField({
 		);
 	}
 
-	if (type === 'textarea') {
-		return (
-			<TextareaControl
-				value={value}
-				onChange={onChange}
-			/>
+	if (label === 'country') {
+		const defaultValues = normalizeDefaultValues(
+			window.petitionerData.default_values
 		);
+		const allCountries = defaultValues.country_list;
+
+		return (
+			<SelectControl value={value} onChange={onChange}>
+				{allCountries.map((item) => (
+					<option selected={value === item} value={item}>
+						{item}
+					</option>
+				))}
+			</SelectControl>
+		);
+	}
+
+	if (type === 'textarea') {
+		return <TextareaControl value={value} onChange={onChange} />;
 	}
 
 	return (

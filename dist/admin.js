@@ -27416,11 +27416,445 @@ function Table({
 dt.div(_h || (_h = __template(["\n	display: flex;\n	margin-bottom: ", ";\n"])), SPACINGS.sm);
 const FieldItem = dt(CardBody)(_i || (_i = __template(["\n	display: flex;\n	align-items: flex-start;\n	flex-direction: column;\n	gap: ", ";\n"])), SPACINGS.xs);
 const InputGroup = dt.div(_j || (_j = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n\n	.components-base-control__field {\n		margin-bottom: 0px;\n	}\n"])), SPACINGS.sm);
+function PTRichText({
+  id: id2 = "",
+  label = "Rich text label",
+  value = "",
+  height = 300,
+  help = "",
+  onChange = (value2) => {
+  }
+}) {
+  const editorRef = reactExports.useRef(null);
+  const lastSavedValue = reactExports.useRef(value);
+  reactExports.useEffect(() => {
+    if (typeof window !== "undefined" && typeof tinymce !== "undefined") {
+      tinymce.init({
+        selector: "#".concat(id2),
+        menubar: false,
+        plugins: "lists link",
+        toolbar: "formatselect | bold italic | bullist numlist | link",
+        block_formats: "Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3",
+        height,
+        setup: (editor) => {
+          editorRef.current = editor;
+          editor.on("init", () => {
+            if (value) {
+              editor.setContent(value);
+              lastSavedValue.current = value;
+            }
+          });
+          editor.on("blur", () => {
+            const content = editor.getContent();
+            onChange(content);
+          });
+        }
+      });
+    }
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.remove();
+        editorRef.current = null;
+      }
+    };
+  }, [id2, value]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "petitioner-rich-text", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: label }),
+    help && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "help", children: help }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { name: id2, id: id2 })
+  ] });
+}
+const EditFormContext = reactExports.createContext(null);
+const normalizePetitionerData = () => {
+  const rawData = window.petitionerData || {};
+  const defaultData2 = {
+    title: "",
+    send_to_representative: false,
+    email: "",
+    cc_emails: "",
+    show_goal: true,
+    goal: 0,
+    show_country: false,
+    subject: "",
+    require_approval: false,
+    approval_state: "Confirmed",
+    letter: "",
+    add_legal_text: false,
+    legal_text: "",
+    add_consent_checkbox: false,
+    consent_text: "",
+    override_ty_email: false,
+    ty_email: "",
+    ty_email_subject: "",
+    override_success_message: false,
+    success_message_title: "",
+    success_message: "",
+    from_field: "",
+    add_honeypot: true,
+    form_id: null,
+    hide_last_names: true,
+    active_tab: "default"
+  };
+  return { ...defaultData2, ...rawData };
+};
+function EditFormContextProvider({
+  children
+}) {
+  const petitionerData = normalizePetitionerData();
+  const [formState, setFormState] = reactExports.useState(petitionerData);
+  const updateFormState = reactExports.useCallback(
+    (key, value) => {
+      setFormState((prevState) => ({ ...prevState, [key]: value }));
+    },
+    []
+  );
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    EditFormContext.Provider,
+    {
+      value: {
+        formState,
+        updateFormState
+      },
+      children
+    }
+  );
+}
+function useEditFormContext() {
+  const context = reactExports.useContext(EditFormContext);
+  if (!context) {
+    throw new Error(
+      "useEditFormContext must be used within an EditFormContextProvider"
+    );
+  }
+  return context;
+}
+function CheckboxInput(props) {
+  const { checked, name, onChange, label, help } = props;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(InputWrapper, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "input",
+      {
+        checked,
+        type: "checkbox",
+        name,
+        id: name,
+        className: "widefat",
+        onChange
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: name, children: [
+      label,
+      help && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("small", { children: help })
+      ] })
+    ] })
+  ] });
+}
+const normalizeDefaultValues = (raw) => {
+  const DEFAULT_SUBJECT = __(
+    "Thank you for signing the {{petition_title}}",
+    "petitioner"
+  );
+  const DEFAULT_CONTENT = __(
+    "Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.",
+    "petitioner"
+  );
+  const defaultValues = {
+    from_field: "",
+    ty_email_subject: DEFAULT_SUBJECT,
+    ty_email: DEFAULT_CONTENT,
+    ty_email_subject_confirm: DEFAULT_SUBJECT,
+    ty_email_confirm: DEFAULT_CONTENT,
+    success_message_title: "",
+    success_message: "",
+    country_list: []
+  };
+  if (typeof raw !== "object" || raw === null) {
+    return defaultValues;
+  }
+  const input = raw;
+  for (const key of Object.keys(defaultValues)) {
+    const value = input[key];
+    if (key === "country_list") {
+      if (Array.isArray(value)) {
+        defaultValues[key] = value;
+      }
+      continue;
+    }
+    if (typeof value === "string" && value.trim().length > 0) {
+      defaultValues[key] = value;
+    }
+  }
+  return defaultValues;
+};
+function getThankYouDefaults(defaults, approvalState) {
+  const isConfirmEmail = approvalState === "Email";
+  return {
+    subject: isConfirmEmail ? defaults.ty_email_subject_confirm : defaults.ty_email_subject,
+    content: isConfirmEmail ? defaults.ty_email_confirm : defaults.ty_email
+  };
+}
+function AdvancedSettings() {
+  var _a2;
+  const { formState, updateFormState } = useEditFormContext();
+  const defaultValues = normalizeDefaultValues(
+    (_a2 = window.petitionerData) == null ? void 0 : _a2.default_values
+  );
+  const defaultFromField = (defaultValues == null ? void 0 : defaultValues.from_field) || "";
+  const confirmEmails = formState.approval_state === "Email";
+  const { subject: defaultTYSubject, content: defaultTYEmailContent } = getThankYouDefaults(defaultValues, formState.approval_state);
+  const defaultSuccessMessageTitle = (defaultValues == null ? void 0 : defaultValues.success_message_title) || "";
+  const defaultSuccessMessageContent = (defaultValues == null ? void 0 : defaultValues.success_message) || "";
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CheckboxInput,
+      {
+        checked: !!formState.add_honeypot,
+        name: "petitioner_add_honeypot",
+        label: __(
+          "Add a honeypot field to the form for better spam protection?",
+          "petitioner"
+        ),
+        onChange: (e2) => updateFormState("add_honeypot", e2.target.checked)
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TextControl,
+      {
+        style: { width: "100%" },
+        label: __("From field", "petitioner"),
+        value: formState.from_field,
+        defaultValue: defaultFromField,
+        type: "email",
+        help: __(
+          "This is the email address that will appear in the 'From' field of the email. If empty will default to ".concat(defaultFromField, "."),
+          "petitioner"
+        ),
+        name: "petitioner_from_field",
+        id: "petitioner_from_field",
+        onChange: (value) => updateFormState("from_field", value)
+      }
+    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CheckboxInput,
+      {
+        checked: formState.require_approval,
+        name: "petitioner_require_approval",
+        label: __("Require approval for submissions?", "petitioner"),
+        help: __(
+          "When enabled, submissions will be saved as drafts and will require approval or an email confirmation before being published.",
+          "petitioner"
+        ),
+        onChange: (e2) => {
+          const isChecked = e2.target.checked;
+          updateFormState("require_approval", isChecked);
+          updateFormState("approval_state", "Email");
+          window.petitionerData.require_approval = isChecked;
+          const evt = new CustomEvent("onPtrApprovalChange", {
+            detail: {
+              requireApproval: isChecked
+            }
+          });
+          window.dispatchEvent(evt);
+        }
+      }
+    ),
+    formState.require_approval && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      SelectControl$1,
+      {
+        value: formState.approval_state,
+        id: "petitioner_approval_state",
+        name: "petitioner_approval_state",
+        label: __("Approval behavior", "petitioner"),
+        options: [
+          {
+            value: "Email",
+            label: __(
+              "Automatic: Confirmed by email",
+              "petitioner"
+            )
+          },
+          {
+            value: "Confirmed",
+            label: __(
+              "Manual: confirmed by default",
+              "petitioner"
+            )
+          },
+          {
+            value: "Declined",
+            label: __(
+              "Manual: needs approval by default",
+              "petitioner"
+            )
+          }
+        ],
+        onChange: (value) => {
+          updateFormState("approval_state", value);
+          window.petitionerData.approval_state = value;
+          const evt = new CustomEvent("onPtrApprovalChange", {
+            detail: {
+              approvalState: value
+            }
+          });
+          window.dispatchEvent(evt);
+        }
+      }
+    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CheckboxInput,
+      {
+        checked: formState.override_ty_email,
+        name: "petitioner_override_ty_email",
+        label: __("Override the confirmation email?", "petitioner"),
+        help: /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          __(
+            "Use this to customize the thank you email sent when submitting a petition.",
+            "petitioner"
+          ),
+          confirmEmails && formState.override_ty_email && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { style: { color: "salmon" }, children: [
+              __(
+                "Make sure to include the email confirmation variable.",
+                "petitioner"
+              ),
+              " ",
+              "{{confirmation_link}}"
+            ] })
+          ] })
+        ] }),
+        onChange: (e2) => updateFormState("override_ty_email", e2.target.checked)
+      }
+    ),
+    formState.override_ty_email && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        TextControl,
+        {
+          style: { width: "100%" },
+          type: "text",
+          required: true,
+          label: __(
+            "Thank you email subject *",
+            "petitioner"
+          ),
+          value: String(formState == null ? void 0 : formState.ty_email_subject).length > 0 ? formState.ty_email_subject : defaultTYSubject,
+          name: "petitioner_ty_email_subject",
+          id: "petitioner_ty_email_subject",
+          onChange: (value) => updateFormState("ty_email_subject", value)
+        }
+      ) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        PTRichText,
+        {
+          label: __("Thank you email content", "petitioner"),
+          id: "petitioner_ty_email",
+          help: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            __(
+              "This will be the content of the thank you email sent to the signer. You can use the following dynamic tags:",
+              "petitioner"
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ptr-code-snippets", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("input", { disabled: true, value: "{{user_name}}" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "input",
+                {
+                  disabled: true,
+                  value: "{{petition_letter}}"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "input",
+                {
+                  disabled: true,
+                  value: "{{petition_goal}}"
+                }
+              ),
+              formState.approval_state === "Email" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "input",
+                {
+                  disabled: true,
+                  style: { minWidth: 140 },
+                  value: "{{confirmation_link}}"
+                }
+              )
+            ] })
+          ] }),
+          value: String(formState == null ? void 0 : formState.ty_email).length > 0 ? formState.ty_email : defaultTYEmailContent,
+          onChange: (value) => updateFormState("ty_email", value),
+          height: 150
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CheckboxInput,
+      {
+        name: "petitioner_override_success_message",
+        label: __("Override success message?", "petitioner"),
+        help: __(
+          "Use this to customize the success message shown after submitting a petition.",
+          "petitioner"
+        ),
+        checked: formState.override_success_message,
+        onChange: (e2) => updateFormState(
+          "override_success_message",
+          e2.target.checked
+        )
+      }
+    ),
+    formState.override_success_message && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        TextControl,
+        {
+          style: { width: "100%" },
+          type: "text",
+          label: __("Success message title", "petitioner"),
+          value: String(formState == null ? void 0 : formState.success_message_title).length > 0 ? formState.success_message_title : defaultSuccessMessageTitle,
+          name: "petitioner_success_message_title",
+          id: "petitioner_success_message_title",
+          onChange: (value) => updateFormState("success_message_title", value)
+        }
+      ) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        PTRichText,
+        {
+          label: __("Success message content", "petitioner"),
+          id: "petitioner_success_message",
+          help: __(
+            "This will be the content of the success message shown after submitting a petition.",
+            "petitioner"
+          ),
+          value: String(formState == null ? void 0 : formState.success_message).length > 0 ? formState.success_message : defaultSuccessMessageContent,
+          onChange: (value) => updateFormState("success_message", value),
+          height: 150
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CheckboxInput,
+      {
+        name: "petitioner_hide_last_names",
+        label: __(
+          "Hide signee's last names on the frontend",
+          "petitioner"
+        ),
+        help: __(
+          "This will only show the first letter of their last name on the submission list. For example: John D.",
+          "petitioner"
+        ),
+        checked: formState.hide_last_names,
+        onChange: (e2) => updateFormState("hide_last_names", e2.target.checked)
+      }
+    )
+  ] });
+}
 function SubmissionEditField({
+  label,
   type,
   value,
-  onChange,
-  isEmpty = false
+  onChange
 }) {
   if (type === "checkbox") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -27433,14 +27867,15 @@ function SubmissionEditField({
       }
     );
   }
-  if (type === "textarea") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      TextareaControl,
-      {
-        value,
-        onChange
-      }
+  if (label === "country") {
+    const defaultValues = normalizeDefaultValues(
+      window.petitionerData.default_values
     );
+    const allCountries = defaultValues.country_list;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, children: allCountries.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { selected: value === item, value: item, children: item })) });
+  }
+  if (type === "textarea") {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(TextareaControl, { value, onChange });
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     TextControl,
@@ -27485,9 +27920,10 @@ function SubmissionEditModal({
     if (!isValidFieldKey(label)) {
       return;
     }
+    const valueString = String(value);
     const finalLabel = (_a2 = SUBMISSION_LABELS$1[label]) != null ? _a2 : label;
     const type = getSubmissionValType(label);
-    const finalValue = getHumanValue(String(value), type);
+    const finalValue = getHumanValue(valueString, type);
     const isEmpty = finalValue == __("(empty)", "petitioner");
     const currentlyEditing = isEdit === label;
     let ValueField = /* @__PURE__ */ jsxRuntimeExports.jsx(Text, { color: !isEmpty ? "" : "grey", size: !isEmpty ? "" : "12", children: finalValue });
@@ -27500,9 +27936,10 @@ function SubmissionEditModal({
       ValueField = /* @__PURE__ */ jsxRuntimeExports.jsx(
         SubmissionEditField,
         {
+          label,
           isEmpty,
           type,
-          value,
+          value: valueString,
           onChange: (val) => {
             updateSubmissionDetails(label, val);
           }
@@ -31714,54 +32151,6 @@ function EditCheckbox() {
     ) })
   ] });
 }
-function PTRichText({
-  id: id2 = "",
-  label = "Rich text label",
-  value = "",
-  height = 300,
-  help = "",
-  onChange = (value2) => {
-  }
-}) {
-  const editorRef = reactExports.useRef(null);
-  const lastSavedValue = reactExports.useRef(value);
-  reactExports.useEffect(() => {
-    if (typeof window !== "undefined" && typeof tinymce !== "undefined") {
-      tinymce.init({
-        selector: "#".concat(id2),
-        menubar: false,
-        plugins: "lists link",
-        toolbar: "formatselect | bold italic | bullist numlist | link",
-        block_formats: "Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3",
-        height,
-        setup: (editor) => {
-          editorRef.current = editor;
-          editor.on("init", () => {
-            if (value) {
-              editor.setContent(value);
-              lastSavedValue.current = value;
-            }
-          });
-          editor.on("blur", () => {
-            const content = editor.getContent();
-            onChange(content);
-          });
-        }
-      });
-    }
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.remove();
-        editorRef.current = null;
-      }
-    };
-  }, [id2, value]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "petitioner-rich-text", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: label }),
-    help && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "help", children: help }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { name: id2, id: id2 })
-  ] });
-}
 /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 const {
   entries,
@@ -33155,70 +33544,6 @@ function FormBuilderComponent() {
 function FormBuilder() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(FormBuilderContextProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(FormBuilderComponent, {}) });
 }
-const EditFormContext = reactExports.createContext(null);
-const normalizePetitionerData = () => {
-  const rawData = window.petitionerData || {};
-  const defaultData2 = {
-    title: "",
-    send_to_representative: false,
-    email: "",
-    cc_emails: "",
-    show_goal: true,
-    goal: 0,
-    show_country: false,
-    subject: "",
-    require_approval: false,
-    approval_state: "Confirmed",
-    letter: "",
-    add_legal_text: false,
-    legal_text: "",
-    add_consent_checkbox: false,
-    consent_text: "",
-    override_ty_email: false,
-    ty_email: "",
-    ty_email_subject: "",
-    override_success_message: false,
-    success_message_title: "",
-    success_message: "",
-    from_field: "",
-    add_honeypot: true,
-    form_id: null,
-    hide_last_names: true,
-    active_tab: "default"
-  };
-  return { ...defaultData2, ...rawData };
-};
-function EditFormContextProvider({
-  children
-}) {
-  const petitionerData = normalizePetitionerData();
-  const [formState, setFormState] = reactExports.useState(petitionerData);
-  const updateFormState = reactExports.useCallback(
-    (key, value) => {
-      setFormState((prevState) => ({ ...prevState, [key]: value }));
-    },
-    []
-  );
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    EditFormContext.Provider,
-    {
-      value: {
-        formState,
-        updateFormState
-      },
-      children
-    }
-  );
-}
-function useEditFormContext() {
-  const context = reactExports.useContext(EditFormContext);
-  if (!context) {
-    throw new Error(
-      "useEditFormContext must be used within an EditFormContextProvider"
-    );
-  }
-  return context;
-}
 function PetitionDetails() {
   const { formState, updateFormState } = useEditFormContext();
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
@@ -33363,321 +33688,6 @@ function BottomCallout() {
         )
       ] })
     ] })
-  ] });
-}
-function CheckboxInput(props) {
-  const { checked, name, onChange, label, help } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(InputWrapper, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "input",
-      {
-        checked,
-        type: "checkbox",
-        name,
-        id: name,
-        className: "widefat",
-        onChange
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: name, children: [
-      label,
-      help && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("small", { children: help })
-      ] })
-    ] })
-  ] });
-}
-const normalizeDefaultValues = (raw) => {
-  const DEFAULT_SUBJECT = __(
-    "Thank you for signing the {{petition_title}}",
-    "petitioner"
-  );
-  const DEFAULT_CONTENT = __(
-    "Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.",
-    "petitioner"
-  );
-  const defaultValues = {
-    from_field: "",
-    ty_email_subject: DEFAULT_SUBJECT,
-    ty_email: DEFAULT_CONTENT,
-    ty_email_subject_confirm: DEFAULT_SUBJECT,
-    ty_email_confirm: DEFAULT_CONTENT,
-    success_message_title: "",
-    success_message: ""
-  };
-  if (typeof raw !== "object" || raw === null) {
-    return defaultValues;
-  }
-  const input = raw;
-  for (const key of Object.keys(defaultValues)) {
-    const value = input[key];
-    if (typeof value === "string" && value.trim().length > 0) {
-      defaultValues[key] = value;
-    }
-  }
-  return defaultValues;
-};
-function getThankYouDefaults(defaults, approvalState) {
-  const isConfirmEmail = approvalState === "Email";
-  return {
-    subject: isConfirmEmail ? defaults.ty_email_subject_confirm : defaults.ty_email_subject,
-    content: isConfirmEmail ? defaults.ty_email_confirm : defaults.ty_email
-  };
-}
-function AdvancedSettings() {
-  var _a2, _b2, _c2;
-  const { formState, updateFormState } = useEditFormContext();
-  const defaultValues = normalizeDefaultValues(
-    (_a2 = window.petitionerData) == null ? void 0 : _a2.default_values
-  );
-  const defaultFromField = (defaultValues == null ? void 0 : defaultValues.from_field) || "";
-  const confirmEmails = formState.approval_state === "Email";
-  const { subject: defaultTYSubject, content: defaultTYEmailContent } = getThankYouDefaults(defaultValues, formState.approval_state);
-  const defaultSuccessMessageTitle = (defaultValues == null ? void 0 : defaultValues.success_message_title) || "";
-  const defaultSuccessMessageContent = (defaultValues == null ? void 0 : defaultValues.success_message) || "";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      CheckboxInput,
-      {
-        checked: !!formState.add_honeypot,
-        name: "petitioner_add_honeypot",
-        label: __(
-          "Add a honeypot field to the form for better spam protection?",
-          "petitioner"
-        ),
-        onChange: (e2) => updateFormState("add_honeypot", e2.target.checked)
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      TextControl,
-      {
-        style: { width: "100%" },
-        label: __("From field", "petitioner"),
-        value: formState.from_field,
-        defaultValue: defaultFromField,
-        type: "email",
-        help: __(
-          "This is the email address that will appear in the 'From' field of the email. If empty will default to ".concat(defaultFromField, "."),
-          "petitioner"
-        ),
-        name: "petitioner_from_field",
-        id: "petitioner_from_field",
-        onChange: (value) => updateFormState("from_field", value)
-      }
-    ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      CheckboxInput,
-      {
-        checked: formState.require_approval,
-        name: "petitioner_require_approval",
-        label: __("Require approval for submissions?", "petitioner"),
-        help: __(
-          "When enabled, submissions will be saved as drafts and will require approval or an email confirmation before being published.",
-          "petitioner"
-        ),
-        onChange: (e2) => {
-          const isChecked = e2.target.checked;
-          updateFormState("require_approval", isChecked);
-          updateFormState("approval_state", "Email");
-          window.petitionerData.require_approval = isChecked;
-          const evt = new CustomEvent("onPtrApprovalChange", {
-            detail: {
-              requireApproval: isChecked
-            }
-          });
-          window.dispatchEvent(evt);
-        }
-      }
-    ),
-    formState.require_approval && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      SelectControl$1,
-      {
-        value: formState.approval_state,
-        id: "petitioner_approval_state",
-        name: "petitioner_approval_state",
-        label: __("Approval behavior", "petitioner"),
-        options: [
-          {
-            value: "Email",
-            label: __(
-              "Automatic: Confirmed by email",
-              "petitioner"
-            )
-          },
-          {
-            value: "Confirmed",
-            label: __(
-              "Manual: confirmed by default",
-              "petitioner"
-            )
-          },
-          {
-            value: "Declined",
-            label: __(
-              "Manual: needs approval by default",
-              "petitioner"
-            )
-          }
-        ],
-        onChange: (value) => {
-          updateFormState("approval_state", value);
-          window.petitionerData.approval_state = value;
-          const evt = new CustomEvent("onPtrApprovalChange", {
-            detail: {
-              approvalState: value
-            }
-          });
-          window.dispatchEvent(evt);
-        }
-      }
-    ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      CheckboxInput,
-      {
-        checked: formState.override_ty_email,
-        name: "petitioner_override_ty_email",
-        label: __("Override the confirmation email?", "petitioner"),
-        help: /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          __(
-            "Use this to customize the thank you email sent when submitting a petition.",
-            "petitioner"
-          ),
-          confirmEmails && formState.override_ty_email && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { style: { color: "salmon" }, children: [
-              __(
-                "Make sure to include the email confirmation variable.",
-                "petitioner"
-              ),
-              " ",
-              "{{confirmation_link}}"
-            ] })
-          ] })
-        ] }),
-        onChange: (e2) => updateFormState("override_ty_email", e2.target.checked)
-      }
-    ),
-    formState.override_ty_email && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        TextControl,
-        {
-          style: { width: "100%" },
-          type: "text",
-          required: true,
-          label: __(
-            "Thank you email subject *",
-            "petitioner"
-          ),
-          value: (formState == null ? void 0 : formState.ty_email_subject.length) > 0 ? formState.ty_email_subject : defaultTYSubject,
-          name: "petitioner_ty_email_subject",
-          id: "petitioner_ty_email_subject",
-          onChange: (value) => updateFormState("ty_email_subject", value)
-        }
-      ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        PTRichText,
-        {
-          label: __("Thank you email content", "petitioner"),
-          id: "petitioner_ty_email",
-          help: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            __(
-              "This will be the content of the thank you email sent to the signer. You can use the following dynamic tags:",
-              "petitioner"
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ptr-code-snippets", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("input", { disabled: true, value: "{{user_name}}" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "input",
-                {
-                  disabled: true,
-                  value: "{{petition_letter}}"
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "input",
-                {
-                  disabled: true,
-                  value: "{{petition_goal}}"
-                }
-              ),
-              formState.approval_state === "Email" && /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "input",
-                {
-                  disabled: true,
-                  style: { minWidth: 140 },
-                  value: "{{confirmation_link}}"
-                }
-              )
-            ] })
-          ] }),
-          value: ((_b2 = formState == null ? void 0 : formState.ty_email) == null ? void 0 : _b2.length) > 0 ? formState.ty_email : defaultTYEmailContent,
-          onChange: (value) => updateFormState("ty_email", value),
-          height: 150
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      CheckboxInput,
-      {
-        name: "petitioner_override_success_message",
-        label: __("Override success message?", "petitioner"),
-        help: __(
-          "Use this to customize the success message shown after submitting a petition.",
-          "petitioner"
-        ),
-        checked: formState.override_success_message,
-        onChange: (e2) => updateFormState(
-          "override_success_message",
-          e2.target.checked
-        )
-      }
-    ),
-    formState.override_success_message && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        TextControl,
-        {
-          style: { width: "100%" },
-          type: "text",
-          label: __("Success message title", "petitioner"),
-          value: (formState == null ? void 0 : formState.success_message_title.length) > 0 ? formState.success_message_title : defaultSuccessMessageTitle,
-          name: "petitioner_success_message_title",
-          id: "petitioner_success_message_title",
-          onChange: (value) => updateFormState("success_message_title", value)
-        }
-      ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        PTRichText,
-        {
-          label: __("Success message content", "petitioner"),
-          id: "petitioner_success_message",
-          help: __(
-            "This will be the content of the success message shown after submitting a petition.",
-            "petitioner"
-          ),
-          value: ((_c2 = formState == null ? void 0 : formState.success_message) == null ? void 0 : _c2.length) > 0 ? formState.success_message : defaultSuccessMessageContent,
-          onChange: (value) => updateFormState("success_message", value),
-          height: 150
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      CheckboxInput,
-      {
-        name: "petitioner_hide_last_names",
-        label: __(
-          "Hide signee's last names on the frontend",
-          "petitioner"
-        ),
-        help: __(
-          "This will only show the first letter of their last name on the submission list. For example: John D.",
-          "petitioner"
-        ),
-        checked: formState.hide_last_names,
-        onChange: (e2) => updateFormState("hide_last_names", e2.target.checked)
-      }
-    )
   ] });
 }
 function Tabs(props) {

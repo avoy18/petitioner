@@ -63,10 +63,10 @@ export default function SubmissionEditModal({
 		if (!isValidFieldKey(label)) {
 			return;
 		}
-
+		const valueString = String(value);
 		const finalLabel = SUBMISSION_LABELS[label] ?? label;
 		const type = getSubmissionValType(label);
-		const finalValue = getHumanValue(String(value), type);
+		const finalValue = getHumanValue(valueString, type);
 
 		const isEmpty = finalValue == __('(empty)', 'petitioner');
 		const currentlyEditing = isEdit === label;
@@ -90,9 +90,10 @@ export default function SubmissionEditModal({
 		if (currentlyEditing) {
 			ValueField = (
 				<SubmissionEditField
+					label={label}
 					isEmpty={isEmpty}
 					type={type}
-					value={value}
+					value={valueString}
 					onChange={(val) => {
 						updateSubmissionDetails(label, val);
 					}}
