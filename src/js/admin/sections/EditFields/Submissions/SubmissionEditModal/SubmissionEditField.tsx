@@ -2,9 +2,10 @@ import {
 	TextControl,
 	SelectControl,
 	TextareaControl,
+	CheckboxControl,
 	// __experimentalDivider as Divider,
 } from '@wordpress/components';
-
+import { getHumanValue, getSubmissionValType } from '../utilities';
 import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
 
 export default function SubmissionEditField({
@@ -18,10 +19,21 @@ export default function SubmissionEditField({
 	isEmpty: boolean;
 	onChange: (newVal: string) => void;
 }) {
+	if (type === 'checkbox') {
+		return (
+			<CheckboxControl
+				checked={value === '1'}
+				onChange={(checked) => {
+					onChange(checked ? '1' : '0');
+				}}
+			/>
+		);
+	}
+
 	if (type === 'textarea') {
 		return (
 			<TextareaControl
-				value={!isEmpty ? value : ''}
+				value={value}
 				onChange={onChange}
 			/>
 		);
@@ -31,7 +43,7 @@ export default function SubmissionEditField({
 		<TextControl
 			// @ts-ignore: the types should be correct here
 			type={type}
-			value={!isEmpty ? value : ''}
+			value={value}
 			onChange={onChange}
 		/>
 	);

@@ -27422,11 +27422,22 @@ function SubmissionEditField({
   onChange,
   isEmpty = false
 }) {
+  if (type === "checkbox") {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CheckboxControl,
+      {
+        checked: value === "1",
+        onChange: (checked) => {
+          onChange(checked ? "1" : "0");
+        }
+      }
+    );
+  }
   if (type === "textarea") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextareaControl,
       {
-        value: !isEmpty ? value : "",
+        value,
         onChange
       }
     );
@@ -27435,7 +27446,7 @@ function SubmissionEditField({
     TextControl,
     {
       type,
-      value: !isEmpty ? value : "",
+      value,
       onChange
     }
   );
@@ -27491,7 +27502,7 @@ function SubmissionEditModal({
         {
           isEmpty,
           type,
-          value: finalValue,
+          value,
           onChange: (val) => {
             updateSubmissionDetails(label, val);
           }

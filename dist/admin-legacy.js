@@ -33979,15 +33979,23 @@
           onChange,
           isEmpty = false
         }) {
+          if (type === "checkbox") {
+            return /* @__PURE__ */jsxRuntimeExports.jsx(CheckboxControl, {
+              checked: value === "1",
+              onChange: checked => {
+                onChange(checked ? "1" : "0");
+              }
+            });
+          }
           if (type === "textarea") {
             return /* @__PURE__ */jsxRuntimeExports.jsx(TextareaControl, {
-              value: !isEmpty ? value : "",
+              value,
               onChange
             });
           }
           return /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
             type,
-            value: !isEmpty ? value : "",
+            value,
             onChange
           });
         }
@@ -34041,7 +34049,7 @@
               ValueField = /* @__PURE__ */jsxRuntimeExports.jsx(SubmissionEditField, {
                 isEmpty,
                 type,
-                value: finalValue,
+                value,
                 onChange: val => {
                   updateSubmissionDetails(label, val);
                 }

@@ -355,17 +355,62 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_update_form_submission()
     {
-        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
-        // $submissions = isset($_POST['submissions']) ? json_decode($_POST['submissions'], true) : [];
-        
-        // if (!$form_id || empty($submissions)) {
-        //     wp_send_json_error(['message' => 'Invalid input. Form ID and submissions are required.']);
-        //     return;
-        // }
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : null;
+        $id = isset($_POST['id']) ? absint($_POST['id']) : null;
 
-        $submissions = [];
+        if (!$form_id || empty($id)) {
+            wp_send_json_error(['message' => __('Invalid input. Form ID and submissions are required.', 'petitioner')]);
+            return;
+        }
 
-        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($form_id, $submissions);
+        $submission = [];
+
+        // Use the model's allowed fields to dynamically build the submission array
+        foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
+            if (isset($_POST[$field])) {
+                switch ($field) {
+                    case 'id':
+                    case 'form_id':
+                        break;
+                    case 'email':
+                        $submission[$field] = sanitize_email(wp_unslash($_POST[$field]));
+                        break;
+                    case 'comments':
+                        $submission[$field] = sanitize_textarea_field(wp_unslash($_POST[$field]));
+                        break;
+                    case 'salutation':
+                    case 'confirmation_token':
+                        // Handle nullable fields
+                        $value = $_POST[$field];
+                        $submission[$field] = ($value !== '' && $value !== null) ? sanitize_text_field(wp_unslash($value)) : null;
+                        break;
+                    default:
+                        // Default sanitization for text fields
+                        $submission[$field] = sanitize_text_field(wp_unslash($_POST[$field]));
+                        break;
+                }
+            } else {
+                // Set default values for missing fields
+                switch ($field) {
+                    case 'bcc_yourself':
+                    case 'newsletter':
+                    case 'hide_name':
+                    case 'accept_tos':
+                        $submission[$field] = '0';
+                        break;
+                    case 'salutation':
+                    case 'confirmation_token':
+                        $submission[$field] = null;
+                        break;
+                }
+            }
+        }
+
+        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($form_id, $submission);
+
+        if ($updated_rows === 0) {
+            wp_send_json_error(['message' => __('Could not update.', 'petitioner')]);
+        }
 
         wp_send_json_success(['message' => 'Submissions updated successfully.', 'updated_rows' => $updated_rows]);
     }

@@ -92,7 +92,7 @@ export default function SubmissionEditModal({
 				<SubmissionEditField
 					isEmpty={isEmpty}
 					type={type}
-					value={finalValue}
+					value={value}
 					onChange={(val) => {
 						updateSubmissionDetails(label, val);
 					}}
