@@ -97,6 +97,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.5.1 =
+* Bug: remove double escaping of html attributes on the form
+
 = 0.5.0 =
 * Improved submissions
     * Added sorting of submissions in admin
