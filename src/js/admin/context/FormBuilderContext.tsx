@@ -12,7 +12,7 @@ import type {
 	BuilderField,
 	FormBuilderContextValue,
 	FormBuilderContextProviderProps,
-	FieldOrderItems
+	FieldOrderItems,
 } from '@admin/sections/EditFields/FormBuilder/consts';
 
 export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
@@ -138,6 +138,11 @@ export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	},
 };
 
+export const ALl_POSSIBLE_FIELDS = [
+	...DRAGGABLE_FIELD_TYPES,
+	...Object.values(DEFAULT_BUILDER_FIELDS),
+];
+
 export function FormBuilderContextProvider({
 	children,
 }: FormBuilderContextProviderProps) {
@@ -195,7 +200,8 @@ export function FormBuilderContextProvider({
 			? field_order
 			: Object.keys(formBuilderFields);
 
-	const [fieldOrder, setFieldOrder] = useState<FieldOrderItems>(defaultFieldOrder);
+	const [fieldOrder, setFieldOrder] =
+		useState<FieldOrderItems>(defaultFieldOrder);
 
 	return (
 		<FormBuilderContext.Provider

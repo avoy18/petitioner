@@ -14,7 +14,11 @@ import {
 } from '@wordpress/components';
 
 import { SUBMISSION_LABELS } from '../consts';
-import { getHumanValue } from '../utilities';
+import {
+	getHumanValue,
+	getSubmissionValType,
+	isValidFieldKey,
+} from '../utilities';
 
 export default function SubmissionEditModal({
 	submission,
@@ -25,37 +29,35 @@ export default function SubmissionEditModal({
 	onClose: () => void;
 	onSave?: (upatedItem: SubmissionItem) => void;
 }) {
-	// console.log('selected submission', submission);
 	const submissionEntries = Object.entries(submission);
 	const lastRowIndex = submissionEntries.length - 1;
 
-	const submissionDetails = submissionEntries.map(
-		([label, value], index) => {
-			if (!SUBMISSION_LABELS?.[label]) {
-				return;
-			}
-
-			const finalLabel = SUBMISSION_LABELS?.[label] ?? label;
-			const finalValue = getHumanValue(value);
-
-			const isEmpty = finalValue == __('(empty)', 'petitioner');
-
-			return (
-				<div key={label}>
-					<CardBody>
-						<strong>{finalLabel}:</strong>{' '}
-						<Text
-							color={!isEmpty ? '' : 'grey'}
-							size={!isEmpty ? '' : '12'}
-						>
-							{finalValue}
-						</Text>
-					</CardBody>
-					{index < lastRowIndex && <CardDivider />}
-				</div>
-			);
+	const submissionDetails = submissionEntries.map(([label, value], index) => {
+		if (!isValidFieldKey(label)) {
+			return;
 		}
-	);
+
+		const finalLabel = SUBMISSION_LABELS?.[label] ?? label;
+		const type = getSubmissionValType(label);
+		const finalValue = getHumanValue(String(value), type);
+
+		const isEmpty = finalValue == __('(empty)', 'petitioner');
+
+		return (
+			<div key={label}>
+				<CardBody>
+					<strong>{finalLabel}:</strong>{' '}
+					<Text
+						color={!isEmpty ? '' : 'grey'}
+						size={!isEmpty ? '' : '12'}
+					>
+						{finalValue}
+					</Text>
+				</CardBody>
+				{index < lastRowIndex && <CardDivider />}
+			</div>
+		);
+	});
 
 	return (
 		<Modal

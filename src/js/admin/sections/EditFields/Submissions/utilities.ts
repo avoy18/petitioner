@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import type { FetchSettings, UpdateSettings } from './consts';
-import {
-	DRAGGABLE_FIELD_TYPES,
-	DEFAULT_BUILDER_FIELDS,
-} from '@admin/context/FormBuilderContext';
-import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
+import type {
+	FieldKey,
+	FieldType,
+} from '@admin/sections/EditFields/FormBuilder/consts';
+import { ALl_POSSIBLE_FIELDS } from '@admin/context/FormBuilderContext';
 
 export const fetchSubmissions = async ({
 	currentPage = 1,
@@ -92,14 +92,9 @@ export const updateSubmissions = async ({
  * Returns a mapping from fieldKey to label for all available form fields.
  */
 export const getFieldLabels = (): Record<FieldKey, string> => {
-	const combinedFields = [
-		...DRAGGABLE_FIELD_TYPES,
-		...Object.values(DEFAULT_BUILDER_FIELDS),
-	];
-
 	const fieldMap: Record<string, string> = {};
 
-	combinedFields.forEach((field) => {
+	ALl_POSSIBLE_FIELDS.forEach((field) => {
 		if (field?.fieldKey) {
 			fieldMap[field.fieldKey] = field.label;
 		}
@@ -115,21 +110,47 @@ export const getFieldLabels = (): Record<FieldKey, string> => {
  * - For boolean `false` or string `'0'`, returns a localized "False" string.
  * - For all other values, returns their string representation.
  *
- * @param {unknown} val - The value to convert.
+ * @param {string} val - The value to convert.
+ * @param {string} type - the value type
  * @returns {string} Human-readable representation of the value.
  */
-export const getHumanValue = (val: unknown): string => {
-	if (val === undefined || val === null || val === '') {
+export const getHumanValue = (val: string, type: string): string => {
+	if (val.length === 0) {
 		return __('(empty)', 'petitioner');
 	}
 
-	if (val === true || val === '1') {
-		return __('True', 'petitioner');
+	if (type === 'checkbox') {
+		return val === '1' ? '✅' : '❌';
 	}
 
-	if (val === false || val === '0') {
-		return __('False', 'petitioner');
+	if (type === 'date') {
+		const date = new Date(val);
+
+		if (!isNaN(date.getTime())) {
+			return (
+				date.toLocaleDateString() +
+				' ' +
+				date.toLocaleTimeString([], {
+					hour: '2-digit',
+					minute: '2-digit',
+				})
+			);
+		}
 	}
 
 	return String(val);
+};
+
+export const isValidFieldKey = (
+	key: string
+): key is keyof typeof SUBMISSION_LABELS => {
+	return key in SUBMISSION_LABELS;
+};
+
+export const getSubmissionValType = (label: FieldKey): FieldType => {
+	const correctItem = ALl_POSSIBLE_FIELDS.find(
+		(item) => item.fieldKey === label
+	);
+
+	return correctItem?.type || 'text';
 };
