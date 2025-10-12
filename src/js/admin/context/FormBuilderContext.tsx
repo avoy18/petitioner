@@ -100,8 +100,9 @@ export const DRAGGABLE_FIELD_TYPES = [
 	},
 ] as BuilderField[];
 
-const defaultBuilderFields: BuilderFieldMap = {
+export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	fname: {
+		fieldKey: 'fname',
 		type: 'text',
 		fieldName: __('First name', 'petitioner'),
 		label: __('First name', 'petitioner'),
@@ -110,6 +111,7 @@ const defaultBuilderFields: BuilderFieldMap = {
 		removable: false,
 	},
 	lname: {
+		fieldKey: 'lname',
 		type: 'text',
 		fieldName: __('Last name', 'petitioner'),
 		label: __('Last name', 'petitioner'),
@@ -118,6 +120,7 @@ const defaultBuilderFields: BuilderFieldMap = {
 		removable: false,
 	},
 	email: {
+		fieldKey: 'email',
 		type: 'email',
 		fieldName: __('Your email', 'petitioner'),
 		label: __('Your email', 'petitioner'),
@@ -125,33 +128,8 @@ const defaultBuilderFields: BuilderFieldMap = {
 		required: true,
 		removable: false,
 	},
-	// country: {
-	// 	type: 'select',
-	// 	fieldName: __('Country', 'petitioner'),
-	// 	label: __('Country', 'petitioner'),
-	// 	required: false,
-	// 	removable: true,
-	// },
-	// accept_tos: {
-	// 	type: 'checkbox',
-	// 	fieldName: 'Terms of service checkbox',
-	// 	label: __(
-	// 		'By submitting this form, I agree to the terms of service',
-	// 		'petitioner'
-	// 	),
-	// 	defaultValue: false,
-	// 	required: true,
-	// 	removable: true,
-	// },
-	// legal: {
-	// 	type: 'wysiwyg',
-	// 	fieldName: __('Legal text', 'petitioner'),
-	// 	label: '',
-	// 	value: __('By submitting, you agree to our terms.', 'petitioner'),
-	// 	required: false,
-	// 	removable: true,
-	// },
 	submit: {
+		fieldKey: 'submit',
 		type: 'submit',
 		fieldName: __('Submit button', 'petitioner'),
 		label: __('Sign this petition', 'petitioner'),
@@ -167,7 +145,7 @@ export function FormBuilderContextProvider({
 
 	const startingFormFields = isNonEmptyObject(form_fields)
 		? (form_fields as BuilderFieldMap)
-		: defaultBuilderFields;
+		: DEFAULT_BUILDER_FIELDS;
 
 	const [formBuilderFields, setFormBuilderFields] =
 		useState(startingFormFields);
