@@ -9,6 +9,7 @@ const fieldTypeToGroup = {
 	wysiwyg: 'wysiwyg',
 	submit: 'submit',
 	comments: 'textarea',
+	date: 'date'
 };
 
 export type FieldGroup = (typeof fieldTypeToGroup)[FieldType];
