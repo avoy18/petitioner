@@ -235,6 +235,9 @@ export default function Submissions() {
 				<SubmissionEditModal
 					submission={selectedSubmission}
 					onClose={() => setActiveModal(undefined)}
+					onSave={() => {
+						alert('ayy');
+					}}
 				/>
 			) : (
 				''
