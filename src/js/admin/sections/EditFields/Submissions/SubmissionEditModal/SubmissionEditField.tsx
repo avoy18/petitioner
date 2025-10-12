@@ -4,7 +4,6 @@ import {
 	SelectControl,
 	TextareaControl,
 	CheckboxControl,
-	// __experimentalDivider as Divider,
 } from '@wordpress/components';
 import { normalizeDefaultValues } from '@admin/sections/EditFields/AdvancedSettings';
 import type {

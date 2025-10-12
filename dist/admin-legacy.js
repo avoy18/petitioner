@@ -34413,7 +34413,6 @@
             if (currentlyEditing) {
               ValueField = /* @__PURE__ */jsxRuntimeExports.jsx(SubmissionEditField, {
                 label,
-                isEmpty,
                 type,
                 value: valueString,
                 onChange: val => {

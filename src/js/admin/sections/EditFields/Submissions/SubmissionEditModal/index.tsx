@@ -91,7 +91,6 @@ export default function SubmissionEditModal({
 			ValueField = (
 				<SubmissionEditField
 					label={label}
-					isEmpty={isEmpty}
 					type={type}
 					value={valueString}
 					onChange={(val) => {

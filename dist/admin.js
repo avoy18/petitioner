@@ -27937,7 +27937,6 @@ function SubmissionEditModal({
         SubmissionEditField,
         {
           label,
-          isEmpty,
           type,
           value: valueString,
           onChange: (val) => {
