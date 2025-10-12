@@ -229,7 +229,7 @@ class AV_Petitioner_Form_UI
             </label>
             <textarea
                 id="<?php echo $field_name; ?>"
-                <?php echo esc_attr($extra_attributes); ?>
+                <?php echo $extra_attributes; ?>
                 name="<?php echo $field_name; ?>"><?php echo $placeholder; ?></textarea>
         </div>
 
