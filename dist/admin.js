@@ -25885,7 +25885,8 @@ function ApprovalStatus(props) {
           size: "small",
           isDestructive: currentStatus === "Confirmed",
           variant: "secondary",
-          onClick: () => {
+          onClick: (e2) => {
+            e2.stopPropagation();
             onStatusChange(
               id2,
               currentStatus === "Confirmed" ? "Declined" : "Confirmed",

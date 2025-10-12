@@ -22,7 +22,9 @@ export default function ApprovalStatus(props: ApprovalStatusProps) {
 					size="small"
 					isDestructive={currentStatus === 'Confirmed'}
 					variant="secondary"
-					onClick={() => {
+					onClick={(e: React.MouseEvent) => {
+						e.stopPropagation();
+
 						onStatusChange(
 							id,
 							currentStatus === 'Confirmed'

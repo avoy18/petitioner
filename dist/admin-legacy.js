@@ -31913,7 +31913,8 @@
                 size: "small",
                 isDestructive: currentStatus === "Confirmed",
                 variant: "secondary",
-                onClick: () => {
+                onClick: e => {
+                  e.stopPropagation();
                   onStatusChange(id, currentStatus === "Confirmed" ? "Declined" : "Confirmed", changeAction);
                 },
                 children: changeAction
