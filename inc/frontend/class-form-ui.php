@@ -142,7 +142,7 @@ class AV_Petitioner_Form_UI
             <input
                 type="<?php echo esc_attr($field_type) ?>"
                 id="<?php echo $field_name; ?>"
-                <?php echo esc_attr($extra_attributes); ?>
+                <?php echo $extra_attributes; ?>
                 name="<?php echo $field_name; ?>">
         </div>
 
@@ -163,7 +163,7 @@ class AV_Petitioner_Form_UI
                 type="checkbox"
                 id="<?php echo $field_name; ?>"
                 name="<?php echo $field_name; ?>"
-                <?php echo esc_attr($extra_attributes); ?> />
+                <?php echo $extra_attributes; ?> />
         </div>
     <?php
     }
@@ -188,7 +188,7 @@ class AV_Petitioner_Form_UI
             <select
                 id="<?php echo $field_name; ?>"
                 name="<?php echo $field_name; ?>"
-                <?php echo esc_attr($extra_attributes); ?>>
+                <?php echo $extra_attributes; ?>>
 
                 <option value="" default disabled><?php esc_html_e('Select', 'petitioner'); ?></option>
 
@@ -229,7 +229,7 @@ class AV_Petitioner_Form_UI
             </label>
             <textarea
                 id="<?php echo $field_name; ?>"
-                <?php echo esc_attr($extra_attributes); ?>
+                <?php echo $extra_attributes; ?>
                 name="<?php echo $field_name; ?>"><?php echo $placeholder; ?></textarea>
         </div>
 
