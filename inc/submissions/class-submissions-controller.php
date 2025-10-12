@@ -351,6 +351,26 @@ class AV_Petitioner_Submissions_Controller
     }
 
     /**
+     * Update form submissions
+     */
+    public static function api_update_form_submission()
+    {
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
+        // $submissions = isset($_POST['submissions']) ? json_decode($_POST['submissions'], true) : [];
+        
+        // if (!$form_id || empty($submissions)) {
+        //     wp_send_json_error(['message' => 'Invalid input. Form ID and submissions are required.']);
+        //     return;
+        // }
+
+        $submissions = [];
+
+        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($form_id, $submissions);
+
+        wp_send_json_success(['message' => 'Submissions updated successfully.', 'updated_rows' => $updated_rows]);
+    }
+
+    /**
      * Update submission status via backend
      */
     public static function api_change_submission_status()
