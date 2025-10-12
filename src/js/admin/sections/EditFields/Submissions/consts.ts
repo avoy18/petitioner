@@ -52,10 +52,3 @@ export type UpdateSettings = {
 	data: Partial<SubmissionItem>;
 	onSuccess: (fetchData: { total: number }) => void;
 };
-
-export const SUBMISSION_LABELS = {
-	...getFieldLabels(),
-	name: __('First/Last name', 'petitioner'),
-	consent: __('Consent', 'petitioner'),
-	submitted_at: __('Submitted at', 'petitioner'),
-};

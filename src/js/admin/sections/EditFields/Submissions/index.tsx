@@ -14,16 +14,22 @@ import type {
 	Order,
 	OrderBy,
 } from './consts';
-import { SUBMISSION_LABELS } from './consts';
 import type {
 	ApprovalState,
 	CheckboxValue,
 } from '@admin/sections/EditFields/consts';
-import { fetchSubmissions, updateSubmissions } from './utilities';
+import {
+	fetchSubmissions,
+	updateSubmissions,
+	getFieldLabels,
+	getHumanValue,
+} from './utilities';
 import { ExportButtonWrapper } from './styled';
 import { Table } from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
+
+const SUBMISSION_LABELS = getFieldLabels();
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -171,8 +177,8 @@ export default function Submissions() {
 		const cells: React.ReactNode[] = [
 			item.email,
 			`${item.fname} ${item.lname}`,
-			item.accept_tos === '1' ? '✅' : '❌',
-			item.submitted_at,
+			getHumanValue(String(item.accept_tos), 'checkbox'),
+			getHumanValue(item.submitted_at, 'date'),
 		];
 
 		if (showApproval) {
@@ -226,7 +232,10 @@ export default function Submissions() {
 			{buttons?.length > 1 && <ButtonGroup>{buttons}</ButtonGroup>}
 
 			{selectedSubmission ? (
-				<SubmissionEditModal submission={selectedSubmission} onClose={() => setActiveModal(undefined)} />
+				<SubmissionEditModal
+					submission={selectedSubmission}
+					onClose={() => setActiveModal(undefined)}
+				/>
 			) : (
 				''
 			)}

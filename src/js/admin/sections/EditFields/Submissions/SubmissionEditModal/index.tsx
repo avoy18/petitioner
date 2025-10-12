@@ -13,12 +13,16 @@ import {
 	// __experimentalDivider as Divider,
 } from '@wordpress/components';
 
-import { SUBMISSION_LABELS } from '../consts';
-import {
-	getHumanValue,
-	getSubmissionValType,
-	isValidFieldKey,
-} from '../utilities';
+import { getHumanValue, getSubmissionValType } from '../utilities';
+import { getFieldLabels } from './../utilities';
+
+const SUBMISSION_LABELS = getFieldLabels();
+
+export const isValidFieldKey = (
+	key: string
+): key is keyof typeof SUBMISSION_LABELS => {
+	return key in SUBMISSION_LABELS;
+};
 
 export default function SubmissionEditModal({
 	submission,
@@ -37,7 +41,7 @@ export default function SubmissionEditModal({
 			return;
 		}
 
-		const finalLabel = SUBMISSION_LABELS?.[label] ?? label;
+		const finalLabel = SUBMISSION_LABELS[label] ?? label;
 		const type = getSubmissionValType(label);
 		const finalValue = getHumanValue(String(value), type);
 

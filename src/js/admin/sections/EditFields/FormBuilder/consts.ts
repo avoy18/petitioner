@@ -4,6 +4,7 @@ export type FieldType =
 	| 'select'
 	| 'checkbox'
 	| 'wysiwyg'
+	| 'date'
 	| 'submit';
 
 interface BaseField {

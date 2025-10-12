@@ -91,7 +91,7 @@ export const updateSubmissions = async ({
 /**
  * Returns a mapping from fieldKey to label for all available form fields.
  */
-export const getFieldLabels = (): Record<FieldKey, string> => {
+export const getFieldLabels = (): Partial<Record<FieldKey, string>> => {
 	const fieldMap: Record<string, string> = {};
 
 	ALl_POSSIBLE_FIELDS.forEach((field) => {
@@ -100,7 +100,12 @@ export const getFieldLabels = (): Record<FieldKey, string> => {
 		}
 	});
 
-	return fieldMap;
+	return {
+		...fieldMap,
+		name: __('First/Last name', 'petitioner'),
+		consent: __('Consent', 'petitioner'),
+		submitted_at: __('Submitted at', 'petitioner'),
+	};
 };
 
 /**
@@ -127,27 +132,35 @@ export const getHumanValue = (val: string, type: string): string => {
 		const date = new Date(val);
 
 		if (!isNaN(date.getTime())) {
-			return (
-				date.toLocaleDateString() +
-				' ' +
-				date.toLocaleTimeString([], {
-					hour: '2-digit',
-					minute: '2-digit',
-				})
-			);
+			const d = date.toLocaleDateString(undefined, {
+				month: 'short',
+				day: 'numeric',
+			});
+
+			const t = date.toLocaleTimeString(undefined, {
+				hour: 'numeric',
+				minute: '2-digit',
+				hour12: true,
+			});
+
+			return `${d} ${t}`;
 		}
 	}
 
-	return String(val);
+	return val;
 };
 
-export const isValidFieldKey = (
-	key: string
-): key is keyof typeof SUBMISSION_LABELS => {
-	return key in SUBMISSION_LABELS;
-};
-
+/**
+ * Returns the FieldType for a given FieldKey.
+ * If the key is 'submitted_at', returns 'date'.
+ * Otherwise, looks up the type from the ALl_POSSIBLE_FIELDS list.
+ * Falls back to 'text' if the field or type is not found.
+ */
 export const getSubmissionValType = (label: FieldKey): FieldType => {
+	if (label === 'submitted_at') {
+		return 'date';
+	}
+
 	const correctItem = ALl_POSSIBLE_FIELDS.find(
 		(item) => item.fieldKey === label
 	);
