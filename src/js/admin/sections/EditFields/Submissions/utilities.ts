@@ -1,4 +1,10 @@
+import { __ } from '@wordpress/i18n';
 import type { FetchSettings, UpdateSettings } from './consts';
+import {
+	DRAGGABLE_FIELD_TYPES,
+	DEFAULT_BUILDER_FIELDS,
+} from '@admin/context/FormBuilderContext';
+import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 
 export const fetchSubmissions = async ({
 	currentPage = 1,
@@ -80,4 +86,50 @@ export const updateSubmissions = async ({
 	} catch (error) {
 		console.error('Error fetching data:', error);
 	}
+};
+
+/**
+ * Returns a mapping from fieldKey to label for all available form fields.
+ */
+export const getFieldLabels = (): Record<FieldKey, string> => {
+	const combinedFields = [
+		...DRAGGABLE_FIELD_TYPES,
+		...Object.values(DEFAULT_BUILDER_FIELDS),
+	];
+
+	const fieldMap: Record<string, string> = {};
+
+	combinedFields.forEach((field) => {
+		if (field?.fieldKey) {
+			fieldMap[field.fieldKey] = field.label;
+		}
+	});
+
+	return fieldMap;
+};
+
+/**
+ * Converts a given value into a human-readable string for display in submission tables.
+ * - For empty/undefined/null values, returns a localized "(empty)" string.
+ * - For boolean `true` or string `'1'`, returns a localized "True" string.
+ * - For boolean `false` or string `'0'`, returns a localized "False" string.
+ * - For all other values, returns their string representation.
+ *
+ * @param {unknown} val - The value to convert.
+ * @returns {string} Human-readable representation of the value.
+ */
+export const getHumanValue = (val: unknown): string => {
+	if (val === undefined || val === null || val === '') {
+		return __('(empty)', 'petitioner');
+	}
+
+	if (val === true || val === '1') {
+		return __('True', 'petitioner');
+	}
+
+	if (val === false || val === '0') {
+		return __('False', 'petitioner');
+	}
+
+	return String(val);
 };
