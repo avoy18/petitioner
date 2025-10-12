@@ -33533,6 +33533,8 @@
             })
           });
         }
+        const UPDATE_ACTION = "petitioner_update_submission";
+        const FETCH_ACTION = "petitioner_fetch_submissions";
         const isNonEmptyObject = value => {
           return typeof value === "object" && value !== null && !Array.isArray(value) && Object.keys(value).length > 0;
         };
@@ -33730,7 +33732,7 @@
             return;
           }
           const finalQuery = new URLSearchParams();
-          finalQuery.set("action", `petitioner_fetch_submissions`);
+          finalQuery.set("action", FETCH_ACTION);
           finalQuery.set("page", String(currentPage));
           finalQuery.set("form_id", String(formID));
           finalQuery.set("per_page", String(perPage));
@@ -33754,14 +33756,15 @@
         };
         const updateSubmissions = async ({
           data,
-          onSuccess = () => {}
+          onSuccess = () => {},
+          onError = msg => {}
         }) => {
           if (!data?.id) {
             console.error("Submission fetch error: missing the submission id");
             return;
           }
           const finalQuery = new URLSearchParams();
-          finalQuery.set("action", "petitioner_update_submissions");
+          finalQuery.set("action", UPDATE_ACTION);
           const finalData = new FormData();
           Object.entries(data).forEach(([key, value]) => {
             if (value !== void 0 && value !== null) {
@@ -33779,10 +33782,10 @@
             if (response.success) {
               onSuccess(response.data);
             } else {
-              console.error("Failed to fetch data");
+              onError("Failed to fetch data");
             }
           } catch (error) {
-            console.error("Error fetching data:", error);
+            onError("Error fetching data: " + error);
           }
         };
         const getFieldLabels = () => {
@@ -33809,16 +33812,16 @@
           if (type === "date") {
             const date = new Date(val);
             if (!isNaN(date.getTime())) {
-              const d = date.toLocaleDateString(void 0, {
+              const dateString = date.toLocaleDateString(void 0, {
                 month: "short",
                 day: "numeric"
               });
-              const t = date.toLocaleTimeString(void 0, {
+              const timeString = date.toLocaleTimeString(void 0, {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true
               });
-              return `${d} ${t}`;
+              return `${dateString} ${timeString}`;
             }
           }
           return val;
@@ -34140,7 +34143,7 @@
           const handleStatusChange = async (id, newStatus, changeAction) => {
             const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
             if (window.confirm(question)) {
-              const finalAjaxURL = `${ajaxurl}?action=petitioner_change_status`;
+              const finalAjaxURL = `${ajaxurl}?action=${UPDATE_ACTION}`;
               try {
                 const finalData = new FormData();
                 finalData.append("id", String(id));
@@ -34233,14 +34236,20 @@
             setCurrentPage(1);
           };
           const selectedSubmission = submissions.find(item => item.id === activeModal);
-          const onModalSave = reactExports.useCallback(newData => {
-            updateSubmissions({
+          const onModalSave = reactExports.useCallback(async newData => {
+            await updateSubmissions({
               data: newData,
               onSuccess: () => {
                 alert(__("Submission updated!", "petitioner"));
+                setActiveModal(void 0);
+              },
+              onError: msg => {
+                console.error(msg);
+                alert(__("Failed to update submission!", "petitioner"));
+                setActiveModal(void 0);
               }
             });
-            setActiveModal(void 0);
+            fetchData();
           }, [activeModal]);
           const onModalClose = reactExports.useCallback(() => setActiveModal(void 0), []);
           return /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
@@ -34266,7 +34275,7 @@
               submission: selectedSubmission,
               onClose: onModalClose,
               onSave: onModalSave
-            }) : ""]
+            }) : null]
           });
         }
         function useCombinedRefs() {

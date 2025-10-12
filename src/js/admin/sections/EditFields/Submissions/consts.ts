@@ -51,4 +51,8 @@ export type FetchSettings = {
 export type UpdateSettings = {
 	data: Partial<SubmissionItem>;
 	onSuccess: (fetchData: { total: number }) => void;
+	onError: (msg: string) => void;
 };
+
+export const UPDATE_ACTION = 'petitioner_update_submission';
+export const FETCH_ACTION = 'petitioner_fetch_submissions';

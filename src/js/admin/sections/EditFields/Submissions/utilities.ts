@@ -1,5 +1,10 @@
 import { __ } from '@wordpress/i18n';
-import type { FetchSettings, UpdateSettings } from './consts';
+import {
+	type FetchSettings,
+	type UpdateSettings,
+	UPDATE_ACTION,
+	FETCH_ACTION,
+} from './consts';
 import type {
 	FieldKey,
 	FieldType,
@@ -21,7 +26,7 @@ export const fetchSubmissions = async ({
 
 	const finalQuery = new URLSearchParams();
 
-	finalQuery.set('action', `petitioner_fetch_submissions`);
+	finalQuery.set('action', FETCH_ACTION);
 	finalQuery.set('page', String(currentPage));
 	finalQuery.set('form_id', String(formID));
 	finalQuery.set('per_page', String(perPage));
@@ -51,6 +56,7 @@ export const fetchSubmissions = async ({
 export const updateSubmissions = async ({
 	data,
 	onSuccess = () => {},
+	onError = (msg: string) => {},
 }: UpdateSettings) => {
 	if (!data?.id) {
 		console.error('Submission fetch error: missing the submission id');
@@ -59,7 +65,7 @@ export const updateSubmissions = async ({
 
 	const finalQuery = new URLSearchParams();
 
-	finalQuery.set('action', 'petitioner_update_submissions');
+	finalQuery.set('action', UPDATE_ACTION);
 
 	const finalData = new FormData();
 
@@ -71,6 +77,7 @@ export const updateSubmissions = async ({
 	// finalData.append('status', newStatus);
 	console.log(data, 'data');
 	console.log(finalData.get('fname'), 'finalData id');
+
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',
@@ -82,10 +89,10 @@ export const updateSubmissions = async ({
 		if (response.success) {
 			onSuccess(response.data);
 		} else {
-			console.error('Failed to fetch data');
+			onError('Failed to fetch data');
 		}
 	} catch (error) {
-		console.error('Error fetching data:', error);
+		onError('Error fetching data: ' + error);
 	}
 };
 
@@ -133,18 +140,18 @@ export const getHumanValue = (val: string, type: string): string => {
 		const date = new Date(val);
 
 		if (!isNaN(date.getTime())) {
-			const d = date.toLocaleDateString(undefined, {
+			const dateString = date.toLocaleDateString(undefined, {
 				month: 'short',
 				day: 'numeric',
 			});
 
-			const t = date.toLocaleTimeString(undefined, {
+			const timeString = date.toLocaleTimeString(undefined, {
 				hour: 'numeric',
 				minute: '2-digit',
 				hour12: true,
 			});
 
-			return `${d} ${t}`;
+			return `${dateString} ${timeString}`;
 		}
 	}
 

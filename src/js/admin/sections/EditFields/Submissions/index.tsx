@@ -4,15 +4,16 @@ import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
 import ShortcodeElement from '@admin/components/ShortcodeElement';
 import { __ } from '@wordpress/i18n';
-import type {
-	Submissions,
-	SubmissionItem,
-	SubmissionID,
-	SubmissionStatus,
-	ChangeAction,
-	FetchSettings,
-	Order,
-	OrderBy,
+import {
+	type Submissions,
+	type SubmissionItem,
+	type SubmissionID,
+	type SubmissionStatus,
+	type ChangeAction,
+	type FetchSettings,
+	type Order,
+	type OrderBy,
+	UPDATE_ACTION,
 } from './consts';
 import type {
 	ApprovalState,
@@ -92,7 +93,7 @@ export default function Submissions() {
 		const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
 
 		if (window.confirm(question)) {
-			const finalAjaxURL = `${ajaxurl}?action=petitioner_change_status`;
+			const finalAjaxURL = `${ajaxurl}?action=${UPDATE_ACTION}`;
 			try {
 				const finalData = new FormData();
 				finalData.append('id', String(id));
@@ -116,7 +117,6 @@ export default function Submissions() {
 		}
 	};
 
-	// Handle pagination click
 	const handlePaginationClick = (page: number) => {
 		setCurrentPage(page);
 	};
@@ -208,15 +208,21 @@ export default function Submissions() {
 	);
 
 	const onModalSave = useCallback(
-		(newData: SubmissionItem) => {
-			updateSubmissions({
+		async (newData: SubmissionItem) => {
+			await updateSubmissions({
 				data: newData,
 				onSuccess: () => {
 					alert(__('Submission updated!', 'petitioner'));
+					setActiveModal(undefined);
+				},
+				onError: (msg) => {
+					console.error(msg);
+					alert(__('Failed to update submission!', 'petitioner'));
+					setActiveModal(undefined);
 				},
 			});
 
-			setActiveModal(undefined);
+			fetchData();
 		},
 		[activeModal]
 	);
@@ -253,9 +259,7 @@ export default function Submissions() {
 					onClose={onModalClose}
 					onSave={onModalSave}
 				/>
-			) : (
-				''
-			)}
+			) : null}
 		</div>
 	);
 }
