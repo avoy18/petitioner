@@ -3,22 +3,17 @@ import { __ } from '@wordpress/i18n';
 import type { SubmissionItem } from '../consts';
 import {
 	Card,
-	// CardHeader,
-	CardBody,
 	CardDivider,
-	// CardFooter,
-	// __experimentalHeading as Heading,
 	__experimentalText as Text,
 	Button,
 	Modal,
-	TextControl,
-	// __experimentalDivider as Divider,
 } from '@wordpress/components';
 
 import { getHumanValue, getSubmissionValType } from '../utilities';
 import { getFieldLabels } from './../utilities';
-import { ActionButtons } from './styled';
-import EditField from './EditField';
+import { FieldItem, InputGroup } from './styled';
+import SubmissionEditField from './SubmissionEditField';
+import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 
 const SUBMISSION_LABELS = getFieldLabels();
 
@@ -37,21 +32,29 @@ export default function SubmissionEditModal({
 	onClose: () => void;
 	onSave?: (upatedItem: SubmissionItem) => void;
 }) {
-	const [isEdit, setIsEdit] = useState();
-	const [submissionDetails, setSubmissionDetails] = useState(submission);
+	const [isEdit, setIsEdit] = useState<FieldKey | null>(null);
+	const [valuesChanged, setValuesChanged] = useState(false);
+	const [submissionDetails, setSubmissionDetails] =
+		useState<SubmissionItem>(submission);
 
-	/**
-	 * 
-	 * const updateFormState = useCallback(
-		<K extends keyof PetitionerData>(key: K, value: PetitionerData[K]) => {
-			setFormState((prevState) => ({ ...prevState, [key]: value }));
+	const updateSubmissionDetails = useCallback(
+		(key: FieldKey, value: string) => {
+			const oldState = submission?.[key as keyof SubmissionItem] || '';
+
+			/**
+			 * If the value actually changed, update the state
+			 */
+			if (oldState != value) {
+				setValuesChanged(true);
+			}
+
+			setSubmissionDetails((prevState) => ({
+				...prevState,
+				[key]: value,
+			}));
 		},
 		[]
 	);
-	 */
-	const updateSubmissionDetails = useCallback((key, value) => {
-		setSubmissionDetails((prevState) => ({ ...prevState, [key]: value }));
-	}, []);
 
 	const submissionEntries = Object.entries(submissionDetails);
 	const lastRowIndex = submissionEntries.length - 1;
@@ -66,17 +69,28 @@ export default function SubmissionEditModal({
 		const finalValue = getHumanValue(String(value), type);
 
 		const isEmpty = finalValue == __('(empty)', 'petitioner');
+		const currentlyEditing = isEdit === label;
 
-		const ValueField =
-			isEdit !== label ? (
-				<Text
-					color={!isEmpty ? '' : 'grey'}
-					size={!isEmpty ? '' : '12'}
-				>
-					{finalValue}
-				</Text>
-			) : (
-				<EditField
+		let ValueField = (
+			<Text color={!isEmpty ? '' : 'grey'} size={!isEmpty ? '' : '12'}>
+				{finalValue}
+			</Text>
+		);
+
+		const actionButtonProps = {
+			icon: 'edit',
+			onClick: () => setIsEdit(label),
+			children: (
+				<span className="screen-reader-text">
+					{__('Edit', 'petitioner')}
+				</span>
+			),
+		};
+
+		if (currentlyEditing) {
+			ValueField = (
+				<SubmissionEditField
+					isEmpty={isEmpty}
 					type={type}
 					value={finalValue}
 					onChange={(val) => {
@@ -85,42 +99,68 @@ export default function SubmissionEditModal({
 				/>
 			);
 
+			actionButtonProps.icon = 'saved';
+			actionButtonProps.onClick = () => setIsEdit(null);
+			actionButtonProps.children = (
+				<span className="screen-reader-text">
+					{__('Done', 'petitioner')}
+				</span>
+			);
+		}
+
 		return (
 			<div key={label}>
-				<CardBody>
-					<strong>{finalLabel}:</strong> {ValueField}
-					<Button
-						size="small"
-						variant="teritery"
-						icon="edit"
-						onClick={() => setIsEdit(label)}
-					>
-						{/* {__('Edit', 'petitioner')} */}
-					</Button>
-					<Button
-						size="small"
-						variant="teritery"
-						icon="editor-spellcheck"
-						onClick={() => setIsEdit(null)}
-					>
-						{/* {__('Done', 'petitioner')} */}
-					</Button>
-				</CardBody>
+				<FieldItem>
+					<strong>{finalLabel}:</strong>
+
+					<InputGroup>
+						{ValueField}
+						<Button
+							size="small"
+							variant="tertiary"
+							{...actionButtonProps}
+						/>
+					</InputGroup>
+				</FieldItem>
 				{index < lastRowIndex && <CardDivider />}
 			</div>
 		);
 	});
 
+	const onRequestClose = useCallback(() => {
+		if (valuesChanged) {
+			if (
+				window.confirm(
+					__('Are you sure you want to close without saving?')
+				)
+			) {
+				onClose();
+			}
+		} else {
+			onClose();
+		}
+	}, [valuesChanged]);
+
 	return (
 		<Modal
+			shouldCloseOnClickOutside={!valuesChanged}
+			shouldCloseOnEsc={!valuesChanged}
 			size="large"
 			title={__('Submission details', 'petitioner-theme')}
-			onRequestClose={onClose}
+			onRequestClose={onRequestClose}
+			headerActions={
+				<>
+					<Button
+						variant="primary"
+						onClick={() => onSave(submissionDetails)}
+						disabled={!valuesChanged}
+					>
+						{__('Save', 'petitioner')}
+					</Button>
+				</>
+			}
 		>
 			<Card>{SubmissionDetails}</Card>
-			{/* <Text>{description}</Text> */}
-			{/* <Divider margin={5} />
-			{integrationFields} */}
 		</Modal>
 	);
 }

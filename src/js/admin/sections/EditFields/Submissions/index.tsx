@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { Button, ButtonGroup } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
@@ -207,6 +207,22 @@ export default function Submissions() {
 		(item) => item.id === activeModal
 	);
 
+	const onModalSave = useCallback(
+		(newData: SubmissionItem) => {
+			updateSubmissions({
+				data: newData,
+				onSuccess: () => {
+					alert(__('Submission updated!', 'petitioner'));
+				},
+			});
+
+			setActiveModal(undefined);
+		},
+		[activeModal]
+	);
+
+	const onModalClose = useCallback(() => setActiveModal(undefined), []);
+
 	return (
 		<div id="AV_Petitioner_Submissions">
 			<div>
@@ -234,10 +250,8 @@ export default function Submissions() {
 			{selectedSubmission ? (
 				<SubmissionEditModal
 					submission={selectedSubmission}
-					onClose={() => setActiveModal(undefined)}
-					onSave={() => {
-						alert('ayy');
-					}}
+					onClose={onModalClose}
+					onSave={onModalSave}
 				/>
 			) : (
 				''
