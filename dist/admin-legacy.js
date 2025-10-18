@@ -33536,7 +33536,7 @@
         }
         const UPDATE_ACTION = "petitioner_update_submission";
         const FETCH_ACTION = "petitioner_fetch_submissions";
-        const DELETE_ACTION = "petitioner_delete_submissions";
+        const DELETE_ACTION = "petitioner_delete_submission";
 
         /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 
@@ -35144,7 +35144,7 @@
             });
             const response = await request.json();
             if (response.success) {
-              onSuccess(response.data);
+              onSuccess();
             } else {
               onError("Failed to fetch data");
             }
@@ -36007,9 +36007,10 @@
           const onModalDelete = reactExports.useCallback(id => {
             deleteSubmissions({
               id,
-              onSuccess: msg => {
-                alert(msg);
+              onSuccess: () => {
+                alert("Successfully deleted!");
                 onModalClose();
+                fetchData();
               },
               onError: msg => {
                 console.error(msg);

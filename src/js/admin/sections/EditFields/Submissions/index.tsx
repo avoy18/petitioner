@@ -233,9 +233,10 @@ export default function Submissions() {
 	const onModalDelete = useCallback((id: SubmissionID) => {
 		deleteSubmissions({
 			id,
-			onSuccess: (msg: string) => {
-				alert(msg);
+			onSuccess: () => {
+				alert('Successfully deleted!');
 				onModalClose();
+				fetchData();
 			},
 			onError: (msg: string) => {
 				console.error(msg);

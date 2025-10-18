@@ -122,7 +122,7 @@ export const deleteSubmissions = async ({
 		const response = await request.json();
 
 		if (response.success) {
-			onSuccess(response.data);
+			onSuccess();
 		} else {
 			onError('Failed to fetch data');
 		}

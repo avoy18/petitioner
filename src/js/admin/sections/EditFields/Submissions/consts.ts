@@ -61,4 +61,4 @@ export type DeleteSettings = {
 
 export const UPDATE_ACTION = 'petitioner_update_submission';
 export const FETCH_ACTION = 'petitioner_fetch_submissions';
-export const DELETE_ACTION = 'petitioner_delete_submissions';
+export const DELETE_ACTION = 'petitioner_delete_submission';
