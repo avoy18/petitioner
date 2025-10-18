@@ -1,4 +1,5 @@
 import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
+import DOMPurify from 'dompurify';
 
 const fieldTypeToGroup = {
 	text: 'input',
@@ -48,4 +49,8 @@ export const updateActiveTabURL = (newTab: string, tabKeys: string[]) => {
 	}
 
 	updateSearchParams('ptr_active_tab', newTab);
+};
+
+export const sanitizeField = (html: string) => {
+	return DOMPurify.sanitize(html);
 };

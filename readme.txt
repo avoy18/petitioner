@@ -97,6 +97,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.5.2 =
+* Bug: fixed an issue with making checkboxed checked by default
+* Bug: fixed placeholders not working
+* Allow passing html values in labels safely
+
 = 0.5.1 =
 * Bug: remove double escaping of html attributes on the form
 

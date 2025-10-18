@@ -1,6 +1,7 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { Button } from '@wordpress/components';
 import styled from 'styled-components';
+import { sanitizeField } from '@admin/utilities';
 
 const FakeFieldLabel = styled.p`
 	min-height: 18px;
@@ -34,6 +35,7 @@ export default function DynamicField({
 	defaultValue = false,
 	placeholder = '',
 	required = false,
+	fieldName = '',
 	removable = false,
 }) {
 	const {
@@ -63,7 +65,7 @@ export default function DynamicField({
 			event.preventDefault();
 			if (
 				window.confirm(
-					`Are you sure you want to remove the ${label} field?`
+					`Are you sure you want to remove the ${fieldName} field?`
 				)
 			) {
 				removeFormBuilderField(name);
@@ -79,7 +81,7 @@ export default function DynamicField({
 					variant="secondary"
 					onClick={handleFieldEdit}
 					size="small"
-					label={`Edit the ${label} field`}
+					label={`Edit the ${fieldName} field`}
 				/>
 				{removable && (
 					<Button
@@ -88,7 +90,7 @@ export default function DynamicField({
 						isDestructive={true}
 						variant="secondary"
 						size="small"
-						label={`Remove the ${label} field`}
+						label={`Remove the ${fieldName} field`}
 						onClick={handleFieldRemoval}
 					/>
 				)}
@@ -112,15 +114,20 @@ export default function DynamicField({
 					name={name}
 					checked={defaultValue === true}
 				/>
-				<label htmlFor={name}>{label}</label>
+				<label
+					htmlFor={name}
+					dangerouslySetInnerHTML={{ __html: sanitizeField(label) }}
+				/>
 			</>
 		);
 	} else if (inputType === 'submit') {
-		FinalField = <button>{label}</button>;
+		FinalField = <button dangerouslySetInnerHTML={{ __html: sanitizeField(label) }} />
 	} else if (inputType === 'textarea') {
 		FinalField = (
 			<>
-				<FakeFieldLabel>{label}</FakeFieldLabel>
+				<FakeFieldLabel
+					dangerouslySetInnerHTML={{ __html: sanitizeField(label) }}
+				/>
 				<StyledTextarea>{placeholder}</StyledTextarea>
 			</>
 		);
@@ -128,7 +135,7 @@ export default function DynamicField({
 		FinalField = (
 			<div
 				dangerouslySetInnerHTML={{
-					__html: value,
+					__html: sanitizeField(value),
 				}}
 			></div>
 		);
