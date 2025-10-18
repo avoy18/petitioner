@@ -1,4 +1,5 @@
 import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
+import DOMPurify from 'dompurify';
 
 const fieldTypeToGroup = {
 	text: 'input',
@@ -29,5 +30,5 @@ export const isNonEmptyObject = <T extends object = Record<string, unknown>>(
 };
 
 export const sanitizeField = (html: string) => {
-	return html;
+	return DOMPurify.sanitize(html);
 };
