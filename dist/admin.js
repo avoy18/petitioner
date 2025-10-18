@@ -27264,8 +27264,6 @@ const updateSubmissions = async ({
       finalData.append(key, String(value));
     }
   });
-  console.log(data, "data");
-  console.log(finalData.get("fname"), "finalData id");
   try {
     const request = await fetch("".concat(ajaxurl, "?").concat(finalQuery.toString()), {
       method: "POST",

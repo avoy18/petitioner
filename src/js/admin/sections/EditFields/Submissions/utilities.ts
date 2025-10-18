@@ -74,9 +74,6 @@ export const updateSubmissions = async ({
 			finalData.append(key, String(value));
 		}
 	});
-	// finalData.append('status', newStatus);
-	console.log(data, 'data');
-	console.log(finalData.get('fname'), 'finalData id');
 
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
