@@ -355,11 +355,20 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_update_form_submission()
     {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
+            ]);
+            wp_die();
+        }
+
         $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : null;
         $id = isset($_POST['id']) ? absint($_POST['id']) : null;
 
         if (!$form_id || empty($id)) {
-            wp_send_json_error(['message' => __('Invalid input. Form ID and submissions are required.', 'petitioner')]);
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_fields'),
+            ]);
             return;
         }
 
@@ -370,6 +379,7 @@ class AV_Petitioner_Submissions_Controller
             if (isset($_POST[$field])) {
                 switch ($field) {
                     case 'id':
+                        break;
                     case 'form_id':
                         break;
                     case 'email':
@@ -387,20 +397,6 @@ class AV_Petitioner_Submissions_Controller
                     default:
                         // Default sanitization for text fields
                         $submission[$field] = sanitize_text_field(wp_unslash($_POST[$field]));
-                        break;
-                }
-            } else {
-                // Set default values for missing fields
-                switch ($field) {
-                    case 'bcc_yourself':
-                    case 'newsletter':
-                    case 'hide_name':
-                    case 'accept_tos':
-                        $submission[$field] = '0';
-                        break;
-                    case 'salutation':
-                    case 'confirmation_token':
-                        $submission[$field] = null;
                         break;
                 }
             }
@@ -447,7 +443,9 @@ class AV_Petitioner_Submissions_Controller
     public static function api_resend_confirmation_email()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permission denied.']);
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
+            ]);
         }
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
