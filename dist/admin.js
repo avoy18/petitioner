@@ -27997,6 +27997,13 @@ const updateActiveTabURL = (newTab, tabKeys) => {
 const sanitizeField = (html2) => {
   return purify.sanitize(html2);
 };
+const getAjaxNonce = () => {
+  const petitionerNonce = String(window.petitionerData.ajax_nonce);
+  if ((petitionerNonce == null ? void 0 : petitionerNonce.length) === 0) {
+    console.warn("Petitioner error: ajax nonce not showing up");
+  }
+  return petitionerNonce;
+};
 const FormBuilderContext = reactExports.createContext(
   null
 );
@@ -28238,6 +28245,7 @@ const updateSubmissions = async ({
       finalData.append(key, String(value));
     }
   });
+  finalData.append("petitioner_nonce", getAjaxNonce());
   try {
     const request = await fetch("".concat(ajaxurl, "?").concat(finalQuery.toString()), {
       method: "POST",
@@ -28266,6 +28274,7 @@ const deleteSubmissions = async ({
   finalQuery.set("action", DELETE_ACTION);
   const finalData = new FormData();
   finalData.append("id", String(id2));
+  finalData.append("petitioner_nonce", getAjaxNonce());
   try {
     const request = await fetch("".concat(ajaxurl, "?").concat(finalQuery.toString()), {
       method: "POST",

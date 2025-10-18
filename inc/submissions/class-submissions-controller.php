@@ -357,12 +357,7 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_update_form_submission()
     {
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error([
-                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
-            ]);
-            wp_die();
-        }
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
 
         $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : null;
         $id = isset($_POST['id']) ? absint($_POST['id']) : null;
@@ -418,12 +413,7 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_delete_form_submission()
     {
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error([
-                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
-            ]);
-            wp_die();
-        }
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : null;
 
@@ -717,5 +707,24 @@ class AV_Petitioner_Submissions_Controller
             'success' => true,
             'message' => __('CAPTCHA verification completed.', 'petitioner'),
         ];
+    }
+
+    public static function check_admin_request($nonce_label)
+    {
+        if (!check_ajax_referer($nonce_label, 'petitioner_nonce', false)) {
+            av_ptr_error_log(['nonce', $nonce_label, $_POST['petitioner_nonce']]);
+            wp_send_json_error([
+                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                'message'   => AV_Petitioner_Labels::get('invalid_nonce'),
+            ]);
+            wp_die();
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
+            ]);
+            wp_die();
+        }
     }
 }

@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { getAjaxNonce } from '@admin/utilities';
 import {
 	type FetchSettings,
 	type UpdateSettings,
@@ -77,6 +78,8 @@ export const updateSubmissions = async ({
 		}
 	});
 
+	finalData.append('petitioner_nonce', getAjaxNonce());
+
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',
@@ -112,6 +115,7 @@ export const deleteSubmissions = async ({
 	const finalData = new FormData();
 
 	finalData.append('id', String(id));
+	finalData.append('petitioner_nonce', getAjaxNonce());
 
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {

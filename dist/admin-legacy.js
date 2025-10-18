@@ -34892,6 +34892,13 @@
         const sanitizeField = html => {
           return purify.sanitize(html);
         };
+        const getAjaxNonce = () => {
+          const petitionerNonce = String(window.petitionerData.ajax_nonce);
+          if (petitionerNonce?.length === 0) {
+            console.warn("Petitioner error: ajax nonce not showing up");
+          }
+          return petitionerNonce;
+        };
         const FormBuilderContext = reactExports.createContext(null);
         const DRAGGABLE_FIELD_TYPES = [{
           fieldKey: "phone",
@@ -35109,6 +35116,7 @@
               finalData.append(key, String(value));
             }
           });
+          finalData.append("petitioner_nonce", getAjaxNonce());
           try {
             const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
               method: "POST",
@@ -35137,6 +35145,7 @@
           finalQuery.set("action", DELETE_ACTION);
           const finalData = new FormData();
           finalData.append("id", String(id));
+          finalData.append("petitioner_nonce", getAjaxNonce());
           try {
             const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
               method: "POST",

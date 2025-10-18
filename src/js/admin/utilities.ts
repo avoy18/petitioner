@@ -10,7 +10,7 @@ const fieldTypeToGroup = {
 	wysiwyg: 'wysiwyg',
 	submit: 'submit',
 	comments: 'textarea',
-	date: 'date'
+	date: 'date',
 };
 
 export type FieldGroup = (typeof fieldTypeToGroup)[FieldType];
@@ -53,4 +53,14 @@ export const updateActiveTabURL = (newTab: string, tabKeys: string[]) => {
 
 export const sanitizeField = (html: string) => {
 	return DOMPurify.sanitize(html);
+};
+
+export const getAjaxNonce = () => {
+	const petitionerNonce = String(window.petitionerData.ajax_nonce);
+
+	if (petitionerNonce?.length === 0) {
+		console.warn('Petitioner error: ajax nonce not showing up');
+	}
+
+	return petitionerNonce;
 };

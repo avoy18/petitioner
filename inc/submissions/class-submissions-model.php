@@ -213,6 +213,7 @@ class AV_Petitioner_Submissions_Model
 
         $id = absint($id);
         if (!$id || empty($fields)) {
+            av_ptr_error_log(AV_Petitioner_Labels::get('error_generic'));
             return false;
         }
 
