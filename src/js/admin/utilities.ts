@@ -27,3 +27,7 @@ export const isNonEmptyObject = <T extends object = Record<string, unknown>>(
 		Object.keys(value).length > 0
 	);
 };
+
+export const sanitizeField = (html: string) => {
+	return html;
+};

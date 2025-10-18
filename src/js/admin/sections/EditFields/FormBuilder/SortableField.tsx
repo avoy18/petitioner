@@ -55,6 +55,7 @@ export default function SortableField({ id }: Props) {
 		name: id,
 		inputType: currentField.type,
 		label: currentField.label,
+		fieldName: currentField.fieldName,
 		placeholder:
 			'placeholder' in currentField
 				? currentField.placeholder
