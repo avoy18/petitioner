@@ -78,7 +78,9 @@ class AV_Petitioner_Admin_Edit_UI
      */
     public function render_form_fields($post)
     {
-        wp_nonce_field("save_petition_details", "petitioner_details_nonce");
+        $ajax_nonce = wp_create_nonce('petitioner_delete_submission');
+
+        wp_nonce_field("petitioner_delete_submission", "petitioner_delete_nonce");
         // Retrieve current meta values
         $meta_values     = $this->get_meta_fields($post->ID);
         // Sanitize values for safe use in HTML attributes
@@ -122,6 +124,7 @@ class AV_Petitioner_Admin_Edit_UI
             // new way of handling the form fields
             "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
             "field_order"                   =>  !empty($meta_values['field_order']) ? $this->sanitize_array($meta_values['field_order'], false) : null,
+            "ajax_nonce"                    =>  $ajax_nonce
         ];
 
         /**
