@@ -131,7 +131,7 @@ class AV_Petitioner_Form_UI
     public function render_basic_field(string $name, array $field): void
     {
         $field_type         = !empty($field['type']) ? esc_html($field['type']) : 'text';
-        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_label        = !empty($field['label']) ? wp_kses_post($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
     ?>
@@ -151,7 +151,7 @@ class AV_Petitioner_Form_UI
 
     public function render_checkbox_field(string $name, array $field): void
     {
-        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_label        = !empty($field['label']) ? wp_kses_post($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
         $checked            = $field['defaultValue'] === true ? 'checked' : '';
@@ -164,14 +164,14 @@ class AV_Petitioner_Form_UI
                 type="checkbox"
                 id="<?php echo $field_name; ?>"
                 name="<?php echo $field_name; ?>"
-                <?php echo $checked . ' ' . $extra_attributes ; ?> />
+                <?php echo $checked . ' ' . $extra_attributes; ?> />
         </div>
     <?php
     }
 
     public function render_select_field(string $name, array $field): void
     {
-        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_label        = !empty($field['label']) ? wp_kses_post($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
 
@@ -219,7 +219,7 @@ class AV_Petitioner_Form_UI
 
     public function render_textarea(string $name, array $field): void
     {
-        $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
+        $field_label        = !empty($field['label']) ? wp_kses_post($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
     ?>
@@ -238,7 +238,7 @@ class AV_Petitioner_Form_UI
 
     public function render_submit(array $field): void
     {
-        $field_label = !empty($field['label']) ? esc_html($field['label']) : esc_html('Sign this petition', 'petitioner');
+        $field_label = !empty($field['label']) ? wp_kses_post($field['label']) : __('Sign this petition', 'petitioner');
     ?>
         <button type="submit" class="petitioner__btn petitioner__btn--submit">
             <?php echo $field_label; ?>
@@ -254,7 +254,7 @@ class AV_Petitioner_Form_UI
             $attributes[] = 'required';
         }
 
-        if(!empty($field['placeholder'])){
+        if (!empty($field['placeholder'])) {
             $attributes[] = 'placeholder="' . esc_html($field['placeholder']) . '"';
         }
 
