@@ -72,7 +72,9 @@ class AV_Petitioner_Labels
             'goal'                           => __('Goal', 'petitioner'),
             'id'                             => __('ID', 'petitioner'),
             'created_at'                     => __('Submission date', 'petitioner'),
-            'name'                           => __('Name', 'petitioner')
+            'name'                           => __('Name', 'petitioner'),
+            'missing_permissions'            => __('Missing permissions', 'petitioner'),
+            'missing_fields'                 => __('Missing required fields', 'petitioner'),
         ];
     }
 
