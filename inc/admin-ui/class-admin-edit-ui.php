@@ -292,10 +292,14 @@ class AV_Petitioner_Admin_Edit_UI
             $sanitized_field = [];
 
             foreach ($field_data as $sub_key => $sub_value) {
-                if (
-                    $sub_key === 'value' &&
+                $is_wysiwyg_value = $sub_key === 'value' &&
                     isset($field_data['type']) &&
-                    $field_data['type'] === 'wysiwyg'
+                    $field_data['type'] === 'wysiwyg';
+
+                $is_label = $sub_key === 'label';
+
+                if (
+                    $is_wysiwyg_value || $is_label
                 ) {
                     $sanitized_field[$sub_key] = wp_kses_post($sub_value);
                 } elseif (is_bool($sub_value) || is_numeric($sub_value)) {

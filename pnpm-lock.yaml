@@ -52,7 +52,7 @@ importers:
         specifier: ^4.17.0
         version: 4.26.0(prettier@3.6.2)
       dompurify:
-        specifier: ^3.2.5
+        specifier: ^3.2.6
         version: 3.2.6
       prettier:
         specifier: ^3.4.2

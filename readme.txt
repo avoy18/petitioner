@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.5.1
+Stable Tag: 0.5.2
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.5.2 =
+* Bug: fixed an issue with making checkboxed checked by default
+* Bug: fixed placeholders not working
+* Allow passing html values in labels safely
 
 = 0.5.1 =
 * Bug: remove double escaping of html attributes on the form
