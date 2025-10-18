@@ -154,6 +154,7 @@ class AV_Petitioner_Form_UI
         $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
+        $checked            = $field['defaultValue'] === true ? 'checked' : '';
     ?>
         <div class="petitioner__input petitioner__input--checkbox">
             <label for="<?php echo $field_name; ?>">
@@ -163,7 +164,7 @@ class AV_Petitioner_Form_UI
                 type="checkbox"
                 id="<?php echo $field_name; ?>"
                 name="<?php echo $field_name; ?>"
-                <?php echo $extra_attributes; ?> />
+                <?php echo $checked . ' ' . $extra_attributes ; ?> />
         </div>
     <?php
     }
@@ -221,7 +222,6 @@ class AV_Petitioner_Form_UI
         $field_label        = !empty($field['label']) ? esc_html($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
-        $placeholder        = !empty($field['placeholder']) ? esc_html($field['placeholder']) : '';
     ?>
         <div class="petitioner__input">
             <label for="<?php echo $field_name; ?>">
@@ -230,7 +230,7 @@ class AV_Petitioner_Form_UI
             <textarea
                 id="<?php echo $field_name; ?>"
                 <?php echo $extra_attributes; ?>
-                name="<?php echo $field_name; ?>"><?php echo $placeholder; ?></textarea>
+                name="<?php echo $field_name; ?>"></textarea>
         </div>
 
     <?php
@@ -252,6 +252,10 @@ class AV_Petitioner_Form_UI
 
         if (!empty($field['required'])) {
             $attributes[] = 'required';
+        }
+
+        if(!empty($field['placeholder'])){
+            $attributes[] = 'placeholder="' . esc_html($field['placeholder']) . '"';
         }
 
         $final_attributes = implode(' ', $attributes);
