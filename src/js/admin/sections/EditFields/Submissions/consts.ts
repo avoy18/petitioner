@@ -1,4 +1,6 @@
 import type { ApprovalState, FormID } from '@admin/sections/EditFields/consts';
+import { __ } from '@wordpress/i18n';
+import { getFieldLabels } from './utilities';
 
 export type SubmissionID = string | number;
 export type SubmissionStatus = 'Confirmed' | 'Declined';
@@ -49,4 +51,8 @@ export type FetchSettings = {
 export type UpdateSettings = {
 	data: Partial<SubmissionItem>;
 	onSuccess: (fetchData: { total: number }) => void;
+	onError: (msg: string) => void;
 };
+
+export const UPDATE_ACTION = 'petitioner_update_submission';
+export const FETCH_ACTION = 'petitioner_fetch_submissions';

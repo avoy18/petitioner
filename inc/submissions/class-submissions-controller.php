@@ -351,6 +351,67 @@ class AV_Petitioner_Submissions_Controller
     }
 
     /**
+     * Update form submissions
+     */
+    public static function api_update_form_submission()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
+            ]);
+            wp_die();
+        }
+
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : null;
+        $id = isset($_POST['id']) ? absint($_POST['id']) : null;
+
+        if (!$form_id || empty($id)) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_fields'),
+            ]);
+            return;
+        }
+
+        $submission = [];
+
+        // Use the model's allowed fields to dynamically build the submission array
+        foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
+            if (isset($_POST[$field])) {
+                switch ($field) {
+                    case 'id':
+                        break;
+                    case 'form_id':
+                        break;
+                    case 'email':
+                        $submission[$field] = sanitize_email(wp_unslash($_POST[$field]));
+                        break;
+                    case 'comments':
+                        $submission[$field] = sanitize_textarea_field(wp_unslash($_POST[$field]));
+                        break;
+                    case 'salutation':
+                    case 'confirmation_token':
+                        // Handle nullable fields
+                        $value = $_POST[$field];
+                        $submission[$field] = ($value !== '' && $value !== null) ? sanitize_text_field(wp_unslash($value)) : null;
+                        break;
+                    default:
+                        // Default sanitization for text fields
+                        $submission[$field] = sanitize_text_field(wp_unslash($_POST[$field]));
+                        break;
+                }
+            }
+        }
+
+        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($form_id, $submission);
+
+        if ($updated_rows === 0) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        wp_send_json_success(['message' => AV_Petitioner_Labels::get('success_generic'), 'updated_rows' => $updated_rows]);
+    }
+
+    /**
      * Update submission status via backend
      */
     public static function api_change_submission_status()
@@ -359,14 +420,14 @@ class AV_Petitioner_Submissions_Controller
         $new_status = isset($_POST['status']) ? sanitize_text_field(wp_unslash($_POST['status'])) : '';
 
         if (!$id || empty($new_status)) {
-            wp_send_json_error(['message' => 'Invalid input. ID and status are required.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('missing_fields')]);
             return;
         }
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, ['approval_status' => $new_status]);
 
         if ($updated_rows === false) {
-            wp_send_json_error(['message' => 'Database update failed.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
             return;
         }
 
@@ -382,30 +443,32 @@ class AV_Petitioner_Submissions_Controller
     public static function api_resend_confirmation_email()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permission denied.']);
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
+            ]);
         }
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
         if (!$id) {
-            wp_send_json_error(['message' => 'Invalid submission ID.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('missing_fields')]);
         }
 
         $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
 
         if (!$submission || $submission->approval_status === 'Confirmed') {
-            wp_send_json_error(['message' => 'Submission already confirmed or not found.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('already_confirmed')]);
         }
 
         if (empty($submission->confirmation_token)) {
-            wp_send_json_error(['message' => 'No confirmation token found for this submission.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('missing_confirmation_token')]);
         }
 
         $success = AV_Email_Confirmations::send_emails($submission, true, true);
 
         if ($success) {
-            wp_send_json_success(['message' => 'Confirmation email resent.']);
+            wp_send_json_success(['message' => AV_Petitioner_Labels::get('confirmation_resent')]);
         } else {
-            wp_send_json_error(['message' => 'Failed to send confirmation email.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
         }
     }
 
@@ -415,13 +478,13 @@ class AV_Petitioner_Submissions_Controller
     public static function api_resend_all_confirmation_emails()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permission denied.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('missing_permissions')]);
         }
 
         $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
 
         if (!$form_id) {
-            wp_send_json_error(['message' => 'Invalid form ID.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('missing_fields')]);
         }
 
         $results = AV_Petitioner_Submissions_Model::get_unconfirmed_submissions($form_id);
@@ -449,7 +512,7 @@ class AV_Petitioner_Submissions_Controller
         $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
 
         if (!$form_id) {
-            wp_send_json_error(['message' => 'Invalid form ID.']);
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('invalid_form_id')]);
         }
 
         $count = AV_Petitioner_Submissions_Model::get_unconfirmed_count($form_id);

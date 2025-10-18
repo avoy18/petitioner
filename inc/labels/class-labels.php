@@ -56,6 +56,7 @@ class AV_Petitioner_Labels
             'error_generic'                  => __('Something went wrong. Please try again.', 'petitioner'),
             'error_required'                 => __('This field is required.', 'petitioner'),
             'invalid_nonce'                  => __('Invalid nonce.', 'petitioner'),
+            'invalid_form_id'                => __('Invalid form ID.', 'petitioner'),
             'flagged_as_spam'                => __('Your submission has been flagged as spam.', 'petitioner'),
             'already_signed'                 => __('Looks like you\'ve already signed this petition!', 'petitioner'),
             'ty_email_subject'               => AV_Petitioner_Email_Template::get_default_ty_subject(),
@@ -65,6 +66,7 @@ class AV_Petitioner_Labels
             'from_field'                     => AV_Petitioner_Email_Template::get_default_from_field(),
             'success_message_title'          => __('Thank you!', 'petitioner'),
             'success_message'                => __('Your submission has been received.', 'petitioner'),
+            'success_generic'                => __('Success!', 'petitioner'),
             'your_name_here'                 => __('{Your name will be here}', 'petitioner'),
             'view_the_letter'                => __('View the letter', 'petitioner'),
             'close_modal'                    => __('Close modal', 'petitioner'),
@@ -72,7 +74,12 @@ class AV_Petitioner_Labels
             'goal'                           => __('Goal', 'petitioner'),
             'id'                             => __('ID', 'petitioner'),
             'created_at'                     => __('Submission date', 'petitioner'),
-            'name'                           => __('Name', 'petitioner')
+            'name'                           => __('Name', 'petitioner'),
+            'missing_permissions'            => __('Missing permissions', 'petitioner'),
+            'missing_fields'                 => __('Missing required fields', 'petitioner'),
+            'already_confirmed'              => __('Submission already confirmed or not found.', 'petitioner'),
+            'missing_confirmation_token'     => __('Missing confirmation token', 'petitioner'),
+            'confirmation_resent'            => __('Confirmation email resent.', 'petitioner')
         ];
     }
 

@@ -117,6 +117,7 @@ class AV_Petitioner_Admin_Edit_UI
                 'from_field'                    => AV_Petitioner_Labels::get('from_field'),
                 'success_message_title'         => AV_Petitioner_Labels::get('success_message_title'),
                 'success_message'               => AV_Petitioner_Labels::get('success_message'),
+                "country_list"                  => av_petitioner_get_countries()
             ],
             // new way of handling the form fields
             "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,

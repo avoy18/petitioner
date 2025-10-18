@@ -13,6 +13,7 @@ export type DefaultValues = {
 	ty_email_confirm: string;
 	success_message_title: string;
 	success_message: string;
+	country_list: string[]
 };
 
 export type PetitionerData = {

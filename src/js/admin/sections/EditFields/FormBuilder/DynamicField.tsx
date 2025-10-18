@@ -1,6 +1,4 @@
-import { getFieldTypeGroup } from '@admin/utilities';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import type { FieldType } from '@admin/sections/EditFields/FormBuilder/consts';
 import { Button } from '@wordpress/components';
 import styled from 'styled-components';
 

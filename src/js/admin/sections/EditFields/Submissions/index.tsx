@@ -1,27 +1,36 @@
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { Button, ButtonGroup } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
 import ShortcodeElement from '@admin/components/ShortcodeElement';
 import { __ } from '@wordpress/i18n';
-import type {
-	Submissions,
-	SubmissionItem,
-	SubmissionID,
-	SubmissionStatus,
-	ChangeAction,
-	FetchSettings,
-	Order,
-	OrderBy,
+import {
+	type Submissions,
+	type SubmissionItem,
+	type SubmissionID,
+	type SubmissionStatus,
+	type ChangeAction,
+	type FetchSettings,
+	type Order,
+	type OrderBy,
+	UPDATE_ACTION,
 } from './consts';
 import type {
 	ApprovalState,
 	CheckboxValue,
 } from '@admin/sections/EditFields/consts';
-import { fetchSubmissions, updateSubmissions } from './utilities';
+import {
+	fetchSubmissions,
+	updateSubmissions,
+	getFieldLabels,
+	getHumanValue,
+} from './utilities';
 import { ExportButtonWrapper } from './styled';
 import { Table } from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
+import SubmissionEditModal from './SubmissionEditModal';
+
+const SUBMISSION_LABELS = getFieldLabels();
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -40,6 +49,7 @@ export default function Submissions() {
 		useState<ApprovalState>(() => {
 			return approvalState === 'Email' ? 'Declined' : approvalState;
 		});
+	const [activeModal, setActiveModal] = useState<SubmissionID>();
 
 	const hasSubmissions = submissions.length > 0;
 
@@ -83,7 +93,7 @@ export default function Submissions() {
 		const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
 
 		if (window.confirm(question)) {
-			const finalAjaxURL = `${ajaxurl}?action=petitioner_change_status`;
+			const finalAjaxURL = `${ajaxurl}?action=${UPDATE_ACTION}`;
 			try {
 				const finalData = new FormData();
 				finalData.append('id', String(id));
@@ -107,7 +117,6 @@ export default function Submissions() {
 		}
 	};
 
-	// Handle pagination click
 	const handlePaginationClick = (page: number) => {
 		setCurrentPage(page);
 	};
@@ -150,12 +159,10 @@ export default function Submissions() {
 	};
 
 	const headingData = [
-		{ id: 'email', label: __('Email', 'petitioner'), width: '20%' },
-		{ id: 'name', label: __('First/Last name', 'petitioner') },
-		{ id: 'country', label: __('Country', 'petitioner'), width: '100px' },
-		// { id: 'bcc', label: __('BCC', 'petitioner'), width: '30px' }, // optional
-		{ id: 'consent', label: __('Consent', 'petitioner'), width: '60px' },
-		{ id: 'submitted_at', label: __('Submitted at', 'petitioner') },
+		{ id: 'email', label: SUBMISSION_LABELS.email, width: '20%' },
+		{ id: 'name', label: SUBMISSION_LABELS.name },
+		{ id: 'consent', label: SUBMISSION_LABELS.consent, width: '60px' },
+		{ id: 'submitted_at', label: SUBMISSION_LABELS.submitted_at },
 	];
 
 	if (showApproval) {
@@ -170,9 +177,8 @@ export default function Submissions() {
 		const cells: React.ReactNode[] = [
 			item.email,
 			`${item.fname} ${item.lname}`,
-			item.country,
-			item.accept_tos === '1' ? '✅' : '❌',
-			item.submitted_at,
+			getHumanValue(String(item.accept_tos), 'checkbox'),
+			getHumanValue(item.submitted_at, 'date'),
 		];
 
 		if (showApproval) {
@@ -197,26 +203,63 @@ export default function Submissions() {
 		setCurrentPage(1);
 	};
 
+	const selectedSubmission = submissions.find(
+		(item) => item.id === activeModal
+	);
+
+	const onModalSave = useCallback(
+		async (newData: SubmissionItem) => {
+			await updateSubmissions({
+				data: newData,
+				onSuccess: () => {
+					alert(__('Submission updated!', 'petitioner'));
+					setActiveModal(undefined);
+				},
+				onError: (msg) => {
+					console.error(msg);
+					alert(__('Failed to update submission!', 'petitioner'));
+					setActiveModal(undefined);
+				},
+			});
+
+			fetchData();
+		},
+		[activeModal]
+	);
+
+	const onModalClose = useCallback(() => setActiveModal(undefined), []);
+
 	return (
 		<div id="AV_Petitioner_Submissions">
 			<div>
-				<h3>Submissions</h3>
+				<h3>{__('Submissions', 'petitioner-theme')}</h3>
 				{hasSubmissions && <ExportComponent />}
 			</div>
 
 			<div className="petitioner-admin__entries">
-				<p>Total: {total}</p>
+				<p>
+					{__('Total:', 'petitioner-theme')} {total}
+				</p>
 				<Table
 					headings={headingData}
 					rows={tableRows}
 					onSort={handleSortChange}
 					clickable={true}
+					onItemSelect={(id) => setActiveModal(id)}
 				/>
 			</div>
 			<br />
 			{hasSubmissions && <ResendAllButton />}
 			<br />
 			{buttons?.length > 1 && <ButtonGroup>{buttons}</ButtonGroup>}
+
+			{selectedSubmission ? (
+				<SubmissionEditModal
+					submission={selectedSubmission}
+					onClose={onModalClose}
+					onSave={onModalSave}
+				/>
+			) : null}
 		</div>
 	);
 }

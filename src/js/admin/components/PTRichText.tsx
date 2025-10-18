@@ -6,7 +6,14 @@ export default function PTRichText({
 	value = '',
 	height = 300,
 	help = '',
-	onChange = (value: string) => {},
+	onChange = (value) => {},
+}: {
+	id: string;
+	label: string;
+	value: any;
+	height?: number;
+	help?: any;
+	onChange: (value: string) => void;
 }) {
 	const editorRef = useRef(null);
 	const lastSavedValue = useRef(value);
@@ -23,7 +30,7 @@ export default function PTRichText({
 				block_formats:
 					'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3',
 				height,
-				setup: (editor) => {
+				setup: (editor: any) => {
 					editorRef.current = editor;
 
 					// ✅ Set initial content only once
