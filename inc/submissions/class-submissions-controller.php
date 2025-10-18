@@ -352,6 +352,8 @@ class AV_Petitioner_Submissions_Controller
 
     /**
      * Update form submissions
+     * 
+     * @since 0.6.0
      */
     public static function api_update_form_submission()
     {
@@ -403,6 +405,36 @@ class AV_Petitioner_Submissions_Controller
         }
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($form_id, $submission);
+
+        if ($updated_rows === 0) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        wp_send_json_success(['message' => AV_Petitioner_Labels::get('success_generic'), 'updated_rows' => $updated_rows]);
+    }
+
+    /**
+     * @since 0.6.0
+     */
+    public static function api_delete_form_submission()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
+            ]);
+            wp_die();
+        }
+
+        $id = isset($_POST['id']) ? absint($_POST['id']) : null;
+
+        if (empty($id)) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_fields'),
+            ]);
+            return;
+        }
+
+        $updated_rows = AV_Petitioner_Submissions_Model::delete_submission($id);
 
         if ($updated_rows === 0) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);

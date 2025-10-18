@@ -203,11 +203,11 @@ class AV_Petitioner_Submissions_Model
     /**
      * Update a single submission by ID.
      *
-     * @param int $id Submission ID.
+     * @param int|string $id Submission ID.
      * @param array $fields Associative array of fields to update (column => value).
      * @return int|false Number of rows updated or false on failure.
      */
-    public static function update_submission($id, array $fields)
+    public static function update_submission($id, $fields)
     {
         global $wpdb;
 
@@ -224,6 +224,30 @@ class AV_Petitioner_Submissions_Model
             ['id' => $id],     // where clause
             null,              // formats (optional)
             ['%d']             // id is always int
+        );
+    }
+
+    /**
+     * Delete a single submission by ID.
+     *
+     * @param int|string $submission_id Submission ID.
+     * @return int|false Number of rows deleted or false on failure.
+     */
+    public static function delete_submission($submission_id) {
+        global $wpdb;
+        $id = absint($submission_id);
+
+        if (!$id) {
+            return false;
+        }
+
+        $table = $wpdb->prefix . 'av_petitioner_submissions';
+
+        return $wpdb->delete(
+            $table,
+            ['id' => $id],
+            null,
+            1
         );
     }
 
@@ -248,7 +272,7 @@ class AV_Petitioner_Submissions_Model
      * @param array $data Associative array of submission data.
      * @return int|false Inserted row ID on success, false on failure.
      */
-    public static function create_submission(array $data)
+    public static function create_submission($data)
     {
         global $wpdb;
         $table = $wpdb->prefix . 'av_petitioner_submissions';
