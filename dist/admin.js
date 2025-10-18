@@ -1,7 +1,7 @@
 var __freeze = Object.freeze;
 var __defProp = Object.defineProperty;
 var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(raw || cooked.slice()) }));
-var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
 function __vite_legacy_guard() {
   import.meta.url;
   import("_").catch(() => 1);
@@ -27004,6 +27004,7 @@ function ShortcodeElement({
 }
 const UPDATE_ACTION = "petitioner_update_submission";
 const FETCH_ACTION = "petitioner_fetch_submissions";
+const DELETE_ACTION = "petitioner_delete_submissions";
 /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 const {
   entries,
@@ -28252,6 +28253,34 @@ const updateSubmissions = async ({
     onError("Error fetching data: " + error);
   }
 };
+const deleteSubmissions = async ({
+  id: id2,
+  onSuccess,
+  onError
+}) => {
+  if (!id2) {
+    onError("Submission fetch error: missing the submission id");
+    return;
+  }
+  const finalQuery = new URLSearchParams();
+  finalQuery.set("action", DELETE_ACTION);
+  const finalData = new FormData();
+  finalData.append("id", String(id2));
+  try {
+    const request = await fetch("".concat(ajaxurl, "?").concat(finalQuery.toString()), {
+      method: "POST",
+      body: finalData
+    });
+    const response = await request.json();
+    if (response.success) {
+      onSuccess(response.data);
+    } else {
+      onError("Failed to fetch data");
+    }
+  } catch (error) {
+    onError("Error fetching data: " + error);
+  }
+};
 const getFieldLabels = () => {
   const fieldMap = {};
   ALl_POSSIBLE_FIELDS.forEach((field) => {
@@ -28388,6 +28417,7 @@ function Table({
 dt.div(_h || (_h = __template(["\n	display: flex;\n	margin-bottom: ", ";\n"])), SPACINGS.sm);
 const FieldItem = dt(CardBody)(_i || (_i = __template(["\n	display: flex;\n	align-items: flex-start;\n	flex-direction: column;\n	gap: ", ";\n"])), SPACINGS.xs);
 const InputGroup = dt.div(_j || (_j = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n\n	.components-base-control__field {\n		margin-bottom: 0px;\n	}\n"])), SPACINGS.sm);
+const ActionButtonWrapper = dt.div(_k || (_k = __template(["\n	display: flex;\n	gap: ", ";\n"])), SPACINGS.sm);
 function PTRichText({
   id: id2 = "",
   label = "Rich text label",
@@ -28867,6 +28897,8 @@ function SubmissionEditModal({
   onClose = () => {
   },
   onSave = (upatedItem) => {
+  },
+  onDelete = (id2) => {
   }
 }) {
   const [isEdit, setIsEdit] = reactExports.useState(null);
@@ -28944,7 +28976,7 @@ function SubmissionEditModal({
   const onRequestClose = reactExports.useCallback(() => {
     if (valuesChanged) {
       if (window.confirm(
-        __("Are you sure you want to close without saving?")
+        __("Are you sure you want to close without saving?", "petitioner")
       )) {
         onClose();
       }
@@ -28952,6 +28984,16 @@ function SubmissionEditModal({
       onClose();
     }
   }, [valuesChanged]);
+  const handleOnDelete = reactExports.useCallback(() => {
+    if (window.confirm(
+      __(
+        "Are you sure you want to delete this submission?",
+        "petitioner"
+      )
+    )) {
+      onDelete(submissionDetails.id);
+    }
+  }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Modal,
     {
@@ -28960,15 +29002,26 @@ function SubmissionEditModal({
       size: "large",
       title: __("Submission details", "petitioner-theme"),
       onRequestClose,
-      headerActions: /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          variant: "primary",
-          onClick: () => onSave(submissionDetails),
-          disabled: !valuesChanged,
-          children: __("Save", "petitioner")
-        }
-      ) }),
+      headerActions: /* @__PURE__ */ jsxRuntimeExports.jsxs(ActionButtonWrapper, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            variant: "secondary",
+            isDestructive: true,
+            onClick: handleOnDelete,
+            children: __("Delete", "petitioner")
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            variant: "primary",
+            onClick: () => onSave(submissionDetails),
+            disabled: !valuesChanged,
+            children: __("Save", "petitioner")
+          }
+        )
+      ] }),
       children: /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { children: SubmissionDetails })
     }
   );
@@ -29121,25 +29174,44 @@ function Submissions() {
   const selectedSubmission = submissions.find(
     (item) => item.id === activeModal
   );
+  const onModalClose = reactExports.useCallback(() => setActiveModal(void 0), []);
   const onModalSave = reactExports.useCallback(
     async (newData) => {
       await updateSubmissions({
         data: newData,
         onSuccess: () => {
           alert(__("Submission updated!", "petitioner"));
-          setActiveModal(void 0);
+          onModalClose();
         },
         onError: (msg) => {
           console.error(msg);
           alert(__("Failed to update submission!", "petitioner"));
-          setActiveModal(void 0);
+          onModalClose();
         }
       });
       fetchData();
     },
     [activeModal]
   );
-  const onModalClose = reactExports.useCallback(() => setActiveModal(void 0), []);
+  const onModalDelete = reactExports.useCallback((id2) => {
+    deleteSubmissions({
+      id: id2,
+      onSuccess: (msg) => {
+        alert(msg);
+        onModalClose();
+      },
+      onError: (msg) => {
+        console.error(msg);
+        alert(
+          __(
+            "Failed to delete! Check console for errors",
+            "petitioner"
+          )
+        );
+        onModalClose();
+      }
+    });
+  }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { id: "AV_Petitioner_Submissions", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: __("Submissions", "petitioner-theme") }),
@@ -29171,7 +29243,8 @@ function Submissions() {
       {
         submission: selectedSubmission,
         onClose: onModalClose,
-        onSave: onModalSave
+        onSave: onModalSave,
+        onDelete: onModalDelete
       }
     ) : null
   ] });
@@ -33175,9 +33248,9 @@ function EditSubmit() {
 }
 const DragHandle = dt.div.attrs(() => ({
   className: "ptr-drag-handle"
-}))(_k || (_k = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
-const FieldPaletteWrapper = dt.div(_l || (_l = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
-const FieldPaletteItem = dt.div(_m || (_m = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
+}))(_l || (_l = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
+const FieldPaletteWrapper = dt.div(_m || (_m = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
+const FieldPaletteItem = dt.div(_n || (_n = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
 const D_PREFIX = "ptr_insert_";
 const getIDNoPrefix = (id2) => id2.replace(D_PREFIX, "");
 function PaletteDraggable({ id: id2, label }) {
@@ -33239,7 +33312,7 @@ const screenKeys = [
   "submit",
   "textarea"
 ];
-const BuilderSettingsWrapper = dt.div(_n || (_n = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
+const BuilderSettingsWrapper = dt.div(_o || (_o = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
 function BuilderSettings() {
   const { formBuilderFields, builderEditScreen, setBuilderEditScreen } = useFormBuilderContext();
   const currentField = formBuilderFields[builderEditScreen];
@@ -33283,9 +33356,9 @@ function BuilderSettings() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(ScreenComponent, {})
   ] });
 }
-const FakeFieldLabel = dt.p(_o || (_o = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
-const FakeField = dt.div(_p || (_p = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
-const StyledTextarea = dt(FakeField)(_q || (_q = __template(["\n	min-height: 100px;\n"])));
+const FakeFieldLabel = dt.p(_p || (_p = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
+const FakeField = dt.div(_q || (_q = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
+const StyledTextarea = dt(FakeField)(_r || (_r = __template(["\n	min-height: 100px;\n"])));
 function DynamicField({
   name = "",
   inputType = "text",
@@ -33410,7 +33483,7 @@ function DynamicField({
     }
   );
 }
-const Wrapper = dt.div(_r || (_r = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
+const Wrapper = dt.div(_s || (_s = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
 function SortableField({ id: id2 }) {
   const { formBuilderFields, builderEditScreen } = useFormBuilderContext();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
@@ -33454,7 +33527,7 @@ function SortableField({ id: id2 }) {
     }
   );
 }
-const StyledPanel = dt(Panel)(_s || (_s = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
+const StyledPanel = dt(Panel)(_t || (_t = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
 function FormBuilderComponent() {
   const {
     fieldOrder,
@@ -33821,9 +33894,9 @@ function CodeEditor({ title = "", help = "", code = "" }) {
     )
   ] });
 }
-const PtrColorPicker = dt.div(_t || (_t = __template(["\n	position: relative;\n	display: inline-block;\n"])));
-const ColorPickerButton = dt(Button)(_u || (_u = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
-const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_v || (_v = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
+const PtrColorPicker = dt.div(_u || (_u = __template(["\n	position: relative;\n	display: inline-block;\n"])));
+const ColorPickerButton = dt(Button)(_v || (_v = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
+const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_w || (_w = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
 function ColorField({
   color = "#fff",
   onColorChange = (color2) => {
@@ -34365,9 +34438,9 @@ function Integrations() {
     integration.hiddenFields
   ] }, integration.name)) });
 }
-const StyledHeading = dt(Heading)(_w || (_w = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
-const StyledText = dt(Text)(_x || (_x = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
-const StyledTextControl = dt(TextControl)(_y || (_y = __template(["\n	width: 100%;\n"])));
+const StyledHeading = dt(Heading)(_x || (_x = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
+const StyledText = dt(Text)(_y || (_y = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
+const StyledTextControl = dt(TextControl)(_z || (_z = __template(["\n	width: 100%;\n"])));
 function TextInput({
   id: id2,
   label,

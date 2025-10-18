@@ -33536,6 +33536,7 @@
         }
         const UPDATE_ACTION = "petitioner_update_submission";
         const FETCH_ACTION = "petitioner_fetch_submissions";
+        const DELETE_ACTION = "petitioner_delete_submissions";
 
         /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 
@@ -35123,6 +35124,34 @@
             onError("Error fetching data: " + error);
           }
         };
+        const deleteSubmissions = async ({
+          id,
+          onSuccess,
+          onError
+        }) => {
+          if (!id) {
+            onError("Submission fetch error: missing the submission id");
+            return;
+          }
+          const finalQuery = new URLSearchParams();
+          finalQuery.set("action", DELETE_ACTION);
+          const finalData = new FormData();
+          finalData.append("id", String(id));
+          try {
+            const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+              method: "POST",
+              body: finalData
+            });
+            const response = await request.json();
+            if (response.success) {
+              onSuccess(response.data);
+            } else {
+              onError("Failed to fetch data");
+            }
+          } catch (error) {
+            onError("Error fetching data: " + error);
+          }
+        };
         const getFieldLabels = () => {
           const fieldMap = {};
           ALl_POSSIBLE_FIELDS.forEach(field => {
@@ -35307,6 +35336,10 @@
 	.components-base-control__field {
 		margin-bottom: 0px;
 	}
+`;
+        const ActionButtonWrapper = dt.div`
+	display: flex;
+	gap: ${SPACINGS.sm};
 `;
         function PTRichText({
           id = "",
@@ -35705,7 +35738,8 @@
         function SubmissionEditModal({
           submission,
           onClose = () => {},
-          onSave = upatedItem => {}
+          onSave = upatedItem => {},
+          onDelete = id => {}
         }) {
           const [isEdit, setIsEdit] = reactExports.useState(null);
           const [valuesChanged, setValuesChanged] = reactExports.useState(false);
@@ -35777,26 +35811,36 @@
           });
           const onRequestClose = reactExports.useCallback(() => {
             if (valuesChanged) {
-              if (window.confirm(__("Are you sure you want to close without saving?"))) {
+              if (window.confirm(__("Are you sure you want to close without saving?", "petitioner"))) {
                 onClose();
               }
             } else {
               onClose();
             }
           }, [valuesChanged]);
+          const handleOnDelete = reactExports.useCallback(() => {
+            if (window.confirm(__("Are you sure you want to delete this submission?", "petitioner"))) {
+              onDelete(submissionDetails.id);
+            }
+          }, []);
           return /* @__PURE__ */jsxRuntimeExports.jsx(Modal, {
             shouldCloseOnClickOutside: !valuesChanged,
             shouldCloseOnEsc: !valuesChanged,
             size: "large",
             title: __("Submission details", "petitioner-theme"),
             onRequestClose,
-            headerActions: /* @__PURE__ */jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, {
-              children: /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+            headerActions: /* @__PURE__ */jsxRuntimeExports.jsxs(ActionButtonWrapper, {
+              children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                variant: "secondary",
+                isDestructive: true,
+                onClick: handleOnDelete,
+                children: __("Delete", "petitioner")
+              }), /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
                 variant: "primary",
                 onClick: () => onSave(submissionDetails),
                 disabled: !valuesChanged,
                 children: __("Save", "petitioner")
-              })
+              })]
             }),
             children: /* @__PURE__ */jsxRuntimeExports.jsx(Card, {
               children: SubmissionDetails
@@ -35944,22 +35988,36 @@
             setCurrentPage(1);
           };
           const selectedSubmission = submissions.find(item => item.id === activeModal);
+          const onModalClose = reactExports.useCallback(() => setActiveModal(void 0), []);
           const onModalSave = reactExports.useCallback(async newData => {
             await updateSubmissions({
               data: newData,
               onSuccess: () => {
                 alert(__("Submission updated!", "petitioner"));
-                setActiveModal(void 0);
+                onModalClose();
               },
               onError: msg => {
                 console.error(msg);
                 alert(__("Failed to update submission!", "petitioner"));
-                setActiveModal(void 0);
+                onModalClose();
               }
             });
             fetchData();
           }, [activeModal]);
-          const onModalClose = reactExports.useCallback(() => setActiveModal(void 0), []);
+          const onModalDelete = reactExports.useCallback(id => {
+            deleteSubmissions({
+              id,
+              onSuccess: msg => {
+                alert(msg);
+                onModalClose();
+              },
+              onError: msg => {
+                console.error(msg);
+                alert(__("Failed to delete! Check console for errors", "petitioner"));
+                onModalClose();
+              }
+            });
+          }, []);
           return /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
             id: "AV_Petitioner_Submissions",
             children: [/* @__PURE__ */jsxRuntimeExports.jsxs("div", {
@@ -35982,7 +36040,8 @@
             }), selectedSubmission ? /* @__PURE__ */jsxRuntimeExports.jsx(SubmissionEditModal, {
               submission: selectedSubmission,
               onClose: onModalClose,
-              onSave: onModalSave
+              onSave: onModalSave,
+              onDelete: onModalDelete
             }) : null]
           });
         }

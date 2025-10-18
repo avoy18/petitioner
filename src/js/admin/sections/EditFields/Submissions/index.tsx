@@ -22,6 +22,7 @@ import type {
 import {
 	fetchSubmissions,
 	updateSubmissions,
+	deleteSubmissions,
 	getFieldLabels,
 	getHumanValue,
 } from './utilities';
@@ -207,18 +208,20 @@ export default function Submissions() {
 		(item) => item.id === activeModal
 	);
 
+	const onModalClose = useCallback(() => setActiveModal(undefined), []);
+
 	const onModalSave = useCallback(
 		async (newData: SubmissionItem) => {
 			await updateSubmissions({
 				data: newData,
 				onSuccess: () => {
 					alert(__('Submission updated!', 'petitioner'));
-					setActiveModal(undefined);
+					onModalClose();
 				},
 				onError: (msg) => {
 					console.error(msg);
 					alert(__('Failed to update submission!', 'petitioner'));
-					setActiveModal(undefined);
+					onModalClose();
 				},
 			});
 
@@ -227,7 +230,25 @@ export default function Submissions() {
 		[activeModal]
 	);
 
-	const onModalClose = useCallback(() => setActiveModal(undefined), []);
+	const onModalDelete = useCallback((id: SubmissionID) => {
+		deleteSubmissions({
+			id,
+			onSuccess: (msg: string) => {
+				alert(msg);
+				onModalClose();
+			},
+			onError: (msg: string) => {
+				console.error(msg);
+				alert(
+					__(
+						'Failed to delete! Check console for errors',
+						'petitioner'
+					)
+				);
+				onModalClose();
+			},
+		});
+	}, []);
 
 	return (
 		<div id="AV_Petitioner_Submissions">
@@ -258,6 +279,7 @@ export default function Submissions() {
 					submission={selectedSubmission}
 					onClose={onModalClose}
 					onSave={onModalSave}
+					onDelete={onModalDelete}
 				/>
 			) : null}
 		</div>
