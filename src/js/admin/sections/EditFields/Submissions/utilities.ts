@@ -1,9 +1,12 @@
 import { __ } from '@wordpress/i18n';
+import { getAjaxNonce } from '@admin/utilities';
 import {
 	type FetchSettings,
 	type UpdateSettings,
+	type DeleteSettings,
 	UPDATE_ACTION,
 	FETCH_ACTION,
+	DELETE_ACTION,
 } from './consts';
 import type {
 	FieldKey,
@@ -75,6 +78,8 @@ export const updateSubmissions = async ({
 		}
 	});
 
+	finalData.append('petitioner_nonce', getAjaxNonce());
+
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',
@@ -85,6 +90,43 @@ export const updateSubmissions = async ({
 
 		if (response.success) {
 			onSuccess(response.data);
+		} else {
+			onError('Failed to fetch data');
+		}
+	} catch (error) {
+		onError('Error fetching data: ' + error);
+	}
+};
+
+export const deleteSubmissions = async ({
+	id,
+	onSuccess,
+	onError,
+}: DeleteSettings) => {
+	if (!id) {
+		onError('Submission fetch error: missing the submission id');
+		return;
+	}
+
+	const finalQuery = new URLSearchParams();
+
+	finalQuery.set('action', DELETE_ACTION);
+
+	const finalData = new FormData();
+
+	finalData.append('id', String(id));
+	finalData.append('petitioner_nonce', getAjaxNonce());
+
+	try {
+		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+			method: 'POST',
+			body: finalData,
+		});
+
+		const response = await request.json();
+
+		if (response.success) {
+			onSuccess();
 		} else {
 			onError('Failed to fetch data');
 		}

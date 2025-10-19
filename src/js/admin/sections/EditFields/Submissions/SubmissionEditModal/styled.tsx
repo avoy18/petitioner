@@ -23,3 +23,8 @@ export const InputGroup = styled.div`
 		margin-bottom: 0px;
 	}
 `;
+
+export const ActionButtonWrapper = styled.div`
+	display: flex;
+	gap: ${SPACINGS.sm};
+`

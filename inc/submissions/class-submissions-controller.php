@@ -352,20 +352,15 @@ class AV_Petitioner_Submissions_Controller
 
     /**
      * Update form submissions
+     * 
+     * @since 0.6.0
      */
     public static function api_update_form_submission()
     {
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error([
-                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
-            ]);
-            wp_die();
-        }
-
-        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : null;
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
         $id = isset($_POST['id']) ? absint($_POST['id']) : null;
 
-        if (!$form_id || empty($id)) {
+        if (empty($id)) {
             wp_send_json_error([
                 'message'   => AV_Petitioner_Labels::get('missing_fields'),
             ]);
@@ -402,7 +397,32 @@ class AV_Petitioner_Submissions_Controller
             }
         }
 
-        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($form_id, $submission);
+        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
+
+        if ($updated_rows === 0) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        wp_send_json_success(['message' => AV_Petitioner_Labels::get('success_generic'), 'updated_rows' => $updated_rows]);
+    }
+
+    /**
+     * @since 0.6.0
+     */
+    public static function api_delete_form_submission()
+    {
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
+
+        $id = isset($_POST['id']) ? absint($_POST['id']) : null;
+
+        if (empty($id)) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_fields'),
+            ]);
+            return;
+        }
+
+        $updated_rows = AV_Petitioner_Submissions_Model::delete_submission($id);
 
         if ($updated_rows === 0) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
@@ -685,5 +705,24 @@ class AV_Petitioner_Submissions_Controller
             'success' => true,
             'message' => __('CAPTCHA verification completed.', 'petitioner'),
         ];
+    }
+
+    public static function check_admin_request($nonce_label)
+    {
+        if (!check_ajax_referer($nonce_label, 'petitioner_nonce', false)) {
+            av_ptr_error_log(['nonce', $nonce_label, $_POST['petitioner_nonce']]);
+            wp_send_json_error([
+                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                'message'   => AV_Petitioner_Labels::get('invalid_nonce'),
+            ]);
+            wp_die();
+        }
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error([
+                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
+            ]);
+            wp_die();
+        }
     }
 }

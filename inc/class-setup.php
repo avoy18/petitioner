@@ -68,6 +68,7 @@ class AV_Petitioner_Setup
         add_action('wp_ajax_petitioner_resend_all_confirmation_emails', ['AV_Petitioner_Submissions_Controller', 'api_resend_all_confirmation_emails']);
         add_action('wp_ajax_petitioner_check_unconfirmed_count', ['AV_Petitioner_Submissions_Controller', 'api_check_unconfirmed_count']);
         add_action('wp_ajax_petitioner_update_submission', ['AV_Petitioner_Submissions_Controller', 'api_update_form_submission']);
+        add_action('wp_ajax_petitioner_delete_submission', ['AV_Petitioner_Submissions_Controller', 'api_delete_form_submission']);
 
         add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_Submissions_Controller', 'admin_petitioner_export_csv'));
     }

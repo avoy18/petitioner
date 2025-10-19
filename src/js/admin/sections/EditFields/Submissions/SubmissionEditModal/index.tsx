@@ -11,7 +11,7 @@ import {
 
 import { getHumanValue, getSubmissionValType } from '../utilities';
 import { getFieldLabels } from './../utilities';
-import { FieldItem, InputGroup } from './styled';
+import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
 import SubmissionEditField from './SubmissionEditField';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 
@@ -27,9 +27,11 @@ export default function SubmissionEditModal({
 	submission,
 	onClose = () => {},
 	onSave = (upatedItem) => {},
+	onDelete = (id) => {},
 }: {
 	submission: SubmissionItem;
 	onClose: () => void;
+	onDelete?: (upatedItemID: SubmissionItem['id']) => void;
 	onSave?: (upatedItem: SubmissionItem) => void;
 }) {
 	const [isEdit, setIsEdit] = useState<FieldKey | null>(null);
@@ -131,7 +133,7 @@ export default function SubmissionEditModal({
 		if (valuesChanged) {
 			if (
 				window.confirm(
-					__('Are you sure you want to close without saving?')
+					__('Are you sure you want to close without saving?', 'petitioner')
 				)
 			) {
 				onClose();
@@ -141,6 +143,19 @@ export default function SubmissionEditModal({
 		}
 	}, [valuesChanged]);
 
+	const handleOnDelete = useCallback(() => {
+		if (
+			window.confirm(
+				__(
+					'Are you sure you want to delete this submission?',
+					'petitioner'
+				)
+			)
+		) {
+			onDelete(submissionDetails.id);
+		}
+	}, []);
+
 	return (
 		<Modal
 			shouldCloseOnClickOutside={!valuesChanged}
@@ -149,7 +164,14 @@ export default function SubmissionEditModal({
 			title={__('Submission details', 'petitioner-theme')}
 			onRequestClose={onRequestClose}
 			headerActions={
-				<>
+				<ActionButtonWrapper>
+					<Button
+						variant="secondary"
+						isDestructive={true}
+						onClick={handleOnDelete}
+					>
+						{__('Delete', 'petitioner')}
+					</Button>
 					<Button
 						variant="primary"
 						onClick={() => onSave(submissionDetails)}
@@ -157,7 +179,7 @@ export default function SubmissionEditModal({
 					>
 						{__('Save', 'petitioner')}
 					</Button>
-				</>
+				</ActionButtonWrapper>
 			}
 		>
 			<Card>{SubmissionDetails}</Card>
