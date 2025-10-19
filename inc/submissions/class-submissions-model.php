@@ -234,7 +234,8 @@ class AV_Petitioner_Submissions_Model
      * @param int|string $submission_id Submission ID.
      * @return int|false Number of rows deleted or false on failure.
      */
-    public static function delete_submission($submission_id) {
+    public static function delete_submission($submission_id)
+    {
         global $wpdb;
         $id = absint($submission_id);
 
@@ -247,8 +248,6 @@ class AV_Petitioner_Submissions_Model
         return $wpdb->delete(
             $table,
             ['id' => $id],
-            null,
-            1
         );
     }
 
