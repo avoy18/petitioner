@@ -358,11 +358,9 @@ class AV_Petitioner_Submissions_Controller
     public static function api_update_form_submission()
     {
         self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
-
-        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : null;
         $id = isset($_POST['id']) ? absint($_POST['id']) : null;
 
-        if (!$form_id || empty($id)) {
+        if (empty($id)) {
             wp_send_json_error([
                 'message'   => AV_Petitioner_Labels::get('missing_fields'),
             ]);
@@ -399,7 +397,7 @@ class AV_Petitioner_Submissions_Controller
             }
         }
 
-        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($form_id, $submission);
+        $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
         if ($updated_rows === 0) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
