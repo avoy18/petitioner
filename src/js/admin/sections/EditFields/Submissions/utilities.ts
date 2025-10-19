@@ -214,3 +214,13 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 
 	return correctItem?.type || 'text';
 };
+
+export const getExportURL = () => {
+	const urlString = String(window?.petitionerData?.export_url);
+
+	if (urlString.length === 0) {
+		console.warn('Petitioner warning: export url is not defined');
+	}
+
+	return urlString;
+};

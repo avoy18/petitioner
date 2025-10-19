@@ -133,7 +133,10 @@ export default function SubmissionEditModal({
 		if (valuesChanged) {
 			if (
 				window.confirm(
-					__('Are you sure you want to close without saving?', 'petitioner')
+					__(
+						'Are you sure you want to close without saving?',
+						'petitioner'
+					)
 				)
 			) {
 				onClose();

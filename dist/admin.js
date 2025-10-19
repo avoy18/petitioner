@@ -28337,6 +28337,14 @@ const getSubmissionValType = (label) => {
   );
   return (correctItem == null ? void 0 : correctItem.type) || "text";
 };
+const getExportURL = () => {
+  var _a2;
+  const urlString = String((_a2 = window == null ? void 0 : window.petitionerData) == null ? void 0 : _a2.export_url);
+  if (urlString.length === 0) {
+    console.warn("Petitioner warning: export url is not defined");
+  }
+  return urlString;
+};
 const ExportButtonWrapper = dt.div(_c || (_c = __template(["\n	display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n	justify-content: space-between;\n"])));
 const COLORS = {
   grey: "var(--ptr-admin-color-grey)",
@@ -28985,7 +28993,10 @@ function SubmissionEditModal({
   const onRequestClose = reactExports.useCallback(() => {
     if (valuesChanged) {
       if (window.confirm(
-        __("Are you sure you want to close without saving?", "petitioner")
+        __(
+          "Are you sure you want to close without saving?",
+          "petitioner"
+        )
       )) {
         onClose();
       }
@@ -29035,6 +29046,23 @@ function SubmissionEditModal({
     }
   );
 }
+function ExportModal({
+  onClose = () => {
+  }
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Modal,
+    {
+      size: "fill",
+      title: __("Export submissions", "petitioner-theme"),
+      onRequestClose: onClose,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Heading, { children: "Preparing to export 200 submissions" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardBody, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", href: getExportURL(), children: __("Export entries as CSV", "petitioner") }) })
+      ] })
+    }
+  );
+}
 const SUBMISSION_LABELS = getFieldLabels();
 function Submissions() {
   var _a2;
@@ -29051,6 +29079,7 @@ function Submissions() {
     return approvalState === "Email" ? "Declined" : approvalState;
   });
   const [activeModal, setActiveModal] = reactExports.useState();
+  const [showExportModal, setShowExportModal] = reactExports.useState(false);
   const hasSubmissions = submissions.length > 0;
   const perPage = 100;
   const fetchData = async () => {
@@ -29135,7 +29164,7 @@ function Submissions() {
           width: "250px"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", href: export_url, children: __("Export entries as CSV", "petitioner") })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", onClick: () => setShowExportModal(true), children: __("Export entries as CSV", "petitioner") })
     ] });
   };
   const headingData = [
@@ -29222,6 +29251,9 @@ function Submissions() {
       }
     });
   }, []);
+  const handleExportClose = reactExports.useCallback(() => {
+    setShowExportModal(false);
+  }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { id: "AV_Petitioner_Submissions", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: __("Submissions", "petitioner-theme") }),
@@ -29256,7 +29288,8 @@ function Submissions() {
         onSave: onModalSave,
         onDelete: onModalDelete
       }
-    ) : null
+    ) : null,
+    showExportModal && /* @__PURE__ */ jsxRuntimeExports.jsx(ExportModal, { onClose: handleExportClose })
   ] });
 }
 function useCombinedRefs() {

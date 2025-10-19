@@ -30,6 +30,7 @@ import { ExportButtonWrapper } from './styled';
 import { Table } from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
+import ExportModal from './ExportModal';
 
 const SUBMISSION_LABELS = getFieldLabels();
 
@@ -51,6 +52,7 @@ export default function Submissions() {
 			return approvalState === 'Email' ? 'Declined' : approvalState;
 		});
 	const [activeModal, setActiveModal] = useState<SubmissionID>();
+	const [showExportModal, setShowExportModal] = useState<boolean>(false);
 
 	const hasSubmissions = submissions.length > 0;
 
@@ -152,7 +154,7 @@ export default function Submissions() {
 					width="250px"
 				/>
 				{/* @ts-ignore */}
-				<Button variant="primary" href={export_url}>
+				<Button variant="primary" onClick={() => setShowExportModal(true)}>
 					{__('Export entries as CSV', 'petitioner')}
 				</Button>
 			</ExportButtonWrapper>
@@ -251,6 +253,10 @@ export default function Submissions() {
 		});
 	}, []);
 
+	const handleExportClose = useCallback(() => {
+		setShowExportModal(false);
+	}, []);
+
 	return (
 		<div id="AV_Petitioner_Submissions">
 			<div>
@@ -283,6 +289,8 @@ export default function Submissions() {
 					onDelete={onModalDelete}
 				/>
 			) : null}
+
+			{showExportModal && <ExportModal onClose={handleExportClose} />}
 		</div>
 	);
 }
