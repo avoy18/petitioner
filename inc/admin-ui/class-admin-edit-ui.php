@@ -115,6 +115,7 @@ class AV_Petitioner_Admin_Edit_UI
                 'ty_email_subject_confirm'      => AV_Petitioner_Labels::get('ty_email_subject_confirm'),
                 'ty_email_confirm'              => AV_Petitioner_Labels::get('ty_email_confirm'),
                 'from_field'                    => AV_Petitioner_Labels::get('from_field'),
+                'from_name'                     => AV_Petitioner_Labels::get('from_name'),
                 'success_message_title'         => AV_Petitioner_Labels::get('success_message_title'),
                 'success_message'               => AV_Petitioner_Labels::get('success_message'),
             ],
