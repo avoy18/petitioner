@@ -38,12 +38,13 @@ class AV_Petitioner_Email_Template
         if ($domain === 'localhost') {
             $domain = 'localhost.com';
         }
-
-        $email = 'petition-no-reply@' . $domain;
-
-        $site_name = get_bloginfo('name') . ' ' ?? '';
         
-        return $site_name . '<' . $email . '>';
+        return 'petition-no-reply@' . $domain;
+    }
+
+    static public function get_default_from_name()
+    {        
+        return get_bloginfo('name');
     }
 
     static public function get_styled_message($message)
