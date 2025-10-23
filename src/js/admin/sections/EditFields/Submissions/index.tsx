@@ -290,7 +290,7 @@ export default function Submissions() {
 				/>
 			) : null}
 
-			{showExportModal && <ExportModal onClose={handleExportClose} />}
+			{showExportModal && <ExportModal total={total} onClose={handleExportClose} />}
 		</div>
 	);
 }

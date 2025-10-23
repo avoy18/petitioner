@@ -11,27 +11,32 @@ import {
 	Button,
 	Modal,
 } from '@wordpress/components';
+import { StyledExportButton } from './styled';
 import { getExportURL } from '../utilities';
+import ConditionalLogic from '@admin/components/ConditionalLogic';
 
 export default function ExportModal({
 	onClose = () => {},
+	total = 0,
 }: {
 	onClose: () => void;
+	total: number;
 }) {
 	return (
 		<Modal
-			size="fill"
+			size="large"
 			title={__('Export submissions', 'petitioner-theme')}
 			onRequestClose={onClose}
 		>
 			<Card>
 				<CardHeader>
-					<Heading>Preparing to export 200 submissions</Heading>
+					<Heading>Preparing to export {total} submissions</Heading>
 				</CardHeader>
 				<CardBody>
-					<Button variant="primary" href={getExportURL()}>
-						{__('Export entries as CSV', 'petitioner')}
-					</Button>
+					<ConditionalLogic />
+					<StyledExportButton variant="primary" href={getExportURL()}>
+						{__('Export as CSV', 'petitioner')}
+					</StyledExportButton>
 				</CardBody>
 			</Card>
 		</Modal>

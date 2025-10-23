@@ -35863,24 +35863,32 @@
             })
           });
         }
+        const StyledExportButton = dt(Button)``;
+        const ConditionalLogic = ({}) => {
+          return /* @__PURE__ */jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, {
+            children: "Conditional logic component here"
+          });
+        };
+        const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
         function ExportModal({
-          onClose = () => {}
+          onClose = () => {},
+          total = 0
         }) {
           return /* @__PURE__ */jsxRuntimeExports.jsx(Modal, {
-            size: "fill",
+            size: "large",
             title: __("Export submissions", "petitioner-theme"),
             onRequestClose: onClose,
             children: /* @__PURE__ */jsxRuntimeExports.jsxs(Card, {
               children: [/* @__PURE__ */jsxRuntimeExports.jsx(CardHeader, {
-                children: /* @__PURE__ */jsxRuntimeExports.jsx(Heading, {
-                  children: "Preparing to export 200 submissions"
+                children: /* @__PURE__ */jsxRuntimeExports.jsxs(Heading, {
+                  children: ["Preparing to export ", total, " submissions"]
                 })
-              }), /* @__PURE__ */jsxRuntimeExports.jsx(CardBody, {
-                children: /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+              }), /* @__PURE__ */jsxRuntimeExports.jsxs(CardBody, {
+                children: [/* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {}), /* @__PURE__ */jsxRuntimeExports.jsx(StyledExportButton, {
                   variant: "primary",
                   href: getExportURL(),
-                  children: __("Export entries as CSV", "petitioner")
-                })
+                  children: __("Export as CSV", "petitioner")
+                })]
               })]
             })
           });
@@ -36086,6 +36094,7 @@
               onSave: onModalSave,
               onDelete: onModalDelete
             }) : null, showExportModal && /* @__PURE__ */jsxRuntimeExports.jsx(ExportModal, {
+              total,
               onClose: handleExportClose
             })]
           });

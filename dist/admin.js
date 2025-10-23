@@ -1,7 +1,7 @@
 var __freeze = Object.freeze;
 var __defProp = Object.defineProperty;
 var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(raw || cooked.slice()) }));
-var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
 function __vite_legacy_guard() {
   import.meta.url;
   import("_").catch(() => 1);
@@ -29046,19 +29046,32 @@ function SubmissionEditModal({
     }
   );
 }
+const StyledExportButton = dt(Button)(_l || (_l = __template([""])));
+const ConditionalLogic = ({}) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "Conditional logic component here" });
+};
+const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
 function ExportModal({
   onClose = () => {
-  }
+  },
+  total = 0
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Modal,
     {
-      size: "fill",
+      size: "large",
       title: __("Export submissions", "petitioner-theme"),
       onRequestClose: onClose,
       children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Heading, { children: "Preparing to export 200 submissions" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CardBody, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", href: getExportURL(), children: __("Export entries as CSV", "petitioner") }) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Heading, { children: [
+          "Preparing to export ",
+          total,
+          " submissions"
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(CardBody, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ConditionalLogic$1, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StyledExportButton, { variant: "primary", href: getExportURL(), children: __("Export as CSV", "petitioner") })
+        ] })
       ] })
     }
   );
@@ -29289,7 +29302,7 @@ function Submissions() {
         onDelete: onModalDelete
       }
     ) : null,
-    showExportModal && /* @__PURE__ */ jsxRuntimeExports.jsx(ExportModal, { onClose: handleExportClose })
+    showExportModal && /* @__PURE__ */ jsxRuntimeExports.jsx(ExportModal, { total, onClose: handleExportClose })
   ] });
 }
 function useCombinedRefs() {
@@ -33291,9 +33304,9 @@ function EditSubmit() {
 }
 const DragHandle = dt.div.attrs(() => ({
   className: "ptr-drag-handle"
-}))(_l || (_l = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
-const FieldPaletteWrapper = dt.div(_m || (_m = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
-const FieldPaletteItem = dt.div(_n || (_n = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
+}))(_m || (_m = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
+const FieldPaletteWrapper = dt.div(_n || (_n = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
+const FieldPaletteItem = dt.div(_o || (_o = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
 const D_PREFIX = "ptr_insert_";
 const getIDNoPrefix = (id2) => id2.replace(D_PREFIX, "");
 function PaletteDraggable({ id: id2, label }) {
@@ -33355,7 +33368,7 @@ const screenKeys = [
   "submit",
   "textarea"
 ];
-const BuilderSettingsWrapper = dt.div(_o || (_o = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
+const BuilderSettingsWrapper = dt.div(_p || (_p = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
 function BuilderSettings() {
   const { formBuilderFields, builderEditScreen, setBuilderEditScreen } = useFormBuilderContext();
   const currentField = formBuilderFields[builderEditScreen];
@@ -33399,9 +33412,9 @@ function BuilderSettings() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(ScreenComponent, {})
   ] });
 }
-const FakeFieldLabel = dt.p(_p || (_p = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
-const FakeField = dt.div(_q || (_q = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
-const StyledTextarea = dt(FakeField)(_r || (_r = __template(["\n	min-height: 100px;\n"])));
+const FakeFieldLabel = dt.p(_q || (_q = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
+const FakeField = dt.div(_r || (_r = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
+const StyledTextarea = dt(FakeField)(_s || (_s = __template(["\n	min-height: 100px;\n"])));
 function DynamicField({
   name = "",
   inputType = "text",
@@ -33526,7 +33539,7 @@ function DynamicField({
     }
   );
 }
-const Wrapper = dt.div(_s || (_s = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
+const Wrapper = dt.div(_t || (_t = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
 function SortableField({ id: id2 }) {
   const { formBuilderFields, builderEditScreen } = useFormBuilderContext();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
@@ -33570,7 +33583,7 @@ function SortableField({ id: id2 }) {
     }
   );
 }
-const StyledPanel = dt(Panel)(_t || (_t = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
+const StyledPanel = dt(Panel)(_u || (_u = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
 function FormBuilderComponent() {
   const {
     fieldOrder,
@@ -33937,9 +33950,9 @@ function CodeEditor({ title = "", help = "", code = "" }) {
     )
   ] });
 }
-const PtrColorPicker = dt.div(_u || (_u = __template(["\n	position: relative;\n	display: inline-block;\n"])));
-const ColorPickerButton = dt(Button)(_v || (_v = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
-const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_w || (_w = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
+const PtrColorPicker = dt.div(_v || (_v = __template(["\n	position: relative;\n	display: inline-block;\n"])));
+const ColorPickerButton = dt(Button)(_w || (_w = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
+const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_x || (_x = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
 function ColorField({
   color = "#fff",
   onColorChange = (color2) => {
@@ -34481,9 +34494,9 @@ function Integrations() {
     integration.hiddenFields
   ] }, integration.name)) });
 }
-const StyledHeading = dt(Heading)(_x || (_x = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
-const StyledText = dt(Text)(_y || (_y = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
-const StyledTextControl = dt(TextControl)(_z || (_z = __template(["\n	width: 100%;\n"])));
+const StyledHeading = dt(Heading)(_y || (_y = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
+const StyledText = dt(Text)(_z || (_z = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
+const StyledTextControl = dt(TextControl)(_A || (_A = __template(["\n	width: 100%;\n"])));
 function TextInput({
   id: id2,
   label,
