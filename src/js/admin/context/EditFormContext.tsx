@@ -44,6 +44,7 @@ const normalizePetitionerData = () => {
 		success_message_title: '',
 		success_message: '',
 		from_field: '',
+		from_name: '',
 		add_honeypot: true,
 		form_id: null,
 		hide_last_names: true
@@ -78,6 +79,7 @@ export function EditFormContextProvider({
 		ty_email = '',
 		ty_email_subject = '',
 		from_field = '',
+		from_name = '',
 		add_honeypot = true,
 		override_success_message = false,
 		success_message_title = '',
@@ -105,6 +107,7 @@ export function EditFormContextProvider({
 		ty_email,
 		ty_email_subject,
 		from_field,
+		from_name,
 		add_honeypot,
 		override_success_message,
 		success_message_title,

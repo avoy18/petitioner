@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.5.2
+Stable Tag: 0.5.3
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,10 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.5.3 =
+* Add a new "From name" field that allows you to customize the sender name in outgoing emails, overriding the default email format to display your preferred sender name.
+* Bugfix: fixed missing default from name if you don't pass anything at all
 
 = 0.5.2 =
 * Bug: fixed an issue with making checkboxed checked by default
