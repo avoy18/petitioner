@@ -125,6 +125,7 @@ class AV_Email_Confirmations
             'send_ty_email'             => $force_ty_email,       // set TRUE only when resending
             'submission_id'             => $submission_id,
             'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
+            'from_name'                 => get_post_meta($form_id, '_petitioner_from_name', true),
         );
 
         /**

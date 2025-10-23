@@ -160,6 +160,7 @@ class AV_Petitioner_Submissions_Controller
             'confirm_emails'            => $default_approval_status === 'Email',
             'submission_id'             => $submission_id,
             'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
+            'from_name'                 => get_post_meta($form_id, '_petitioner_from_name', true),
         );
 
         /**
