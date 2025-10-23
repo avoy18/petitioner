@@ -121,7 +121,7 @@ export default function AdvancedSettings() {
 					label={__('From name', 'petitioner')}
 					value={formState.from_name}
 					defaultValue={defaultFromName}
-					type="email"
+					type="text"
 					help={__(
 						`This is the name next to the email address that will appear in the 'From' field of the email. If empty will default to '${defaultFromName}'.`,
 						'petitioner'

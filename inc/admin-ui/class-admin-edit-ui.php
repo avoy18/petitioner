@@ -32,6 +32,7 @@ class AV_Petitioner_Admin_Edit_UI
         'success_message'           => '_petitioner_success_message',
         'success_message_title'     => '_petitioner_success_message_title',
         'from_field'                => '_petitioner_from_field',
+        'from_name'                 => '_petitioner_from_name',
         'add_honeypot'              => '_petitioner_add_honeypot',
         'form_fields'               => '_petitioner_form_fields',
         'field_order'               => '_petitioner_field_order',
@@ -107,6 +108,7 @@ class AV_Petitioner_Admin_Edit_UI
             "success_message"               => wp_kses_post($meta_values['success_message']),
             "success_message_title"         => sanitize_text_field($meta_values['success_message_title']),
             "from_field"                    => sanitize_text_field($meta_values['from_field']),
+            "from_name"                     => sanitize_text_field($meta_values['from_name']),
             "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
             "hide_last_names"               => (bool) $meta_values['hide_last_names'],
             "default_values"                => [
