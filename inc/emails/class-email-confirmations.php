@@ -127,6 +127,18 @@ class AV_Email_Confirmations
             'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
         );
 
+        /**
+         * Filter the mailer settings before sending emails for email confirmations.
+         *
+         * This allows modification of the mailer settings (e.g. adding/removing recipients)
+         * before the emails are sent.
+         *
+         * @param array $mailer_settings Associative array of mailer settings.
+         * @param array $submission_data Associative array of submission data.
+         * @return array Modified mailer settings.
+         */
+        $mailer_settings = apply_filters('av_petitioner_confirmation_mailer_settings', $mailer_settings, $submission);
+
 	    $mailer = new AV_Petitioner_Mailer($mailer_settings);
 
         return $mailer->send_emails();
