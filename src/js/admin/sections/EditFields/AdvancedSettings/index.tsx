@@ -4,6 +4,7 @@ import { useEditFormContext } from '@admin/context/EditFormContext';
 import type { DefaultValues } from '@admin/sections/EditFields/consts';
 import { __ } from '@wordpress/i18n';
 import CheckboxInput from '@admin/components/CheckboxInput';
+
 /*
  * Normalize the default values from the raw data
  * to ensure they match the expected structure.
@@ -11,7 +12,7 @@ import CheckboxInput from '@admin/components/CheckboxInput';
  * @param raw - The raw default values from the server.
  * @returns An object with default values for the form fields.
  */
-const normalizeDefaultValues = (raw: unknown): DefaultValues => {
+export const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 	const DEFAULT_SUBJECT = __(
 		'Thank you for signing the {{petition_title}}',
 		'petitioner'
@@ -30,6 +31,7 @@ const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 		ty_email_confirm: DEFAULT_CONTENT,
 		success_message_title: '',
 		success_message: '',
+		country_list: [],
 	};
 
 	if (typeof raw !== 'object' || raw === null) {
@@ -40,6 +42,15 @@ const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 
 	for (const key of Object.keys(defaultValues) as (keyof DefaultValues)[]) {
 		const value = input[key];
+
+		if (key === 'country_list') {
+			if (Array.isArray(value)) {
+				defaultValues[key] = value;
+			}
+
+			continue;
+		}
+
 		if (typeof value === 'string' && value.trim().length > 0) {
 			defaultValues[key] = value;
 		}
@@ -243,7 +254,7 @@ export default function AdvancedSettings() {
 								'petitioner'
 							)}
 							value={
-								formState?.ty_email_subject.length > 0
+								String(formState?.ty_email_subject).length > 0
 									? formState.ty_email_subject
 									: defaultTYSubject
 							}
@@ -285,7 +296,7 @@ export default function AdvancedSettings() {
 							</div>
 						}
 						value={
-							formState?.ty_email?.length > 0
+							String(formState?.ty_email).length > 0
 								? formState.ty_email
 								: defaultTYEmailContent
 						}
@@ -318,8 +329,9 @@ export default function AdvancedSettings() {
 							style={{ width: '100%' }}
 							type="text"
 							label={__('Success message title', 'petitioner')}
+							// @ts-ignore - the string here should work fine
 							value={
-								formState?.success_message_title.length > 0
+								String(formState?.success_message_title).length > 0
 									? formState.success_message_title
 									: defaultSuccessMessageTitle
 							}
@@ -338,7 +350,7 @@ export default function AdvancedSettings() {
 							'petitioner'
 						)}
 						value={
-							formState?.success_message?.length > 0
+							String(formState?.success_message).length > 0
 								? formState.success_message
 								: defaultSuccessMessageContent
 						}

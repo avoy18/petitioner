@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import Tabs from '@admin/components/Tabs';
-
+import { act } from 'react-dom/test-utils';
 const tabs = [
 	{
 		name: 'tabOne',
@@ -39,9 +39,11 @@ describe('Tabs sharable component', () => {
 			const tabTitleRegex = new RegExp(tab.title, 'i');
 			const link = screen.getByRole('tab', { name: tabTitleRegex });
 
-			await user.click(link);
+			await act(async () => {
+				await user.click(link);
+			});
 
-			expect(mockHandleTab).toHaveBeenCalledWith(tab.name);
+			expect(mockHandleTab).toHaveBeenCalledWith(tab.name, tabs.map(t => t.name));
 
 			// Check that the corresponding tab content appears
 			const contentRegex = new RegExp(

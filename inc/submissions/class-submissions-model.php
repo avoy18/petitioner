@@ -6,6 +6,27 @@ if (!defined('ABSPATH')) {
 
 class AV_Petitioner_Submissions_Model
 {
+    public static $ALLOWED_FIELDS = [
+        'id',
+        'form_id',
+        'fname',
+        'lname',
+        'email',
+        'country',
+        'salutation',
+        'phone',
+        'street_address',
+        'city',
+        'postal_code',
+        'comments',
+        'bcc_yourself',
+        'newsletter',
+        'hide_name',
+        'accept_tos',
+        'approval_status',
+        'submitted_at',
+        'confirmation_token',
+    ];
 
     public static function table_name()
     {
@@ -53,12 +74,52 @@ class AV_Petitioner_Submissions_Model
     /**
      * Retrieves form submissions with pagination and filtering options.
      *
-     * This method fetches submissions for a specific form ID, allowing for pagination
-     * and optional filtering based on provided settings.
+     * Fetches submissions for a specific form ID with pagination and filtering capabilities.
      *
      * @param int $form_id The ID of the form to retrieve submissions for.
-     * @param array $settings Optional settings for pagination and filtering.
-     * @return array An array containing the submissions and total count.
+     * @param array $settings Optional settings for pagination and filtering. Supported keys:
+     *   - 'per_page' (int, default: 10) - Number of submissions per page
+     *   - 'offset' (int, default: 0) - Number of submissions to skip
+     *   - 'fields' (string|array, default: '*') - Fields to select. Can be '*' for all fields or array of specific field names
+     *   - 'query' (array, default: []) - Filter criteria as key-value pairs (field => value)
+     *   - 'order' (string, default: 'DESC') - Sort order (ASC or DESC)
+     * 
+     * @return array Returns an associative array with:
+     *   - 'submissions' (array) - Array of submission objects with the following properties:
+     *     * id (int) - Unique submission ID
+     *     * form_id (int) - ID of the form this submission belongs to
+     *     * fname (string) - First name
+     *     * lname (string) - Last name
+     *     * email (string) - Email address
+     *     * country (string) - Country
+     *     * salutation (string) - Salutation/title
+     *     * phone (string) - Phone number
+     *     * street_address (string) - Street address
+     *     * city (string) - City
+     *     * postal_code (string) - Postal/ZIP code
+     *     * comments (string) - Additional comments
+     *     * bcc_yourself (int) - Whether to BCC the submitter (0 or 1)
+     *     * newsletter (int) - Whether to subscribe to newsletter (0 or 1)
+     *     * hide_name (int) - Whether to hide name publicly (0 or 1)
+     *     * accept_tos (int) - Whether terms of service were accepted (0 or 1)
+     *     * approval_status (string) - Status: 'Confirmed', 'Declined', or 'Pending'
+     *     * submitted_at (string) - Submission timestamp (MySQL datetime format)
+     *     * confirmation_token (string|null) - Token for email confirmation (null if confirmed)
+     *   - 'total' (int) - Total number of submissions matching the criteria (ignores pagination)
+     * 
+     * @example
+     * // Get first 20 submissions with specific fields
+     * $result = AV_Petitioner_Submissions_Model::get_form_submissions(123, [
+     *     'per_page' => 20,
+     *     'fields' => ['id', 'fname', 'lname', 'email', 'submitted_at'],
+     *     'order' => 'ASC'
+     * ]);
+     * 
+     * @example
+     * // Get confirmed submissions only
+     * $result = AV_Petitioner_Submissions_Model::get_form_submissions(123, [
+     *     'query' => ['approval_status' => 'Confirmed']
+     * ]);
      */
     public static function get_form_submissions($form_id, $settings)
     {
@@ -68,29 +129,11 @@ class AV_Petitioner_Submissions_Model
         $offset   = isset($settings['offset']) ? absint($settings['offset']) : 0;
         $fields   = isset($settings['fields']) ? $settings['fields'] : '*';
         $query    = isset($settings['query']) ? $settings['query'] : [];
+        $order    = isset($settings['order']) ? $settings['order'] : 'DESC';
+        $orderby  = isset($settings['orderby']) ? $settings['orderby'] : 'submitted_at';
 
         // Validate fields
-        $allowed_fields = [
-            'id',
-            'form_id',
-            'fname',
-            'lname',
-            'email',
-            'country',
-            'salutation',
-            'phone',
-            'street_address',
-            'city',
-            'postal_code',
-            'comments',
-            'bcc_yourself',
-            'newsletter',
-            'hide_name',
-            'accept_tos',
-            'approval_status',
-            'submitted_at',
-            'confirmation_token',
-        ];
+        $allowed_fields = self::$ALLOWED_FIELDS;
 
         if ($fields !== '*') {
             $fields_arr = array_intersect($fields, $allowed_fields);
@@ -114,14 +157,25 @@ class AV_Petitioner_Submissions_Model
 
         $where_sql = implode(' AND ', $where);
 
+        $orderby = in_array($orderby, $allowed_fields, true) ? $orderby : 'submitted_at';
+        $order   = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
+
         // Get submissions
-        $sql = "SELECT $fields FROM {$wpdb->prefix}av_petitioner_submissions WHERE $where_sql LIMIT %d OFFSET %d";
+        $sql = "SELECT $fields
+                FROM {$wpdb->prefix}av_petitioner_submissions 
+                WHERE $where_sql 
+                ORDER BY $orderby $order 
+                LIMIT %d OFFSET %d";
+
         $params_with_limit = array_merge($params, [$per_page, $offset]);
         $submissions = $wpdb->get_results($wpdb->prepare($sql, ...$params_with_limit));
 
         // Get total count (do NOT include limit/offset)
-        $count_sql = "SELECT COUNT(*) FROM {$wpdb->prefix}av_petitioner_submissions WHERE $where_sql";
-        $total_submissions = $wpdb->get_var($wpdb->prepare($count_sql, ...$params));
+        $count_sql = "SELECT COUNT(*) 
+                      FROM {$wpdb->prefix}av_petitioner_submissions 
+                      WHERE $where_sql";
+
+        $total_submissions = (int) $wpdb->get_var($wpdb->prepare($count_sql, ...$params));
 
         if ($total_submissions === null) {
             $total_submissions = 0; // Ensure we return 0 if no submissions found
@@ -149,16 +203,17 @@ class AV_Petitioner_Submissions_Model
     /**
      * Update a single submission by ID.
      *
-     * @param int $id Submission ID.
+     * @param int|string $id Submission ID.
      * @param array $fields Associative array of fields to update (column => value).
      * @return int|false Number of rows updated or false on failure.
      */
-    public static function update_submission($id, array $fields)
+    public static function update_submission($id, $fields)
     {
         global $wpdb;
 
         $id = absint($id);
         if (!$id || empty($fields)) {
+            av_ptr_error_log(AV_Petitioner_Labels::get('error_generic'));
             return false;
         }
 
@@ -170,6 +225,29 @@ class AV_Petitioner_Submissions_Model
             ['id' => $id],     // where clause
             null,              // formats (optional)
             ['%d']             // id is always int
+        );
+    }
+
+    /**
+     * Delete a single submission by ID.
+     *
+     * @param int|string $submission_id Submission ID.
+     * @return int|false Number of rows deleted or false on failure.
+     */
+    public static function delete_submission($submission_id)
+    {
+        global $wpdb;
+        $id = absint($submission_id);
+
+        if (!$id) {
+            return false;
+        }
+
+        $table = $wpdb->prefix . 'av_petitioner_submissions';
+
+        return $wpdb->delete(
+            $table,
+            ['id' => $id],
         );
     }
 
@@ -194,7 +272,7 @@ class AV_Petitioner_Submissions_Model
      * @param array $data Associative array of submission data.
      * @return int|false Inserted row ID on success, false on failure.
      */
-    public static function create_submission(array $data)
+    public static function create_submission($data)
     {
         global $wpdb;
         $table = $wpdb->prefix . 'av_petitioner_submissions';

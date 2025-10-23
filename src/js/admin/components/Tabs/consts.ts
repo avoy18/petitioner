@@ -7,5 +7,7 @@ export type Tab = {
 
 export type TabPanelProps = {
 	tabs: Tab[];
-	onTabSelect?: (name: string) => void;
+	onTabSelect?: (name: Tab['name'], tabKeys: Tab['name'][]) => void;
+	defaultTab?: Tab['name'];
+	updateURL?: boolean;
 };

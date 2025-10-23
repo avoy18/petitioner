@@ -5,7 +5,11 @@ import PetitionDetails from '@admin/sections/EditFields/PetitionDetails';
 import BottomCallout from '@admin/sections/EditFields/BottomCallout';
 import AdvancedSettings from '@admin/sections/EditFields/AdvancedSettings';
 import Tabs from '@admin/components/Tabs';
-import { EditFormContextProvider } from '@admin/context/EditFormContext';
+
+import {
+	EditFormContextProvider,
+	useEditFormContext,
+} from '@admin/context/EditFormContext';
 
 export const tabs = [
 	{
@@ -51,9 +55,16 @@ export const tabs = [
 ];
 
 function EditFieldsComponent() {
+	const { formState } = useEditFormContext();
+	const { active_tab } = formState;
+
 	return (
 		<>
-			<Tabs tabs={tabs} />
+			<Tabs
+				tabs={tabs}
+				defaultTab={active_tab}
+				updateURL={true}
+			/>
 			<BottomCallout />
 		</>
 	);
