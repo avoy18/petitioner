@@ -24,6 +24,7 @@ export const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 
 	const defaultValues: DefaultValues = {
 		from_field: '',
+		from_name: '',
 		ty_email_subject: DEFAULT_SUBJECT,
 		ty_email: DEFAULT_CONTENT,
 		ty_email_subject_confirm: DEFAULT_SUBJECT,
@@ -83,6 +84,7 @@ export default function AdvancedSettings() {
 	);
 
 	const defaultFromField = defaultValues?.from_field || '';
+	const defaultFromName = defaultValues?.from_name || '';
 
 	const confirmEmails = formState.approval_state === 'Email';
 
@@ -121,6 +123,23 @@ export default function AdvancedSettings() {
 					name="petitioner_from_field"
 					id="petitioner_from_field"
 					onChange={(value) => updateFormState('from_field', value)}
+				/>
+			</p>
+
+			<p>
+				<TextControl
+					style={{ width: '100%' }}
+					label={__('From name', 'petitioner')}
+					value={formState.from_name}
+					defaultValue={defaultFromName}
+					type="text"
+					help={__(
+						`This is the name next to the email address that will appear in the 'From' field of the email. If empty will default to '${defaultFromName}'.`,
+						'petitioner'
+					)}
+					name="petitioner_from_name"
+					id="petitioner_from_name"
+					onChange={(value) => updateFormState('from_name', value)}
 				/>
 			</p>
 

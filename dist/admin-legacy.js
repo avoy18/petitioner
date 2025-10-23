@@ -35430,6 +35430,7 @@
             success_message_title: "",
             success_message: "",
             from_field: "",
+            from_name: "",
             add_honeypot: true,
             form_id: null,
             hide_last_names: true,
@@ -35497,6 +35498,7 @@
           const DEFAULT_CONTENT = __("Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.", "petitioner");
           const defaultValues = {
             from_field: "",
+            from_name: "",
             ty_email_subject: DEFAULT_SUBJECT,
             ty_email: DEFAULT_CONTENT,
             ty_email_subject_confirm: DEFAULT_SUBJECT,
@@ -35537,6 +35539,7 @@
           } = useEditFormContext();
           const defaultValues = normalizeDefaultValues(window.petitionerData?.default_values);
           const defaultFromField = defaultValues?.from_field || "";
+          const defaultFromName = defaultValues?.from_name || "";
           const confirmEmails = formState.approval_state === "Email";
           const {
             subject: defaultTYSubject,
@@ -35563,6 +35566,20 @@
                 name: "petitioner_from_field",
                 id: "petitioner_from_field",
                 onChange: value => updateFormState("from_field", value)
+              })
+            }), /* @__PURE__ */jsxRuntimeExports.jsx("p", {
+              children: /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
+                style: {
+                  width: "100%"
+                },
+                label: __("From name", "petitioner"),
+                value: formState.from_name,
+                defaultValue: defaultFromName,
+                type: "text",
+                help: __(`This is the name next to the email address that will appear in the 'From' field of the email. If empty will default to '${defaultFromName}'.`, "petitioner"),
+                name: "petitioner_from_name",
+                id: "petitioner_from_name",
+                onChange: value => updateFormState("from_name", value)
               })
             }), /* @__PURE__ */jsxRuntimeExports.jsx(CheckboxInput, {
               checked: formState.require_approval,
