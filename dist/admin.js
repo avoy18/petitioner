@@ -28349,9 +28349,9 @@ const SPACINGS = {
 const TRANSITIONS = {
   sm: "0.15s"
 };
-const TableHeading = dt.th(_d || (_d = __template(["\n	", ";\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ($width) => "width: ".concat($width));
+const TableHeading = dt.th(_d || (_d = __template(["\n	", "\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ({ $width }) => "width: ".concat($width, ";"));
 const HeadingLabel = dt.div(_e2 || (_e2 = __template(["\n	display: inline-flex;\n	gap: var(--ptr-admin-spacing-xs);\n"])));
-const StyledTable = dt.table(_g || (_g = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_f || (_f = __template(["\n			tr {\n				transition: ", ";\n				&:hover {\n					cursor: pointer;\n					background: ", " !important;\n				}\n			}\n		"])), TRANSITIONS.sm, COLORS.grey));
+const StyledTable = dt.table(_g || (_g = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_f || (_f = __template(["\n				tr {\n					transition: ", ";\n					&:hover {\n						cursor: pointer;\n						background: ", " !important;\n					}\n				}\n			"])), TRANSITIONS.sm, COLORS.grey));
 function Table({
   headings,
   rows,
@@ -29168,7 +29168,7 @@ function Submissions() {
     headingData.push({
       id: "status",
       label: __("Status", "petitioner"),
-      width: "200px"
+      width: "220px"
     });
   }
   const tableRows = submissions.map((item) => {

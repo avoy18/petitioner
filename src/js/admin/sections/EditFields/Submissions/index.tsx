@@ -170,7 +170,7 @@ export default function Submissions() {
 		headingData.push({
 			id: 'status',
 			label: __('Status', 'petitioner'),
-			width: '200px',
+			width: '220px',
 		});
 	}
 

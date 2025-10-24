@@ -35224,7 +35224,9 @@
           sm: "0.15s"
         };
         const TableHeading = dt.th`
-	${$width => `width: ${$width}`};
+	${({
+          $width
+        }) => `width: ${$width};`}
 	cursor: pointer;
 	&,
 	&.sorted {
@@ -35244,14 +35246,14 @@
 		${({
           $clickable
         }) => $clickable && lt`
-			tr {
-				transition: ${TRANSITIONS.sm};
-				&:hover {
-					cursor: pointer;
-					background: ${COLORS.grey} !important;
+				tr {
+					transition: ${TRANSITIONS.sm};
+					&:hover {
+						cursor: pointer;
+						background: ${COLORS.grey} !important;
+					}
 				}
-			}
-		`}
+			`}
 	}
 `;
         function Table({
@@ -35988,7 +35990,7 @@
             headingData.push({
               id: "status",
               label: __("Status", "petitioner"),
-              width: "200px"
+              width: "220px"
             });
           }
           const tableRows = submissions.map(item => {
