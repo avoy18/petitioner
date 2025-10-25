@@ -17,7 +17,7 @@ class AV_Petitioner_Admin_Shared
 
     public function set_active_tabs($petitioner_info = [])
     {
-        $active_tab = !empty($_GET['ptr_active_tab']) ? sanitize_text_field($_GET['ptr_active_tab']) : '';
+        $active_tab = !empty($_GET['ptr_active_tab']) ? sanitize_key(wp_unslash($_GET['ptr_active_tab'])) : '';
 
         $petitioner_info['active_tab'] = $active_tab;
 
