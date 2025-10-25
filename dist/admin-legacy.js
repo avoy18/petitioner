@@ -36869,7 +36869,7 @@
             shouldCloseOnClickOutside: !valuesChanged,
             shouldCloseOnEsc: !valuesChanged,
             size: "large",
-            title: __("Submission details", "petitioner-theme"),
+            title: __("Submission details", "petitioner"),
             onRequestClose,
             headerActions: /* @__PURE__ */jsxRuntimeExports.jsxs(ActionButtonWrapper, {
               children: [window?.petitionerData?.approval_state === "Email" && /* @__PURE__ */jsxRuntimeExports.jsx(ResendButton, {

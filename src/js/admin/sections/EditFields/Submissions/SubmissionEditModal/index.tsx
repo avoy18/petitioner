@@ -166,7 +166,7 @@ export default function SubmissionEditModal({
 			shouldCloseOnClickOutside={!valuesChanged}
 			shouldCloseOnEsc={!valuesChanged}
 			size="large"
-			title={__('Submission details', 'petitioner-theme')}
+			title={__('Submission details', 'petitioner')}
 			onRequestClose={onRequestClose}
 			headerActions={
 				<ActionButtonWrapper>

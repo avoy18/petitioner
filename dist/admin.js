@@ -29525,7 +29525,7 @@ function SubmissionEditModal({
       shouldCloseOnClickOutside: !valuesChanged,
       shouldCloseOnEsc: !valuesChanged,
       size: "large",
-      title: __("Submission details", "petitioner-theme"),
+      title: __("Submission details", "petitioner"),
       onRequestClose,
       headerActions: /* @__PURE__ */ jsxRuntimeExports.jsxs(ActionButtonWrapper, { children: [
         ((_a2 = window == null ? void 0 : window.petitionerData) == null ? void 0 : _a2.approval_state) === "Email" && /* @__PURE__ */ jsxRuntimeExports.jsx(ResendButton, { item: submissionDetails }),
