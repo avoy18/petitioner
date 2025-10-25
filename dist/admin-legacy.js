@@ -36251,7 +36251,7 @@
               }, i));
             }
             return buttons;
-          }, [total, perPage, currentPage, onPageChange]);
+          }, [total, perPage, currentPage]);
         };
         const useTableHeadings = (baseHeadings, conditionalHeadings = []) => {
           return reactExports.useMemo(() => {

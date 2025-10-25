@@ -35,7 +35,7 @@ export const usePagination = (
 		}
 
 		return buttons;
-	}, [total, perPage, currentPage, onPageChange]);
+	}, [total, perPage, currentPage]);
 };
 
 /**
