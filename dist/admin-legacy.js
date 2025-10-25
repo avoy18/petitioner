@@ -36750,13 +36750,15 @@
           if (label === "country") {
             const defaultValues = normalizeDefaultValues(window.petitionerData.default_values);
             const allCountries = defaultValues.country_list;
+            const countries = allCountries || [];
+            const countryOptions = countries.map(item => ({
+              label: item,
+              value: item
+            }));
             return /* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
               value,
               onChange,
-              options: allCountries.map(item => ({
-                label: item,
-                value: item
-              }))
+              options: countryOptions
             });
           }
           if (type === "textarea") {

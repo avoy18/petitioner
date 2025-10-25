@@ -29393,7 +29393,9 @@ function SubmissionEditField({
       window.petitionerData.default_values
     );
     const allCountries = defaultValues.country_list;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, options: allCountries.map((item) => ({ label: item, value: item })) });
+    const countries = allCountries || [];
+    const countryOptions = countries.map((item) => ({ label: item, value: item }));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, options: countryOptions });
   }
   if (type === "textarea") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(TextareaControl, { value, onChange });
