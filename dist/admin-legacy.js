@@ -34512,9 +34512,6 @@
             })
           });
         }
-        const UPDATE_ACTION = "petitioner_update_submission";
-        const FETCH_ACTION = "petitioner_fetch_submissions";
-        const DELETE_ACTION = "petitioner_delete_submission";
 
         /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 
@@ -35877,6 +35874,9 @@
           }
           return petitionerNonce;
         };
+        const UPDATE_ACTION = "petitioner_update_submission";
+        const FETCH_ACTION = "petitioner_fetch_submissions";
+        const DELETE_ACTION = "petitioner_delete_submission";
         const FormBuilderContext = reactExports.createContext(null);
         const DRAGGABLE_FIELD_TYPES = [{
           fieldKey: "phone",
@@ -36942,12 +36942,16 @@
             fetchData();
           }, [currentPage, form_id, order, orderby]);
           reactExports.useEffect(() => {
-            window.addEventListener("onPtrApprovalChange", () => {
+            const handleApprovalChange = () => {
               setShowApproval(requireApproval);
               if (approvalState) {
                 setDefaultApprovalState(approvalState);
               }
-            });
+            };
+            window.addEventListener("onPtrApprovalChange", handleApprovalChange);
+            return () => {
+              window.removeEventListener("onPtrApprovalChange", handleApprovalChange);
+            };
           }, []);
           const {
             showNotice,
@@ -36956,24 +36960,20 @@
           const handleStatusChange = async (id, newStatus, changeAction) => {
             const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
             if (window.confirm(question)) {
-              const finalAjaxURL = `${ajaxurl}?action=${UPDATE_ACTION}`;
-              try {
-                const finalData = new FormData();
-                finalData.append("id", String(id));
-                finalData.append("status", newStatus);
-                const response = await fetch(finalAjaxURL, {
-                  method: "POST",
-                  body: finalData
-                });
-                const data = await response.json();
-                if (data.success) {
+              updateSubmissions({
+                data: {
+                  id,
+                  approval_status: newStatus
+                },
+                onSuccess: () => {
                   fetchData();
-                } else {
-                  console.error("Failed to update submission status");
+                  showNotice("success", __("Submission status updated!", "petitioner"));
+                },
+                onError: msg => {
+                  console.error(msg);
+                  showNotice("error", __("Failed to update submission status!", "petitioner"));
                 }
-              } catch (error) {
-                console.error("Error updating submission status:", error);
-              }
+              });
             }
           };
           const handlePaginationClick = page => {

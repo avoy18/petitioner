@@ -82,16 +82,25 @@ export default function Submissions() {
 	}, [currentPage, form_id, order, orderby]);
 
 	useEffect(() => {
-		window.addEventListener('onPtrApprovalChange', () => {
+		const handleApprovalChange = () => {
 			setShowApproval(requireApproval);
 
 			if (approvalState) {
 				setDefaultApprovalState(approvalState);
 			}
-		});
+		};
+
+		window.addEventListener('onPtrApprovalChange', handleApprovalChange);
+
+		return () => {
+			window.removeEventListener(
+				'onPtrApprovalChange',
+				handleApprovalChange
+			);
+		};
 	}, []);
 
-	const { showNotice, hideNotice, NoticeElement } = useNoticeSystem();
+	const { showNotice, NoticeElement } = useNoticeSystem();
 
 	const handleStatusChange = async (
 		id: SubmissionID,
@@ -101,27 +110,26 @@ export default function Submissions() {
 		const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
 
 		if (window.confirm(question)) {
-			const finalAjaxURL = `${ajaxurl}?action=${UPDATE_ACTION}`;
-			try {
-				const finalData = new FormData();
-				finalData.append('id', String(id));
-				finalData.append('status', newStatus);
-
-				const response = await fetch(finalAjaxURL, {
-					method: 'POST',
-					body: finalData,
-				});
-
-				const data = await response.json();
-
-				if (data.success) {
+			updateSubmissions({
+				data: {
+					id: id,
+					approval_status: newStatus,
+				},
+				onSuccess: () => {
 					fetchData();
-				} else {
-					console.error('Failed to update submission status');
-				}
-			} catch (error) {
-				console.error('Error updating submission status:', error);
-			}
+					showNotice(
+						'success',
+						__('Submission status updated!', 'petitioner')
+					);
+				},
+				onError: (msg) => {
+					console.error(msg);
+					showNotice(
+						'error',
+						__('Failed to update submission status!', 'petitioner')
+					);
+				},
+			});
 		}
 	};
 
@@ -222,12 +230,18 @@ export default function Submissions() {
 			await updateSubmissions({
 				data: newData,
 				onSuccess: () => {
-					showNotice('success', __('Submission updated!', 'petitioner'));
+					showNotice(
+						'success',
+						__('Submission updated!', 'petitioner')
+					);
 					onModalClose();
 				},
 				onError: (msg) => {
 					console.error(msg);
-					showNotice('error', __('Failed to update submission!', 'petitioner'));
+					showNotice(
+						'error',
+						__('Failed to update submission!', 'petitioner')
+					);
 					onModalClose();
 				},
 			});
@@ -247,7 +261,10 @@ export default function Submissions() {
 			},
 			onError: (msg: string) => {
 				console.error(msg);
-				showNotice('error', __('Failed to delete submission!', 'petitioner'));
+				showNotice(
+					'error',
+					__('Failed to delete submission!', 'petitioner')
+				);
 				onModalClose();
 			},
 		});
