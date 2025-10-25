@@ -2,6 +2,8 @@ import { TableHeading, HeadingLabel, StyledTable } from './styled';
 import type { TableProps, SortDirection, HeadingProps } from './consts';
 import { useState } from '@wordpress/element';
 
+export * from './hooks';
+
 export function Table({
 	headings,
 	rows,

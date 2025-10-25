@@ -14,6 +14,7 @@ import { getFieldLabels } from './../utilities';
 import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
 import SubmissionEditField from './SubmissionEditField';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
+import ResendButton from '../ApprovalStatus/ResendButton';
 
 const SUBMISSION_LABELS = getFieldLabels();
 
@@ -133,7 +134,10 @@ export default function SubmissionEditModal({
 		if (valuesChanged) {
 			if (
 				window.confirm(
-					__('Are you sure you want to close without saving?', 'petitioner')
+					__(
+						'Are you sure you want to close without saving?',
+						'petitioner'
+					)
 				)
 			) {
 				onClose();
@@ -165,6 +169,9 @@ export default function SubmissionEditModal({
 			onRequestClose={onRequestClose}
 			headerActions={
 				<ActionButtonWrapper>
+					{window?.petitionerData?.approval_state === 'Email' && (
+						<ResendButton item={submissionDetails} />
+					)}
 					<Button
 						variant="secondary"
 						isDestructive={true}
