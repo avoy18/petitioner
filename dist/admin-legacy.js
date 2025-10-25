@@ -36041,37 +36041,6 @@
           }
           return context;
         }
-        const COLORS = {
-          grey: "var(--ptr-admin-color-grey)",
-          light: "var(--ptr-admin-color-light)"
-        };
-        const SPACINGS = {
-          xs: "var(--ptr-admin-spacing-xs)",
-          sm: "var(--ptr-admin-spacing-sm)",
-          "4xl": "var(--ptr-admin-spacing-4xl)"
-        };
-        const TRANSITIONS = {
-          sm: "0.15s"
-        };
-        const ExportButtonWrapper = dt.div`
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: space-between;
-`;
-        const SubmissionTabWrapper = dt.div``;
-        const AlertStatusWrapper = dt.div`
-	position: fixed;
-	width: 80%;
-	max-width: 768px;
-	margin: auto;
-	top: ${SPACINGS["4xl"]};
-	left: 0;
-	right: 0;
-`;
-        const EntriesWrapper = dt.div`
-	position: relative;
-`;
         const fetchSubmissions = async ({
           currentPage = 1,
           formID,
@@ -36113,7 +36082,7 @@
           onError = msg => {}
         }) => {
           if (!data?.id) {
-            console.error("Submission fetch error: missing the submission id");
+            onError("Submission update error: missing the submission id");
             return;
           }
           const finalQuery = new URLSearchParams();
@@ -36134,10 +36103,10 @@
             if (response.success) {
               onSuccess(response.data);
             } else {
-              onError("Failed to fetch data");
+              onError("Failed to update data");
             }
           } catch (error) {
-            onError("Error fetching data: " + error);
+            onError("Error updating data: " + error);
           }
         };
         const deleteSubmissions = async ({
@@ -36146,7 +36115,7 @@
           onError
         }) => {
           if (!id) {
-            onError("Submission fetch error: missing the submission id");
+            onError("Submission delete error: missing the submission id");
             return;
           }
           const finalQuery = new URLSearchParams();
@@ -36214,42 +36183,27 @@
           const correctItem = ALl_POSSIBLE_FIELDS.find(item => item.fieldKey === label);
           return correctItem?.type || "text";
         };
-        const useAutoDismiss = (text, onAutoDismiss, delay = 3e3) => {
-          reactExports.useEffect(() => {
-            if (text) {
-              const timeout = setTimeout(onAutoDismiss, delay);
-              return () => clearTimeout(timeout);
-            }
-          }, [text, onAutoDismiss, delay]);
+        const ExportButtonWrapper = dt.div`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: space-between;
+`;
+        const SubmissionTabWrapper = dt.div``;
+        const EntriesWrapper = dt.div`
+	position: relative;
+`;
+        const COLORS = {
+          grey: "var(--ptr-admin-color-grey)",
+          light: "var(--ptr-admin-color-light)"
         };
-        const useNoticeSystem = () => {
-          const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
-          const [noticeText, setNoticeText] = reactExports.useState(void 0);
-          const showNotice = reactExports.useCallback((status, text) => {
-            setNoticeStatus(status);
-            setNoticeText(text);
-          }, []);
-          const hideNotice = reactExports.useCallback(() => {
-            setNoticeStatus(void 0);
-            setNoticeText(void 0);
-          }, []);
-          useAutoDismiss(noticeText, hideNotice);
-          const NoticeElement = reactExports.useCallback(() => {
-            if (!noticeStatus || !noticeText) return null;
-            return /* @__PURE__ */jsxRuntimeExports.jsx(AlertStatusWrapper, {
-              children: /* @__PURE__ */jsxRuntimeExports.jsx(Notice, {
-                isDismissible: true,
-                onDismiss: hideNotice,
-                status: noticeStatus,
-                children: noticeText
-              })
-            });
-          }, [noticeStatus, noticeText]);
-          return {
-            showNotice,
-            hideNotice,
-            NoticeElement
-          };
+        const SPACINGS = {
+          xs: "var(--ptr-admin-spacing-xs)",
+          sm: "var(--ptr-admin-spacing-sm)",
+          "4xl": "var(--ptr-admin-spacing-4xl)"
+        };
+        const TRANSITIONS = {
+          sm: "0.15s"
         };
         const TableHeading = dt.th`
 	${({
@@ -36935,6 +36889,54 @@
             })
           });
         }
+        const AlertStatusWrapper = dt.div`
+	position: fixed;
+	width: 80%;
+	max-width: 768px;
+	margin: auto;
+	top: ${SPACINGS["4xl"]};
+	left: 0;
+	right: 0;
+`;
+        const useNoticeSystem = () => {
+          const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
+          const [noticeText, setNoticeText] = reactExports.useState(void 0);
+          const showNotice = reactExports.useCallback((status, text) => {
+            setNoticeStatus(status);
+            setNoticeText(text);
+          }, []);
+          const hideNotice = reactExports.useCallback(() => {
+            setNoticeStatus(void 0);
+            setNoticeText(void 0);
+          }, []);
+          reactExports.useEffect(() => {
+            if (noticeText) {
+              const timeout = setTimeout(hideNotice, 3e3);
+              return () => clearTimeout(timeout);
+            }
+          }, [noticeText, hideNotice]);
+          return {
+            showNotice,
+            hideNotice,
+            noticeStatus,
+            noticeText
+          };
+        };
+        function NoticeSystem({
+          noticeStatus,
+          noticeText,
+          hideNotice
+        }) {
+          if (!noticeStatus || !noticeText) return null;
+          return /* @__PURE__ */jsxRuntimeExports.jsx(AlertStatusWrapper, {
+            children: /* @__PURE__ */jsxRuntimeExports.jsx(Notice, {
+              isDismissible: true,
+              onDismiss: hideNotice,
+              status: noticeStatus,
+              children: noticeText
+            })
+          });
+        }
         const SUBMISSION_LABELS = getFieldLabels();
         function Submissions() {
           const {
@@ -36963,7 +36965,9 @@
           const [activeModal, setActiveModal] = reactExports.useState();
           const {
             showNotice,
-            NoticeElement
+            noticeStatus,
+            noticeText,
+            hideNotice
           } = useNoticeSystem();
           const hasSubmissions = submissions.length > 0;
           const fetchData = async () => {
@@ -37116,7 +37120,11 @@
                 children: __("Submissions", "petitioner-theme")
               }), hasSubmissions && /* @__PURE__ */jsxRuntimeExports.jsx(ExportComponent, {})]
             }), /* @__PURE__ */jsxRuntimeExports.jsxs(EntriesWrapper, {
-              children: [/* @__PURE__ */jsxRuntimeExports.jsx(NoticeElement, {}), /* @__PURE__ */jsxRuntimeExports.jsxs("p", {
+              children: [/* @__PURE__ */jsxRuntimeExports.jsx(NoticeSystem, {
+                noticeStatus,
+                noticeText,
+                hideNotice
+              }), /* @__PURE__ */jsxRuntimeExports.jsxs("p", {
                 children: [__("Total:", "petitioner-theme"), " ", total]
               }), /* @__PURE__ */jsxRuntimeExports.jsx(Table, {
                 headings: headingData,

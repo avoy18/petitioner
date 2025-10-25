@@ -25,20 +25,19 @@ import {
 	deleteSubmissions,
 	getFieldLabels,
 	getHumanValue,
-	useNoticeSystem,
 } from './utilities';
 import {
 	ExportButtonWrapper,
 	SubmissionTabWrapper,
 	EntriesWrapper,
 } from './styled';
-import {
-	Table,
+import Table, {
 	usePagination,
 	useTableHeadings,
 } from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
+import NoticeSystem, { useNoticeSystem } from '@admin/components/NoticeSystem';
 
 const SUBMISSION_LABELS = getFieldLabels();
 
@@ -74,7 +73,8 @@ export default function Submissions() {
 		});
 	const [activeModal, setActiveModal] = useState<SubmissionID>();
 
-	const { showNotice, NoticeElement } = useNoticeSystem();
+	const { showNotice, noticeStatus, noticeText, hideNotice } =
+		useNoticeSystem();
 
 	const hasSubmissions = submissions.length > 0;
 
@@ -285,7 +285,11 @@ export default function Submissions() {
 			</div>
 
 			<EntriesWrapper>
-				<NoticeElement />
+				<NoticeSystem
+					noticeStatus={noticeStatus}
+					noticeText={noticeText}
+					hideNotice={hideNotice}
+				/>
 				<p>
 					{__('Total:', 'petitioner-theme')} {total}
 				</p>

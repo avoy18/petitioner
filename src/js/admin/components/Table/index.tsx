@@ -4,7 +4,7 @@ import { useState } from '@wordpress/element';
 
 export * from './hooks';
 
-export function Table({
+export default function Table({
 	headings,
 	rows,
 	emptyMessage = 'No data available',

@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { getAjaxNonce } from '@admin/utilities';
-import { useCallback, useEffect, useState } from '@wordpress/element';
 import {
 	type FetchSettings,
 	type UpdateSettings,
@@ -14,9 +13,6 @@ import type {
 	FieldType,
 } from '@admin/sections/EditFields/FormBuilder/consts';
 import { ALl_POSSIBLE_FIELDS } from '@admin/context/FormBuilderContext';
-import type { NoticeStatus } from './consts';
-import { AlertStatusWrapper } from './styled';
-import { Notice } from '@wordpress/components';
 
 export const fetchSubmissions = async ({
 	currentPage = 1,
@@ -66,7 +62,7 @@ export const updateSubmissions = async ({
 	onError = (msg: string) => {},
 }: UpdateSettings) => {
 	if (!data?.id) {
-		console.error('Submission fetch error: missing the submission id');
+		onError('Submission update error: missing the submission id');
 		return;
 	}
 
@@ -95,10 +91,10 @@ export const updateSubmissions = async ({
 		if (response.success) {
 			onSuccess(response.data);
 		} else {
-			onError('Failed to fetch data');
+			onError('Failed to update data');
 		}
 	} catch (error) {
-		onError('Error fetching data: ' + error);
+		onError('Error updating data: ' + error);
 	}
 };
 
@@ -108,7 +104,7 @@ export const deleteSubmissions = async ({
 	onError,
 }: DeleteSettings) => {
 	if (!id) {
-		onError('Submission fetch error: missing the submission id');
+		onError('Submission delete error: missing the submission id');
 		return;
 	}
 
@@ -217,80 +213,4 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 	);
 
 	return correctItem?.type || 'text';
-};
-
-export const useAutoDismiss = (
-	text: string | undefined,
-	onAutoDismiss: () => void,
-	delay = 3000
-) => {
-	useEffect(() => {
-		if (text) {
-			const timeout = setTimeout(onAutoDismiss, delay);
-			return () => clearTimeout(timeout);
-		}
-	}, [text, onAutoDismiss, delay]);
-};
-
-/**
- * Custom hook for managing notice/alert notifications with auto-dismiss functionality.
- * 
- * @returns {Object} Notice system controls
- * @returns {Function} returns.showNotice - Display a notice with specified status and text
- * @returns {Function} returns.hideNotice - Manually dismiss the current notice
- * @returns {Function} returns.NoticeElement - React component to render the notice UI
- * 
- * @example
- * const { showNotice, NoticeElement } = useNoticeSystem();
- * 
- * // Show success notification
- * showNotice('success', 'Data saved successfully!');
- * 
- * // Show error notification
- * showNotice('error', 'Failed to save data');
- * 
- * // Render in component
- * return (
- *   <div>
- *     <NoticeElement />
- *   </div>
- * );
- */
-export const useNoticeSystem = () => {
-	const [noticeStatus, setNoticeStatus] = useState<NoticeStatus>(undefined);
-	const [noticeText, setNoticeText] = useState<string | undefined>(undefined);
-	
-	const showNotice = useCallback((status: NoticeStatus, text: string) => {
-		setNoticeStatus(status);
-		setNoticeText(text);
-	}, []);
-
-	const hideNotice = useCallback(() => {
-		setNoticeStatus(undefined);
-		setNoticeText(undefined);
-	}, []);
-
-	useAutoDismiss(noticeText, hideNotice);
-
-	const NoticeElement = useCallback(() => {
-		if (!noticeStatus || !noticeText) return null;
-
-		return (
-			<AlertStatusWrapper>
-				<Notice
-					isDismissible={true}
-					onDismiss={hideNotice}
-					status={noticeStatus}
-				>
-					{noticeText}
-				</Notice>
-			</AlertStatusWrapper>
-		);
-	}, [noticeStatus, noticeText]);
-
-	return {
-		showNotice,
-		hideNotice,
-		NoticeElement,
-	};
 };

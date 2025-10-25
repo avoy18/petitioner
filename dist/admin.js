@@ -28645,22 +28645,6 @@ function useFormBuilderContext() {
   }
   return context;
 }
-const COLORS = {
-  grey: "var(--ptr-admin-color-grey)",
-  light: "var(--ptr-admin-color-light)"
-};
-const SPACINGS = {
-  xs: "var(--ptr-admin-spacing-xs)",
-  sm: "var(--ptr-admin-spacing-sm)",
-  "4xl": "var(--ptr-admin-spacing-4xl)"
-};
-const TRANSITIONS = {
-  sm: "0.15s"
-};
-const ExportButtonWrapper = dt.div(_c || (_c = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	justify-content: space-between;\n"])));
-const SubmissionTabWrapper = dt.div(_d || (_d = __template([""])));
-const AlertStatusWrapper = dt.div(_e2 || (_e2 = __template(["\n	position: fixed;\n	width: 80%;\n	max-width: 768px;\n	margin: auto;\n	top: ", ";\n	left: 0;\n	right: 0;\n"])), SPACINGS["4xl"]);
-const EntriesWrapper = dt.div(_f || (_f = __template(["\n	position: relative;\n"])));
 const fetchSubmissions = async ({
   currentPage = 1,
   formID,
@@ -28705,7 +28689,7 @@ const updateSubmissions = async ({
   }
 }) => {
   if (!(data == null ? void 0 : data.id)) {
-    console.error("Submission fetch error: missing the submission id");
+    onError("Submission update error: missing the submission id");
     return;
   }
   const finalQuery = new URLSearchParams();
@@ -28726,10 +28710,10 @@ const updateSubmissions = async ({
     if (response.success) {
       onSuccess(response.data);
     } else {
-      onError("Failed to fetch data");
+      onError("Failed to update data");
     }
   } catch (error) {
-    onError("Error fetching data: " + error);
+    onError("Error updating data: " + error);
   }
 };
 const deleteSubmissions = async ({
@@ -28738,7 +28722,7 @@ const deleteSubmissions = async ({
   onError
 }) => {
   if (!id2) {
-    onError("Submission fetch error: missing the submission id");
+    onError("Submission delete error: missing the submission id");
     return;
   }
   const finalQuery = new URLSearchParams();
@@ -28808,47 +28792,24 @@ const getSubmissionValType = (label) => {
   );
   return (correctItem == null ? void 0 : correctItem.type) || "text";
 };
-const useAutoDismiss = (text2, onAutoDismiss, delay = 3e3) => {
-  reactExports.useEffect(() => {
-    if (text2) {
-      const timeout = setTimeout(onAutoDismiss, delay);
-      return () => clearTimeout(timeout);
-    }
-  }, [text2, onAutoDismiss, delay]);
+const ExportButtonWrapper = dt.div(_c || (_c = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	justify-content: space-between;\n"])));
+const SubmissionTabWrapper = dt.div(_d || (_d = __template([""])));
+const EntriesWrapper = dt.div(_e2 || (_e2 = __template(["\n	position: relative;\n"])));
+const COLORS = {
+  grey: "var(--ptr-admin-color-grey)",
+  light: "var(--ptr-admin-color-light)"
 };
-const useNoticeSystem = () => {
-  const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
-  const [noticeText, setNoticeText] = reactExports.useState(void 0);
-  const showNotice = reactExports.useCallback((status, text2) => {
-    setNoticeStatus(status);
-    setNoticeText(text2);
-  }, []);
-  const hideNotice = reactExports.useCallback(() => {
-    setNoticeStatus(void 0);
-    setNoticeText(void 0);
-  }, []);
-  useAutoDismiss(noticeText, hideNotice);
-  const NoticeElement = reactExports.useCallback(() => {
-    if (!noticeStatus || !noticeText) return null;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(AlertStatusWrapper, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Notice,
-      {
-        isDismissible: true,
-        onDismiss: hideNotice,
-        status: noticeStatus,
-        children: noticeText
-      }
-    ) });
-  }, [noticeStatus, noticeText]);
-  return {
-    showNotice,
-    hideNotice,
-    NoticeElement
-  };
+const SPACINGS = {
+  xs: "var(--ptr-admin-spacing-xs)",
+  sm: "var(--ptr-admin-spacing-sm)",
+  "4xl": "var(--ptr-admin-spacing-4xl)"
 };
-const TableHeading = dt.th(_g || (_g = __template(["\n	", "\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ({ $width }) => "width: ".concat($width, ";"));
-const HeadingLabel = dt.div(_h || (_h = __template(["\n	display: inline-flex;\n	gap: var(--ptr-admin-spacing-xs);\n"])));
-const StyledTable = dt.table(_j || (_j = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_i || (_i = __template(["\n				tr {\n					transition: ", ";\n					&:hover {\n						cursor: pointer;\n						background: ", " !important;\n					}\n				}\n			"])), TRANSITIONS.sm, COLORS.grey));
+const TRANSITIONS = {
+  sm: "0.15s"
+};
+const TableHeading = dt.th(_f || (_f = __template(["\n	", "\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ({ $width }) => "width: ".concat($width, ";"));
+const HeadingLabel = dt.div(_g || (_g = __template(["\n	display: inline-flex;\n	gap: var(--ptr-admin-spacing-xs);\n"])));
+const StyledTable = dt.table(_i || (_i = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_h || (_h = __template(["\n				tr {\n					transition: ", ";\n					&:hover {\n						cursor: pointer;\n						background: ", " !important;\n					}\n				}\n			"])), TRANSITIONS.sm, COLORS.grey));
 const usePagination = (total, perPage, currentPage, onPageChange) => {
   return reactExports.useMemo(() => {
     const totalPages = Math.ceil(total / perPage);
@@ -28952,10 +28913,10 @@ function Table({
     }
   );
 }
-dt.div(_k || (_k = __template(["\n	display: flex;\n	margin-bottom: ", ";\n"])), SPACINGS.sm);
-const FieldItem = dt(CardBody)(_l || (_l = __template(["\n	display: flex;\n	align-items: flex-start;\n	flex-direction: column;\n	gap: ", ";\n"])), SPACINGS.xs);
-const InputGroup = dt.div(_m || (_m = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n\n	.components-base-control__field {\n		margin-bottom: 0px;\n	}\n"])), SPACINGS.sm);
-const ActionButtonWrapper = dt.div(_n || (_n = __template(["\n	display: flex;\n	align-items: center;\n	justify-content: flex-end;\n	gap: ", ";\n"])), SPACINGS.sm);
+dt.div(_j || (_j = __template(["\n	display: flex;\n	margin-bottom: ", ";\n"])), SPACINGS.sm);
+const FieldItem = dt(CardBody)(_k || (_k = __template(["\n	display: flex;\n	align-items: flex-start;\n	flex-direction: column;\n	gap: ", ";\n"])), SPACINGS.xs);
+const InputGroup = dt.div(_l || (_l = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n\n	.components-base-control__field {\n		margin-bottom: 0px;\n	}\n"])), SPACINGS.sm);
+const ActionButtonWrapper = dt.div(_m || (_m = __template(["\n	display: flex;\n	align-items: center;\n	justify-content: flex-end;\n	gap: ", ";\n"])), SPACINGS.sm);
 function PTRichText({
   id: id2 = "",
   label = "Rich text label",
@@ -29589,6 +29550,47 @@ function SubmissionEditModal({
     }
   );
 }
+const AlertStatusWrapper = dt.div(_n || (_n = __template(["\n	position: fixed;\n	width: 80%;\n	max-width: 768px;\n	margin: auto;\n	top: ", ";\n	left: 0;\n	right: 0;\n"])), SPACINGS["4xl"]);
+const useNoticeSystem = () => {
+  const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
+  const [noticeText, setNoticeText] = reactExports.useState(void 0);
+  const showNotice = reactExports.useCallback((status, text2) => {
+    setNoticeStatus(status);
+    setNoticeText(text2);
+  }, []);
+  const hideNotice = reactExports.useCallback(() => {
+    setNoticeStatus(void 0);
+    setNoticeText(void 0);
+  }, []);
+  reactExports.useEffect(() => {
+    if (noticeText) {
+      const timeout = setTimeout(hideNotice, 3e3);
+      return () => clearTimeout(timeout);
+    }
+  }, [noticeText, hideNotice]);
+  return {
+    showNotice,
+    hideNotice,
+    noticeStatus,
+    noticeText
+  };
+};
+function NoticeSystem({
+  noticeStatus,
+  noticeText,
+  hideNotice
+}) {
+  if (!noticeStatus || !noticeText) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(AlertStatusWrapper, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Notice,
+    {
+      isDismissible: true,
+      onDismiss: hideNotice,
+      status: noticeStatus,
+      children: noticeText
+    }
+  ) });
+}
 const SUBMISSION_LABELS = getFieldLabels();
 function Submissions() {
   var _a2;
@@ -29616,7 +29618,7 @@ function Submissions() {
     return approvalState === "Email" ? "Declined" : approvalState;
   });
   const [activeModal, setActiveModal] = reactExports.useState();
-  const { showNotice, NoticeElement } = useNoticeSystem();
+  const { showNotice, noticeStatus, noticeText, hideNotice } = useNoticeSystem();
   const hasSubmissions = submissions.length > 0;
   const fetchData = async () => {
     return fetchSubmissions({
@@ -29799,7 +29801,14 @@ function Submissions() {
       hasSubmissions && /* @__PURE__ */ jsxRuntimeExports.jsx(ExportComponent, {})
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(EntriesWrapper, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(NoticeElement, {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        NoticeSystem,
+        {
+          noticeStatus,
+          noticeText,
+          hideNotice
+        }
+      ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
         __("Total:", "petitioner-theme"),
         " ",
