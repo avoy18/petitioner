@@ -26,5 +26,7 @@ export const InputGroup = styled.div`
 
 export const ActionButtonWrapper = styled.div`
 	display: flex;
+	align-items: center;
+	justify-content: flex-end;
 	gap: ${SPACINGS.sm};
-`
+`;

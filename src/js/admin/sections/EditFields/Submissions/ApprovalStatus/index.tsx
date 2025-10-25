@@ -36,9 +36,6 @@ export default function ApprovalStatus(props: ApprovalStatusProps) {
 				>
 					{changeAction}
 				</Button>
-				{window?.petitionerData?.approval_state === 'Email' && (
-					<ResendButton item={item} />
-				)}
 			</div>
 		</div>
 	);

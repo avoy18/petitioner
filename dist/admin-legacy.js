@@ -32772,6 +32772,42 @@
           });
         }
         const ToggleControl = reactExports.forwardRef(UnforwardedToggleControl);
+        function ApprovalStatus(props) {
+          const {
+            item,
+            onStatusChange = () => {},
+            defaultApprovalState
+          } = props;
+          const {
+            id,
+            approval_status
+          } = item;
+          const currentStatus = approval_status ?? defaultApprovalState;
+          const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
+          return /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
+            children: [/* @__PURE__ */jsxRuntimeExports.jsx("p", {
+              style: {
+                color: currentStatus === "Confirmed" ? "green" : "red"
+              },
+              children: currentStatus
+            }), /* @__PURE__ */jsxRuntimeExports.jsx("div", {
+              style: {
+                display: "flex",
+                gap: "5px"
+              },
+              children: /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                size: "small",
+                isDestructive: currentStatus === "Confirmed",
+                variant: "secondary",
+                onClick: e => {
+                  e.stopPropagation();
+                  onStatusChange(id, currentStatus === "Confirmed" ? "Declined" : "Confirmed", changeAction);
+                },
+                children: changeAction
+              })
+            })]
+          });
+        }
         function ResendButton(props) {
           const {
             id,
@@ -32861,44 +32897,6 @@
                 },
                 children: "Warning"
               }), ": This action will resend confirmation emails to all unconfirmed signees. Proceed with caution: sending a large number of emails at once may negatively impact your domain’s reputation."]
-            })]
-          });
-        }
-        function ApprovalStatus(props) {
-          const {
-            item,
-            onStatusChange = () => {},
-            defaultApprovalState
-          } = props;
-          const {
-            id,
-            approval_status
-          } = item;
-          const currentStatus = approval_status ?? defaultApprovalState;
-          const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
-          return /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
-            children: [/* @__PURE__ */jsxRuntimeExports.jsx("p", {
-              style: {
-                color: currentStatus === "Confirmed" ? "green" : "red"
-              },
-              children: currentStatus
-            }), /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
-              style: {
-                display: "flex",
-                gap: "5px"
-              },
-              children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
-                size: "small",
-                isDestructive: currentStatus === "Confirmed",
-                variant: "secondary",
-                onClick: e => {
-                  e.stopPropagation();
-                  onStatusChange(id, currentStatus === "Confirmed" ? "Declined" : "Confirmed", changeAction);
-                },
-                children: changeAction
-              }), window?.petitionerData?.approval_state === "Email" && /* @__PURE__ */jsxRuntimeExports.jsx(ResendButton, {
-                item
-              })]
             })]
           });
         }
@@ -34512,6 +34510,10 @@
             })
           });
         }
+        const PER_PAGE = 100;
+        const UPDATE_ACTION = "petitioner_update_submission";
+        const FETCH_ACTION = "petitioner_fetch_submissions";
+        const DELETE_ACTION = "petitioner_delete_submission";
 
         /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 
@@ -35874,9 +35876,6 @@
           }
           return petitionerNonce;
         };
-        const UPDATE_ACTION = "petitioner_update_submission";
-        const FETCH_ACTION = "petitioner_fetch_submissions";
-        const DELETE_ACTION = "petitioner_delete_submission";
         const FormBuilderContext = reactExports.createContext(null);
         const DRAGGABLE_FIELD_TYPES = [{
           fieldKey: "phone",
@@ -36408,6 +36407,8 @@
 `;
         const ActionButtonWrapper = dt.div`
 	display: flex;
+	align-items: center;
+	justify-content: flex-end;
 	gap: ${SPACINGS.sm};
 `;
         function PTRichText({
@@ -36916,7 +36917,9 @@
             title: __("Submission details", "petitioner-theme"),
             onRequestClose,
             headerActions: /* @__PURE__ */jsxRuntimeExports.jsxs(ActionButtonWrapper, {
-              children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+              children: [window?.petitionerData?.approval_state === "Email" && /* @__PURE__ */jsxRuntimeExports.jsx(ResendButton, {
+                item: submissionDetails
+              }), /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
                 variant: "secondary",
                 isDestructive: true,
                 onClick: handleOnDelete,
@@ -36959,13 +36962,16 @@
             return approvalState === "Email" ? "Declined" : approvalState;
           });
           const [activeModal, setActiveModal] = reactExports.useState();
+          const {
+            showNotice,
+            NoticeElement
+          } = useNoticeSystem();
           const hasSubmissions = submissions.length > 0;
-          const perPage = 100;
           const fetchData = async () => {
             return fetchSubmissions({
               currentPage: tableState.currentPage,
               formID: form_id,
-              perPage,
+              perPage: PER_PAGE,
               order: tableState.order,
               orderby: tableState.orderby,
               onSuccess: data => {
@@ -36990,10 +36996,6 @@
               window.removeEventListener("onPtrApprovalChange", handleApprovalChange);
             };
           }, []);
-          const {
-            showNotice,
-            NoticeElement
-          } = useNoticeSystem();
           const handleStatusChange = async (id, newStatus, changeAction) => {
             const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
             if (window.confirm(question)) {
@@ -37013,24 +37015,9 @@
               });
             }
           };
-          const paginationButtons = usePagination(total, perPage, tableState.currentPage, page => updateTableState({
+          const paginationButtons = usePagination(total, PER_PAGE, tableState.currentPage, page => updateTableState({
             currentPage: page
           }));
-          const ExportComponent = () => {
-            return /* @__PURE__ */jsxRuntimeExports.jsxs(ExportButtonWrapper, {
-              children: [/* @__PURE__ */jsxRuntimeExports.jsx(ShortcodeElement, {
-                clipboardValue: `[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`,
-                label: __("Shortcode", "petitioner"),
-                help: __("Use this shortcode to display submissions on any page or post.", "petitioner"),
-                fieldName: "petitioner_shortcode",
-                width: "250px"
-              }), /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
-                variant: "primary",
-                href: String(export_url),
-                children: __("Export entries as CSV", "petitioner")
-              })]
-            });
-          };
           const headingData = useTableHeadings([{
             id: "email",
             label: SUBMISSION_LABELS.email,
@@ -37041,7 +37028,7 @@
           }, {
             id: "consent",
             label: SUBMISSION_LABELS.consent,
-            width: "60px"
+            width: "80px"
           }, {
             id: "submitted_at",
             label: SUBMISSION_LABELS.submitted_at
@@ -37049,8 +37036,7 @@
             condition: showApproval,
             heading: {
               id: "status",
-              label: __("Status", "petitioner"),
-              width: "220px"
+              label: __("Status", "petitioner")
             }
           }]);
           const tableRows = submissions.map(item => {
@@ -37109,6 +37095,21 @@
               }
             });
           }, []);
+          const ExportComponent = () => {
+            return /* @__PURE__ */jsxRuntimeExports.jsxs(ExportButtonWrapper, {
+              children: [/* @__PURE__ */jsxRuntimeExports.jsx(ShortcodeElement, {
+                clipboardValue: `[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`,
+                label: __("Shortcode", "petitioner"),
+                help: __("Use this shortcode to display submissions on any page or post.", "petitioner"),
+                fieldName: "petitioner_shortcode",
+                width: "250px"
+              }), /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                variant: "primary",
+                href: String(export_url),
+                children: __("Export entries as CSV", "petitioner")
+              })]
+            });
+          };
           return /* @__PURE__ */jsxRuntimeExports.jsxs(SubmissionTabWrapper, {
             id: "AV_Petitioner_Submissions",
             children: [/* @__PURE__ */jsxRuntimeExports.jsxs("div", {

@@ -26218,6 +26218,41 @@ function UnforwardedToggleControl({
   });
 }
 const ToggleControl = reactExports.forwardRef(UnforwardedToggleControl);
+function ApprovalStatus(props) {
+  const { item, onStatusChange = () => {
+  }, defaultApprovalState } = props;
+  const { id: id2, approval_status } = item;
+  const currentStatus = approval_status != null ? approval_status : defaultApprovalState;
+  const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "p",
+      {
+        style: {
+          color: currentStatus === "Confirmed" ? "green" : "red"
+        },
+        children: currentStatus
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", gap: "5px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Button,
+      {
+        size: "small",
+        isDestructive: currentStatus === "Confirmed",
+        variant: "secondary",
+        onClick: (e2) => {
+          e2.stopPropagation();
+          onStatusChange(
+            id2,
+            currentStatus === "Confirmed" ? "Declined" : "Confirmed",
+            changeAction
+          );
+        },
+        children: changeAction
+      }
+    ) })
+  ] });
+}
 function ResendButton(props) {
   var _a2;
   const { id: id2, confirmation_token } = props.item;
@@ -26316,45 +26351,6 @@ function ResendAllButton() {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { color: "salmon" }, children: "Warning" }),
       ": This action will resend confirmation emails to all unconfirmed signees. Proceed with caution: sending a large number of emails at once may negatively impact your domain’s reputation."
-    ] })
-  ] });
-}
-function ApprovalStatus(props) {
-  var _a2;
-  const { item, onStatusChange = () => {
-  }, defaultApprovalState } = props;
-  const { id: id2, approval_status } = item;
-  const currentStatus = approval_status != null ? approval_status : defaultApprovalState;
-  const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "p",
-      {
-        style: {
-          color: currentStatus === "Confirmed" ? "green" : "red"
-        },
-        children: currentStatus
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "5px" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          size: "small",
-          isDestructive: currentStatus === "Confirmed",
-          variant: "secondary",
-          onClick: (e2) => {
-            e2.stopPropagation();
-            onStatusChange(
-              id2,
-              currentStatus === "Confirmed" ? "Declined" : "Confirmed",
-              changeAction
-            );
-          },
-          children: changeAction
-        }
-      ),
-      ((_a2 = window == null ? void 0 : window.petitionerData) == null ? void 0 : _a2.approval_state) === "Email" && /* @__PURE__ */ jsxRuntimeExports.jsx(ResendButton, { item })
     ] })
   ] });
 }
@@ -27460,6 +27456,10 @@ function ShortcodeElement({
     ] })
   ] }) });
 }
+const PER_PAGE = 100;
+const UPDATE_ACTION = "petitioner_update_submission";
+const FETCH_ACTION = "petitioner_fetch_submissions";
+const DELETE_ACTION = "petitioner_delete_submission";
 /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 const {
   entries,
@@ -28459,9 +28459,6 @@ const getAjaxNonce = () => {
   }
   return petitionerNonce;
 };
-const UPDATE_ACTION = "petitioner_update_submission";
-const FETCH_ACTION = "petitioner_fetch_submissions";
-const DELETE_ACTION = "petitioner_delete_submission";
 const FormBuilderContext = reactExports.createContext(
   null
 );
@@ -28958,7 +28955,7 @@ function Table({
 dt.div(_k || (_k = __template(["\n	display: flex;\n	margin-bottom: ", ";\n"])), SPACINGS.sm);
 const FieldItem = dt(CardBody)(_l || (_l = __template(["\n	display: flex;\n	align-items: flex-start;\n	flex-direction: column;\n	gap: ", ";\n"])), SPACINGS.xs);
 const InputGroup = dt.div(_m || (_m = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n\n	.components-base-control__field {\n		margin-bottom: 0px;\n	}\n"])), SPACINGS.sm);
-const ActionButtonWrapper = dt.div(_n || (_n = __template(["\n	display: flex;\n	gap: ", ";\n"])), SPACINGS.sm);
+const ActionButtonWrapper = dt.div(_n || (_n = __template(["\n	display: flex;\n	align-items: center;\n	justify-content: flex-end;\n	gap: ", ";\n"])), SPACINGS.sm);
 function PTRichText({
   id: id2 = "",
   label = "Rich text label",
@@ -29462,6 +29459,7 @@ function SubmissionEditModal({
   onDelete = (id2) => {
   }
 }) {
+  var _a2;
   const [isEdit, setIsEdit] = reactExports.useState(null);
   const [valuesChanged, setValuesChanged] = reactExports.useState(false);
   const [submissionDetails, setSubmissionDetails] = reactExports.useState(submission);
@@ -29481,12 +29479,12 @@ function SubmissionEditModal({
   const submissionEntries = Object.entries(submissionDetails);
   const lastRowIndex = submissionEntries.length - 1;
   const SubmissionDetails = submissionEntries.map(([label, value], index) => {
-    var _a2;
+    var _a3;
     if (!isValidFieldKey(label)) {
       return;
     }
     const valueString = String(value);
-    const finalLabel = (_a2 = SUBMISSION_LABELS$1[label]) != null ? _a2 : label;
+    const finalLabel = (_a3 = SUBMISSION_LABELS$1[label]) != null ? _a3 : label;
     const type = getSubmissionValType(label);
     const finalValue = getHumanValue(valueString, type);
     const isEmpty = finalValue == __("(empty)", "petitioner");
@@ -29537,7 +29535,10 @@ function SubmissionEditModal({
   const onRequestClose = reactExports.useCallback(() => {
     if (valuesChanged) {
       if (window.confirm(
-        __("Are you sure you want to close without saving?", "petitioner")
+        __(
+          "Are you sure you want to close without saving?",
+          "petitioner"
+        )
       )) {
         onClose();
       }
@@ -29564,6 +29565,7 @@ function SubmissionEditModal({
       title: __("Submission details", "petitioner-theme"),
       onRequestClose,
       headerActions: /* @__PURE__ */ jsxRuntimeExports.jsxs(ActionButtonWrapper, { children: [
+        ((_a2 = window == null ? void 0 : window.petitionerData) == null ? void 0 : _a2.approval_state) === "Email" && /* @__PURE__ */ jsxRuntimeExports.jsx(ResendButton, { item: submissionDetails }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           Button,
           {
@@ -29600,24 +29602,27 @@ function Submissions() {
     order: null,
     orderby: null
   });
-  const updateTableState = reactExports.useCallback((newState) => {
-    setTableState((prevState) => ({
-      ...prevState,
-      ...newState
-    }));
-  }, []);
+  const updateTableState = reactExports.useCallback(
+    (newState) => {
+      setTableState((prevState) => ({
+        ...prevState,
+        ...newState
+      }));
+    },
+    []
+  );
   const [showApproval, setShowApproval] = reactExports.useState(requireApproval);
   const [defaultApprovalState, setDefaultApprovalState] = reactExports.useState(() => {
     return approvalState === "Email" ? "Declined" : approvalState;
   });
   const [activeModal, setActiveModal] = reactExports.useState();
+  const { showNotice, NoticeElement } = useNoticeSystem();
   const hasSubmissions = submissions.length > 0;
-  const perPage = 100;
   const fetchData = async () => {
     return fetchSubmissions({
       currentPage: tableState.currentPage,
       formID: form_id,
-      perPage,
+      perPage: PER_PAGE,
       order: tableState.order,
       orderby: tableState.orderby,
       onSuccess: (data) => {
@@ -29645,7 +29650,6 @@ function Submissions() {
       );
     };
   }, []);
-  const { showNotice, NoticeElement } = useNoticeSystem();
   const handleStatusChange = async (id2, newStatus, changeAction) => {
     const question = "Are you sure you want to ".concat(String(changeAction).toLowerCase(), " this submission?");
     if (window.confirm(question)) {
@@ -29673,33 +29677,15 @@ function Submissions() {
   };
   const paginationButtons = usePagination(
     total,
-    perPage,
+    PER_PAGE,
     tableState.currentPage,
     (page) => updateTableState({ currentPage: page })
   );
-  const ExportComponent = () => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(ExportButtonWrapper, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        ShortcodeElement,
-        {
-          clipboardValue: '[petitioner-submissions form_id="'.concat(form_id, '" style="table" show_pagination="true"]'),
-          label: __("Shortcode", "petitioner"),
-          help: __(
-            "Use this shortcode to display submissions on any page or post.",
-            "petitioner"
-          ),
-          fieldName: "petitioner_shortcode",
-          width: "250px"
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", href: String(export_url), children: __("Export entries as CSV", "petitioner") })
-    ] });
-  };
   const headingData = useTableHeadings(
     [
       { id: "email", label: SUBMISSION_LABELS.email, width: "20%" },
       { id: "name", label: SUBMISSION_LABELS.name },
-      { id: "consent", label: SUBMISSION_LABELS.consent, width: "60px" },
+      { id: "consent", label: SUBMISSION_LABELS.consent, width: "80px" },
       { id: "submitted_at", label: SUBMISSION_LABELS.submitted_at }
     ],
     [
@@ -29707,8 +29693,7 @@ function Submissions() {
         condition: showApproval,
         heading: {
           id: "status",
-          label: __("Status", "petitioner"),
-          width: "220px"
+          label: __("Status", "petitioner")
         }
       }
     ]
@@ -29790,6 +29775,24 @@ function Submissions() {
       }
     });
   }, []);
+  const ExportComponent = () => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(ExportButtonWrapper, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        ShortcodeElement,
+        {
+          clipboardValue: '[petitioner-submissions form_id="'.concat(form_id, '" style="table" show_pagination="true"]'),
+          label: __("Shortcode", "petitioner"),
+          help: __(
+            "Use this shortcode to display submissions on any page or post.",
+            "petitioner"
+          ),
+          fieldName: "petitioner_shortcode",
+          width: "250px"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", href: String(export_url), children: __("Export entries as CSV", "petitioner") })
+    ] });
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(SubmissionTabWrapper, { id: "AV_Petitioner_Submissions", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: __("Submissions", "petitioner-theme") }),

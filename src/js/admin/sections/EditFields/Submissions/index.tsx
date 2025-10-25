@@ -13,6 +13,7 @@ import {
 	type FetchSettings,
 	type Order,
 	type OrderBy,
+	PER_PAGE,
 } from './consts';
 import type {
 	ApprovalState,
@@ -31,7 +32,11 @@ import {
 	SubmissionTabWrapper,
 	EntriesWrapper,
 } from './styled';
-import { Table, usePagination, useTableHeadings } from '@admin/components/Table';
+import {
+	Table,
+	usePagination,
+	useTableHeadings,
+} from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
 
@@ -39,7 +44,6 @@ const SUBMISSION_LABELS = getFieldLabels();
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
-
 	const requireApproval = window?.petitionerData
 		?.require_approval as CheckboxValue;
 	const approvalState = window.petitionerData.approval_state as ApprovalState;
@@ -51,14 +55,17 @@ export default function Submissions() {
 		currentPage: 1,
 		order: null as Order | null | undefined,
 		orderby: null as OrderBy | null | undefined,
-	  });
-	
-	const updateTableState = useCallback((newState: Partial<typeof tableState>) => {
-		setTableState((prevState) => ({
-			...prevState,
-			...newState,
-		}));
-	}, []);
+	});
+
+	const updateTableState = useCallback(
+		(newState: Partial<typeof tableState>) => {
+			setTableState((prevState) => ({
+				...prevState,
+				...newState,
+			}));
+		},
+		[]
+	);
 
 	const [showApproval, setShowApproval] = useState(requireApproval);
 	const [defaultApprovalState, setDefaultApprovalState] =
@@ -67,15 +74,15 @@ export default function Submissions() {
 		});
 	const [activeModal, setActiveModal] = useState<SubmissionID>();
 
-	const hasSubmissions = submissions.length > 0;
+	const { showNotice, NoticeElement } = useNoticeSystem();
 
-	const perPage = 100;
+	const hasSubmissions = submissions.length > 0;
 
 	const fetchData = async () => {
 		return fetchSubmissions({
 			currentPage: tableState.currentPage,
 			formID: form_id as FetchSettings['formID'],
-			perPage,
+			perPage: PER_PAGE,
 			order: tableState.order,
 			orderby: tableState.orderby,
 			onSuccess: (data) => {
@@ -110,8 +117,6 @@ export default function Submissions() {
 		};
 	}, []);
 
-	const { showNotice, NoticeElement } = useNoticeSystem();
-
 	const handleStatusChange = async (
 		id: SubmissionID,
 		newStatus: SubmissionStatus,
@@ -145,37 +150,16 @@ export default function Submissions() {
 
 	const paginationButtons = usePagination(
 		total,
-		perPage,
+		PER_PAGE,
 		tableState.currentPage,
 		(page: number) => updateTableState({ currentPage: page })
 	);
-
-	const ExportComponent = () => {
-		return (
-			<ExportButtonWrapper>
-				<ShortcodeElement
-					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
-					label={__('Shortcode', 'petitioner')}
-					help={__(
-						'Use this shortcode to display submissions on any page or post.',
-						'petitioner'
-					)}
-					fieldName="petitioner_shortcode"
-					width="250px"
-				/>
-
-				<Button variant="primary" href={String(export_url)}>
-					{__('Export entries as CSV', 'petitioner')}
-				</Button>
-			</ExportButtonWrapper>
-		);
-	};
 
 	const headingData = useTableHeadings(
 		[
 			{ id: 'email', label: SUBMISSION_LABELS.email, width: '20%' },
 			{ id: 'name', label: SUBMISSION_LABELS.name },
-			{ id: 'consent', label: SUBMISSION_LABELS.consent, width: '60px' },
+			{ id: 'consent', label: SUBMISSION_LABELS.consent, width: '80px' },
 			{ id: 'submitted_at', label: SUBMISSION_LABELS.submitted_at },
 		],
 		[
@@ -184,7 +168,6 @@ export default function Submissions() {
 				heading: {
 					id: 'status',
 					label: __('Status', 'petitioner'),
-					width: '220px',
 				},
 			},
 		]
@@ -272,6 +255,27 @@ export default function Submissions() {
 			},
 		});
 	}, []);
+
+	const ExportComponent = () => {
+		return (
+			<ExportButtonWrapper>
+				<ShortcodeElement
+					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
+					label={__('Shortcode', 'petitioner')}
+					help={__(
+						'Use this shortcode to display submissions on any page or post.',
+						'petitioner'
+					)}
+					fieldName="petitioner_shortcode"
+					width="250px"
+				/>
+
+				<Button variant="primary" href={String(export_url)}>
+					{__('Export entries as CSV', 'petitioner')}
+				</Button>
+			</ExportButtonWrapper>
+		);
+	};
 
 	return (
 		<SubmissionTabWrapper id="AV_Petitioner_Submissions">
