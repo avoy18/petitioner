@@ -29432,7 +29432,7 @@ function SubmissionEditField({
       window.petitionerData.default_values
     );
     const allCountries = defaultValues.country_list;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, children: allCountries.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { selected: value === item, value: item, children: item })) });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, options: allCountries.map((item) => ({ label: item, value: item })) });
   }
   if (type === "textarea") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(TextareaControl, { value, onChange });

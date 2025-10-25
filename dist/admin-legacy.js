@@ -36799,10 +36799,9 @@
             return /* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
               value,
               onChange,
-              children: allCountries.map(item => /* @__PURE__ */jsxRuntimeExports.jsx("option", {
-                selected: value === item,
-                value: item,
-                children: item
+              options: allCountries.map(item => ({
+                label: item,
+                value: item
               }))
             });
           }

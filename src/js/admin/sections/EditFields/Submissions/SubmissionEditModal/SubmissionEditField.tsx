@@ -40,13 +40,7 @@ export default function SubmissionEditField({
 		const allCountries = defaultValues.country_list;
 
 		return (
-			<SelectControl value={value} onChange={onChange}>
-				{allCountries.map((item) => (
-					<option selected={value === item} value={item}>
-						{item}
-					</option>
-				))}
-			</SelectControl>
+			<SelectControl value={value} onChange={onChange} options={allCountries.map((item) => ({ label: item, value: item }))} />
 		);
 	}
 
