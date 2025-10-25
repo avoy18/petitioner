@@ -29426,10 +29426,6 @@ function SubmissionEditModal({
   const [submissionDetails, setSubmissionDetails] = reactExports.useState(submission);
   const updateSubmissionDetails = reactExports.useCallback(
     (key, value) => {
-      const oldState = (submission == null ? void 0 : submission[key]) || "";
-      if (oldState != value) {
-        setValuesChanged(true);
-      }
       setSubmissionDetails((prevState) => ({
         ...prevState,
         [key]: value
@@ -29439,6 +29435,12 @@ function SubmissionEditModal({
   );
   const submissionEntries = Object.entries(submissionDetails);
   const lastRowIndex = submissionEntries.length - 1;
+  reactExports.useEffect(() => {
+    const hasChanged = Object.keys(submissionDetails).some((key) => {
+      return submissionDetails[key] !== submission[key];
+    });
+    setValuesChanged(hasChanged);
+  }, [submissionDetails, submission]);
   const SubmissionDetails = submissionEntries.map(([label, value], index) => {
     var _a3;
     if (!isValidFieldKey(label)) {
