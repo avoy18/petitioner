@@ -258,11 +258,6 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_get_form_submissions()
     {
-        // if (!check_ajax_referer('petitioner_submissions_nonce', 'petitioner_nonce', false)) {
-        //     wp_send_json_error(AV_Petitioner_Labels::get('invalid_nonce'));
-        //     wp_die();
-        // }
-
         // Get the form ID and pagination info from the request
         $page       = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $per_page   = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
