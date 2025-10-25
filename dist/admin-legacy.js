@@ -36163,10 +36163,10 @@
             if (response.success) {
               onSuccess();
             } else {
-              onError("Failed to fetch data");
+              onError("Failed to delete data");
             }
           } catch (error) {
-            onError("Error fetching data: " + error);
+            onError("Error deleting data: " + error);
           }
         };
         const getFieldLabels = () => {
