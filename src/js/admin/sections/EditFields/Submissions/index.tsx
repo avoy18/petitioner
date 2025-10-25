@@ -46,9 +46,20 @@ export default function Submissions() {
 
 	const [submissions, setSubmissions] = useState<Submissions>([]);
 	const [total, setTotal] = useState(0);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [order, setOrder] = useState<Order | null>();
-	const [orderby, setOrderBy] = useState<OrderBy | null>();
+
+	const [tableState, setTableState] = useState({
+		currentPage: 1,
+		order: null as Order | null | undefined,
+		orderby: null as OrderBy | null | undefined,
+	  });
+	
+	const updateTableState = useCallback((newState: Partial<typeof tableState>) => {
+		setTableState((prevState) => ({
+			...prevState,
+			...newState,
+		}));
+	}, []);
+
 	const [showApproval, setShowApproval] = useState(requireApproval);
 	const [defaultApprovalState, setDefaultApprovalState] =
 		useState<ApprovalState>(() => {
@@ -62,11 +73,11 @@ export default function Submissions() {
 
 	const fetchData = async () => {
 		return fetchSubmissions({
-			currentPage,
+			currentPage: tableState.currentPage,
 			formID: form_id as FetchSettings['formID'],
 			perPage,
-			order,
-			orderby,
+			order: tableState.order,
+			orderby: tableState.orderby,
 			onSuccess: (data) => {
 				setTotal(data.total);
 				setSubmissions(data.submissions);
@@ -78,7 +89,7 @@ export default function Submissions() {
 		if (!form_id) return;
 
 		fetchData();
-	}, [currentPage, form_id, order, orderby]);
+	}, [tableState.currentPage, form_id, tableState.order, tableState.orderby]);
 
 	useEffect(() => {
 		const handleApprovalChange = () => {
@@ -135,8 +146,8 @@ export default function Submissions() {
 	const paginationButtons = usePagination(
 		total,
 		perPage,
-		currentPage,
-		setCurrentPage
+		tableState.currentPage,
+		(page: number) => updateTableState({ currentPage: page })
 	);
 
 	const ExportComponent = () => {
@@ -204,9 +215,11 @@ export default function Submissions() {
 	});
 
 	const handleSortChange = ({ order, orderby }: OnSortArgs) => {
-		setOrder(order);
-		setOrderBy(orderby as OrderBy);
-		setCurrentPage(1);
+		updateTableState({
+			order,
+			orderby: orderby as OrderBy,
+			currentPage: 1,
+		});
 	};
 
 	const selectedSubmission = submissions.find(

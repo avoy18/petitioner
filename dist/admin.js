@@ -29595,9 +29595,17 @@ function Submissions() {
   const approvalState = window.petitionerData.approval_state;
   const [submissions, setSubmissions] = reactExports.useState([]);
   const [total, setTotal] = reactExports.useState(0);
-  const [currentPage, setCurrentPage] = reactExports.useState(1);
-  const [order, setOrder] = reactExports.useState();
-  const [orderby, setOrderBy] = reactExports.useState();
+  const [tableState, setTableState] = reactExports.useState({
+    currentPage: 1,
+    order: null,
+    orderby: null
+  });
+  const updateTableState = reactExports.useCallback((newState) => {
+    setTableState((prevState) => ({
+      ...prevState,
+      ...newState
+    }));
+  }, []);
   const [showApproval, setShowApproval] = reactExports.useState(requireApproval);
   const [defaultApprovalState, setDefaultApprovalState] = reactExports.useState(() => {
     return approvalState === "Email" ? "Declined" : approvalState;
@@ -29607,11 +29615,11 @@ function Submissions() {
   const perPage = 100;
   const fetchData = async () => {
     return fetchSubmissions({
-      currentPage,
+      currentPage: tableState.currentPage,
       formID: form_id,
       perPage,
-      order,
-      orderby,
+      order: tableState.order,
+      orderby: tableState.orderby,
       onSuccess: (data) => {
         setTotal(data.total);
         setSubmissions(data.submissions);
@@ -29621,7 +29629,7 @@ function Submissions() {
   reactExports.useEffect(() => {
     if (!form_id) return;
     fetchData();
-  }, [currentPage, form_id, order, orderby]);
+  }, [tableState.currentPage, form_id, tableState.order, tableState.orderby]);
   reactExports.useEffect(() => {
     const handleApprovalChange = () => {
       setShowApproval(requireApproval);
@@ -29666,8 +29674,8 @@ function Submissions() {
   const paginationButtons = usePagination(
     total,
     perPage,
-    currentPage,
-    setCurrentPage
+    tableState.currentPage,
+    (page) => updateTableState({ currentPage: page })
   );
   const ExportComponent = () => {
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(ExportButtonWrapper, { children: [
@@ -29729,10 +29737,12 @@ function Submissions() {
       cells
     };
   });
-  const handleSortChange = ({ order: order2, orderby: orderby2 }) => {
-    setOrder(order2);
-    setOrderBy(orderby2);
-    setCurrentPage(1);
+  const handleSortChange = ({ order, orderby }) => {
+    updateTableState({
+      order,
+      orderby,
+      currentPage: 1
+    });
   };
   const selectedSubmission = submissions.find(
     (item) => item.id === activeModal

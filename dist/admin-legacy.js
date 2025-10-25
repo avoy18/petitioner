@@ -36943,9 +36943,17 @@
           const approvalState = window.petitionerData.approval_state;
           const [submissions, setSubmissions] = reactExports.useState([]);
           const [total, setTotal] = reactExports.useState(0);
-          const [currentPage, setCurrentPage] = reactExports.useState(1);
-          const [order, setOrder] = reactExports.useState();
-          const [orderby, setOrderBy] = reactExports.useState();
+          const [tableState, setTableState] = reactExports.useState({
+            currentPage: 1,
+            order: null,
+            orderby: null
+          });
+          const updateTableState = reactExports.useCallback(newState => {
+            setTableState(prevState => ({
+              ...prevState,
+              ...newState
+            }));
+          }, []);
           const [showApproval, setShowApproval] = reactExports.useState(requireApproval);
           const [defaultApprovalState, setDefaultApprovalState] = reactExports.useState(() => {
             return approvalState === "Email" ? "Declined" : approvalState;
@@ -36955,11 +36963,11 @@
           const perPage = 100;
           const fetchData = async () => {
             return fetchSubmissions({
-              currentPage,
+              currentPage: tableState.currentPage,
               formID: form_id,
               perPage,
-              order,
-              orderby,
+              order: tableState.order,
+              orderby: tableState.orderby,
               onSuccess: data => {
                 setTotal(data.total);
                 setSubmissions(data.submissions);
@@ -36969,7 +36977,7 @@
           reactExports.useEffect(() => {
             if (!form_id) return;
             fetchData();
-          }, [currentPage, form_id, order, orderby]);
+          }, [tableState.currentPage, form_id, tableState.order, tableState.orderby]);
           reactExports.useEffect(() => {
             const handleApprovalChange = () => {
               setShowApproval(requireApproval);
@@ -37005,7 +37013,9 @@
               });
             }
           };
-          const paginationButtons = usePagination(total, perPage, currentPage, setCurrentPage);
+          const paginationButtons = usePagination(total, perPage, tableState.currentPage, page => updateTableState({
+            currentPage: page
+          }));
           const ExportComponent = () => {
             return /* @__PURE__ */jsxRuntimeExports.jsxs(ExportButtonWrapper, {
               children: [/* @__PURE__ */jsxRuntimeExports.jsx(ShortcodeElement, {
@@ -37058,12 +37068,14 @@
             };
           });
           const handleSortChange = ({
-            order: order2,
-            orderby: orderby2
+            order,
+            orderby
           }) => {
-            setOrder(order2);
-            setOrderBy(orderby2);
-            setCurrentPage(1);
+            updateTableState({
+              order,
+              orderby,
+              currentPage: 1
+            });
           };
           const selectedSubmission = submissions.find(item => item.id === activeModal);
           const onModalClose = reactExports.useCallback(() => setActiveModal(void 0), []);
