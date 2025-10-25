@@ -30,7 +30,7 @@ class AV_Petitioner_Admin_Settings_UI
         'turnstile_secret_key'      => 'petitioner_turnstile_secret_key',
         'enable_akismet'            => 'petitioner_enable_akismet',
         'form_fields'               => 'petitioner_form_fields',
-        'label_overrides'           => 'petitioner_label_overrides',
+        'label_overrides'           => 'petitioner_label_overrides'
     ];
 
     function __construct()
@@ -149,6 +149,15 @@ class AV_Petitioner_Admin_Settings_UI
                 "labels"              => $this->get_default_labels()
             ]
         ];
+
+        /**
+         * Filter to modify petitioner data that is sent to the edit screen
+         * 
+         *
+         * @param array $petitioner_info Array of the data
+         * @return array Modified $petitioner_info data.
+         */
+        $petitioner_info = apply_filters('av_petitioner_info_settings', $petitioner_info);
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     ?>

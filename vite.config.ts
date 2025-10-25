@@ -37,70 +37,69 @@ const deploy = () => {
 	);
 };
 
-module.exports = defineConfig({
-	optimizeDeps: {
-		include: ['@ariakit/react-core', '@ariakit/core'],
-	},
-	plugins: [
-		legacy({
-			targets: ['defaults', 'not IE 11'], // Specify legacy browser support
-		}),
-	],
-	build: {
-		rollupOptions: {
-			onwarn(warning, warn) {
-				// Suppress "Module level directives cause errors when bundled" warnings
-				if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
-					return;
-				}
-				warn(warning);
-			},
-			external: [
-				// '@ariakit/react-core',
-				// '@ariakit/core',
-				// '@wordpress/blocks',
-				// '@wordpress/element',
-				// '@wordpress/i18n',
-				// '@wordpress/editor'
-			],
-			input: {
-				main: path.resolve(__dirname, 'src/js/main.ts'),
-				admin: path.resolve(__dirname, 'src/js/admin.tsx'),
-			},
-			output: {
-				globals: {
-					'@wordpress/blocks': 'wp.blocks',
-					'@wordpress/element': 'wp.element',
-					'@wordpress/i18n': 'wp.i18n',
+module.exports = defineConfig(({ mode }) => {
+	return {
+		optimizeDeps: {
+			include: ['@ariakit/react-core', '@ariakit/core'],
+		},
+		plugins: [
+			legacy({
+				targets: ['defaults', 'not IE 11'], // Specify legacy browser support
+			}),
+		],
+		build: {
+			minify: mode !== 'development',
+			rollupOptions: {
+				onwarn(warning, warn) {
+					// Suppress "Module level directives cause errors when bundled" warnings
+					if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+						return;
+					}
+					warn(warning);
 				},
-				entryFileNames: (chunk) => {
-					return chunk.name.includes('style') ||
-						chunk.name.includes('adminStyle')
-						? '[name].css'
-						: '[name].js';
+				input: {
+					main: path.resolve(__dirname, 'src/js/main.ts'),
+					admin: path.resolve(__dirname, 'src/js/admin.tsx'),
 				},
-				assetFileNames: '[name][extname]',
-				dir: path.resolve(__dirname, 'dist'),
+				output: {
+					globals: {
+						'@wordpress/blocks': 'wp.blocks',
+						'@wordpress/element': 'wp.element',
+						'@wordpress/i18n': 'wp.i18n',
+					},
+					entryFileNames: (chunk) => {
+						return chunk.name.includes('style') ||
+							chunk.name.includes('adminStyle')
+							? '[name].css'
+							: '[name].js';
+					},
+					assetFileNames: '[name][extname]',
+					dir: path.resolve(__dirname, 'dist'),
+				},
 			},
 		},
-	},
-	css: {
-		preprocessorOptions: {
-			scss: {},
+		css: {
+			preprocessorOptions: {
+				scss: {},
+			},
 		},
-	},
-	deploy,
-	resolve: {
-		alias: {
-			'@admin': path.resolve(__dirname, 'src/js/admin/'),
-			'@js': path.resolve(__dirname, 'src/js/'),
-			// Add as many as needed
+		deploy,
+		resolve: {
+			alias: {
+				'@admin': path.resolve(__dirname, 'src/js/admin/'),
+				'@js': path.resolve(__dirname, 'src/js/'),
+				// Add as many as needed
+			},
 		},
-	},
-	test: {
-		globals: true,
-		environment: 'happy-dom',
-		setupFiles: './tests/setup.ts',
-		include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
-	},
+		test: {
+			globals: true,
+			environment: 'happy-dom',
+			setupFiles: './tests/setup.ts',
+			include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+		},
+	};
 });
+
+if (require.main === module) {
+	deploy();
+}

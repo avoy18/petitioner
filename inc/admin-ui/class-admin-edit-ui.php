@@ -6,6 +6,8 @@ if (!defined("ABSPATH")) {
 
 class AV_Petitioner_Admin_Edit_UI
 {
+    public static $ADMIN_EDIT_NONCE_LABEL = 'save_petition_details';
+
     /**
      * List of meta fields used in the form.
      */
@@ -79,7 +81,9 @@ class AV_Petitioner_Admin_Edit_UI
      */
     public function render_form_fields($post)
     {
-        wp_nonce_field("save_petition_details", "petitioner_details_nonce");
+        $ajax_nonce = wp_create_nonce(self::$ADMIN_EDIT_NONCE_LABEL);
+
+        wp_nonce_field(self::$ADMIN_EDIT_NONCE_LABEL, "petitioner_details_nonce");
         // Retrieve current meta values
         $meta_values     = $this->get_meta_fields($post->ID);
         // Sanitize values for safe use in HTML attributes
@@ -120,11 +124,23 @@ class AV_Petitioner_Admin_Edit_UI
                 'from_name'                     => AV_Petitioner_Labels::get('from_name'),
                 'success_message_title'         => AV_Petitioner_Labels::get('success_message_title'),
                 'success_message'               => AV_Petitioner_Labels::get('success_message'),
+                "country_list"                  => av_petitioner_get_countries()
             ],
             // new way of handling the form fields
             "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
             "field_order"                   =>  !empty($meta_values['field_order']) ? $this->sanitize_array($meta_values['field_order'], false) : null,
+            "ajax_nonce"                    =>  $ajax_nonce
         ];
+
+        /**
+         * Filter to modify petitioner data that is sent to the edit screen
+         * 
+         *
+         * @param array $petitioner_info Array of the data
+         * @param int $form_id ID of the form being rendered.
+         * @return array Modified $petitioner_info data.
+         */
+        $petitioner_info = apply_filters('av_petitioner_info_edit', $petitioner_info, $post->ID);
 
         /**
          * Filter to modify the form fields before rendering in the admin panel.
@@ -136,6 +152,8 @@ class AV_Petitioner_Admin_Edit_UI
          * @return array Modified form fields.
          */
         $petitioner_info['form_fields'] = apply_filters('av_petitioner_form_fields_admin', $petitioner_info['form_fields'], $post->ID);
+
+        $petitioner_info['active_tab']  = !empty($_GET['ptr_active_tab']) ? $_GET['ptr_active_tab'] : 'default';
 
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 ?>
@@ -165,7 +183,7 @@ class AV_Petitioner_Admin_Edit_UI
     {
         if (
             !isset($_POST["petitioner_details_nonce"]) ||
-            !wp_verify_nonce($_POST["petitioner_details_nonce"], "save_petition_details") ||
+            !wp_verify_nonce($_POST["petitioner_details_nonce"], self::$ADMIN_EDIT_NONCE_LABEL) ||
             (defined("DOING_AUTOSAVE") && DOING_AUTOSAVE) ||
             !current_user_can("edit_post", $post_id)
         ) {

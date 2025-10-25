@@ -1,14 +1,19 @@
-$spacer-xs: 4px;
-$spacer-sm: 8px;
-$spacer-md: 16px;
-$spacer-lg: 24px;
-$spacer-xl: 32px;
+$spacer-xs: 4px; // 0.25rem
+$spacer-sm: 8px; // 0.5rem
+$spacer-md: 12px; // 0.75rem
+$spacer-lg: 16px; // 1rem
+$spacer-xl: 24px; // 1.5rem
+$spacer-2xl: 32px; // 2rem
+$spacer-3xl: 40px; // 2.5rem
+$spacer-4xl: 48px; // 3rem
+$spacer-5xl: 64px; // 4rem
 
 @mixin ptr-variables {
 	// general
 	--ptr-admin-color-primary: #e01a2b;
 	--ptr-admin-color-dark: #000000;
 	--ptr-admin-color-grey: #efefef;
+	--ptr-admin-color-light: #f7f7f7;
 	--ptr-admin-fs-sm: 14px;
 	--ptr-admin-fs-md: 18px;
 	--ptr-admin-spacing-xs: #{$spacer-xs};
@@ -16,6 +21,10 @@ $spacer-xl: 32px;
 	--ptr-admin-spacing-md: #{$spacer-md};
 	--ptr-admin-spacing-lg: #{$spacer-lg};
 	--ptr-admin-spacing-xl: #{$spacer-xl};
+	--ptr-admin-spacing-2xl: #{$spacer-2xl};
+	--ptr-admin-spacing-3xl: #{$spacer-3xl};
+	--ptr-admin-spacing-4xl: #{$spacer-4xl};
+	--ptr-admin-spacing-5xl: #{$spacer-5xl};
 
 	// wrapper
 	--ptr-admin-spacing-x: #{$spacer-md};

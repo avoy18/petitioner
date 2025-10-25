@@ -41,8 +41,9 @@ const normalizeSettingsData = (
 			dark: '',
 			grey: '',
 		},
-		labels: {}
+		labels: {},
 	},
+	active_tab: raw?.active_tab ?? '',
 });
 
 export const SettingsFormContextProvider = ({
@@ -54,47 +55,8 @@ export const SettingsFormContextProvider = ({
 		window.petitionerData as Partial<WindowSettingsData>
 	);
 
-	const {
-		show_letter,
-		show_title,
-		show_goal,
-		custom_css,
-		primary_color,
-		dark_color,
-		grey_color,
-		enable_recaptcha,
-		recaptcha_site_key,
-		recaptcha_secret_key,
-		enable_hcaptcha,
-		hcaptcha_site_key,
-		hcaptcha_secret_key,
-		enable_turnstile,
-		turnstile_site_key,
-		turnstile_secret_key,
-		enable_akismet,
-		label_overrides,
-	} = windowPetitionerData;
-
-	const [formState, setFormState] = useState<SettingsFormData>({
-		show_letter,
-		show_title,
-		show_goal,
-		custom_css,
-		primary_color,
-		dark_color,
-		grey_color,
-		enable_recaptcha,
-		recaptcha_site_key,
-		recaptcha_secret_key,
-		enable_hcaptcha,
-		hcaptcha_site_key,
-		hcaptcha_secret_key,
-		enable_turnstile,
-		turnstile_site_key,
-		turnstile_secret_key,
-		enable_akismet,
-		label_overrides,
-	});
+	const [formState, setFormState] =
+		useState<SettingsFormData>(windowPetitionerData);
 
 	const updateFormState = useCallback(
 		<K extends keyof SettingsFormData>(

@@ -4,6 +4,7 @@ export type FieldType =
 	| 'select'
 	| 'checkbox'
 	| 'wysiwyg'
+	| 'date'
 	| 'submit';
 
 interface BaseField {
@@ -44,6 +45,23 @@ export type BuilderField =
 	| CheckboxField
 	| WysiwygField
 	| SubmitField;
+
+export type FieldKey = 
+	| 'fname'
+	| 'lname' 
+	| 'email'
+	| 'submit'
+	| 'phone'
+	| 'country'
+	| 'street_address'
+	| 'city'
+	| 'postal_code'
+	| 'accept_tos'
+	| 'legal'
+	| 'comments'
+	| 'name'
+	| 'consent'
+	| 'submitted_at';
 
 export type BuilderFieldMap = Record<string, BuilderField>;
 

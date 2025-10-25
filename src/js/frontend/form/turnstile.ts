@@ -15,7 +15,7 @@ export default class Turnstile {
 		);
 
 		if (
-			typeof turnstile === 'undefined' ||
+			typeof window?.turnstile === 'undefined' ||
 			!window.petitionerCaptcha?.turnstileSiteKey ||
 			!this.turnstileContainer
 		) {
@@ -27,15 +27,23 @@ export default class Turnstile {
 	}
 
 	initTurnstile() {
-		this.widgetId = turnstile.render(this.turnstileContainer, {
-			sitekey: petitionerCaptcha.turnstileSiteKey,
+
+		const sitekey = window.petitionerCaptcha?.turnstileSiteKey;
+
+		if (!sitekey) {
+			this.handleError();
+			return;
+		}
+
+		this.widgetId = window?.turnstile?.render?.(this.turnstileContainer, {
+			sitekey,
 			callback: this.handleSuccess.bind(this),
-            theme: 'light',
+			theme: 'light',
 			'error-callback': this.handleError.bind(this),
 		});
 	}
 
-	handleSuccess(token) {
+	handleSuccess(token: string) {
 		if (!token) {
 			console.warn('❌ petitioner - Turnstile token missing.');
 			return;
@@ -57,13 +65,15 @@ export default class Turnstile {
 		console.error('❌ petitioner - Turnstile encountered an error.');
 	}
 
-	validate(callback) {
+	validate(callback: () => void) {
 		if (!this.turnstileField || this.turnstileField.value) {
 			callback();
 			return;
 		}
 
 		this.callbackFunction = callback;
-		turnstile.execute(this.widgetId);
+		if (this.widgetId) {
+			window?.turnstile?.execute?.(this.widgetId);
+		}
 	}
 }

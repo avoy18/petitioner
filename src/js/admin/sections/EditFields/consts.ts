@@ -14,6 +14,7 @@ export type DefaultValues = {
 	ty_email_confirm: string;
 	success_message_title: string;
 	success_message: string;
+	country_list: string[]
 };
 
 export type PetitionerData = {
@@ -43,7 +44,8 @@ export type PetitionerData = {
 	success_message_title?: TextValue;
 	override_success_message?: CheckboxValue;
 	success_message?: TextValue;
-    hide_last_names: boolean
+    hide_last_names: boolean;
+	active_tab: string;
 };
 
 export interface EditFormContextValue {
