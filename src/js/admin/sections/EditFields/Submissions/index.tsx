@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from '@wordpress/element';
-import { Button, ButtonGroup } from '@wordpress/components';
+import { Button, ButtonGroup, Notice } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
 import ShortcodeElement from '@admin/components/ShortcodeElement';
@@ -25,13 +25,21 @@ import {
 	deleteSubmissions,
 	getFieldLabels,
 	getHumanValue,
+	useAutoDismiss,
 } from './utilities';
-import { ExportButtonWrapper } from './styled';
+import {
+	ExportButtonWrapper,
+	SubmissionTabWrapper,
+	AlertStatusWrapper,
+	EntriesWrapper,
+} from './styled';
 import { Table } from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
 
 const SUBMISSION_LABELS = getFieldLabels();
+
+type NoticeStatus = 'success' | 'error' | undefined;
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -42,6 +50,8 @@ export default function Submissions() {
 
 	const [submissions, setSubmissions] = useState<Submissions>([]);
 	const [total, setTotal] = useState(0);
+	const [noticeStatus, setNoticeStatus] = useState<NoticeStatus>(undefined);
+	const [noticeText, setNoticeText] = useState<string | undefined>(undefined);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [order, setOrder] = useState<Order | null>();
 	const [orderby, setOrderBy] = useState<OrderBy | null>();
@@ -85,6 +95,8 @@ export default function Submissions() {
 			}
 		});
 	}, []);
+
+	useAutoDismiss(noticeText, () => setNoticeStatus(undefined));
 
 	const handleStatusChange = async (
 		id: SubmissionID,
@@ -151,8 +163,8 @@ export default function Submissions() {
 					fieldName="petitioner_shortcode"
 					width="250px"
 				/>
-				{/* @ts-ignore */}
-				<Button variant="primary" href={export_url}>
+
+				<Button variant="primary" href={String(export_url)}>
 					{__('Export entries as CSV', 'petitioner')}
 				</Button>
 			</ExportButtonWrapper>
@@ -215,12 +227,16 @@ export default function Submissions() {
 			await updateSubmissions({
 				data: newData,
 				onSuccess: () => {
-					alert(__('Submission updated!', 'petitioner'));
+					setNoticeStatus('success');
+					setNoticeText(__('Submission updated!', 'petitioner'));
 					onModalClose();
 				},
 				onError: (msg) => {
 					console.error(msg);
-					alert(__('Failed to update submission!', 'petitioner'));
+					setNoticeStatus('error');
+					setNoticeText(
+						__('Failed to update submission!', 'petitioner')
+					);
 					onModalClose();
 				},
 			});
@@ -252,13 +268,24 @@ export default function Submissions() {
 	}, []);
 
 	return (
-		<div id="AV_Petitioner_Submissions">
+		<SubmissionTabWrapper id="AV_Petitioner_Submissions">
 			<div>
 				<h3>{__('Submissions', 'petitioner-theme')}</h3>
 				{hasSubmissions && <ExportComponent />}
 			</div>
 
-			<div className="petitioner-admin__entries">
+			<EntriesWrapper>
+				{noticeStatus && noticeText && (
+					<AlertStatusWrapper>
+						<Notice
+							isDismissible={true}
+							onDismiss={() => setNoticeStatus(undefined)}
+							status={noticeStatus}
+						>
+							{noticeText}
+						</Notice>
+					</AlertStatusWrapper>
+				)}
 				<p>
 					{__('Total:', 'petitioner-theme')} {total}
 				</p>
@@ -269,7 +296,7 @@ export default function Submissions() {
 					clickable={true}
 					onItemSelect={(id) => setActiveModal(id)}
 				/>
-			</div>
+			</EntriesWrapper>
 			<br />
 			{hasSubmissions && <ResendAllButton />}
 			<br />
@@ -283,6 +310,6 @@ export default function Submissions() {
 					onDelete={onModalDelete}
 				/>
 			) : null}
-		</div>
+		</SubmissionTabWrapper>
 	);
 }

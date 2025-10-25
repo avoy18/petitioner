@@ -11,6 +11,10 @@ export const SPACINGS = {
 	md: 'var(--ptr-admin-spacing-md)',
 	lg: 'var(--ptr-admin-spacing-lg)',
 	xl: 'var(--ptr-admin-spacing-xl)',
+	'2xl': 'var(--ptr-admin-spacing-2xl)',
+	'3xl': 'var(--ptr-admin-spacing-3xl)',
+	'4xl': 'var(--ptr-admin-spacing-4xl)',
+	'5xl': 'var(--ptr-admin-spacing-5xl)',
 };
 
 export const FONT_SIZES = {

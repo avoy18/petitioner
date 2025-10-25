@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { getAjaxNonce } from '@admin/utilities';
+import { useEffect } from '@wordpress/element';
 import {
 	type FetchSettings,
 	type UpdateSettings,
@@ -213,4 +214,13 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 	);
 
 	return correctItem?.type || 'text';
+};
+
+export const useAutoDismiss = (text: string | undefined, onAutoDismiss: () => void, delay = 3000) => {
+	useEffect(() => {
+		if (text) {
+			const timeout = setTimeout(onAutoDismiss, delay);
+			return () => clearTimeout(timeout);
+		}
+	}, [text, onAutoDismiss, delay]);
 };
