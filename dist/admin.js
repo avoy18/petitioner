@@ -34380,7 +34380,7 @@ function Tabs(props) {
   } = props;
   const tabKeys = tabs2.map((tab) => tab.name);
   const [activeTab, setActiveTab] = reactExports.useState(() => {
-    return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : "";
+    return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : tabKeys[0];
   });
   const handleTabSelect = reactExports.useCallback((tabName) => {
     setActiveTab(tabName);
@@ -34388,7 +34388,7 @@ function Tabs(props) {
     if (updateURL) {
       updateActiveTabURL(tabName, tabKeys);
     }
-  }, []);
+  }, [onTabSelect, tabKeys, updateURL]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       TabPanel,

@@ -41808,7 +41808,7 @@
           } = props;
           const tabKeys = tabs.map(tab => tab.name);
           const [activeTab, setActiveTab] = reactExports.useState(() => {
-            return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : "";
+            return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : tabKeys[0];
           });
           const handleTabSelect = reactExports.useCallback(tabName => {
             setActiveTab(tabName);
@@ -41816,7 +41816,7 @@
             if (updateURL) {
               updateActiveTabURL(tabName, tabKeys);
             }
-          }, []);
+          }, [onTabSelect, tabKeys, updateURL]);
           return /* @__PURE__ */jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, {
             children: [/* @__PURE__ */jsxRuntimeExports.jsx(TabPanel, {
               onSelect: handleTabSelect,
