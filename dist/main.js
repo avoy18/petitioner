@@ -108,14 +108,20 @@ class Turnstile {
     this.turnstileContainer = this.form.querySelector(
       ".petitioner-turnstile-container"
     );
-    if (typeof turnstile === "undefined" || !((_a = window.petitionerCaptcha) == null ? void 0 : _a.turnstileSiteKey) || !this.turnstileContainer) {
+    if (typeof (window == null ? void 0 : window.turnstile) === "undefined" || !((_a = window.petitionerCaptcha) == null ? void 0 : _a.turnstileSiteKey) || !this.turnstileContainer) {
       return;
     }
     this.initTurnstile();
   }
   initTurnstile() {
-    this.widgetId = turnstile.render(this.turnstileContainer, {
-      sitekey: petitionerCaptcha.turnstileSiteKey,
+    var _a, _b, _c;
+    const sitekey = (_a = window.petitionerCaptcha) == null ? void 0 : _a.turnstileSiteKey;
+    if (!sitekey) {
+      this.handleError();
+      return;
+    }
+    this.widgetId = (_c = (_b = window == null ? void 0 : window.turnstile) == null ? void 0 : _b.render) == null ? void 0 : _c.call(_b, this.turnstileContainer, {
+      sitekey,
       callback: this.handleSuccess.bind(this),
       theme: "light",
       "error-callback": this.handleError.bind(this)
@@ -139,12 +145,15 @@ class Turnstile {
     console.error("❌ petitioner - Turnstile encountered an error.");
   }
   validate(callback) {
+    var _a, _b;
     if (!this.turnstileField || this.turnstileField.value) {
       callback();
       return;
     }
     this.callbackFunction = callback;
-    turnstile.execute(this.widgetId);
+    if (this.widgetId) {
+      (_b = (_a = window == null ? void 0 : window.turnstile) == null ? void 0 : _a.execute) == null ? void 0 : _b.call(_a, this.widgetId);
+    }
   }
 }
 class PetitionerForm {

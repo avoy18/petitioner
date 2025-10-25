@@ -97,14 +97,19 @@
             this.form = petitionForm;
             this.turnstileField = this.form.querySelector('[name="petitioner-turnstile-response"]');
             this.turnstileContainer = this.form.querySelector(".petitioner-turnstile-container");
-            if (typeof turnstile === "undefined" || !window.petitionerCaptcha?.turnstileSiteKey || !this.turnstileContainer) {
+            if (typeof window?.turnstile === "undefined" || !window.petitionerCaptcha?.turnstileSiteKey || !this.turnstileContainer) {
               return;
             }
             this.initTurnstile();
           }
           initTurnstile() {
-            this.widgetId = turnstile.render(this.turnstileContainer, {
-              sitekey: petitionerCaptcha.turnstileSiteKey,
+            const sitekey = window.petitionerCaptcha?.turnstileSiteKey;
+            if (!sitekey) {
+              this.handleError();
+              return;
+            }
+            this.widgetId = window?.turnstile?.render?.(this.turnstileContainer, {
+              sitekey,
               callback: this.handleSuccess.bind(this),
               theme: "light",
               "error-callback": this.handleError.bind(this)
@@ -133,7 +138,9 @@
               return;
             }
             this.callbackFunction = callback;
-            turnstile.execute(this.widgetId);
+            if (this.widgetId) {
+              window?.turnstile?.execute?.(this.widgetId);
+            }
           }
         }
         class PetitionerForm {
