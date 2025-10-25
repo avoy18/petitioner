@@ -226,7 +226,7 @@ class AV_Petitioner_Submissions_Controller
 
         $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
 
-        if ($orderby && !empty($allowed_fields[$orderby])) {
+        if ($orderby && in_array($orderby, $allowed_fields, true)) {
             $fetch_settings['orderby']  = $orderby;
         }
 
@@ -295,7 +295,7 @@ class AV_Petitioner_Submissions_Controller
             $fetch_settings['order'] = $order;
         }
 
-        if ($orderby && !empty($fields[$orderby])) {
+        if ($orderby && in_array($orderby, $fields, true)) {
             $fetch_settings['orderby'] = $orderby;
         }
 
