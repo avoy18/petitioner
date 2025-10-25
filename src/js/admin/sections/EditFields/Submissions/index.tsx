@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from '@wordpress/element';
 import { Button, ButtonGroup } from '@wordpress/components';
-import ApprovalStatus from './ApprovalStatus';
-import { ResendAllButton } from './ResendButton';
+import ApprovalStatus from './ApprovalStatus/index';
+import { ResendAllButton } from './ApprovalStatus/ResendButton';
 import ShortcodeElement from '@admin/components/ShortcodeElement';
 import { __ } from '@wordpress/i18n';
 import {
