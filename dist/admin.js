@@ -28852,6 +28852,38 @@ const useNoticeSystem = () => {
 const TableHeading = dt.th(_g || (_g = __template(["\n	", "\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ({ $width }) => "width: ".concat($width, ";"));
 const HeadingLabel = dt.div(_h || (_h = __template(["\n	display: inline-flex;\n	gap: var(--ptr-admin-spacing-xs);\n"])));
 const StyledTable = dt.table(_j || (_j = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_i || (_i = __template(["\n				tr {\n					transition: ", ";\n					&:hover {\n						cursor: pointer;\n						background: ", " !important;\n					}\n				}\n			"])), TRANSITIONS.sm, COLORS.grey));
+const usePagination = (total, perPage, currentPage, onPageChange) => {
+  return reactExports.useMemo(() => {
+    const totalPages = Math.ceil(total / perPage);
+    const buttons = [];
+    for (let i2 = 1; i2 <= totalPages; i2++) {
+      buttons.push(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            variant: currentPage !== i2 ? "secondary" : "primary",
+            onClick: () => onPageChange(i2),
+            "data-page": i2,
+            children: i2
+          },
+          i2
+        )
+      );
+    }
+    return buttons;
+  }, [total, perPage, currentPage, onPageChange]);
+};
+const useTableHeadings = (baseHeadings, conditionalHeadings = []) => {
+  return reactExports.useMemo(() => {
+    const finalHeadings = [...baseHeadings];
+    conditionalHeadings.forEach(({ condition, heading }) => {
+      if (condition) {
+        finalHeadings.push(heading);
+      }
+    });
+    return finalHeadings;
+  }, [baseHeadings, conditionalHeadings]);
+};
 function Table({
   headings,
   rows,
@@ -29631,25 +29663,12 @@ function Submissions() {
       });
     }
   };
-  const handlePaginationClick = (page) => {
-    setCurrentPage(page);
-  };
-  const totalPages = Math.ceil(total / perPage);
-  const buttons = [];
-  for (let i2 = 1; i2 <= totalPages; i2++) {
-    buttons.push(
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          variant: currentPage !== i2 ? "secondary" : "primary",
-          onClick: () => handlePaginationClick(i2),
-          "data-page": i2,
-          children: i2
-        },
-        i2
-      )
-    );
-  }
+  const paginationButtons = usePagination(
+    total,
+    perPage,
+    currentPage,
+    setCurrentPage
+  );
   const ExportComponent = () => {
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(ExportButtonWrapper, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -29668,19 +29687,24 @@ function Submissions() {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", href: String(export_url), children: __("Export entries as CSV", "petitioner") })
     ] });
   };
-  const headingData = [
-    { id: "email", label: SUBMISSION_LABELS.email, width: "20%" },
-    { id: "name", label: SUBMISSION_LABELS.name },
-    { id: "consent", label: SUBMISSION_LABELS.consent, width: "60px" },
-    { id: "submitted_at", label: SUBMISSION_LABELS.submitted_at }
-  ];
-  if (showApproval) {
-    headingData.push({
-      id: "status",
-      label: __("Status", "petitioner"),
-      width: "220px"
-    });
-  }
+  const headingData = useTableHeadings(
+    [
+      { id: "email", label: SUBMISSION_LABELS.email, width: "20%" },
+      { id: "name", label: SUBMISSION_LABELS.name },
+      { id: "consent", label: SUBMISSION_LABELS.consent, width: "60px" },
+      { id: "submitted_at", label: SUBMISSION_LABELS.submitted_at }
+    ],
+    [
+      {
+        condition: showApproval,
+        heading: {
+          id: "status",
+          label: __("Status", "petitioner"),
+          width: "220px"
+        }
+      }
+    ]
+  );
   const tableRows = submissions.map((item) => {
     const cells = [
       item.email,
@@ -29782,7 +29806,7 @@ function Submissions() {
     /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
     hasSubmissions && /* @__PURE__ */ jsxRuntimeExports.jsx(ResendAllButton, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-    (buttons == null ? void 0 : buttons.length) > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonGroup, { children: buttons }),
+    (paginationButtons == null ? void 0 : paginationButtons.length) > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonGroup, { children: paginationButtons }),
     selectedSubmission ? /* @__PURE__ */ jsxRuntimeExports.jsx(
       SubmissionEditModal,
       {

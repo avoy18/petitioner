@@ -36285,6 +36285,35 @@
 			`}
 	}
 `;
+        const usePagination = (total, perPage, currentPage, onPageChange) => {
+          return reactExports.useMemo(() => {
+            const totalPages = Math.ceil(total / perPage);
+            const buttons = [];
+            for (let i = 1; i <= totalPages; i++) {
+              buttons.push(/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                variant: currentPage !== i ? "secondary" : "primary",
+                onClick: () => onPageChange(i),
+                "data-page": i,
+                children: i
+              }, i));
+            }
+            return buttons;
+          }, [total, perPage, currentPage, onPageChange]);
+        };
+        const useTableHeadings = (baseHeadings, conditionalHeadings = []) => {
+          return reactExports.useMemo(() => {
+            const finalHeadings = [...baseHeadings];
+            conditionalHeadings.forEach(({
+              condition,
+              heading
+            }) => {
+              if (condition) {
+                finalHeadings.push(heading);
+              }
+            });
+            return finalHeadings;
+          }, [baseHeadings, conditionalHeadings]);
+        };
         function Table({
           headings,
           rows,
@@ -36976,19 +37005,7 @@
               });
             }
           };
-          const handlePaginationClick = page => {
-            setCurrentPage(page);
-          };
-          const totalPages = Math.ceil(total / perPage);
-          const buttons = [];
-          for (let i = 1; i <= totalPages; i++) {
-            buttons.push(/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
-              variant: currentPage !== i ? "secondary" : "primary",
-              onClick: () => handlePaginationClick(i),
-              "data-page": i,
-              children: i
-            }, i));
-          }
+          const paginationButtons = usePagination(total, perPage, currentPage, setCurrentPage);
           const ExportComponent = () => {
             return /* @__PURE__ */jsxRuntimeExports.jsxs(ExportButtonWrapper, {
               children: [/* @__PURE__ */jsxRuntimeExports.jsx(ShortcodeElement, {
@@ -37004,7 +37021,7 @@
               })]
             });
           };
-          const headingData = [{
+          const headingData = useTableHeadings([{
             id: "email",
             label: SUBMISSION_LABELS.email,
             width: "20%"
@@ -37018,14 +37035,14 @@
           }, {
             id: "submitted_at",
             label: SUBMISSION_LABELS.submitted_at
-          }];
-          if (showApproval) {
-            headingData.push({
+          }], [{
+            condition: showApproval,
+            heading: {
               id: "status",
               label: __("Status", "petitioner"),
               width: "220px"
-            });
-          }
+            }
+          }]);
           const tableRows = submissions.map(item => {
             const cells = [item.email, `${item.fname} ${item.lname}`, getHumanValue(String(item.accept_tos), "checkbox"), getHumanValue(item.submitted_at, "date")];
             if (showApproval) {
@@ -37096,8 +37113,8 @@
                 clickable: true,
                 onItemSelect: id => setActiveModal(id)
               })]
-            }), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), hasSubmissions && /* @__PURE__ */jsxRuntimeExports.jsx(ResendAllButton, {}), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), buttons?.length > 1 && /* @__PURE__ */jsxRuntimeExports.jsx(ButtonGroup, {
-              children: buttons
+            }), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), hasSubmissions && /* @__PURE__ */jsxRuntimeExports.jsx(ResendAllButton, {}), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), paginationButtons?.length > 1 && /* @__PURE__ */jsxRuntimeExports.jsx(ButtonGroup, {
+              children: paginationButtons
             }), selectedSubmission ? /* @__PURE__ */jsxRuntimeExports.jsx(SubmissionEditModal, {
               submission: selectedSubmission,
               onClose: onModalClose,

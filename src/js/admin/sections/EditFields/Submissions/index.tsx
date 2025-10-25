@@ -13,7 +13,6 @@ import {
 	type FetchSettings,
 	type Order,
 	type OrderBy,
-	UPDATE_ACTION,
 } from './consts';
 import type {
 	ApprovalState,
@@ -32,7 +31,7 @@ import {
 	SubmissionTabWrapper,
 	EntriesWrapper,
 } from './styled';
-import { Table } from '@admin/components/Table';
+import { Table, usePagination, useTableHeadings } from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
 
@@ -133,25 +132,12 @@ export default function Submissions() {
 		}
 	};
 
-	const handlePaginationClick = (page: number) => {
-		setCurrentPage(page);
-	};
-
-	const totalPages = Math.ceil(total / perPage);
-	const buttons = [];
-
-	for (let i = 1; i <= totalPages; i++) {
-		buttons.push(
-			<Button
-				variant={currentPage !== i ? 'secondary' : 'primary'}
-				key={i}
-				onClick={() => handlePaginationClick(i)}
-				data-page={i}
-			>
-				{i}
-			</Button>
-		);
-	}
+	const paginationButtons = usePagination(
+		total,
+		perPage,
+		currentPage,
+		setCurrentPage
+	);
 
 	const ExportComponent = () => {
 		return (
@@ -174,20 +160,24 @@ export default function Submissions() {
 		);
 	};
 
-	const headingData = [
-		{ id: 'email', label: SUBMISSION_LABELS.email, width: '20%' },
-		{ id: 'name', label: SUBMISSION_LABELS.name },
-		{ id: 'consent', label: SUBMISSION_LABELS.consent, width: '60px' },
-		{ id: 'submitted_at', label: SUBMISSION_LABELS.submitted_at },
-	];
-
-	if (showApproval) {
-		headingData.push({
-			id: 'status',
-			label: __('Status', 'petitioner'),
-			width: '220px',
-		});
-	}
+	const headingData = useTableHeadings(
+		[
+			{ id: 'email', label: SUBMISSION_LABELS.email, width: '20%' },
+			{ id: 'name', label: SUBMISSION_LABELS.name },
+			{ id: 'consent', label: SUBMISSION_LABELS.consent, width: '60px' },
+			{ id: 'submitted_at', label: SUBMISSION_LABELS.submitted_at },
+		],
+		[
+			{
+				condition: showApproval,
+				heading: {
+					id: 'status',
+					label: __('Status', 'petitioner'),
+					width: '220px',
+				},
+			},
+		]
+	);
 
 	const tableRows = submissions.map((item) => {
 		const cells: React.ReactNode[] = [
@@ -293,7 +283,9 @@ export default function Submissions() {
 			<br />
 			{hasSubmissions && <ResendAllButton />}
 			<br />
-			{buttons?.length > 1 && <ButtonGroup>{buttons}</ButtonGroup>}
+			{paginationButtons?.length > 1 && (
+				<ButtonGroup>{paginationButtons}</ButtonGroup>
+			)}
 
 			{selectedSubmission ? (
 				<SubmissionEditModal
