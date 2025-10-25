@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from '@wordpress/element';
-import { Button, ButtonGroup, Notice } from '@wordpress/components';
+import { Button, ButtonGroup } from '@wordpress/components';
 import ApprovalStatus from './ApprovalStatus';
 import { ResendAllButton } from './ResendButton';
 import ShortcodeElement from '@admin/components/ShortcodeElement';
@@ -25,12 +25,11 @@ import {
 	deleteSubmissions,
 	getFieldLabels,
 	getHumanValue,
-	useAutoDismiss,
+	useNoticeSystem,
 } from './utilities';
 import {
 	ExportButtonWrapper,
 	SubmissionTabWrapper,
-	AlertStatusWrapper,
 	EntriesWrapper,
 } from './styled';
 import { Table } from '@admin/components/Table';
@@ -38,8 +37,6 @@ import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
 
 const SUBMISSION_LABELS = getFieldLabels();
-
-type NoticeStatus = 'success' | 'error' | undefined;
 
 export default function Submissions() {
 	const { form_id = null, export_url = '' } = window?.petitionerData;
@@ -50,8 +47,6 @@ export default function Submissions() {
 
 	const [submissions, setSubmissions] = useState<Submissions>([]);
 	const [total, setTotal] = useState(0);
-	const [noticeStatus, setNoticeStatus] = useState<NoticeStatus>(undefined);
-	const [noticeText, setNoticeText] = useState<string | undefined>(undefined);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [order, setOrder] = useState<Order | null>();
 	const [orderby, setOrderBy] = useState<OrderBy | null>();
@@ -96,7 +91,7 @@ export default function Submissions() {
 		});
 	}, []);
 
-	useAutoDismiss(noticeText, () => setNoticeStatus(undefined));
+	const { showNotice, hideNotice, NoticeElement } = useNoticeSystem();
 
 	const handleStatusChange = async (
 		id: SubmissionID,
@@ -227,16 +222,12 @@ export default function Submissions() {
 			await updateSubmissions({
 				data: newData,
 				onSuccess: () => {
-					setNoticeStatus('success');
-					setNoticeText(__('Submission updated!', 'petitioner'));
+					showNotice('success', __('Submission updated!', 'petitioner'));
 					onModalClose();
 				},
 				onError: (msg) => {
 					console.error(msg);
-					setNoticeStatus('error');
-					setNoticeText(
-						__('Failed to update submission!', 'petitioner')
-					);
+					showNotice('error', __('Failed to update submission!', 'petitioner'));
 					onModalClose();
 				},
 			});
@@ -250,18 +241,13 @@ export default function Submissions() {
 		deleteSubmissions({
 			id,
 			onSuccess: () => {
-				alert('Successfully deleted!');
+				showNotice('success', __('Submission deleted!', 'petitioner'));
 				onModalClose();
 				fetchData();
 			},
 			onError: (msg: string) => {
 				console.error(msg);
-				alert(
-					__(
-						'Failed to delete! Check console for errors',
-						'petitioner'
-					)
-				);
+				showNotice('error', __('Failed to delete submission!', 'petitioner'));
 				onModalClose();
 			},
 		});
@@ -275,17 +261,7 @@ export default function Submissions() {
 			</div>
 
 			<EntriesWrapper>
-				{noticeStatus && noticeText && (
-					<AlertStatusWrapper>
-						<Notice
-							isDismissible={true}
-							onDismiss={() => setNoticeStatus(undefined)}
-							status={noticeStatus}
-						>
-							{noticeText}
-						</Notice>
-					</AlertStatusWrapper>
-				)}
+				<NoticeElement />
 				<p>
 					{__('Total:', 'petitioner-theme')} {total}
 				</p>

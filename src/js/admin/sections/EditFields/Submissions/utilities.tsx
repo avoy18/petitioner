@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { getAjaxNonce } from '@admin/utilities';
-import { useEffect } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import {
 	type FetchSettings,
 	type UpdateSettings,
@@ -14,6 +14,9 @@ import type {
 	FieldType,
 } from '@admin/sections/EditFields/FormBuilder/consts';
 import { ALl_POSSIBLE_FIELDS } from '@admin/context/FormBuilderContext';
+import type { NoticeStatus } from './consts';
+import { AlertStatusWrapper } from './styled';
+import { Notice } from '@wordpress/components';
 
 export const fetchSubmissions = async ({
 	currentPage = 1,
@@ -216,11 +219,78 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 	return correctItem?.type || 'text';
 };
 
-export const useAutoDismiss = (text: string | undefined, onAutoDismiss: () => void, delay = 3000) => {
+export const useAutoDismiss = (
+	text: string | undefined,
+	onAutoDismiss: () => void,
+	delay = 3000
+) => {
 	useEffect(() => {
 		if (text) {
 			const timeout = setTimeout(onAutoDismiss, delay);
 			return () => clearTimeout(timeout);
 		}
 	}, [text, onAutoDismiss, delay]);
+};
+
+/**
+ * Custom hook for managing notice/alert notifications with auto-dismiss functionality.
+ * 
+ * @returns {Object} Notice system controls
+ * @returns {Function} returns.showNotice - Display a notice with specified status and text
+ * @returns {Function} returns.hideNotice - Manually dismiss the current notice
+ * @returns {Function} returns.NoticeElement - React component to render the notice UI
+ * 
+ * @example
+ * const { showNotice, NoticeElement } = useNoticeSystem();
+ * 
+ * // Show success notification
+ * showNotice('success', 'Data saved successfully!');
+ * 
+ * // Show error notification
+ * showNotice('error', 'Failed to save data');
+ * 
+ * // Render in component
+ * return (
+ *   <div>
+ *     <NoticeElement />
+ *   </div>
+ * );
+ */
+export const useNoticeSystem = () => {
+	const [noticeStatus, setNoticeStatus] = useState<NoticeStatus>(undefined);
+	const [noticeText, setNoticeText] = useState<string | undefined>(undefined);
+
+	useAutoDismiss(noticeText, () => setNoticeStatus(undefined));
+	
+	const showNotice = useCallback((status: NoticeStatus, text: string) => {
+		setNoticeStatus(status);
+		setNoticeText(text);
+	}, []);
+
+	const hideNotice = useCallback(() => {
+		setNoticeStatus(undefined);
+		setNoticeText(undefined);
+	}, []);
+
+	const NoticeElement = useCallback(() => {
+		if (!noticeStatus || !noticeText) return null;
+
+		return (
+			<AlertStatusWrapper>
+				<Notice
+					isDismissible={true}
+					onDismiss={hideNotice}
+					status={noticeStatus}
+				>
+					{noticeText}
+				</Notice>
+			</AlertStatusWrapper>
+		);
+	}, [noticeStatus, noticeText]);
+
+	return {
+		showNotice,
+		hideNotice,
+		NoticeElement,
+	};
 };

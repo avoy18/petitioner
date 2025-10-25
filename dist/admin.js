@@ -28648,6 +28648,22 @@ function useFormBuilderContext() {
   }
   return context;
 }
+const COLORS = {
+  grey: "var(--ptr-admin-color-grey)",
+  light: "var(--ptr-admin-color-light)"
+};
+const SPACINGS = {
+  xs: "var(--ptr-admin-spacing-xs)",
+  sm: "var(--ptr-admin-spacing-sm)",
+  "4xl": "var(--ptr-admin-spacing-4xl)"
+};
+const TRANSITIONS = {
+  sm: "0.15s"
+};
+const ExportButtonWrapper = dt.div(_c || (_c = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	justify-content: space-between;\n"])));
+const SubmissionTabWrapper = dt.div(_d || (_d = __template([""])));
+const AlertStatusWrapper = dt.div(_e2 || (_e2 = __template(["\n	position: fixed;\n	width: 80%;\n	max-width: 768px;\n	margin: auto;\n	top: ", ";\n	left: 0;\n	right: 0;\n"])), SPACINGS["4xl"]);
+const EntriesWrapper = dt.div(_f || (_f = __template(["\n	position: relative;\n"])));
 const fetchSubmissions = async ({
   currentPage = 1,
   formID,
@@ -28803,22 +28819,36 @@ const useAutoDismiss = (text2, onAutoDismiss, delay = 3e3) => {
     }
   }, [text2, onAutoDismiss, delay]);
 };
-const COLORS = {
-  grey: "var(--ptr-admin-color-grey)",
-  light: "var(--ptr-admin-color-light)"
+const useNoticeSystem = () => {
+  const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
+  const [noticeText, setNoticeText] = reactExports.useState(void 0);
+  useAutoDismiss(noticeText, () => setNoticeStatus(void 0));
+  const showNotice = reactExports.useCallback((status, text2) => {
+    setNoticeStatus(status);
+    setNoticeText(text2);
+  }, []);
+  const hideNotice = reactExports.useCallback(() => {
+    setNoticeStatus(void 0);
+    setNoticeText(void 0);
+  }, []);
+  const NoticeElement = reactExports.useCallback(() => {
+    if (!noticeStatus || !noticeText) return null;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(AlertStatusWrapper, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Notice,
+      {
+        isDismissible: true,
+        onDismiss: hideNotice,
+        status: noticeStatus,
+        children: noticeText
+      }
+    ) });
+  }, [noticeStatus, noticeText]);
+  return {
+    showNotice,
+    hideNotice,
+    NoticeElement
+  };
 };
-const SPACINGS = {
-  xs: "var(--ptr-admin-spacing-xs)",
-  sm: "var(--ptr-admin-spacing-sm)",
-  "4xl": "var(--ptr-admin-spacing-4xl)"
-};
-const TRANSITIONS = {
-  sm: "0.15s"
-};
-const ExportButtonWrapper = dt.div(_c || (_c = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	justify-content: space-between;\n"])));
-const SubmissionTabWrapper = dt.div(_d || (_d = __template([""])));
-const AlertStatusWrapper = dt.div(_e2 || (_e2 = __template(["\n	position: fixed;\n	width: 80%;\n	max-width: 768px;\n	margin: auto;\n	top: ", ";\n	left: 0;\n	right: 0;\n"])), SPACINGS["4xl"]);
-const EntriesWrapper = dt.div(_f || (_f = __template(["\n	position: relative;\n"])));
 const TableHeading = dt.th(_g || (_g = __template(["\n	", "\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ({ $width }) => "width: ".concat($width, ";"));
 const HeadingLabel = dt.div(_h || (_h = __template(["\n	display: inline-flex;\n	gap: var(--ptr-admin-spacing-xs);\n"])));
 const StyledTable = dt.table(_j || (_j = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_i || (_i = __template(["\n				tr {\n					transition: ", ";\n					&:hover {\n						cursor: pointer;\n						background: ", " !important;\n					}\n				}\n			"])), TRANSITIONS.sm, COLORS.grey));
@@ -29533,8 +29563,6 @@ function Submissions() {
   const approvalState = window.petitionerData.approval_state;
   const [submissions, setSubmissions] = reactExports.useState([]);
   const [total, setTotal] = reactExports.useState(0);
-  const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
-  const [noticeText, setNoticeText] = reactExports.useState(void 0);
   const [currentPage, setCurrentPage] = reactExports.useState(1);
   const [order, setOrder] = reactExports.useState();
   const [orderby, setOrderBy] = reactExports.useState();
@@ -29570,7 +29598,7 @@ function Submissions() {
       }
     });
   }, []);
-  useAutoDismiss(noticeText, () => setNoticeStatus(void 0));
+  const { showNotice, NoticeElement } = useNoticeSystem();
   const handleStatusChange = async (id2, newStatus, changeAction) => {
     const question = "Are you sure you want to ".concat(String(changeAction).toLowerCase(), " this submission?");
     if (window.confirm(question)) {
@@ -29682,16 +29710,12 @@ function Submissions() {
       await updateSubmissions({
         data: newData,
         onSuccess: () => {
-          setNoticeStatus("success");
-          setNoticeText(__("Submission updated!", "petitioner"));
+          showNotice("success", __("Submission updated!", "petitioner"));
           onModalClose();
         },
         onError: (msg) => {
           console.error(msg);
-          setNoticeStatus("error");
-          setNoticeText(
-            __("Failed to update submission!", "petitioner")
-          );
+          showNotice("error", __("Failed to update submission!", "petitioner"));
           onModalClose();
         }
       });
@@ -29703,18 +29727,13 @@ function Submissions() {
     deleteSubmissions({
       id: id2,
       onSuccess: () => {
-        alert("Successfully deleted!");
+        showNotice("success", __("Submission deleted!", "petitioner"));
         onModalClose();
         fetchData();
       },
       onError: (msg) => {
         console.error(msg);
-        alert(
-          __(
-            "Failed to delete! Check console for errors",
-            "petitioner"
-          )
-        );
+        showNotice("error", __("Failed to delete submission!", "petitioner"));
         onModalClose();
       }
     });
@@ -29725,15 +29744,7 @@ function Submissions() {
       hasSubmissions && /* @__PURE__ */ jsxRuntimeExports.jsx(ExportComponent, {})
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(EntriesWrapper, { children: [
-      noticeStatus && noticeText && /* @__PURE__ */ jsxRuntimeExports.jsx(AlertStatusWrapper, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Notice,
-        {
-          isDismissible: true,
-          onDismiss: () => setNoticeStatus(void 0),
-          status: noticeStatus,
-          children: noticeText
-        }
-      ) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(NoticeElement, {}),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
         __("Total:", "petitioner-theme"),
         " ",

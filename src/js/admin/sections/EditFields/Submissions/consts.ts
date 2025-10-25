@@ -57,13 +57,10 @@ export type DeleteSettings = {
 	id: SubmissionID;
 	onSuccess: () => void;
 	onError: (msg: string) => void;
-}
+};
 
 export const UPDATE_ACTION = 'petitioner_update_submission';
 export const FETCH_ACTION = 'petitioner_fetch_submissions';
 export const DELETE_ACTION = 'petitioner_delete_submission';
 
-export const NOTICE_TEXT = {
-	'error': 'Something went wrong',
-	'success': 'Updated!'
-}
+export type NoticeStatus = 'success' | 'error' | undefined;
