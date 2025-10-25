@@ -259,8 +259,6 @@ export const useAutoDismiss = (
 export const useNoticeSystem = () => {
 	const [noticeStatus, setNoticeStatus] = useState<NoticeStatus>(undefined);
 	const [noticeText, setNoticeText] = useState<string | undefined>(undefined);
-
-	useAutoDismiss(noticeText, () => setNoticeStatus(undefined));
 	
 	const showNotice = useCallback((status: NoticeStatus, text: string) => {
 		setNoticeStatus(status);
@@ -271,6 +269,8 @@ export const useNoticeSystem = () => {
 		setNoticeStatus(undefined);
 		setNoticeText(undefined);
 	}, []);
+
+	useAutoDismiss(noticeText, hideNotice);
 
 	const NoticeElement = useCallback(() => {
 		if (!noticeStatus || !noticeText) return null;

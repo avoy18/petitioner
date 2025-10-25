@@ -36225,7 +36225,6 @@
         const useNoticeSystem = () => {
           const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
           const [noticeText, setNoticeText] = reactExports.useState(void 0);
-          useAutoDismiss(noticeText, () => setNoticeStatus(void 0));
           const showNotice = reactExports.useCallback((status, text) => {
             setNoticeStatus(status);
             setNoticeText(text);
@@ -36234,6 +36233,7 @@
             setNoticeStatus(void 0);
             setNoticeText(void 0);
           }, []);
+          useAutoDismiss(noticeText, hideNotice);
           const NoticeElement = reactExports.useCallback(() => {
             if (!noticeStatus || !noticeText) return null;
             return /* @__PURE__ */jsxRuntimeExports.jsx(AlertStatusWrapper, {
