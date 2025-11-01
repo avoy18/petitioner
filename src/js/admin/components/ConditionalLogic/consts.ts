@@ -41,7 +41,3 @@ export const LOGIC_OPTIONS = [
 	{ value: 'AND', label: __('AND', 'petitioner') },
 	{ value: 'OR', label: __('OR', 'petitioner') },
 ];
-
-// Helper functions
-export const generateId = () =>
-	`${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;

@@ -1,6 +1,6 @@
 import { useState, useCallback } from '@wordpress/element';
 import type { Condition, ConditionGroup } from './consts';
-import { generateId } from './consts';
+import { generateId } from './utilities';
 
 export const useConditionalLogic = (options?: {
 	initialValue?: ConditionGroup;

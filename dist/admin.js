@@ -28810,6 +28810,7 @@ const COLORS = {
 const SPACINGS = {
   xs: "var(--ptr-admin-spacing-xs)",
   sm: "var(--ptr-admin-spacing-sm)",
+  md: "var(--ptr-admin-spacing-md)",
   "4xl": "var(--ptr-admin-spacing-4xl)"
 };
 const TRANSITIONS = {
@@ -29563,11 +29564,11 @@ function SubmissionEditModal({
   );
 }
 const StyledExportButton = dt(Button)(_n || (_n = __template([""])));
-const ConditionalLogicWrapper = dt.div(_o || (_o = __template(["\n	border: 1px solid rgba(0, 0, 0, 0.1);\n	border-radius: 4px;\n	padding: var(--ptr-admin-spacing-md, 16px);\n	background: #fff;\n"])));
-const GroupWrapper = dt.div(_p || (_p = __template(["\n	border: 2px dashed rgba(0, 0, 0, 0.2);\n	border-radius: 4px;\n	padding: var(--ptr-admin-spacing-md, 16px);\n	margin-bottom: var(--ptr-admin-spacing-md, 16px);\n	background: rgba(0, 0, 0, 0.02);\n"])));
-const GroupHeader = dt.div(_q || (_q = __template(["\n	display: flex;\n	align-items: center;\n	gap: 8px;\n	margin-bottom: var(--ptr-admin-spacing-md, 16px);\n\n	span {\n		font-weight: 500;\n		color: rgba(0, 0, 0, 0.7);\n	}\n\n	.components-base-control {\n		margin-bottom: 0;\n		width: auto;\n		min-width: 100px;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n"])));
-const ConditionRow = dt.div(_r || (_r = __template(["\n	display: flex;\n	align-items: flex-start;\n	gap: 8px;\n	margin-bottom: 8px;\n\n	.components-base-control {\n		margin-bottom: 0;\n		flex: 1;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n\n	> button {\n		flex-shrink: 0;\n		margin-top: 2px;\n	}\n"])));
-const ActionButtons = dt.div(_s || (_s = __template(["\n	display: flex;\n	gap: 8px;\n	margin-top: 8px;\n"])));
+const ConditionalLogicWrapper = dt.div(_o || (_o = __template(["\n	border: 1px solid rgba(0, 0, 0, 0.1);\n	border-radius: 4px;\n	padding: ", ";\n	background: #fff;\n"])), SPACINGS.md);
+const GroupWrapper = dt.div(_p || (_p = __template(["\n	border: 2px dashed rgba(0, 0, 0, 0.2);\n	border-radius: 4px;\n	padding: ", ";\n	margin-bottom: ", ";\n	background: rgba(0, 0, 0, 0.02);\n"])), SPACINGS.md, SPACINGS.md);
+const GroupHeader = dt.div(_q || (_q = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	span {\n		font-weight: 500;\n		color: rgba(0, 0, 0, 0.7);\n	}\n\n	.components-base-control {\n		margin-bottom: 0;\n		width: auto;\n		min-width: 100px;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n"])), SPACINGS.sm, SPACINGS.md);
+const ConditionRow = dt.div(_r || (_r = __template(["\n	display: flex;\n	align-items: flex-start;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	.components-base-control {\n		margin-bottom: 0;\n		flex: 1;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n\n	> button {\n		flex-shrink: 0;\n		margin-top: 2px;\n	}\n"])), SPACINGS.sm, SPACINGS.sm);
+const ActionButtons = dt.div(_s || (_s = __template(["\n	display: flex;\n	gap: ", ";\n	margin-top: ", ";\n"])), SPACINGS.sm, SPACINGS.sm);
 const OPERATORS = [
   { value: "equals", label: __("Equals", "petitioner") },
   { value: "not_equals", label: __("Not Equals", "petitioner") },
@@ -29642,38 +29643,22 @@ const ConditionComponent = reactExports.memo(
     ] });
   }
 );
-const GroupComponent = reactExports.memo(
-  ({ group, availableFields, onChange }) => {
-    const updateCondition = (index, condition) => {
-      const newConditions = [...group.conditions];
-      newConditions[index] = condition;
-      onChange({ ...group, conditions: newConditions });
-    };
-    const removeCondition = (index) => {
-      const newConditions = group.conditions.filter(
-        (_2, i2) => i2 !== index
-      );
-      if (newConditions.length === 0) {
-        onChange({
-          ...group,
-          conditions: [
-            {
-              id: generateId(),
-              field: "",
-              operator: "equals",
-              value: ""
-            }
-          ]
-        });
-      } else {
-        onChange({ ...group, conditions: newConditions });
-      }
-    };
-    const addCondition = () => {
+const GroupComponent = ({
+  group,
+  availableFields,
+  onChange
+}) => {
+  const updateCondition = (index, condition) => {
+    const newConditions = [...group.conditions];
+    newConditions[index] = condition;
+    onChange({ ...group, conditions: newConditions });
+  };
+  const removeCondition = (index) => {
+    const newConditions = group.conditions.filter((_2, i2) => i2 !== index);
+    if (newConditions.length === 0) {
       onChange({
         ...group,
         conditions: [
-          ...group.conditions,
           {
             id: generateId(),
             field: "",
@@ -29682,45 +29667,62 @@ const GroupComponent = reactExports.memo(
           }
         ]
       });
-    };
-    const showRemoveCondition = group.conditions.length > 1;
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupWrapper, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupHeader, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Match", "petitioner") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          SelectControl$1,
-          {
-            value: group.logic,
-            onChange: (logic) => onChange({ ...group, logic }),
-            options: LOGIC_OPTIONS
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("of the following:", "petitioner") })
-      ] }),
-      group.conditions.map((condition, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-        ConditionComponent,
+    } else {
+      onChange({ ...group, conditions: newConditions });
+    }
+  };
+  const addCondition = () => {
+    onChange({
+      ...group,
+      conditions: [
+        ...group.conditions,
         {
-          condition,
-          availableFields,
-          onChange: (updatedCondition) => updateCondition(index, updatedCondition),
-          onRemove: () => removeCondition(index),
-          showRemove: showRemoveCondition
-        },
-        condition.id
-      )),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(ActionButtons, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          icon: "plus",
-          variant: "secondary",
-          size: "small",
-          onClick: addCondition,
-          children: __("Add Condition", "petitioner")
+          id: generateId(),
+          field: "",
+          operator: "equals",
+          value: ""
         }
-      ) })
-    ] });
-  }
-);
+      ]
+    });
+  };
+  const showRemoveCondition = group.conditions.length > 1;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupWrapper, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupHeader, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Match", "petitioner") }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        SelectControl$1,
+        {
+          value: group.logic,
+          onChange: (logic) => onChange({ ...group, logic }),
+          options: LOGIC_OPTIONS
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("of the following:", "petitioner") })
+    ] }),
+    group.conditions.map((condition, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ConditionComponent,
+      {
+        condition,
+        availableFields,
+        onChange: (updatedCondition) => updateCondition(index, updatedCondition),
+        onRemove: () => removeCondition(index),
+        showRemove: showRemoveCondition
+      },
+      condition.id
+    )),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ActionButtons, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Button,
+      {
+        icon: "plus",
+        variant: "secondary",
+        size: "small",
+        onClick: addCondition,
+        children: __("Add Condition", "petitioner")
+      }
+    ) })
+  ] });
+};
+const GroupComponent$1 = reactExports.memo(GroupComponent);
 const useConditionalLogic = (options2) => {
   const createEmptyCondition = () => ({
     id: generateId(),
@@ -29758,7 +29760,7 @@ const ConditionalLogic = ({
   availableFields
 }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ConditionalLogicWrapper, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    GroupComponent,
+    GroupComponent$1,
     {
       group: value,
       availableFields,

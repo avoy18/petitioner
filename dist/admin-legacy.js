@@ -36207,6 +36207,7 @@
         const SPACINGS = {
           xs: "var(--ptr-admin-spacing-xs)",
           sm: "var(--ptr-admin-spacing-sm)",
+          md: "var(--ptr-admin-spacing-md)",
           "4xl": "var(--ptr-admin-spacing-4xl)"
         };
         const TRANSITIONS = {
@@ -36904,21 +36905,21 @@
         const ConditionalLogicWrapper = dt.div`
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 4px;
-	padding: var(--ptr-admin-spacing-md, 16px);
+	padding: ${SPACINGS.md};
 	background: #fff;
 `;
         const GroupWrapper = dt.div`
 	border: 2px dashed rgba(0, 0, 0, 0.2);
 	border-radius: 4px;
-	padding: var(--ptr-admin-spacing-md, 16px);
-	margin-bottom: var(--ptr-admin-spacing-md, 16px);
+	padding: ${SPACINGS.md};
+	margin-bottom: ${SPACINGS.md};
 	background: rgba(0, 0, 0, 0.02);
 `;
         const GroupHeader = dt.div`
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	margin-bottom: var(--ptr-admin-spacing-md, 16px);
+	gap: ${SPACINGS.sm};
+	margin-bottom: ${SPACINGS.md};
 
 	span {
 		font-weight: 500;
@@ -36938,8 +36939,8 @@
         const ConditionRow = dt.div`
 	display: flex;
 	align-items: flex-start;
-	gap: 8px;
-	margin-bottom: 8px;
+	gap: ${SPACINGS.sm};
+	margin-bottom: ${SPACINGS.sm};
 
 	.components-base-control {
 		margin-bottom: 0;
@@ -36957,8 +36958,8 @@
 `;
         const ActionButtons = dt.div`
 	display: flex;
-	gap: 8px;
-	margin-top: 8px;
+	gap: ${SPACINGS.sm};
+	margin-top: ${SPACINGS.sm};
 `;
         const OPERATORS = [{
           value: "equals",
@@ -37042,7 +37043,7 @@
             })]
           });
         });
-        const GroupComponent = reactExports.memo(({
+        const GroupComponent = ({
           group,
           availableFields,
           onChange
@@ -37116,7 +37117,8 @@
               })
             })]
           });
-        });
+        };
+        const GroupComponent$1 = reactExports.memo(GroupComponent);
         const useConditionalLogic = options => {
           const createEmptyCondition = () => ({
             id: generateId(),
@@ -37154,7 +37156,7 @@
           availableFields
         }) => {
           return /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogicWrapper, {
-            children: /* @__PURE__ */jsxRuntimeExports.jsx(GroupComponent, {
+            children: /* @__PURE__ */jsxRuntimeExports.jsx(GroupComponent$1, {
               group: value,
               availableFields,
               onChange

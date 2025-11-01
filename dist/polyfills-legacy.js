@@ -3390,6 +3390,79 @@
 	  SuppressedError: $SuppressedError
 	});
 
+	var bind$1 = functionBindContext;
+	var uncurryThis$7 = functionUncurryThis;
+	var IndexedObject = indexedObject;
+	var toObject = toObject$4;
+	var toPropertyKey = toPropertyKey$3;
+	var lengthOfArrayLike$1 = lengthOfArrayLike$8;
+	var objectCreate = objectCreate$1;
+	var arrayFromConstructorAndList = arrayFromConstructorAndList$2;
+
+	var $Array = Array;
+	var push$1 = uncurryThis$7([].push);
+
+	var arrayGroup = function ($this, callbackfn, that, specificConstructor) {
+	  var O = toObject($this);
+	  var self = IndexedObject(O);
+	  var boundFunction = bind$1(callbackfn, that);
+	  var target = objectCreate(null);
+	  var length = lengthOfArrayLike$1(self);
+	  var index = 0;
+	  var Constructor, key, value;
+	  for (;length > index; index++) {
+	    value = self[index];
+	    key = toPropertyKey(boundFunction(value, index, O));
+	    // in some IE versions, `hasOwnProperty` returns incorrect result on integer keys
+	    // but since it's a `null` prototype object, we can safely use `in`
+	    if (key in target) push$1(target[key], value);
+	    else target[key] = [value];
+	  }
+	  // TODO: Remove this block from `core-js@4`
+	  if (specificConstructor) {
+	    Constructor = specificConstructor(O);
+	    if (Constructor !== $Array) {
+	      for (key in target) target[key] = arrayFromConstructorAndList(Constructor, target[key]);
+	    }
+	  } return target;
+	};
+
+	var wellKnownSymbol = wellKnownSymbol$b;
+	var create = objectCreate$1;
+	var defineProperty = objectDefineProperty.f;
+
+	var UNSCOPABLES = wellKnownSymbol('unscopables');
+	var ArrayPrototype = Array.prototype;
+
+	// Array.prototype[@@unscopables]
+	// https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
+	if (ArrayPrototype[UNSCOPABLES] === undefined) {
+	  defineProperty(ArrayPrototype, UNSCOPABLES, {
+	    configurable: true,
+	    value: create(null)
+	  });
+	}
+
+	// add a key to Array.prototype[@@unscopables]
+	var addToUnscopables$1 = function (key) {
+	  ArrayPrototype[UNSCOPABLES][key] = true;
+	};
+
+	var $$7 = _export;
+	var $group = arrayGroup;
+	var addToUnscopables = addToUnscopables$1;
+
+	// `Array.prototype.group` method
+	// https://github.com/tc39/proposal-array-grouping
+	$$7({ target: 'Array', proto: true }, {
+	  group: function group(callbackfn /* , thisArg */) {
+	    var thisArg = arguments.length > 1 ? arguments[1] : undefined;
+	    return $group(this, callbackfn, thisArg);
+	  }
+	});
+
+	addToUnscopables('group');
+
 	var isObject$1 = isObject$b;
 
 	var $String = String;
@@ -3435,7 +3508,7 @@
 	};
 
 	var globalThis$b = globalThis_1;
-	var uncurryThis$7 = functionUncurryThis;
+	var uncurryThis$6 = functionUncurryThis;
 	var anObjectOrUndefined$1 = anObjectOrUndefined$2;
 	var aString$1 = aString$2;
 	var hasOwn$3 = hasOwnProperty_1;
@@ -3448,7 +3521,7 @@
 
 	var SyntaxError$3 = globalThis$b.SyntaxError;
 	var TypeError$1 = globalThis$b.TypeError;
-	var at$2 = uncurryThis$7(''.charAt);
+	var at$2 = uncurryThis$6(''.charAt);
 
 	var skipAsciiWhitespace = function (string, index) {
 	  var length = string.length;
@@ -3601,7 +3674,7 @@
 	  throw new $TypeError('Argument is not an Uint8Array');
 	};
 
-	var $$7 = _export;
+	var $$6 = _export;
 	var globalThis$a = globalThis_1;
 	var $fromBase64 = uint8FromBase64;
 	var anUint8Array$3 = anUint8Array$4;
@@ -3619,7 +3692,7 @@
 
 	// `Uint8Array.prototype.setFromBase64` method
 	// https://github.com/tc39/proposal-arraybuffer-base64
-	if (Uint8Array$1) $$7({ target: 'Uint8Array', proto: true, forced: INCORRECT_BEHAVIOR_OR_DOESNT_EXISTS }, {
+	if (Uint8Array$1) $$6({ target: 'Uint8Array', proto: true, forced: INCORRECT_BEHAVIOR_OR_DOESNT_EXISTS }, {
 	  setFromBase64: function setFromBase64(string /* , options */) {
 	    anUint8Array$3(this);
 
@@ -3630,15 +3703,15 @@
 	});
 
 	var globalThis$9 = globalThis_1;
-	var uncurryThis$6 = functionUncurryThis;
+	var uncurryThis$5 = functionUncurryThis;
 
 	var Uint8Array = globalThis$9.Uint8Array;
 	var SyntaxError$2 = globalThis$9.SyntaxError;
 	var parseInt$1 = globalThis$9.parseInt;
 	var min = Math.min;
 	var NOT_HEX = /[^\da-f]/i;
-	var exec$2 = uncurryThis$6(NOT_HEX.exec);
-	var stringSlice = uncurryThis$6(''.slice);
+	var exec$2 = uncurryThis$5(NOT_HEX.exec);
+	var stringSlice = uncurryThis$5(''.slice);
 
 	var uint8FromHex = function (string, into) {
 	  var stringLength = string.length;
@@ -3655,7 +3728,7 @@
 	  return { bytes: bytes, read: read };
 	};
 
-	var $$6 = _export;
+	var $$5 = _export;
 	var globalThis$8 = globalThis_1;
 	var aString = aString$2;
 	var anUint8Array$2 = anUint8Array$4;
@@ -3664,7 +3737,7 @@
 
 	// `Uint8Array.prototype.setFromHex` method
 	// https://github.com/tc39/proposal-arraybuffer-base64
-	if (globalThis$8.Uint8Array) $$6({ target: 'Uint8Array', proto: true }, {
+	if (globalThis$8.Uint8Array) $$5({ target: 'Uint8Array', proto: true }, {
 	  setFromHex: function setFromHex(string) {
 	    anUint8Array$2(this);
 	    aString(string);
@@ -3674,9 +3747,9 @@
 	  }
 	});
 
-	var $$5 = _export;
+	var $$4 = _export;
 	var globalThis$7 = globalThis_1;
-	var uncurryThis$5 = functionUncurryThis;
+	var uncurryThis$4 = functionUncurryThis;
 	var anObjectOrUndefined = anObjectOrUndefined$2;
 	var anUint8Array$1 = anUint8Array$4;
 	var notDetached$1 = arrayBufferNotDetached;
@@ -3686,11 +3759,11 @@
 	var base64Alphabet = base64Map.i2c;
 	var base64UrlAlphabet = base64Map.i2cUrl;
 
-	var charAt = uncurryThis$5(''.charAt);
+	var charAt = uncurryThis$4(''.charAt);
 
 	// `Uint8Array.prototype.toBase64` method
 	// https://github.com/tc39/proposal-arraybuffer-base64
-	if (globalThis$7.Uint8Array) $$5({ target: 'Uint8Array', proto: true }, {
+	if (globalThis$7.Uint8Array) $$4({ target: 'Uint8Array', proto: true }, {
 	  toBase64: function toBase64(/* options */) {
 	    var array = anUint8Array$1(this);
 	    var options = arguments.length ? anObjectOrUndefined(arguments[0]) : undefined;
@@ -3723,17 +3796,17 @@
 	  }
 	});
 
-	var $$4 = _export;
+	var $$3 = _export;
 	var globalThis$6 = globalThis_1;
-	var uncurryThis$4 = functionUncurryThis;
+	var uncurryThis$3 = functionUncurryThis;
 	var anUint8Array = anUint8Array$4;
 	var notDetached = arrayBufferNotDetached;
 
-	var numberToString = uncurryThis$4(1.1.toString);
+	var numberToString = uncurryThis$3(1.1.toString);
 
 	// `Uint8Array.prototype.toHex` method
 	// https://github.com/tc39/proposal-arraybuffer-base64
-	if (globalThis$6.Uint8Array) $$4({ target: 'Uint8Array', proto: true }, {
+	if (globalThis$6.Uint8Array) $$3({ target: 'Uint8Array', proto: true }, {
 	  toHex: function toHex() {
 	    anUint8Array(this);
 	    notDetached(this.buffer);
@@ -3746,9 +3819,9 @@
 	  }
 	});
 
-	var uncurryThis$3 = functionUncurryThis;
+	var uncurryThis$2 = functionUncurryThis;
 
-	var arraySlice$2 = uncurryThis$3([].slice);
+	var arraySlice$2 = uncurryThis$2([].slice);
 
 	var userAgent = environmentUserAgent;
 
@@ -3757,7 +3830,7 @@
 
 	var globalThis$5 = globalThis_1;
 	var apply$1 = functionApply;
-	var bind$1 = functionBindContext;
+	var bind = functionBindContext;
 	var isCallable$2 = isCallable$i;
 	var hasOwn$2 = hasOwnProperty_1;
 	var fails$1 = fails$l;
@@ -3839,7 +3912,7 @@
 	    channel = new MessageChannel();
 	    port = channel.port2;
 	    channel.port1.onmessage = eventListener;
-	    defer = bind$1(port.postMessage, port);
+	    defer = bind(port.postMessage, port);
 	  // Browsers with postMessage, skip WebWorkers
 	  // IE8 has postMessage, but it's sync & typeof its postMessage is 'object'
 	  } else if (
@@ -3872,13 +3945,13 @@
 	  clear: clear
 	};
 
-	var $$3 = _export;
+	var $$2 = _export;
 	var globalThis$4 = globalThis_1;
 	var clearImmediate = task.clear;
 
 	// `clearImmediate` method
 	// http://w3c.github.io/setImmediate/#si-clearImmediate
-	$$3({ global: true, bind: true, enumerable: true, forced: globalThis$4.clearImmediate !== clearImmediate }, {
+	$$2({ global: true, bind: true, enumerable: true, forced: globalThis$4.clearImmediate !== clearImmediate }, {
 	  clearImmediate: clearImmediate
 	});
 
@@ -3913,7 +3986,7 @@
 	  } : scheduler;
 	};
 
-	var $$2 = _export;
+	var $$1 = _export;
 	var globalThis$2 = globalThis_1;
 	var setTask = task.set;
 	var schedulersFix = schedulersFix$1;
@@ -3923,19 +3996,19 @@
 
 	// `setImmediate` method
 	// http://w3c.github.io/setImmediate/#si-setImmediate
-	$$2({ global: true, bind: true, enumerable: true, forced: globalThis$2.setImmediate !== setImmediate }, {
+	$$1({ global: true, bind: true, enumerable: true, forced: globalThis$2.setImmediate !== setImmediate }, {
 	  setImmediate: setImmediate
 	});
 
-	var uncurryThis$2 = functionUncurryThis;
+	var uncurryThis$1 = functionUncurryThis;
 	var hasOwn$1 = hasOwnProperty_1;
 
 	var $SyntaxError = SyntaxError;
 	var $parseInt = parseInt;
 	var fromCharCode = String.fromCharCode;
-	var at$1 = uncurryThis$2(''.charAt);
-	var slice$1 = uncurryThis$2(''.slice);
-	var exec$1 = uncurryThis$2(/./.exec);
+	var at$1 = uncurryThis$1(''.charAt);
+	var slice$1 = uncurryThis$1(''.slice);
+	var exec$1 = uncurryThis$1(/./.exec);
 
 	var codePoints = {
 	  '\\"': '"',
@@ -3983,18 +4056,18 @@
 	  return { value: value, end: i };
 	};
 
-	var $$1 = _export;
+	var $ = _export;
 	var DESCRIPTORS = descriptors;
 	var globalThis$1 = globalThis_1;
 	var getBuiltIn = getBuiltIn$5;
-	var uncurryThis$1 = functionUncurryThis;
+	var uncurryThis = functionUncurryThis;
 	var call = functionCall;
 	var isCallable = isCallable$i;
 	var isObject = isObject$b;
 	var isArray = isArray$2;
 	var hasOwn = hasOwnProperty_1;
 	var toString = toString$4;
-	var lengthOfArrayLike$1 = lengthOfArrayLike$8;
+	var lengthOfArrayLike = lengthOfArrayLike$8;
 	var createProperty = createProperty$2;
 	var fails = fails$l;
 	var parseJSONString = parseJsonString;
@@ -4007,10 +4080,10 @@
 	var enumerableOwnProperties = getBuiltIn('Object', 'keys');
 	// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
 	var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-	var at = uncurryThis$1(''.charAt);
-	var slice = uncurryThis$1(''.slice);
-	var exec = uncurryThis$1(/./.exec);
-	var push$1 = uncurryThis$1([].push);
+	var at = uncurryThis(''.charAt);
+	var slice = uncurryThis(''.slice);
+	var exec = uncurryThis(/./.exec);
+	var push = uncurryThis([].push);
 
 	var IS_DIGIT = /^\d$/;
 	var IS_NON_ZERO_DIGIT = /^[1-9]$/;
@@ -4042,13 +4115,13 @@
 	    var nodes = unmodified ? node.nodes : nodeIsArray ? [] : {};
 	    if (nodeIsArray) {
 	      elementRecordsLen = nodes.length;
-	      len = lengthOfArrayLike$1(val);
+	      len = lengthOfArrayLike(val);
 	      for (i = 0; i < len; i++) {
 	        internalizeProperty(val, i, internalize(val, '' + i, reviver, i < elementRecordsLen ? nodes[i] : undefined));
 	      }
 	    } else {
 	      keys = enumerableOwnProperties(val);
-	      len = lengthOfArrayLike$1(keys);
+	      len = lengthOfArrayLike(keys);
 	      for (i = 0; i < len; i++) {
 	        P = keys[i];
 	        internalizeProperty(val, P, internalize(val, P, reviver, hasOwn(nodes, P) ? nodes[P] : undefined));
@@ -4155,8 +4228,8 @@
 	        break;
 	      }
 	      var result = this.fork(i).parse();
-	      push$1(nodes, result);
-	      push$1(array, result.value);
+	      push(nodes, result);
+	      push(array, result.value);
 	      i = this.until([',', ']'], result.end);
 	      if (at(source, i) === ',') {
 	        expectElement = true;
@@ -4228,84 +4301,11 @@
 	// `JSON.parse` method
 	// https://tc39.es/ecma262/#sec-json.parse
 	// https://github.com/tc39/proposal-json-parse-with-source
-	$$1({ target: 'JSON', stat: true, forced: NO_SOURCE_SUPPORT }, {
+	$({ target: 'JSON', stat: true, forced: NO_SOURCE_SUPPORT }, {
 	  parse: function parse(text, reviver) {
 	    return PROPER_BASE_PARSE && !isCallable(reviver) ? nativeParse(text) : $parse(text, reviver);
 	  }
 	});
-
-	var bind = functionBindContext;
-	var uncurryThis = functionUncurryThis;
-	var IndexedObject = indexedObject;
-	var toObject = toObject$4;
-	var toPropertyKey = toPropertyKey$3;
-	var lengthOfArrayLike = lengthOfArrayLike$8;
-	var objectCreate = objectCreate$1;
-	var arrayFromConstructorAndList = arrayFromConstructorAndList$2;
-
-	var $Array = Array;
-	var push = uncurryThis([].push);
-
-	var arrayGroup = function ($this, callbackfn, that, specificConstructor) {
-	  var O = toObject($this);
-	  var self = IndexedObject(O);
-	  var boundFunction = bind(callbackfn, that);
-	  var target = objectCreate(null);
-	  var length = lengthOfArrayLike(self);
-	  var index = 0;
-	  var Constructor, key, value;
-	  for (;length > index; index++) {
-	    value = self[index];
-	    key = toPropertyKey(boundFunction(value, index, O));
-	    // in some IE versions, `hasOwnProperty` returns incorrect result on integer keys
-	    // but since it's a `null` prototype object, we can safely use `in`
-	    if (key in target) push(target[key], value);
-	    else target[key] = [value];
-	  }
-	  // TODO: Remove this block from `core-js@4`
-	  if (specificConstructor) {
-	    Constructor = specificConstructor(O);
-	    if (Constructor !== $Array) {
-	      for (key in target) target[key] = arrayFromConstructorAndList(Constructor, target[key]);
-	    }
-	  } return target;
-	};
-
-	var wellKnownSymbol = wellKnownSymbol$b;
-	var create = objectCreate$1;
-	var defineProperty = objectDefineProperty.f;
-
-	var UNSCOPABLES = wellKnownSymbol('unscopables');
-	var ArrayPrototype = Array.prototype;
-
-	// Array.prototype[@@unscopables]
-	// https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
-	if (ArrayPrototype[UNSCOPABLES] === undefined) {
-	  defineProperty(ArrayPrototype, UNSCOPABLES, {
-	    configurable: true,
-	    value: create(null)
-	  });
-	}
-
-	// add a key to Array.prototype[@@unscopables]
-	var addToUnscopables$1 = function (key) {
-	  ArrayPrototype[UNSCOPABLES][key] = true;
-	};
-
-	var $ = _export;
-	var $group = arrayGroup;
-	var addToUnscopables = addToUnscopables$1;
-
-	// `Array.prototype.group` method
-	// https://github.com/tc39/proposal-array-grouping
-	$({ target: 'Array', proto: true }, {
-	  group: function group(callbackfn /* , thisArg */) {
-	    var thisArg = arguments.length > 1 ? arguments[1] : undefined;
-	    return $group(this, callbackfn, thisArg);
-	  }
-	});
-
-	addToUnscopables('group');
 
 	/*!
 	 * SJS 6.15.1

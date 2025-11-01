@@ -1,25 +1,26 @@
 import styled from 'styled-components';
+import { SPACINGS } from '@admin/theme';
 
 export const ConditionalLogicWrapper = styled.div`
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 4px;
-	padding: var(--ptr-admin-spacing-md, 16px);
+	padding: ${SPACINGS.md};
 	background: #fff;
 `;
 
 export const GroupWrapper = styled.div`
 	border: 2px dashed rgba(0, 0, 0, 0.2);
 	border-radius: 4px;
-	padding: var(--ptr-admin-spacing-md, 16px);
-	margin-bottom: var(--ptr-admin-spacing-md, 16px);
+	padding: ${SPACINGS.md};
+	margin-bottom: ${SPACINGS.md};
 	background: rgba(0, 0, 0, 0.02);
 `;
 
 export const GroupHeader = styled.div`
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	margin-bottom: var(--ptr-admin-spacing-md, 16px);
+	gap: ${SPACINGS.sm};
+	margin-bottom: ${SPACINGS.md};
 
 	span {
 		font-weight: 500;
@@ -40,8 +41,8 @@ export const GroupHeader = styled.div`
 export const ConditionRow = styled.div`
 	display: flex;
 	align-items: flex-start;
-	gap: 8px;
-	margin-bottom: 8px;
+	gap: ${SPACINGS.sm};
+	margin-bottom: ${SPACINGS.sm};
 
 	.components-base-control {
 		margin-bottom: 0;
@@ -60,6 +61,6 @@ export const ConditionRow = styled.div`
 
 export const ActionButtons = styled.div`
 	display: flex;
-	gap: 8px;
-	margin-top: 8px;
+	gap: ${SPACINGS.sm};
+	margin-top: ${SPACINGS.sm};
 `;
