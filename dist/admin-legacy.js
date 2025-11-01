@@ -9199,7 +9199,7 @@
          *
          * @type {Object}
          */
-        var OPERATORS = {
+        var OPERATORS$1 = {
           '!': function (a) {
             return !a;
           },
@@ -9281,7 +9281,7 @@
             value;
           for (i = 0; i < postfix.length; i++) {
             term = postfix[i];
-            getOperatorResult = OPERATORS[term];
+            getOperatorResult = OPERATORS$1[term];
             if (getOperatorResult) {
               // Pop from stack by number of function arguments.
               j = getOperatorResult.length;
@@ -36901,9 +36901,264 @@
           });
         }
         const StyledExportButton = dt(Button)``;
-        const ConditionalLogic = ({}) => {
-          return /* @__PURE__ */jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, {
-            children: "Conditional logic component here"
+        const ConditionalLogicWrapper = dt.div`
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+	padding: var(--ptr-admin-spacing-md, 16px);
+	background: #fff;
+`;
+        const GroupWrapper = dt.div`
+	border: 2px dashed rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+	padding: var(--ptr-admin-spacing-md, 16px);
+	margin-bottom: var(--ptr-admin-spacing-md, 16px);
+	background: rgba(0, 0, 0, 0.02);
+`;
+        const GroupHeader = dt.div`
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: var(--ptr-admin-spacing-md, 16px);
+
+	span {
+		font-weight: 500;
+		color: rgba(0, 0, 0, 0.7);
+	}
+
+	.components-base-control {
+		margin-bottom: 0;
+		width: auto;
+		min-width: 100px;
+	}
+
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+`;
+        const ConditionRow = dt.div`
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin-bottom: 8px;
+
+	.components-base-control {
+		margin-bottom: 0;
+		flex: 1;
+	}
+
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+
+	> button {
+		flex-shrink: 0;
+		margin-top: 2px;
+	}
+`;
+        const ActionButtons = dt.div`
+	display: flex;
+	gap: 8px;
+	margin-top: 8px;
+`;
+        const OPERATORS = [{
+          value: "equals",
+          label: __("Equals", "petitioner")
+        }, {
+          value: "not_equals",
+          label: __("Not Equals", "petitioner")
+        }, {
+          value: "contains",
+          label: __("Contains", "petitioner")
+        }, {
+          value: "not_contains",
+          label: __("Does Not Contain", "petitioner")
+        }, {
+          value: "starts_with",
+          label: __("Starts With", "petitioner")
+        }, {
+          value: "not_starts_with",
+          label: __("Does Not Start With", "petitioner")
+        }, {
+          value: "ends_with",
+          label: __("Ends With", "petitioner")
+        }, {
+          value: "not_ends_with",
+          label: __("Does Not End With", "petitioner")
+        }, {
+          value: "is_empty",
+          label: __("Is Empty", "petitioner")
+        }, {
+          value: "is_not_empty",
+          label: __("Is Not Empty", "petitioner")
+        }];
+        const LOGIC_OPTIONS = [{
+          value: "AND",
+          label: __("AND", "petitioner")
+        }, {
+          value: "OR",
+          label: __("OR", "petitioner")
+        }];
+        const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const ConditionComponent = reactExports.memo(({
+          condition,
+          availableFields,
+          onChange,
+          onRemove,
+          showRemove
+        }) => {
+          const showValueInput = condition.operator !== "is_empty" && condition.operator !== "is_not_empty";
+          return /* @__PURE__ */jsxRuntimeExports.jsxs(ConditionRow, {
+            children: [/* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
+              value: condition.field,
+              onChange: field => onChange({
+                ...condition,
+                field
+              }),
+              options: [{
+                value: "",
+                label: __("Select field...", "petitioner")
+              }, ...availableFields]
+            }), /* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
+              value: condition.operator,
+              onChange: operator => onChange({
+                ...condition,
+                operator
+              }),
+              options: OPERATORS
+            }), showValueInput && /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
+              value: condition.value,
+              onChange: value => onChange({
+                ...condition,
+                value
+              }),
+              placeholder: __("Enter value...", "petitioner")
+            }), showRemove && /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+              icon: "trash",
+              isDestructive: true,
+              variant: "secondary",
+              size: "small",
+              onClick: onRemove,
+              label: __("Remove condition", "petitioner")
+            })]
+          });
+        });
+        const GroupComponent = reactExports.memo(({
+          group,
+          availableFields,
+          onChange
+        }) => {
+          const updateCondition = (index, condition) => {
+            const newConditions = [...group.conditions];
+            newConditions[index] = condition;
+            onChange({
+              ...group,
+              conditions: newConditions
+            });
+          };
+          const removeCondition = index => {
+            const newConditions = group.conditions.filter((_, i) => i !== index);
+            if (newConditions.length === 0) {
+              onChange({
+                ...group,
+                conditions: [{
+                  id: generateId(),
+                  field: "",
+                  operator: "equals",
+                  value: ""
+                }]
+              });
+            } else {
+              onChange({
+                ...group,
+                conditions: newConditions
+              });
+            }
+          };
+          const addCondition = () => {
+            onChange({
+              ...group,
+              conditions: [...group.conditions, {
+                id: generateId(),
+                field: "",
+                operator: "equals",
+                value: ""
+              }]
+            });
+          };
+          const showRemoveCondition = group.conditions.length > 1;
+          return /* @__PURE__ */jsxRuntimeExports.jsxs(GroupWrapper, {
+            children: [/* @__PURE__ */jsxRuntimeExports.jsxs(GroupHeader, {
+              children: [/* @__PURE__ */jsxRuntimeExports.jsx("span", {
+                children: __("Match", "petitioner")
+              }), /* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
+                value: group.logic,
+                onChange: logic => onChange({
+                  ...group,
+                  logic
+                }),
+                options: LOGIC_OPTIONS
+              }), /* @__PURE__ */jsxRuntimeExports.jsx("span", {
+                children: __("of the following:", "petitioner")
+              })]
+            }), group.conditions.map((condition, index) => /* @__PURE__ */jsxRuntimeExports.jsx(ConditionComponent, {
+              condition,
+              availableFields,
+              onChange: updatedCondition => updateCondition(index, updatedCondition),
+              onRemove: () => removeCondition(index),
+              showRemove: showRemoveCondition
+            }, condition.id)), /* @__PURE__ */jsxRuntimeExports.jsx(ActionButtons, {
+              children: /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                icon: "plus",
+                variant: "secondary",
+                size: "small",
+                onClick: addCondition,
+                children: __("Add Condition", "petitioner")
+              })
+            })]
+          });
+        });
+        const useConditionalLogic = options => {
+          const createEmptyCondition = () => ({
+            id: generateId(),
+            field: "",
+            operator: "equals",
+            value: ""
+          });
+          const createEmptyGroup = (logic2 = "AND") => ({
+            id: generateId(),
+            logic: logic2,
+            conditions: [createEmptyCondition()]
+          });
+          const defaultValue = createEmptyGroup(options?.defaultLogic);
+          const [logic, setLogic] = reactExports.useState(defaultValue);
+          const resetLogic = reactExports.useCallback(() => {
+            setLogic(createEmptyGroup(options?.defaultLogic));
+          }, [options?.defaultLogic]);
+          const validateCondition = condition => {
+            if (condition.operator === "is_empty" || condition.operator === "is_not_empty") {
+              return !!condition.field && !!condition.operator;
+            }
+            return !!condition.field && !!condition.operator && condition.value !== "";
+          };
+          const isValid = logic.conditions.length > 0 && logic.conditions.every(validateCondition);
+          return {
+            logic,
+            setLogic,
+            resetLogic,
+            isValid
+          };
+        };
+        const ConditionalLogic = ({
+          value,
+          onChange,
+          availableFields
+        }) => {
+          return /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogicWrapper, {
+            children: /* @__PURE__ */jsxRuntimeExports.jsx(GroupComponent, {
+              group: value,
+              availableFields,
+              onChange
+            })
           });
         };
         const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
@@ -36911,6 +37166,10 @@
           onClose = () => {},
           total = 0
         }) {
+          const {
+            logic,
+            setLogic
+          } = useConditionalLogic();
           return /* @__PURE__ */jsxRuntimeExports.jsx(Modal, {
             size: "large",
             title: __("Export submissions", "petitioner-theme"),
@@ -36921,7 +37180,17 @@
                   children: ["Preparing to export ", total, " submissions"]
                 })
               }), /* @__PURE__ */jsxRuntimeExports.jsxs(CardBody, {
-                children: [/* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {}), /* @__PURE__ */jsxRuntimeExports.jsx(StyledExportButton, {
+                children: [/* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
+                  value: logic,
+                  onChange: setLogic,
+                  availableFields: [{
+                    value: "email",
+                    label: "Email"
+                  }, {
+                    value: "name",
+                    label: "Name"
+                  }]
+                }), /* @__PURE__ */jsxRuntimeExports.jsx(StyledExportButton, {
                   variant: "primary",
                   href: getExportURL(),
                   children: __("Export as CSV", "petitioner")

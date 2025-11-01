@@ -13,7 +13,9 @@ import {
 } from '@wordpress/components';
 import { StyledExportButton } from './styled';
 import { getExportURL } from '../utilities';
-import ConditionalLogic from '@admin/components/ConditionalLogic';
+import ConditionalLogic, {
+	useConditionalLogic,
+} from '@admin/components/ConditionalLogic';
 
 export default function ExportModal({
 	onClose = () => {},
@@ -22,6 +24,8 @@ export default function ExportModal({
 	onClose: () => void;
 	total: number;
 }) {
+	const { logic, setLogic, isValid } = useConditionalLogic();
+
 	return (
 		<Modal
 			size="large"
@@ -33,7 +37,14 @@ export default function ExportModal({
 					<Heading>Preparing to export {total} submissions</Heading>
 				</CardHeader>
 				<CardBody>
-					<ConditionalLogic />
+					<ConditionalLogic
+						value={logic}
+						onChange={setLogic}
+						availableFields={[
+							{ value: 'email', label: 'Email' },
+							{ value: 'name', label: 'Name' },
+						]}
+					/>
 					<StyledExportButton variant="primary" href={getExportURL()}>
 						{__('Export as CSV', 'petitioner')}
 					</StyledExportButton>
