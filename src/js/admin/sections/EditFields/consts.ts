@@ -7,6 +7,7 @@ export type FormID = number|null;
 
 export type DefaultValues = {
 	from_field: string;
+	from_name: string;
 	ty_email_subject: string;
 	ty_email: string;
 	ty_email_subject_confirm: string;
@@ -36,6 +37,7 @@ export type PetitionerData = {
 	ty_email: TextValue;
 	ty_email_subject: TextValue;
 	from_field: TextValue;
+	from_name: TextValue;
 	add_honeypot: CheckboxValue;
 	form_id?: FormID;
 	default_values?: DefaultValues;

@@ -64,6 +64,7 @@ class AV_Petitioner_Labels
             'ty_email_subject_confirm'       => AV_Petitioner_Email_Template::get_default_ty_subject(true),
             'ty_email_confirm'               => AV_Petitioner_Email_Template::get_default_ty_email(true),
             'from_field'                     => AV_Petitioner_Email_Template::get_default_from_field(),
+            'from_name'                      => AV_Petitioner_Email_Template::get_default_from_name(),
             'success_message_title'          => __('Thank you!', 'petitioner'),
             'success_message'                => __('Your submission has been received.', 'petitioner'),
             'success_generic'                => __('Success!', 'petitioner'),

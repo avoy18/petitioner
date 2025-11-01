@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { COLORS, TRANSITIONS } from '@admin/theme';
 
 export const TableHeading = styled.th<{ $width?: string }>`
-	${($width) => `width: ${$width}`};
+	${({ $width }) => `width: ${$width};`}
 	cursor: pointer;
 	&,
 	&.sorted {
@@ -21,14 +21,16 @@ export const StyledTable = styled.table<{ $clickable: boolean }>`
 			background-color: ${COLORS.light};
 		}
 
-		${({ $clickable }) => $clickable && css`
-			tr {
-				transition: ${TRANSITIONS.sm};
-				&:hover {
-					cursor: pointer;
-					background: ${COLORS.grey} !important;
+		${({ $clickable }) =>
+			$clickable &&
+			css`
+				tr {
+					transition: ${TRANSITIONS.sm};
+					&:hover {
+						cursor: pointer;
+						background: ${COLORS.grey} !important;
+					}
 				}
-			}
-		`}
+			`}
 	}
 `;

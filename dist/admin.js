@@ -1,7 +1,7 @@
 var __freeze = Object.freeze;
 var __defProp = Object.defineProperty;
 var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(raw || cooked.slice()) }));
-var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
+var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D;
 function __vite_legacy_guard() {
   import.meta.url;
   import("_").catch(() => 1);
@@ -7088,6 +7088,271 @@ function paramCase(input, options2) {
   }
   return dotCase(input, __assign$1({ delimiter: "-" }, options2));
 }
+function __unstableEscapeGreaterThan(value) {
+  return value.replace(/>/g, "&gt;");
+}
+const REGEXP_INVALID_ATTRIBUTE_NAME = /[\u007F-\u009F "'>/="\uFDD0-\uFDEF]/;
+function escapeAmpersand(value) {
+  return value.replace(/&(?!([a-z0-9]+|#[0-9]+|#x[a-f0-9]+);)/gi, "&amp;");
+}
+function escapeQuotationMark(value) {
+  return value.replace(/"/g, "&quot;");
+}
+function escapeLessThan(value) {
+  return value.replace(/</g, "&lt;");
+}
+function escapeAttribute(value) {
+  return __unstableEscapeGreaterThan(escapeQuotationMark(escapeAmpersand(value)));
+}
+function escapeHTML(value) {
+  return escapeLessThan(escapeAmpersand(value));
+}
+function isValidAttributeName(name) {
+  return !REGEXP_INVALID_ATTRIBUTE_NAME.test(name);
+}
+function RawHTML({
+  children,
+  ...props
+}) {
+  let rawHtml = "";
+  reactExports.Children.toArray(children).forEach((child) => {
+    if (typeof child === "string" && child.trim() !== "") {
+      rawHtml += child;
+    }
+  });
+  return reactExports.createElement("div", {
+    dangerouslySetInnerHTML: {
+      __html: rawHtml
+    },
+    ...props
+  });
+}
+const {
+  Provider,
+  Consumer
+} = reactExports.createContext(void 0);
+const ForwardRef = reactExports.forwardRef(() => {
+  return null;
+});
+const ATTRIBUTES_TYPES = /* @__PURE__ */ new Set(["string", "boolean", "number"]);
+const SELF_CLOSING_TAGS = /* @__PURE__ */ new Set(["area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"]);
+const BOOLEAN_ATTRIBUTES = /* @__PURE__ */ new Set(["allowfullscreen", "allowpaymentrequest", "allowusermedia", "async", "autofocus", "autoplay", "checked", "controls", "default", "defer", "disabled", "download", "formnovalidate", "hidden", "ismap", "itemscope", "loop", "multiple", "muted", "nomodule", "novalidate", "open", "playsinline", "readonly", "required", "reversed", "selected", "typemustmatch"]);
+const ENUMERATED_ATTRIBUTES = /* @__PURE__ */ new Set(["autocapitalize", "autocomplete", "charset", "contenteditable", "crossorigin", "decoding", "dir", "draggable", "enctype", "formenctype", "formmethod", "http-equiv", "inputmode", "kind", "method", "preload", "scope", "shape", "spellcheck", "translate", "type", "wrap"]);
+const CSS_PROPERTIES_SUPPORTS_UNITLESS = /* @__PURE__ */ new Set(["animation", "animationIterationCount", "baselineShift", "borderImageOutset", "borderImageSlice", "borderImageWidth", "columnCount", "cx", "cy", "fillOpacity", "flexGrow", "flexShrink", "floodOpacity", "fontWeight", "gridColumnEnd", "gridColumnStart", "gridRowEnd", "gridRowStart", "lineHeight", "opacity", "order", "orphans", "r", "rx", "ry", "shapeImageThreshold", "stopOpacity", "strokeDasharray", "strokeDashoffset", "strokeMiterlimit", "strokeOpacity", "strokeWidth", "tabSize", "widows", "x", "y", "zIndex", "zoom"]);
+function hasPrefix(string, prefixes) {
+  return prefixes.some((prefix2) => string.indexOf(prefix2) === 0);
+}
+function isInternalAttribute(attribute) {
+  return "key" === attribute || "children" === attribute;
+}
+function getNormalAttributeValue(attribute, value) {
+  switch (attribute) {
+    case "style":
+      return renderStyle(value);
+  }
+  return value;
+}
+const SVG_ATTRIBUTE_WITH_DASHES_LIST = ["accentHeight", "alignmentBaseline", "arabicForm", "baselineShift", "capHeight", "clipPath", "clipRule", "colorInterpolation", "colorInterpolationFilters", "colorProfile", "colorRendering", "dominantBaseline", "enableBackground", "fillOpacity", "fillRule", "floodColor", "floodOpacity", "fontFamily", "fontSize", "fontSizeAdjust", "fontStretch", "fontStyle", "fontVariant", "fontWeight", "glyphName", "glyphOrientationHorizontal", "glyphOrientationVertical", "horizAdvX", "horizOriginX", "imageRendering", "letterSpacing", "lightingColor", "markerEnd", "markerMid", "markerStart", "overlinePosition", "overlineThickness", "paintOrder", "panose1", "pointerEvents", "renderingIntent", "shapeRendering", "stopColor", "stopOpacity", "strikethroughPosition", "strikethroughThickness", "strokeDasharray", "strokeDashoffset", "strokeLinecap", "strokeLinejoin", "strokeMiterlimit", "strokeOpacity", "strokeWidth", "textAnchor", "textDecoration", "textRendering", "underlinePosition", "underlineThickness", "unicodeBidi", "unicodeRange", "unitsPerEm", "vAlphabetic", "vHanging", "vIdeographic", "vMathematical", "vectorEffect", "vertAdvY", "vertOriginX", "vertOriginY", "wordSpacing", "writingMode", "xmlnsXlink", "xHeight"].reduce((map, attribute) => {
+  map[attribute.toLowerCase()] = attribute;
+  return map;
+}, {});
+const CASE_SENSITIVE_SVG_ATTRIBUTES = ["allowReorder", "attributeName", "attributeType", "autoReverse", "baseFrequency", "baseProfile", "calcMode", "clipPathUnits", "contentScriptType", "contentStyleType", "diffuseConstant", "edgeMode", "externalResourcesRequired", "filterRes", "filterUnits", "glyphRef", "gradientTransform", "gradientUnits", "kernelMatrix", "kernelUnitLength", "keyPoints", "keySplines", "keyTimes", "lengthAdjust", "limitingConeAngle", "markerHeight", "markerUnits", "markerWidth", "maskContentUnits", "maskUnits", "numOctaves", "pathLength", "patternContentUnits", "patternTransform", "patternUnits", "pointsAtX", "pointsAtY", "pointsAtZ", "preserveAlpha", "preserveAspectRatio", "primitiveUnits", "refX", "refY", "repeatCount", "repeatDur", "requiredExtensions", "requiredFeatures", "specularConstant", "specularExponent", "spreadMethod", "startOffset", "stdDeviation", "stitchTiles", "suppressContentEditableWarning", "suppressHydrationWarning", "surfaceScale", "systemLanguage", "tableValues", "targetX", "targetY", "textLength", "viewBox", "viewTarget", "xChannelSelector", "yChannelSelector"].reduce((map, attribute) => {
+  map[attribute.toLowerCase()] = attribute;
+  return map;
+}, {});
+const SVG_ATTRIBUTES_WITH_COLONS = ["xlink:actuate", "xlink:arcrole", "xlink:href", "xlink:role", "xlink:show", "xlink:title", "xlink:type", "xml:base", "xml:lang", "xml:space", "xmlns:xlink"].reduce((map, attribute) => {
+  map[attribute.replace(":", "").toLowerCase()] = attribute;
+  return map;
+}, {});
+function getNormalAttributeName(attribute) {
+  switch (attribute) {
+    case "htmlFor":
+      return "for";
+    case "className":
+      return "class";
+  }
+  const attributeLowerCase = attribute.toLowerCase();
+  if (CASE_SENSITIVE_SVG_ATTRIBUTES[attributeLowerCase]) {
+    return CASE_SENSITIVE_SVG_ATTRIBUTES[attributeLowerCase];
+  } else if (SVG_ATTRIBUTE_WITH_DASHES_LIST[attributeLowerCase]) {
+    return paramCase(SVG_ATTRIBUTE_WITH_DASHES_LIST[attributeLowerCase]);
+  } else if (SVG_ATTRIBUTES_WITH_COLONS[attributeLowerCase]) {
+    return SVG_ATTRIBUTES_WITH_COLONS[attributeLowerCase];
+  }
+  return attributeLowerCase;
+}
+function getNormalStylePropertyName(property) {
+  if (property.startsWith("--")) {
+    return property;
+  }
+  if (hasPrefix(property, ["ms", "O", "Moz", "Webkit"])) {
+    return "-" + paramCase(property);
+  }
+  return paramCase(property);
+}
+function getNormalStylePropertyValue(property, value) {
+  if (typeof value === "number" && 0 !== value && !CSS_PROPERTIES_SUPPORTS_UNITLESS.has(property)) {
+    return value + "px";
+  }
+  return value;
+}
+function renderElement(element, context, legacyContext = {}) {
+  if (null === element || void 0 === element || false === element) {
+    return "";
+  }
+  if (Array.isArray(element)) {
+    return renderChildren(element, context, legacyContext);
+  }
+  switch (typeof element) {
+    case "string":
+      return escapeHTML(element);
+    case "number":
+      return element.toString();
+  }
+  const {
+    type,
+    props
+  } = (
+    /** @type {{type?: any, props?: any}} */
+    element
+  );
+  switch (type) {
+    case reactExports.StrictMode:
+    case reactExports.Fragment:
+      return renderChildren(props.children, context, legacyContext);
+    case RawHTML:
+      const {
+        children,
+        ...wrapperProps
+      } = props;
+      return renderNativeComponent(!Object.keys(wrapperProps).length ? null : "div", {
+        ...wrapperProps,
+        dangerouslySetInnerHTML: {
+          __html: children
+        }
+      }, context, legacyContext);
+  }
+  switch (typeof type) {
+    case "string":
+      return renderNativeComponent(type, props, context, legacyContext);
+    case "function":
+      if (type.prototype && typeof type.prototype.render === "function") {
+        return renderComponent(type, props, context, legacyContext);
+      }
+      return renderElement(type(props, legacyContext), context, legacyContext);
+  }
+  switch (type && type.$$typeof) {
+    case Provider.$$typeof:
+      return renderChildren(props.children, props.value, legacyContext);
+    case Consumer.$$typeof:
+      return renderElement(props.children(context || type._currentValue), context, legacyContext);
+    case ForwardRef.$$typeof:
+      return renderElement(type.render(props), context, legacyContext);
+  }
+  return "";
+}
+function renderNativeComponent(type, props, context, legacyContext = {}) {
+  let content = "";
+  if (type === "textarea" && props.hasOwnProperty("value")) {
+    content = renderChildren(props.value, context, legacyContext);
+    const {
+      value,
+      ...restProps
+    } = props;
+    props = restProps;
+  } else if (props.dangerouslySetInnerHTML && typeof props.dangerouslySetInnerHTML.__html === "string") {
+    content = props.dangerouslySetInnerHTML.__html;
+  } else if (typeof props.children !== "undefined") {
+    content = renderChildren(props.children, context, legacyContext);
+  }
+  if (!type) {
+    return content;
+  }
+  const attributes = renderAttributes(props);
+  if (SELF_CLOSING_TAGS.has(type)) {
+    return "<" + type + attributes + "/>";
+  }
+  return "<" + type + attributes + ">" + content + "</" + type + ">";
+}
+function renderComponent(Component, props, context, legacyContext = {}) {
+  const instance = new /** @type {import('react').ComponentClass} */
+  Component(props, legacyContext);
+  if (typeof // Ignore reason: Current prettier reformats parens and mangles type assertion
+  // prettier-ignore
+  /** @type {{getChildContext?: () => unknown}} */
+  instance.getChildContext === "function") {
+    Object.assign(
+      legacyContext,
+      /** @type {{getChildContext?: () => unknown}} */
+      instance.getChildContext()
+    );
+  }
+  const html2 = renderElement(instance.render(), context, legacyContext);
+  return html2;
+}
+function renderChildren(children, context, legacyContext = {}) {
+  let result = "";
+  children = Array.isArray(children) ? children : [children];
+  for (let i2 = 0; i2 < children.length; i2++) {
+    const child = children[i2];
+    result += renderElement(child, context, legacyContext);
+  }
+  return result;
+}
+function renderAttributes(props) {
+  let result = "";
+  for (const key in props) {
+    const attribute = getNormalAttributeName(key);
+    if (!isValidAttributeName(attribute)) {
+      continue;
+    }
+    let value = getNormalAttributeValue(key, props[key]);
+    if (!ATTRIBUTES_TYPES.has(typeof value)) {
+      continue;
+    }
+    if (isInternalAttribute(key)) {
+      continue;
+    }
+    const isBooleanAttribute = BOOLEAN_ATTRIBUTES.has(attribute);
+    if (isBooleanAttribute && value === false) {
+      continue;
+    }
+    const isMeaningfulAttribute = isBooleanAttribute || hasPrefix(key, ["data-", "aria-"]) || ENUMERATED_ATTRIBUTES.has(attribute);
+    if (typeof value === "boolean" && !isMeaningfulAttribute) {
+      continue;
+    }
+    result += " " + attribute;
+    if (isBooleanAttribute) {
+      continue;
+    }
+    if (typeof value === "string") {
+      value = escapeAttribute(value);
+    }
+    result += '="' + value + '"';
+  }
+  return result;
+}
+function renderStyle(style) {
+  if (!isPlainObject(style)) {
+    return style;
+  }
+  let result;
+  for (const property in style) {
+    const value = style[property];
+    if (null === value || void 0 === value) {
+      continue;
+    }
+    if (result) {
+      result += ";";
+    } else {
+      result = "";
+    }
+    const normalName = getNormalStylePropertyName(property);
+    const normalValue = getNormalStylePropertyValue(property, value);
+    result += normalName + ":" + normalValue;
+  }
+  return result;
+}
 const Path = (props) => reactExports.createElement("path", props);
 const SVG = reactExports.forwardRef(
   /**
@@ -9271,7 +9536,7 @@ var __objRest = (source, exclude) => {
     }
   return target;
 };
-function noop$8(..._2) {
+function noop$9(..._2) {
 }
 function applyState(argument, currentValue) {
   if (isUpdater(argument)) {
@@ -9752,8 +10017,8 @@ function useWrapElement(props, callback, deps = []) {
 function usePortalRef(portalProp = false, portalRefProp) {
   const [portalNode, setPortalNode] = reactExports.useState(null);
   const portalRef = useMergeRefs(setPortalNode, portalRefProp);
-  const domReady = !portalProp || portalNode;
-  return { portalRef, portalNode, domReady };
+  const domReady2 = !portalProp || portalNode;
+  return { portalRef, portalNode, domReady: domReady2 };
 }
 function useMetadataProps(props, key, value) {
   const parent = props.onLoadedMetadataCapture;
@@ -9841,13 +10106,13 @@ function createStoreContext(providers = [], scopedProviders = []) {
   };
   const ContextProvider = (props) => {
     return providers.reduceRight(
-      (children, Provider) => /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, __spreadProps$1(__spreadValues$1({}, props), { children })),
+      (children, Provider2) => /* @__PURE__ */ jsxRuntimeExports.jsx(Provider2, __spreadProps$1(__spreadValues$1({}, props), { children })),
       /* @__PURE__ */ jsxRuntimeExports.jsx(context.Provider, __spreadValues$1({}, props))
     );
   };
   const ScopedContextProvider = (props) => {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(ContextProvider, __spreadProps$1(__spreadValues$1({}, props), { children: scopedProviders.reduceRight(
-      (children, Provider) => /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, __spreadProps$1(__spreadValues$1({}, props), { children })),
+      (children, Provider2) => /* @__PURE__ */ jsxRuntimeExports.jsx(Provider2, __spreadProps$1(__spreadValues$1({}, props), { children })),
       /* @__PURE__ */ jsxRuntimeExports.jsx(scopedContext.Provider, __spreadValues$1({}, props))
     ) }));
   };
@@ -9920,7 +10185,7 @@ function createStore(initialState, ...stores) {
   let state = initialState;
   let prevStateBatch = state;
   let lastUpdate = Symbol();
-  let destroy = noop$8;
+  let destroy = noop$9;
   const instances = /* @__PURE__ */ new Set();
   const updatedKeys = /* @__PURE__ */ new Set();
   const setups = /* @__PURE__ */ new Set();
@@ -10044,7 +10309,7 @@ function createStore(initialState, ...stores) {
   };
   return finalStore;
 }
-function setup(store, ...args) {
+function setup$1(store, ...args) {
   if (!store) return;
   return getInternal(store, "setup")(...args);
 }
@@ -10284,13 +10549,13 @@ function createCollectionStore(props = {}) {
     privateStore.setState("renderedItems", sortedItems);
     collection.setState("renderedItems", sortedItems);
   };
-  setup(collection, () => init(privateStore));
-  setup(privateStore, () => {
+  setup$1(collection, () => init(privateStore));
+  setup$1(privateStore, () => {
     return batch(privateStore, ["items"], (state) => {
       collection.setState("items", state.items);
     });
   });
-  setup(privateStore, () => {
+  setup$1(privateStore, () => {
     return batch(privateStore, ["renderedItems"], (state) => {
       let firstRun = true;
       let raf = requestAnimationFrame(() => {
@@ -10533,7 +10798,7 @@ function createCompositeStore(props = {}) {
     focusShift: defaultValue$3(props.focusShift, syncState == null ? void 0 : syncState.focusShift, false)
   });
   const composite = createStore(initialState, collection, props.store);
-  setup(
+  setup$1(
     composite,
     () => sync(composite, ["renderedItems", "activeId"], (state) => {
       composite.setState("activeId", (activeId2) => {
@@ -10735,7 +11000,7 @@ function createTabStore(_a2 = {}) {
     )
   });
   const tab = createStore(initialState, composite, store);
-  setup(
+  setup$1(
     tab,
     () => sync(tab, ["moves"], () => {
       const { activeId, selectOnMove } = tab.getState();
@@ -10749,7 +11014,7 @@ function createTabStore(_a2 = {}) {
     })
   );
   let syncActiveId = true;
-  setup(
+  setup$1(
     tab,
     () => batch(tab, ["selectedId"], (state, prev2) => {
       if (!syncActiveId) {
@@ -10760,7 +11025,7 @@ function createTabStore(_a2 = {}) {
       tab.setState("activeId", state.selectedId);
     })
   );
-  setup(
+  setup$1(
     tab,
     () => sync(tab, ["selectedId", "renderedItems"], (state) => {
       if (state.selectedId !== void 0) return;
@@ -10776,7 +11041,7 @@ function createTabStore(_a2 = {}) {
       }
     })
   );
-  setup(
+  setup$1(
     tab,
     () => sync(tab, ["renderedItems"], (state) => {
       const tabs2 = state.renderedItems;
@@ -10795,7 +11060,7 @@ function createTabStore(_a2 = {}) {
     })
   );
   let selectedIdFromSelectedValue = null;
-  setup(tab, () => {
+  setup$1(tab, () => {
     const backupSelectedId = () => {
       selectedIdFromSelectedValue = tab.getState().selectedId;
     };
@@ -12403,21 +12668,21 @@ function createDisclosureStore(props = {}) {
     disclosureElement: defaultValue$3(syncState == null ? void 0 : syncState.disclosureElement, null)
   };
   const disclosure = createStore(initialState, store);
-  setup(
+  setup$1(
     disclosure,
     () => sync(disclosure, ["animated", "animating"], (state) => {
       if (state.animated) return;
       disclosure.setState("animating", false);
     })
   );
-  setup(
+  setup$1(
     disclosure,
     () => subscribe(disclosure, ["open"], () => {
       if (!disclosure.getState().animated) return;
       disclosure.setState("animating", true);
     })
   );
-  setup(
+  setup$1(
     disclosure,
     () => sync(disclosure, ["open", "animating"], (state) => {
       disclosure.setState("mounted", state.open || state.animating);
@@ -13370,14 +13635,14 @@ function useEventOutside({
   type,
   listener,
   capture,
-  domReady
+  domReady: domReady2
 }) {
   const callListener = useEvent$1(listener);
   const open = useStoreState(store, "open");
   const focusedRef = reactExports.useRef(false);
   useSafeLayoutEffect(() => {
     if (!open) return;
-    if (!domReady) return;
+    if (!domReady2) return;
     const { contentElement } = store.getState();
     if (!contentElement) return;
     const onFocus = () => {
@@ -13385,7 +13650,7 @@ function useEventOutside({
     };
     contentElement.addEventListener("focusin", onFocus, true);
     return () => contentElement.removeEventListener("focusin", onFocus, true);
-  }, [store, open, domReady]);
+  }, [store, open, domReady2]);
   reactExports.useEffect(() => {
     if (!open) return;
     const onEvent = (event) => {
@@ -13412,10 +13677,10 @@ function shouldHideOnInteractOutside(hideOnInteractOutside, event) {
   }
   return !!hideOnInteractOutside;
 }
-function useHideOnInteractOutside(store, hideOnInteractOutside, domReady) {
+function useHideOnInteractOutside(store, hideOnInteractOutside, domReady2) {
   const open = useStoreState(store, "open");
   const previousMouseDownRef = usePreviousMouseDownRef(open);
-  const props = { store, domReady, capture: true };
+  const props = { store, domReady: domReady2, capture: true };
   useEventOutside(__spreadProps$1(__spreadValues$1({}, props), {
     type: "click",
     listener: (event) => {
@@ -13576,15 +13841,15 @@ function hideElementFromAccessibilityTree(element) {
   return setAttribute(element, "aria-hidden", "true");
 }
 function disableTree(element, ignoredElements) {
-  if (!("style" in element)) return noop$8;
+  if (!("style" in element)) return noop$9;
   if (supportsInert()) {
     return setProperty(element, "inert", true);
   }
   const tabbableElements = getAllTabbableIn(element, true);
   const enableElements = tabbableElements.map((element2) => {
-    if (ignoredElements == null ? void 0 : ignoredElements.some((el2) => el2 && contains(el2, element2))) return noop$8;
+    if (ignoredElements == null ? void 0 : ignoredElements.some((el2) => el2 && contains(el2, element2))) return noop$9;
     const restoreFocusMethod = orchestrate(element2, "focus", () => {
-      element2.focus = noop$8;
+      element2.focus = noop$9;
       return () => {
         delete element2.focus;
       };
@@ -13792,7 +14057,7 @@ var useDialog = createHook(function useDialog2(_a2) {
       store.setOpen(true);
     }
   });
-  const { portalRef, domReady } = usePortalRef(portal, props.portalRef);
+  const { portalRef, domReady: domReady2 } = usePortalRef(portal, props.portalRef);
   const preserveTabOrderProp = props.preserveTabOrder;
   const preserveTabOrder = useStoreState(
     store,
@@ -13804,7 +14069,7 @@ var useDialog = createHook(function useDialog2(_a2) {
   const contentElement = useStoreState(store, "contentElement");
   const hidden = isHidden(mounted, props.hidden, props.alwaysVisible);
   usePreventBodyScroll(contentElement, id2, preventBodyScroll && !hidden);
-  useHideOnInteractOutside(store, hideOnInteractOutside, domReady);
+  useHideOnInteractOutside(store, hideOnInteractOutside, domReady2);
   const { wrapElement, nestedDialogs } = useNestedDialogs(store);
   props = useWrapElement(props, wrapElement, [wrapElement]);
   useSafeLayoutEffect(() => {
@@ -13843,7 +14108,7 @@ var useDialog = createHook(function useDialog2(_a2) {
   }
   reactExports.useEffect(() => {
     if (!mounted) return;
-    if (!domReady) return;
+    if (!domReady2) return;
     const dialog = ref.current;
     if (!dialog) return;
     const win = getWindow$2(dialog);
@@ -13858,27 +14123,27 @@ var useDialog = createHook(function useDialog2(_a2) {
     return () => {
       viewport.removeEventListener("resize", setViewportHeight);
     };
-  }, [mounted, domReady]);
+  }, [mounted, domReady2]);
   reactExports.useEffect(() => {
     if (!modal) return;
     if (!mounted) return;
-    if (!domReady) return;
+    if (!domReady2) return;
     const dialog = ref.current;
     if (!dialog) return;
     const existingDismiss = dialog.querySelector("[data-dialog-dismiss]");
     if (existingDismiss) return;
     return prependHiddenDismiss(dialog, store.hide);
-  }, [store, modal, mounted, domReady]);
+  }, [store, modal, mounted, domReady2]);
   useSafeLayoutEffect(() => {
     if (!supportsInert()) return;
     if (open) return;
     if (!mounted) return;
-    if (!domReady) return;
+    if (!domReady2) return;
     const dialog = ref.current;
     if (!dialog) return;
     return disableTree(dialog);
-  }, [open, mounted, domReady]);
-  const canTakeTreeSnapshot = open && domReady;
+  }, [open, mounted, domReady2]);
+  const canTakeTreeSnapshot = open && domReady2;
   useSafeLayoutEffect(() => {
     if (!id2) return;
     if (!canTakeTreeSnapshot) return;
@@ -13919,7 +14184,7 @@ var useDialog = createHook(function useDialog2(_a2) {
   reactExports.useEffect(() => {
     if (!open) return;
     if (!mayAutoFocusOnShow) return;
-    if (!domReady) return;
+    if (!domReady2) return;
     if (!(contentElement == null ? void 0 : contentElement.isConnected)) return;
     const element = getElementFromProp(initialFocus, true) || // If no initial focus is specified, we try to focus the first element
     // with the autofocus attribute. If it's an Ariakit component, the
@@ -13945,7 +14210,7 @@ var useDialog = createHook(function useDialog2(_a2) {
   }, [
     open,
     mayAutoFocusOnShow,
-    domReady,
+    domReady2,
     contentElement,
     initialFocus,
     portal,
@@ -14003,7 +14268,7 @@ var useDialog = createHook(function useDialog2(_a2) {
     const dialog = ref.current;
     focusedOnHideRef.current = true;
     focusOnHide(dialog);
-  }, [open, hasOpened, domReady, mayAutoFocusOnHide, focusOnHide]);
+  }, [open, hasOpened, domReady2, mayAutoFocusOnHide, focusOnHide]);
   reactExports.useEffect(() => {
     if (!hasOpened) return;
     if (!mayAutoFocusOnHide) return;
@@ -14018,7 +14283,7 @@ var useDialog = createHook(function useDialog2(_a2) {
   }, [hasOpened, mayAutoFocusOnHide, focusOnHide]);
   const hideOnEscapeProp = useBooleanEvent(hideOnEscape);
   reactExports.useEffect(() => {
-    if (!domReady) return;
+    if (!domReady2) return;
     if (!mounted) return;
     const onKeyDown = (event) => {
       if (event.key !== "Escape") return;
@@ -14041,7 +14306,7 @@ var useDialog = createHook(function useDialog2(_a2) {
       store.hide();
     };
     return addGlobalEventListener("keydown", onKeyDown, true);
-  }, [store, domReady, mounted, hideOnEscapeProp]);
+  }, [store, domReady2, mounted, hideOnEscapeProp]);
   props = useWrapElement(
     props,
     (element) => /* @__PURE__ */ jsxRuntimeExports.jsx(HeadingLevel, { level: modal ? 1 : void 0, children: element }),
@@ -15811,7 +16076,7 @@ var usePopover = createHook(
     const rendered = store.useState("rendered");
     const defaultArrowElementRef = reactExports.useRef(null);
     const [positioned, setPositioned] = reactExports.useState(false);
-    const { portalRef, domReady } = usePortalRef(portal, props.portalRef);
+    const { portalRef, domReady: domReady2 } = usePortalRef(portal, props.portalRef);
     const getAnchorRectProp = useEvent$1(getAnchorRect);
     const updatePositionProp = useEvent$1(updatePosition);
     const hasCustomUpdatePosition = !!updatePosition;
@@ -15901,7 +16166,7 @@ var usePopover = createHook(
       popoverElement,
       placement,
       mounted,
-      domReady,
+      domReady2,
       fixed,
       flip2,
       shift2,
@@ -15918,7 +16183,7 @@ var usePopover = createHook(
     ]);
     useSafeLayoutEffect(() => {
       if (!mounted) return;
-      if (!domReady) return;
+      if (!domReady2) return;
       if (!(popoverElement == null ? void 0 : popoverElement.isConnected)) return;
       if (!(contentElement == null ? void 0 : contentElement.isConnected)) return;
       const applyZIndex = () => {
@@ -15929,7 +16194,7 @@ var usePopover = createHook(
         raf = requestAnimationFrame(applyZIndex);
       });
       return () => cancelAnimationFrame(raf);
-    }, [mounted, domReady, popoverElement, contentElement]);
+    }, [mounted, domReady2, popoverElement, contentElement]);
     const position2 = fixed ? "fixed" : "absolute";
     props = useWrapElement(
       props,
@@ -16057,7 +16322,7 @@ var useHovercard = createHook(
     const [nestedHovercards, setNestedHovercards] = reactExports.useState([]);
     const hideTimeoutRef = reactExports.useRef(0);
     const enterPointRef = reactExports.useRef(null);
-    const { portalRef, domReady } = usePortalRef(portal, props.portalRef);
+    const { portalRef, domReady: domReady2 } = usePortalRef(portal, props.portalRef);
     const isMouseMoving = useIsMouseMoving();
     const mayHideOnHoverOutside = !!hideOnHoverOutside;
     const hideOnHoverOutsideProp = useBooleanEvent(hideOnHoverOutside);
@@ -16068,7 +16333,7 @@ var useHovercard = createHook(
     const open = store.useState("open");
     const mounted = store.useState("mounted");
     reactExports.useEffect(() => {
-      if (!domReady) return;
+      if (!domReady2) return;
       if (!mounted) return;
       if (!mayHideOnHoverOutside && !mayDisablePointerEvents) return;
       const element = ref.current;
@@ -16111,7 +16376,7 @@ var useHovercard = createHook(
     }, [
       store,
       isMouseMoving,
-      domReady,
+      domReady2,
       mounted,
       mayHideOnHoverOutside,
       mayDisablePointerEvents,
@@ -16120,7 +16385,7 @@ var useHovercard = createHook(
       hideOnHoverOutsideProp
     ]);
     reactExports.useEffect(() => {
-      if (!domReady) return;
+      if (!domReady2) return;
       if (!mounted) return;
       if (!mayDisablePointerEvents) return;
       const disableEvent = (event) => {
@@ -16142,31 +16407,31 @@ var useHovercard = createHook(
         addGlobalEventListener("mouseout", disableEvent, true),
         addGlobalEventListener("mouseleave", disableEvent, true)
       );
-    }, [domReady, mounted, mayDisablePointerEvents, disablePointerEventsProp]);
+    }, [domReady2, mounted, mayDisablePointerEvents, disablePointerEventsProp]);
     reactExports.useEffect(() => {
-      if (!domReady) return;
+      if (!domReady2) return;
       if (open) return;
       store == null ? void 0 : store.setAutoFocusOnShow(false);
-    }, [store, domReady, open]);
+    }, [store, domReady2, open]);
     const openRef = useLiveRef(open);
     reactExports.useEffect(() => {
-      if (!domReady) return;
+      if (!domReady2) return;
       return () => {
         if (!openRef.current) {
           store == null ? void 0 : store.setAutoFocusOnShow(false);
         }
       };
-    }, [store, domReady]);
+    }, [store, domReady2]);
     const registerOnParent = reactExports.useContext(NestedHovercardContext);
     useSafeLayoutEffect(() => {
       if (modal) return;
       if (!portal) return;
       if (!mounted) return;
-      if (!domReady) return;
+      if (!domReady2) return;
       const element = ref.current;
       if (!element) return;
       return registerOnParent == null ? void 0 : registerOnParent(element);
-    }, [modal, portal, mounted, domReady]);
+    }, [modal, portal, mounted, domReady2]);
     const registerNestedHovercard = reactExports.useCallback(
       (element) => {
         setNestedHovercards((prevElements) => [...prevElements, element]);
@@ -20345,10 +20610,10 @@ function call(v2, ...args) {
     return v2;
   }
 }
-function noop$7() {
+function noop$8() {
 }
 function chain(...fns) {
-  if (fns.length === 0) return noop$7;
+  if (fns.length === 0) return noop$8;
   if (fns.length === 1) return fns[0];
   return function() {
     let result;
@@ -21623,7 +21888,7 @@ function withIgnoreIMEEvents(keydownHandler) {
     keydownHandler(event);
   };
 }
-const noop$6 = () => {
+const noop$7 = () => {
 };
 function InputField({
   disabled = false,
@@ -21632,13 +21897,13 @@ function InputField({
   id: id2,
   isDragEnabled = false,
   isPressEnterToChange = false,
-  onBlur = noop$6,
-  onChange = noop$6,
-  onDrag = noop$6,
-  onDragEnd = noop$6,
-  onDragStart = noop$6,
-  onKeyDown = noop$6,
-  onValidate = noop$6,
+  onBlur = noop$7,
+  onChange = noop$7,
+  onDrag = noop$7,
+  onDragEnd = noop$7,
+  onDragStart = noop$7,
+  onKeyDown = noop$7,
+  onValidate = noop$7,
   size: size2 = "default",
   stateReducer = (state) => state,
   value: valueProp,
@@ -21895,7 +22160,7 @@ const BaseControl = Object.assign(contextConnectWithoutRef(UnconnectedBaseContro
    */
   VisualLabel
 });
-const noop$5 = () => {
+const noop$6 = () => {
 };
 function useUniqueId$2(idProp) {
   const instanceId = useInstanceId(InputControl);
@@ -21915,9 +22180,9 @@ function UnforwardedInputControl(props, ref) {
     isPressEnterToChange = false,
     label,
     labelPosition = "top",
-    onChange = noop$5,
-    onValidate = noop$5,
-    onKeyDown = noop$5,
+    onChange = noop$6,
+    onValidate = noop$6,
+    onKeyDown = noop$6,
     prefix: prefix2,
     size: size2 = "default",
     style,
@@ -22450,7 +22715,7 @@ function UnconnectedHStack(props, forwardedRef) {
   });
 }
 const HStack = contextConnect(UnconnectedHStack, "HStack");
-const noop$4 = () => {
+const noop$5 = () => {
 };
 function UnforwardedNumberControl(props, forwardedRef) {
   const {
@@ -22472,7 +22737,7 @@ function UnforwardedNumberControl(props, forwardedRef) {
     value: valueProp,
     size: size2 = "default",
     suffix,
-    onChange = noop$4,
+    onChange = noop$5,
     ...restProps
   } = useDeprecated36pxDefaultSizeProp(props);
   if (hideHTMLArrows) {
@@ -22619,6 +22884,96 @@ function UnforwardedNumberControl(props, forwardedRef) {
   });
 }
 const NumberControl = reactExports.forwardRef(UnforwardedNumberControl);
+function domReady(callback) {
+  if (typeof document === "undefined") {
+    return;
+  }
+  if (document.readyState === "complete" || // DOMContentLoaded + Images/Styles/etc loaded, so we call directly.
+  document.readyState === "interactive") {
+    return void callback();
+  }
+  document.addEventListener("DOMContentLoaded", callback);
+}
+function addContainer(ariaLive = "polite") {
+  const container = document.createElement("div");
+  container.id = "a11y-speak-".concat(ariaLive);
+  container.className = "a11y-speak-region";
+  container.setAttribute("style", "position: absolute;margin: -1px;padding: 0;height: 1px;width: 1px;overflow: hidden;clip: rect(1px, 1px, 1px, 1px);-webkit-clip-path: inset(50%);clip-path: inset(50%);border: 0;word-wrap: normal !important;");
+  container.setAttribute("aria-live", ariaLive);
+  container.setAttribute("aria-relevant", "additions text");
+  container.setAttribute("aria-atomic", "true");
+  const {
+    body
+  } = document;
+  if (body) {
+    body.appendChild(container);
+  }
+  return container;
+}
+function addIntroText() {
+  const introText = document.createElement("p");
+  introText.id = "a11y-speak-intro-text";
+  introText.className = "a11y-speak-intro-text";
+  introText.textContent = __("Notifications");
+  introText.setAttribute("style", "position: absolute;margin: -1px;padding: 0;height: 1px;width: 1px;overflow: hidden;clip: rect(1px, 1px, 1px, 1px);-webkit-clip-path: inset(50%);clip-path: inset(50%);border: 0;word-wrap: normal !important;");
+  introText.setAttribute("hidden", "hidden");
+  const {
+    body
+  } = document;
+  if (body) {
+    body.appendChild(introText);
+  }
+  return introText;
+}
+function clear() {
+  const regions = document.getElementsByClassName("a11y-speak-region");
+  const introText = document.getElementById("a11y-speak-intro-text");
+  for (let i2 = 0; i2 < regions.length; i2++) {
+    regions[i2].textContent = "";
+  }
+  if (introText) {
+    introText.setAttribute("hidden", "hidden");
+  }
+}
+let previousMessage = "";
+function filterMessage(message) {
+  message = message.replace(/<[^<>]+>/g, " ");
+  if (previousMessage === message) {
+    message += " ";
+  }
+  previousMessage = message;
+  return message;
+}
+function speak(message, ariaLive) {
+  clear();
+  message = filterMessage(message);
+  const introText = document.getElementById("a11y-speak-intro-text");
+  const containerAssertive = document.getElementById("a11y-speak-assertive");
+  const containerPolite = document.getElementById("a11y-speak-polite");
+  if (containerAssertive && ariaLive === "assertive") {
+    containerAssertive.textContent = message;
+  } else if (containerPolite) {
+    containerPolite.textContent = message;
+  }
+  if (introText) {
+    introText.removeAttribute("hidden");
+  }
+}
+function setup() {
+  const introText = document.getElementById("a11y-speak-intro-text");
+  const containerAssertive = document.getElementById("a11y-speak-assertive");
+  const containerPolite = document.getElementById("a11y-speak-polite");
+  if (introText === null) {
+    addIntroText();
+  }
+  if (containerAssertive === null) {
+    addContainer("assertive");
+  }
+  if (containerPolite === null) {
+    addContainer("polite");
+  }
+}
+domReady(setup);
 let getRandomValues;
 const rnds8 = new Uint8Array(16);
 function rng() {
@@ -23347,7 +23702,7 @@ function useTooltipPosition({
   });
   return position2;
 }
-const noop$3 = () => {
+const noop$4 = () => {
 };
 function computeResetValue({
   resetFallbackValue,
@@ -23380,11 +23735,11 @@ function UnforwardedRangeControl(props, forwardedRef) {
     marks = false,
     max: max2 = 100,
     min: min2 = 0,
-    onBlur = noop$3,
-    onChange = noop$3,
-    onFocus = noop$3,
-    onMouseLeave = noop$3,
-    onMouseMove = noop$3,
+    onBlur = noop$4,
+    onChange = noop$4,
+    onFocus = noop$4,
+    onMouseLeave = noop$4,
+    onMouseMove = noop$4,
     railColor,
     renderTooltipContent = (v2) => v2,
     resetFallbackValue,
@@ -25344,7 +25699,7 @@ function UnforwardedModal(props, forwardedRef) {
   }), document.body);
 }
 const Modal = reactExports.forwardRef(UnforwardedModal);
-const noop$2 = () => {
+const noop$3 = () => {
 };
 function UnforwardedFormToggle(props, ref) {
   const {
@@ -25352,7 +25707,7 @@ function UnforwardedFormToggle(props, ref) {
     checked,
     id: id2,
     disabled,
-    onChange = noop$2,
+    onChange = noop$3,
     ...additionalProps
   } = props;
   const wrapperClasses = clsx("components-form-toggle", className, {
@@ -25378,6 +25733,109 @@ function UnforwardedFormToggle(props, ref) {
   });
 }
 const FormToggle = reactExports.forwardRef(UnforwardedFormToggle);
+const noop$2 = () => {
+};
+function useSpokenMessage(message, politeness) {
+  const spokenMessage = typeof message === "string" ? message : renderElement(message);
+  reactExports.useEffect(() => {
+    if (spokenMessage) {
+      speak(spokenMessage, politeness);
+    }
+  }, [spokenMessage, politeness]);
+}
+function getDefaultPoliteness(status) {
+  switch (status) {
+    case "success":
+    case "warning":
+    case "info":
+      return "polite";
+    default:
+      return "assertive";
+  }
+}
+function getStatusLabel(status) {
+  switch (status) {
+    case "warning":
+      return __("Warning notice");
+    case "info":
+      return __("Information notice");
+    case "error":
+      return __("Error notice");
+    default:
+      return __("Notice");
+  }
+}
+function Notice({
+  className,
+  status = "info",
+  children,
+  spokenMessage = children,
+  onRemove = noop$2,
+  isDismissible = true,
+  actions: actions2 = [],
+  politeness = getDefaultPoliteness(status),
+  __unstableHTML,
+  // onDismiss is a callback executed when the notice is dismissed.
+  // It is distinct from onRemove, which _looks_ like a callback but is
+  // actually the function to call to remove the notice from the UI.
+  onDismiss = noop$2
+}) {
+  useSpokenMessage(spokenMessage, politeness);
+  const classes = clsx(className, "components-notice", "is-" + status, {
+    "is-dismissible": isDismissible
+  });
+  if (__unstableHTML && typeof children === "string") {
+    children = /* @__PURE__ */ jsxRuntimeExports.jsx(RawHTML, {
+      children
+    });
+  }
+  const onDismissNotice = () => {
+    onDismiss();
+    onRemove();
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", {
+    className: classes,
+    children: [/* @__PURE__ */ jsxRuntimeExports.jsx(VisuallyHidden, {
+      children: getStatusLabel(status)
+    }), /* @__PURE__ */ jsxRuntimeExports.jsxs("div", {
+      className: "components-notice__content",
+      children: [children, /* @__PURE__ */ jsxRuntimeExports.jsx("div", {
+        className: "components-notice__actions",
+        children: actions2.map(({
+          className: buttonCustomClasses,
+          label,
+          isPrimary,
+          variant,
+          noDefaultClasses = false,
+          onClick,
+          url
+        }, index) => {
+          let computedVariant = variant;
+          if (variant !== "primary" && !noDefaultClasses) {
+            computedVariant = !url ? "secondary" : "link";
+          }
+          if (typeof computedVariant === "undefined" && isPrimary) {
+            computedVariant = "primary";
+          }
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(Button, {
+            __next40pxDefaultSize: true,
+            href: url,
+            variant: computedVariant,
+            onClick: url ? void 0 : onClick,
+            className: clsx("components-notice__action", buttonCustomClasses),
+            children: label
+          }, index);
+        })
+      })]
+    }), isDismissible && /* @__PURE__ */ jsxRuntimeExports.jsx(Button, {
+      size: "small",
+      className: "components-notice__dismiss",
+      icon: close,
+      label: __("Close"),
+      onClick: onDismissNotice
+    })]
+  });
+}
 function PanelHeader({
   label,
   children
@@ -25760,6 +26218,41 @@ function UnforwardedToggleControl({
   });
 }
 const ToggleControl = reactExports.forwardRef(UnforwardedToggleControl);
+function ApprovalStatus(props) {
+  const { item, onStatusChange = () => {
+  }, defaultApprovalState } = props;
+  const { id: id2, approval_status } = item;
+  const currentStatus = approval_status != null ? approval_status : defaultApprovalState;
+  const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "p",
+      {
+        style: {
+          color: currentStatus === "Confirmed" ? "green" : "red"
+        },
+        children: currentStatus
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { display: "flex", gap: "5px" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Button,
+      {
+        size: "small",
+        isDestructive: currentStatus === "Confirmed",
+        variant: "secondary",
+        onClick: (e2) => {
+          e2.stopPropagation();
+          onStatusChange(
+            id2,
+            currentStatus === "Confirmed" ? "Declined" : "Confirmed",
+            changeAction
+          );
+        },
+        children: changeAction
+      }
+    ) })
+  ] });
+}
 function ResendButton(props) {
   var _a2;
   const { id: id2, confirmation_token } = props.item;
@@ -25858,45 +26351,6 @@ function ResendAllButton() {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { color: "salmon" }, children: "Warning" }),
       ": This action will resend confirmation emails to all unconfirmed signees. Proceed with caution: sending a large number of emails at once may negatively impact your domain’s reputation."
-    ] })
-  ] });
-}
-function ApprovalStatus(props) {
-  var _a2;
-  const { item, onStatusChange = () => {
-  }, defaultApprovalState } = props;
-  const { id: id2, approval_status } = item;
-  const currentStatus = approval_status != null ? approval_status : defaultApprovalState;
-  const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "p",
-      {
-        style: {
-          color: currentStatus === "Confirmed" ? "green" : "red"
-        },
-        children: currentStatus
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "5px" }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          size: "small",
-          isDestructive: currentStatus === "Confirmed",
-          variant: "secondary",
-          onClick: (e2) => {
-            e2.stopPropagation();
-            onStatusChange(
-              id2,
-              currentStatus === "Confirmed" ? "Declined" : "Confirmed",
-              changeAction
-            );
-          },
-          children: changeAction
-        }
-      ),
-      ((_a2 = window == null ? void 0 : window.petitionerData) == null ? void 0 : _a2.approval_state) === "Email" && /* @__PURE__ */ jsxRuntimeExports.jsx(ResendButton, { item })
     ] })
   ] });
 }
@@ -27002,6 +27456,7 @@ function ShortcodeElement({
     ] })
   ] }) });
 }
+const PER_PAGE = 100;
 const UPDATE_ACTION = "petitioner_update_submission";
 const FETCH_ACTION = "petitioner_fetch_submissions";
 const DELETE_ACTION = "petitioner_delete_submission";
@@ -28234,7 +28689,7 @@ const updateSubmissions = async ({
   }
 }) => {
   if (!(data == null ? void 0 : data.id)) {
-    console.error("Submission fetch error: missing the submission id");
+    onError("Submission update error: missing the submission id");
     return;
   }
   const finalQuery = new URLSearchParams();
@@ -28255,10 +28710,10 @@ const updateSubmissions = async ({
     if (response.success) {
       onSuccess(response.data);
     } else {
-      onError("Failed to fetch data");
+      onError("Failed to update data");
     }
   } catch (error) {
-    onError("Error fetching data: " + error);
+    onError("Error updating data: " + error);
   }
 };
 const deleteSubmissions = async ({
@@ -28267,7 +28722,7 @@ const deleteSubmissions = async ({
   onError
 }) => {
   if (!id2) {
-    onError("Submission fetch error: missing the submission id");
+    onError("Submission delete error: missing the submission id");
     return;
   }
   const finalQuery = new URLSearchParams();
@@ -28284,10 +28739,10 @@ const deleteSubmissions = async ({
     if (response.success) {
       onSuccess();
     } else {
-      onError("Failed to fetch data");
+      onError("Failed to delete data");
     }
   } catch (error) {
-    onError("Error fetching data: " + error);
+    onError("Error deleting data: " + error);
   }
 };
 const getFieldLabels = () => {
@@ -28345,21 +28800,56 @@ const getExportURL = () => {
   }
   return urlString;
 };
-const ExportButtonWrapper = dt.div(_c || (_c = __template(["\n	display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n	justify-content: space-between;\n"])));
+const ExportButtonWrapper = dt.div(_c || (_c = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	justify-content: space-between;\n"])));
+const SubmissionTabWrapper = dt.div(_d || (_d = __template([""])));
+const EntriesWrapper = dt.div(_e2 || (_e2 = __template(["\n	position: relative;\n"])));
 const COLORS = {
   grey: "var(--ptr-admin-color-grey)",
   light: "var(--ptr-admin-color-light)"
 };
 const SPACINGS = {
   xs: "var(--ptr-admin-spacing-xs)",
-  sm: "var(--ptr-admin-spacing-sm)"
+  sm: "var(--ptr-admin-spacing-sm)",
+  "4xl": "var(--ptr-admin-spacing-4xl)"
 };
 const TRANSITIONS = {
   sm: "0.15s"
 };
-const TableHeading = dt.th(_d || (_d = __template(["\n	", ";\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ($width) => "width: ".concat($width));
-const HeadingLabel = dt.div(_e2 || (_e2 = __template(["\n	display: inline-flex;\n	gap: var(--ptr-admin-spacing-xs);\n"])));
-const StyledTable = dt.table(_g || (_g = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_f || (_f = __template(["\n			tr {\n				transition: ", ";\n				&:hover {\n					cursor: pointer;\n					background: ", " !important;\n				}\n			}\n		"])), TRANSITIONS.sm, COLORS.grey));
+const TableHeading = dt.th(_f || (_f = __template(["\n	", "\n	cursor: pointer;\n	&,\n	&.sorted {\n		padding-inline: var(--ptr-admin-spacing-sm) !important;\n	}\n"])), ({ $width }) => "width: ".concat($width, ";"));
+const HeadingLabel = dt.div(_g || (_g = __template(["\n	display: inline-flex;\n	gap: var(--ptr-admin-spacing-xs);\n"])));
+const StyledTable = dt.table(_i || (_i = __template(["\n	&.striped > tbody > {\n		&:nth-child(odd) {\n			background-color: ", ";\n		}\n\n		", "\n	}\n"])), COLORS.light, ({ $clickable }) => $clickable && lt(_h || (_h = __template(["\n				tr {\n					transition: ", ";\n					&:hover {\n						cursor: pointer;\n						background: ", " !important;\n					}\n				}\n			"])), TRANSITIONS.sm, COLORS.grey));
+const usePagination = (total, perPage, currentPage, onPageChange) => {
+  return reactExports.useMemo(() => {
+    const totalPages = Math.ceil(total / perPage);
+    const buttons = [];
+    for (let i2 = 1; i2 <= totalPages; i2++) {
+      buttons.push(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            variant: currentPage !== i2 ? "secondary" : "primary",
+            onClick: () => onPageChange(i2),
+            "data-page": i2,
+            children: i2
+          },
+          i2
+        )
+      );
+    }
+    return buttons;
+  }, [total, perPage, currentPage]);
+};
+const useTableHeadings = (baseHeadings, conditionalHeadings = []) => {
+  return reactExports.useMemo(() => {
+    const finalHeadings = [...baseHeadings];
+    conditionalHeadings.forEach(({ condition, heading }) => {
+      if (condition) {
+        finalHeadings.push(heading);
+      }
+    });
+    return finalHeadings;
+  }, [baseHeadings, conditionalHeadings]);
+};
 function Table({
   headings,
   rows,
@@ -28431,10 +28921,10 @@ function Table({
     }
   );
 }
-dt.div(_h || (_h = __template(["\n	display: flex;\n	margin-bottom: ", ";\n"])), SPACINGS.sm);
-const FieldItem = dt(CardBody)(_i || (_i = __template(["\n	display: flex;\n	align-items: flex-start;\n	flex-direction: column;\n	gap: ", ";\n"])), SPACINGS.xs);
-const InputGroup = dt.div(_j || (_j = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n\n	.components-base-control__field {\n		margin-bottom: 0px;\n	}\n"])), SPACINGS.sm);
-const ActionButtonWrapper = dt.div(_k || (_k = __template(["\n	display: flex;\n	gap: ", ";\n"])), SPACINGS.sm);
+dt.div(_j || (_j = __template(["\n	display: flex;\n	margin-bottom: ", ";\n"])), SPACINGS.sm);
+const FieldItem = dt(CardBody)(_k || (_k = __template(["\n	display: flex;\n	align-items: flex-start;\n	flex-direction: column;\n	gap: ", ";\n"])), SPACINGS.xs);
+const InputGroup = dt.div(_l || (_l = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n\n	.components-base-control__field {\n		margin-bottom: 0px;\n	}\n"])), SPACINGS.sm);
+const ActionButtonWrapper = dt.div(_m || (_m = __template(["\n	display: flex;\n	align-items: center;\n	justify-content: flex-end;\n	gap: ", ";\n"])), SPACINGS.sm);
 function PTRichText({
   id: id2 = "",
   label = "Rich text label",
@@ -28509,6 +28999,7 @@ const normalizePetitionerData = () => {
     success_message_title: "",
     success_message: "",
     from_field: "",
+    from_name: "",
     add_honeypot: true,
     form_id: null,
     hide_last_names: true,
@@ -28581,6 +29072,7 @@ const normalizeDefaultValues = (raw) => {
   );
   const defaultValues = {
     from_field: "",
+    from_name: "",
     ty_email_subject: DEFAULT_SUBJECT,
     ty_email: DEFAULT_CONTENT,
     ty_email_subject_confirm: DEFAULT_SUBJECT,
@@ -28621,6 +29113,7 @@ function AdvancedSettings() {
     (_a2 = window.petitionerData) == null ? void 0 : _a2.default_values
   );
   const defaultFromField = (defaultValues == null ? void 0 : defaultValues.from_field) || "";
+  const defaultFromName = (defaultValues == null ? void 0 : defaultValues.from_name) || "";
   const confirmEmails = formState.approval_state === "Email";
   const { subject: defaultTYSubject, content: defaultTYEmailContent } = getThankYouDefaults(defaultValues, formState.approval_state);
   const defaultSuccessMessageTitle = (defaultValues == null ? void 0 : defaultValues.success_message_title) || "";
@@ -28653,6 +29146,23 @@ function AdvancedSettings() {
         name: "petitioner_from_field",
         id: "petitioner_from_field",
         onChange: (value) => updateFormState("from_field", value)
+      }
+    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TextControl,
+      {
+        style: { width: "100%" },
+        label: __("From name", "petitioner"),
+        value: formState.from_name,
+        defaultValue: defaultFromName,
+        type: "text",
+        help: __(
+          "This is the name next to the email address that will appear in the 'From' field of the email. If empty will default to '".concat(defaultFromName, "'."),
+          "petitioner"
+        ),
+        name: "petitioner_from_name",
+        id: "petitioner_from_name",
+        onChange: (value) => updateFormState("from_name", value)
       }
     ) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -28891,7 +29401,9 @@ function SubmissionEditField({
       window.petitionerData.default_values
     );
     const allCountries = defaultValues.country_list;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, children: allCountries.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { selected: value === item, value: item, children: item })) });
+    const countries = allCountries || [];
+    const countryOptions = countries.map((item) => ({ label: item, value: item }));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, options: countryOptions });
   }
   if (type === "textarea") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(TextareaControl, { value, onChange });
@@ -28918,15 +29430,12 @@ function SubmissionEditModal({
   onDelete = (id2) => {
   }
 }) {
+  var _a2;
   const [isEdit, setIsEdit] = reactExports.useState(null);
   const [valuesChanged, setValuesChanged] = reactExports.useState(false);
   const [submissionDetails, setSubmissionDetails] = reactExports.useState(submission);
   const updateSubmissionDetails = reactExports.useCallback(
     (key, value) => {
-      const oldState = (submission == null ? void 0 : submission[key]) || "";
-      if (oldState != value) {
-        setValuesChanged(true);
-      }
       setSubmissionDetails((prevState) => ({
         ...prevState,
         [key]: value
@@ -28936,13 +29445,19 @@ function SubmissionEditModal({
   );
   const submissionEntries = Object.entries(submissionDetails);
   const lastRowIndex = submissionEntries.length - 1;
+  reactExports.useEffect(() => {
+    const hasChanged = Object.keys(submissionDetails).some((key) => {
+      return submissionDetails[key] !== submission[key];
+    });
+    setValuesChanged(hasChanged);
+  }, [submissionDetails, submission]);
   const SubmissionDetails = submissionEntries.map(([label, value], index) => {
-    var _a2;
+    var _a3;
     if (!isValidFieldKey(label)) {
       return;
     }
     const valueString = String(value);
-    const finalLabel = (_a2 = SUBMISSION_LABELS$1[label]) != null ? _a2 : label;
+    const finalLabel = (_a3 = SUBMISSION_LABELS$1[label]) != null ? _a3 : label;
     const type = getSubmissionValType(label);
     const finalValue = getHumanValue(valueString, type);
     const isEmpty = finalValue == __("(empty)", "petitioner");
@@ -29020,9 +29535,10 @@ function SubmissionEditModal({
       shouldCloseOnClickOutside: !valuesChanged,
       shouldCloseOnEsc: !valuesChanged,
       size: "large",
-      title: __("Submission details", "petitioner-theme"),
+      title: __("Submission details", "petitioner"),
       onRequestClose,
       headerActions: /* @__PURE__ */ jsxRuntimeExports.jsxs(ActionButtonWrapper, { children: [
+        ((_a2 = window == null ? void 0 : window.petitionerData) == null ? void 0 : _a2.approval_state) === "Email" && /* @__PURE__ */ jsxRuntimeExports.jsx(ResendButton, { item: submissionDetails }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           Button,
           {
@@ -29046,7 +29562,7 @@ function SubmissionEditModal({
     }
   );
 }
-const StyledExportButton = dt(Button)(_l || (_l = __template([""])));
+const StyledExportButton = dt(Button)(_n || (_n = __template([""])));
 const ConditionalLogic = ({}) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "Conditional logic component here" });
 };
@@ -29076,6 +29592,47 @@ function ExportModal({
     }
   );
 }
+const AlertStatusWrapper = dt.div(_o || (_o = __template(["\n	position: fixed;\n	width: 80%;\n	max-width: 768px;\n	margin: auto;\n	top: ", ";\n	left: 0;\n	right: 0;\n"])), SPACINGS["4xl"]);
+const useNoticeSystem = () => {
+  const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
+  const [noticeText, setNoticeText] = reactExports.useState(void 0);
+  const showNotice = reactExports.useCallback((status, text2) => {
+    setNoticeStatus(status);
+    setNoticeText(text2);
+  }, []);
+  const hideNotice = reactExports.useCallback(() => {
+    setNoticeStatus(void 0);
+    setNoticeText(void 0);
+  }, []);
+  reactExports.useEffect(() => {
+    if (noticeText) {
+      const timeout = setTimeout(hideNotice, 3e3);
+      return () => clearTimeout(timeout);
+    }
+  }, [noticeText, hideNotice]);
+  return {
+    showNotice,
+    hideNotice,
+    noticeStatus,
+    noticeText
+  };
+};
+function NoticeSystem({
+  noticeStatus,
+  noticeText,
+  hideNotice
+}) {
+  if (!noticeStatus || !noticeText) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(AlertStatusWrapper, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Notice,
+    {
+      isDismissible: true,
+      onDismiss: hideNotice,
+      status: noticeStatus,
+      children: noticeText
+    }
+  ) });
+}
 const SUBMISSION_LABELS = getFieldLabels();
 function Submissions() {
   var _a2;
@@ -29084,24 +29641,35 @@ function Submissions() {
   const approvalState = window.petitionerData.approval_state;
   const [submissions, setSubmissions] = reactExports.useState([]);
   const [total, setTotal] = reactExports.useState(0);
-  const [currentPage, setCurrentPage] = reactExports.useState(1);
-  const [order, setOrder] = reactExports.useState();
-  const [orderby, setOrderBy] = reactExports.useState();
+  const [tableState, setTableState] = reactExports.useState({
+    currentPage: 1,
+    order: null,
+    orderby: null
+  });
+  const updateTableState = reactExports.useCallback(
+    (newState) => {
+      setTableState((prevState) => ({
+        ...prevState,
+        ...newState
+      }));
+    },
+    []
+  );
   const [showApproval, setShowApproval] = reactExports.useState(requireApproval);
   const [defaultApprovalState, setDefaultApprovalState] = reactExports.useState(() => {
     return approvalState === "Email" ? "Declined" : approvalState;
   });
   const [activeModal, setActiveModal] = reactExports.useState();
   const [showExportModal, setShowExportModal] = reactExports.useState(false);
+  const { showNotice, noticeStatus, noticeText, hideNotice } = useNoticeSystem();
   const hasSubmissions = submissions.length > 0;
-  const perPage = 100;
   const fetchData = async () => {
     return fetchSubmissions({
-      currentPage,
+      currentPage: tableState.currentPage,
       formID: form_id,
-      perPage,
-      order,
-      orderby,
+      perPage: PER_PAGE,
+      order: tableState.order,
+      orderby: tableState.orderby,
       onSuccess: (data) => {
         setTotal(data.total);
         setSubmissions(data.submissions);
@@ -29111,57 +29679,70 @@ function Submissions() {
   reactExports.useEffect(() => {
     if (!form_id) return;
     fetchData();
-  }, [currentPage, form_id, order, orderby]);
+  }, [tableState.currentPage, form_id, tableState.order, tableState.orderby]);
   reactExports.useEffect(() => {
-    window.addEventListener("onPtrApprovalChange", () => {
+    const handleApprovalChange = () => {
       setShowApproval(requireApproval);
       if (approvalState) {
         setDefaultApprovalState(approvalState);
       }
-    });
+    };
+    window.addEventListener("onPtrApprovalChange", handleApprovalChange);
+    return () => {
+      window.removeEventListener(
+        "onPtrApprovalChange",
+        handleApprovalChange
+      );
+    };
   }, []);
   const handleStatusChange = async (id2, newStatus, changeAction) => {
     const question = "Are you sure you want to ".concat(String(changeAction).toLowerCase(), " this submission?");
     if (window.confirm(question)) {
-      const finalAjaxURL = "".concat(ajaxurl, "?action=").concat(UPDATE_ACTION);
-      try {
-        const finalData = new FormData();
-        finalData.append("id", String(id2));
-        finalData.append("status", newStatus);
-        const response = await fetch(finalAjaxURL, {
-          method: "POST",
-          body: finalData
-        });
-        const data = await response.json();
-        if (data.success) {
+      updateSubmissions({
+        data: {
+          id: id2,
+          approval_status: newStatus
+        },
+        onSuccess: () => {
           fetchData();
-        } else {
-          console.error("Failed to update submission status");
+          showNotice(
+            "success",
+            __("Submission status updated!", "petitioner")
+          );
+        },
+        onError: (msg) => {
+          console.error(msg);
+          showNotice(
+            "error",
+            __("Failed to update submission status!", "petitioner")
+          );
         }
-      } catch (error) {
-        console.error("Error updating submission status:", error);
-      }
+      });
     }
   };
-  const handlePaginationClick = (page) => {
-    setCurrentPage(page);
-  };
-  const totalPages = Math.ceil(total / perPage);
-  const buttons = [];
-  for (let i2 = 1; i2 <= totalPages; i2++) {
-    buttons.push(
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          variant: currentPage !== i2 ? "secondary" : "primary",
-          onClick: () => handlePaginationClick(i2),
-          "data-page": i2,
-          children: i2
-        },
-        i2
-      )
-    );
-  }
+  const paginationButtons = usePagination(
+    total,
+    PER_PAGE,
+    tableState.currentPage,
+    (page) => updateTableState({ currentPage: page })
+  );
+  const headingData = useTableHeadings(
+    [
+      { id: "email", label: SUBMISSION_LABELS.email, width: "20%" },
+      { id: "name", label: SUBMISSION_LABELS.name },
+      { id: "consent", label: SUBMISSION_LABELS.consent, width: "80px" },
+      { id: "submitted_at", label: SUBMISSION_LABELS.submitted_at }
+    ],
+    [
+      {
+        condition: showApproval,
+        heading: {
+          id: "status",
+          label: __("Status", "petitioner")
+        }
+      }
+    ]
+  );
   const ExportComponent = () => {
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(ExportButtonWrapper, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -29180,19 +29761,6 @@ function Submissions() {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", onClick: () => setShowExportModal(true), children: __("Export entries as CSV", "petitioner") })
     ] });
   };
-  const headingData = [
-    { id: "email", label: SUBMISSION_LABELS.email, width: "20%" },
-    { id: "name", label: SUBMISSION_LABELS.name },
-    { id: "consent", label: SUBMISSION_LABELS.consent, width: "60px" },
-    { id: "submitted_at", label: SUBMISSION_LABELS.submitted_at }
-  ];
-  if (showApproval) {
-    headingData.push({
-      id: "status",
-      label: __("Status", "petitioner"),
-      width: "200px"
-    });
-  }
   const tableRows = submissions.map((item) => {
     const cells = [
       item.email,
@@ -29217,10 +29785,12 @@ function Submissions() {
       cells
     };
   });
-  const handleSortChange = ({ order: order2, orderby: orderby2 }) => {
-    setOrder(order2);
-    setOrderBy(orderby2);
-    setCurrentPage(1);
+  const handleSortChange = ({ order, orderby }) => {
+    updateTableState({
+      order,
+      orderby,
+      currentPage: 1
+    });
   };
   const selectedSubmission = submissions.find(
     (item) => item.id === activeModal
@@ -29231,12 +29801,18 @@ function Submissions() {
       await updateSubmissions({
         data: newData,
         onSuccess: () => {
-          alert(__("Submission updated!", "petitioner"));
+          showNotice(
+            "success",
+            __("Submission updated!", "petitioner")
+          );
           onModalClose();
         },
         onError: (msg) => {
           console.error(msg);
-          alert(__("Failed to update submission!", "petitioner"));
+          showNotice(
+            "error",
+            __("Failed to update submission!", "petitioner")
+          );
           onModalClose();
         }
       });
@@ -29248,17 +29824,15 @@ function Submissions() {
     deleteSubmissions({
       id: id2,
       onSuccess: () => {
-        alert("Successfully deleted!");
+        showNotice("success", __("Submission deleted!", "petitioner"));
         onModalClose();
         fetchData();
       },
       onError: (msg) => {
         console.error(msg);
-        alert(
-          __(
-            "Failed to delete! Check console for errors",
-            "petitioner"
-          )
+        showNotice(
+          "error",
+          __("Failed to delete submission!", "petitioner")
         );
         onModalClose();
       }
@@ -29267,12 +29841,20 @@ function Submissions() {
   const handleExportClose = reactExports.useCallback(() => {
     setShowExportModal(false);
   }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { id: "AV_Petitioner_Submissions", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(SubmissionTabWrapper, { id: "AV_Petitioner_Submissions", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: __("Submissions", "petitioner-theme") }),
       hasSubmissions && /* @__PURE__ */ jsxRuntimeExports.jsx(ExportComponent, {})
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "petitioner-admin__entries", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(EntriesWrapper, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        NoticeSystem,
+        {
+          noticeStatus,
+          noticeText,
+          hideNotice
+        }
+      ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
         __("Total:", "petitioner-theme"),
         " ",
@@ -29292,7 +29874,7 @@ function Submissions() {
     /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
     hasSubmissions && /* @__PURE__ */ jsxRuntimeExports.jsx(ResendAllButton, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-    (buttons == null ? void 0 : buttons.length) > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonGroup, { children: buttons }),
+    (paginationButtons == null ? void 0 : paginationButtons.length) > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonGroup, { children: paginationButtons }),
     selectedSubmission ? /* @__PURE__ */ jsxRuntimeExports.jsx(
       SubmissionEditModal,
       {
@@ -29390,13 +29972,13 @@ function useInterval() {
   const set = reactExports.useCallback((listener, duration) => {
     intervalRef.current = setInterval(listener, duration);
   }, []);
-  const clear = reactExports.useCallback(() => {
+  const clear2 = reactExports.useCallback(() => {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
   }, []);
-  return [set, clear];
+  return [set, clear2];
 }
 function useLatestValue(value, dependencies) {
   if (dependencies === void 0) {
@@ -33304,9 +33886,9 @@ function EditSubmit() {
 }
 const DragHandle = dt.div.attrs(() => ({
   className: "ptr-drag-handle"
-}))(_m || (_m = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
-const FieldPaletteWrapper = dt.div(_n || (_n = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
-const FieldPaletteItem = dt.div(_o || (_o = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
+}))(_p || (_p = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
+const FieldPaletteWrapper = dt.div(_q || (_q = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
+const FieldPaletteItem = dt.div(_r || (_r = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
 const D_PREFIX = "ptr_insert_";
 const getIDNoPrefix = (id2) => id2.replace(D_PREFIX, "");
 function PaletteDraggable({ id: id2, label }) {
@@ -33368,7 +33950,7 @@ const screenKeys = [
   "submit",
   "textarea"
 ];
-const BuilderSettingsWrapper = dt.div(_p || (_p = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
+const BuilderSettingsWrapper = dt.div(_s || (_s = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
 function BuilderSettings() {
   const { formBuilderFields, builderEditScreen, setBuilderEditScreen } = useFormBuilderContext();
   const currentField = formBuilderFields[builderEditScreen];
@@ -33412,9 +33994,9 @@ function BuilderSettings() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(ScreenComponent, {})
   ] });
 }
-const FakeFieldLabel = dt.p(_q || (_q = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
-const FakeField = dt.div(_r || (_r = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
-const StyledTextarea = dt(FakeField)(_s || (_s = __template(["\n	min-height: 100px;\n"])));
+const FakeFieldLabel = dt.p(_t || (_t = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
+const FakeField = dt.div(_u || (_u = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
+const StyledTextarea = dt(FakeField)(_v || (_v = __template(["\n	min-height: 100px;\n"])));
 function DynamicField({
   name = "",
   inputType = "text",
@@ -33539,7 +34121,7 @@ function DynamicField({
     }
   );
 }
-const Wrapper = dt.div(_t || (_t = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
+const Wrapper = dt.div(_w || (_w = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
 function SortableField({ id: id2 }) {
   const { formBuilderFields, builderEditScreen } = useFormBuilderContext();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
@@ -33583,7 +34165,7 @@ function SortableField({ id: id2 }) {
     }
   );
 }
-const StyledPanel = dt(Panel)(_u || (_u = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
+const StyledPanel = dt(Panel)(_x || (_x = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
 function FormBuilderComponent() {
   const {
     fieldOrder,
@@ -33843,7 +34425,7 @@ function Tabs(props) {
   } = props;
   const tabKeys = tabs2.map((tab) => tab.name);
   const [activeTab, setActiveTab] = reactExports.useState(() => {
-    return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : "";
+    return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : tabKeys[0];
   });
   const handleTabSelect = reactExports.useCallback((tabName) => {
     setActiveTab(tabName);
@@ -33851,7 +34433,7 @@ function Tabs(props) {
     if (updateURL) {
       updateActiveTabURL(tabName, tabKeys);
     }
-  }, []);
+  }, [onTabSelect, tabKeys, updateURL]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       TabPanel,
@@ -33950,9 +34532,9 @@ function CodeEditor({ title = "", help = "", code = "" }) {
     )
   ] });
 }
-const PtrColorPicker = dt.div(_v || (_v = __template(["\n	position: relative;\n	display: inline-block;\n"])));
-const ColorPickerButton = dt(Button)(_w || (_w = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
-const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_x || (_x = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
+const PtrColorPicker = dt.div(_y || (_y = __template(["\n	position: relative;\n	display: inline-block;\n"])));
+const ColorPickerButton = dt(Button)(_z || (_z = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
+const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_A || (_A = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
 function ColorField({
   color = "#fff",
   onColorChange = (color2) => {
@@ -34494,9 +35076,9 @@ function Integrations() {
     integration.hiddenFields
   ] }, integration.name)) });
 }
-const StyledHeading = dt(Heading)(_y || (_y = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
-const StyledText = dt(Text)(_z || (_z = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
-const StyledTextControl = dt(TextControl)(_A || (_A = __template(["\n	width: 100%;\n"])));
+const StyledHeading = dt(Heading)(_B || (_B = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
+const StyledText = dt(Text)(_C || (_C = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
+const StyledTextControl = dt(TextControl)(_D || (_D = __template(["\n	width: 100%;\n"])));
 function TextInput({
   id: id2,
   label,

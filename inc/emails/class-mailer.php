@@ -21,6 +21,8 @@ class AV_Petitioner_Mailer
     public $form_id                 = '';
     public $submission_id           = false;
     public $from_field              = false;
+    public $from_name               = false;
+    public $final_from_field;
 
     public function __construct($settings)
     {
@@ -38,10 +40,17 @@ class AV_Petitioner_Mailer
         $this->form_id                  = $settings['form_id'];
         $this->submission_id            = $settings['submission_id'];
         $this->from_field               = $settings['from_field'];
+        $this->from_name               = $settings['from_name'];
 
         if (empty($this->from_field)) {
             $this->from_field = AV_Petitioner_Email_Template::get_default_from_field();
         }
+
+        if (empty($this->from_name)) {
+            $this->from_name = AV_Petitioner_Email_Template::get_default_from_name();
+        }
+
+        $this->final_from_field = $this->from_name . ' <' . $this->from_field . '>';
     }
 
     /**
@@ -103,7 +112,7 @@ class AV_Petitioner_Mailer
     {
         $subject            = AV_Petitioner_Email_Template::get_default_ty_subject($this->confirm_emails);
         $message            = AV_Petitioner_Email_Template::get_default_ty_email($this->confirm_emails, $this->user_name, $this->letter);
-        $headers            = AV_Petitioner_Email_Controller::build_headers($this->from_field);
+        $headers            = AV_Petitioner_Email_Controller::build_headers($this->final_from_field);
         $override_ty_email  = get_post_meta($this->form_id, '_petitioner_override_ty_email', true);
         if ($override_ty_email) {
             $custom_subject = get_post_meta($this->form_id, '_petitioner_ty_email_subject', true);
@@ -145,7 +154,7 @@ class AV_Petitioner_Mailer
         // Translators: %s is the user's name
         $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
 
-        $headers = AV_Petitioner_Email_Controller::build_headers($this->from_field, $this->target_cc_emails, ($this->bcc ? $this->user_email : ''));
+        $headers = AV_Petitioner_Email_Controller::build_headers($this->final_from_field, $this->target_cc_emails, ($this->bcc ? $this->user_email : ''));
 
         // Send the email
         $the_args = [

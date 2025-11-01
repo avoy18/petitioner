@@ -2,7 +2,9 @@ import { TableHeading, HeadingLabel, StyledTable } from './styled';
 import type { TableProps, SortDirection, HeadingProps } from './consts';
 import { useState } from '@wordpress/element';
 
-export function Table({
+export * from './hooks';
+
+export default function Table({
 	headings,
 	rows,
 	emptyMessage = 'No data available',

@@ -37,70 +37,69 @@ const deploy = () => {
 	);
 };
 
-module.exports = defineConfig(
-	({ mode }: { mode: 'production' | 'development' }) => {
-		return {
-			optimizeDeps: {
-				include: ['@ariakit/react-core', '@ariakit/core'],
-			},
-			plugins: [
-				legacy({
-					targets: ['defaults', 'not IE 11'], // Specify legacy browser support
-				}),
-			],
-			build: {
-				minify: mode !== 'development',
-				rollupOptions: {
-					onwarn(
-						warning: { code: string },
-						warn: (warning: { code: string }) => void
-					) {
-						// Suppress "Module level directives cause errors when bundled" warnings
-						if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
-							return;
-						}
-						warn(warning);
+module.exports = defineConfig(({ mode }) => {
+	return {
+		optimizeDeps: {
+			include: ['@ariakit/react-core', '@ariakit/core'],
+		},
+		plugins: [
+			legacy({
+				targets: ['defaults', 'not IE 11'], // Specify legacy browser support
+			}),
+		],
+		build: {
+			minify: mode !== 'development',
+			rollupOptions: {
+				onwarn(warning, warn) {
+					// Suppress "Module level directives cause errors when bundled" warnings
+					if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+						return;
+					}
+					warn(warning);
+				},
+				input: {
+					main: path.resolve(__dirname, 'src/js/main.ts'),
+					admin: path.resolve(__dirname, 'src/js/admin.tsx'),
+				},
+				output: {
+					globals: {
+						'@wordpress/blocks': 'wp.blocks',
+						'@wordpress/element': 'wp.element',
+						'@wordpress/i18n': 'wp.i18n',
 					},
-					input: {
-						main: path.resolve(__dirname, 'src/js/main.ts'),
-						admin: path.resolve(__dirname, 'src/js/admin.tsx'),
+					entryFileNames: (chunk) => {
+						return chunk.name.includes('style') ||
+							chunk.name.includes('adminStyle')
+							? '[name].css'
+							: '[name].js';
 					},
-					output: {
-						globals: {
-							'@wordpress/blocks': 'wp.blocks',
-							'@wordpress/element': 'wp.element',
-							'@wordpress/i18n': 'wp.i18n',
-						},
-						entryFileNames: (chunk: any) => {
-							return chunk.name.includes('style') ||
-								chunk.name.includes('adminStyle')
-								? '[name].css'
-								: '[name].js';
-						},
-						assetFileNames: '[name][extname]',
-						dir: path.resolve(__dirname, 'dist'),
-					},
+					assetFileNames: '[name][extname]',
+					dir: path.resolve(__dirname, 'dist'),
 				},
 			},
-			css: {
-				preprocessorOptions: {
-					scss: {},
-				},
+		},
+		css: {
+			preprocessorOptions: {
+				scss: {},
 			},
-			deploy,
-			resolve: {
-				alias: {
-					'@admin': path.resolve(__dirname, 'src/js/admin/'),
-					'@js': path.resolve(__dirname, 'src/js/'),
-					// Add as many as needed
-				},
+		},
+		deploy,
+		resolve: {
+			alias: {
+				'@admin': path.resolve(__dirname, 'src/js/admin/'),
+				'@js': path.resolve(__dirname, 'src/js/'),
+				// Add as many as needed
 			},
-			test: {
-				globals: true,
-				environment: 'happy-dom',
-				setupFiles: './tests/setup.ts',
-				include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
-			},
-		};
-	}
-);
+		},
+		test: {
+			globals: true,
+			environment: 'happy-dom',
+			setupFiles: './tests/setup.ts',
+			include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+		},
+	};
+});
+
+if (require.main === module) {
+	deploy();
+}

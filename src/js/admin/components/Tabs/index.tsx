@@ -12,7 +12,7 @@ export default function Tabs(props: TabPanelProps) {
 	} = props;
 	const tabKeys = tabs.map((tab) => tab.name);
 	const [activeTab, setActiveTab] = useState(() => {
-		return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : '';
+		return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : tabKeys[0];
 	});
 
 	const handleTabSelect = useCallback((tabName: Tab['name']) => {
@@ -22,7 +22,7 @@ export default function Tabs(props: TabPanelProps) {
 		if (updateURL) {
 			updateActiveTabURL(tabName, tabKeys);
 		}
-	}, []);
+	}, [onTabSelect, tabKeys, updateURL]);
 
 	return (
 		<>

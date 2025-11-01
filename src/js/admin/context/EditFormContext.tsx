@@ -44,6 +44,7 @@ const normalizePetitionerData = () => {
 		success_message_title: '',
 		success_message: '',
 		from_field: '',
+		from_name: '',
 		add_honeypot: true,
 		form_id: null,
 		hide_last_names: true,

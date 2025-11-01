@@ -62,7 +62,7 @@ export const updateSubmissions = async ({
 	onError = (msg: string) => {},
 }: UpdateSettings) => {
 	if (!data?.id) {
-		console.error('Submission fetch error: missing the submission id');
+		onError('Submission update error: missing the submission id');
 		return;
 	}
 
@@ -91,10 +91,10 @@ export const updateSubmissions = async ({
 		if (response.success) {
 			onSuccess(response.data);
 		} else {
-			onError('Failed to fetch data');
+			onError('Failed to update data');
 		}
 	} catch (error) {
-		onError('Error fetching data: ' + error);
+		onError('Error updating data: ' + error);
 	}
 };
 
@@ -104,7 +104,7 @@ export const deleteSubmissions = async ({
 	onError,
 }: DeleteSettings) => {
 	if (!id) {
-		onError('Submission fetch error: missing the submission id');
+		onError('Submission delete error: missing the submission id');
 		return;
 	}
 
@@ -128,10 +128,10 @@ export const deleteSubmissions = async ({
 		if (response.success) {
 			onSuccess();
 		} else {
-			onError('Failed to fetch data');
+			onError('Failed to delete data');
 		}
 	} catch (error) {
-		onError('Error fetching data: ' + error);
+		onError('Error deleting data: ' + error);
 	}
 };
 

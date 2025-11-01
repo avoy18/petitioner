@@ -160,6 +160,7 @@ class AV_Petitioner_Submissions_Controller
             'confirm_emails'            => $default_approval_status === 'Email',
             'submission_id'             => $submission_id,
             'from_field'                => get_post_meta($form_id, '_petitioner_from_field', true),
+            'from_name'                 => get_post_meta($form_id, '_petitioner_from_name', true),
         );
 
         /**
@@ -225,7 +226,7 @@ class AV_Petitioner_Submissions_Controller
 
         $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
 
-        if ($orderby && !empty($allowed_fields[$orderby])) {
+        if ($orderby && in_array($orderby, $allowed_fields, true)) {
             $fetch_settings['orderby']  = $orderby;
         }
 
@@ -257,11 +258,6 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_get_form_submissions()
     {
-        // if (!check_ajax_referer('petitioner_submissions_nonce', 'petitioner_nonce', false)) {
-        //     wp_send_json_error(AV_Petitioner_Labels::get('invalid_nonce'));
-        //     wp_die();
-        // }
-
         // Get the form ID and pagination info from the request
         $page       = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $per_page   = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
@@ -294,7 +290,7 @@ class AV_Petitioner_Submissions_Controller
             $fetch_settings['order'] = $order;
         }
 
-        if ($orderby && !empty($fields[$orderby])) {
+        if ($orderby && in_array($orderby, $fields, true)) {
             $fetch_settings['orderby'] = $orderby;
         }
 

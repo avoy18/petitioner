@@ -8,7 +8,7 @@
 		"build": "vite build --mode production",
 		"build:gutenberg": "wp-scripts build --output-path=dist-gutenberg",
 		"dev:gutenberg": "wp-scripts start --output-path=dist-gutenberg",
-		"deploy": "pnpm build-all && node -e 'require(\"./vite.config.ts\").deploy()'",
+		"deploy": "pnpm build-all && node vite.config.ts",
 		"dev-all": "concurrently \"pnpm dev\" \"pnpm dev:gutenberg\"",
 		"build-all": "concurrently \"pnpm build:gutenberg\" \"pnpm build\"",
 		"test": "vitest run --environment happy-dom"

@@ -10,7 +10,7 @@
       }],
       execute: function () {
         var __vite_style__ = document.createElement('style');
-        __vite_style__.textContent = ".wp-admin.post-type-petitioner-petition {\n  --ptr-admin-color-primary: #e01a2b;\n  --ptr-admin-color-dark: #000000;\n  --ptr-admin-color-grey: #efefef;\n  --ptr-admin-color-light: #f7f7f7;\n  --ptr-admin-fs-sm: 14px;\n  --ptr-admin-fs-md: 18px;\n  --ptr-admin-spacing-xs: 4px;\n  --ptr-admin-spacing-sm: 8px;\n  --ptr-admin-spacing-md: 16px;\n  --ptr-admin-spacing-lg: 24px;\n  --ptr-admin-spacing-xl: 32px;\n  --ptr-admin-spacing-x: 16px;\n  --ptr-admin-spacing-y: 16px;\n  --ptr-admin-wrapper-bg: white;\n  --ptr-admin-wrapper-radius: 16px;\n  --ptr-admin-input-border-width: 1px;\n  --ptr-admin-input-border-color: #a1a1a1;\n  --ptr-admin-input-border-color-active: #00000;\n  --ptr-admin-input-border-radius: 8px;\n  --ptr-admin-input-spacing-y: 0.7rem;\n  --ptr-admin-input-spacing-x: 16px;\n  --ptr-admin-label-font-size: var(--ptr-admin-fs-sm);\n  --ptr-admin-btn-font-size: var(--ptr-admin-fs-md);\n  --ptr-admin-btn-bg: var(--ptr-admin-color-primary);\n  --ptr-admin-btn-bg-hover: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-width: var(--ptr-admin-input-border-width);\n  --ptr-admin-button-border-color: transparent;\n  --ptr-admin-button-border-color-active: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-radius: 8px;\n  --ptr-admin-progress-height: 8px;\n  --ptr-admin-progress-bg: var(--ptr-admin-color-grey);\n  --ptr-admin-progress-radius: 4px;\n  --ptr-admin-progress-inner-bg: var(--ptr-admin-color-primary);\n}\n.wp-admin.post-type-petitioner-petition #edit-slug-box,\n.wp-admin.post-type-petitioner-petition #wp-admin-bar-view {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-is-loading {\n  opacity: 0;\n  visibility: hidden;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text {\n  display: flex;\n  flex-direction: column;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text h4 {\n  margin-bottom: 4px !important;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text .help {\n  font-size: 12px;\n  color: #666;\n  margin-top: 0px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text textarea {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets {\n  display: flex;\n  gap: 8px;\n  margin-bottom: 12px;\n  margin-top: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets input {\n  font-size: 12px;\n  font-weight: bold;\n  border: 1px solid #efefef;\n  background: #fbf0f0;\n  color: black;\n  outline: none;\n  text-align: center;\n  padding: 4px;\n  border-radius: 4px;\n  max-width: 120px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box {\n  margin-top: 16px;\n  padding: 16px;\n  border-radius: 8px;\n  background: #f4f6fc;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box h2 {\n  font-weight: bold;\n  padding-left: 0 !important;\n  margin-left: 0 !important;\n  text-transform: uppercase;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box {\n  padding: 16px 16px 32px 16px;\n  border-radius: 8px;\n  background: #fff;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-tab-panel__tabs {\n  margin-bottom: 32px;\n}\n@media (max-width: 1200px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n@media (max-width: 992px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: 1fr;\n  }\n}\n.wp-admin.post-type-petitioner-petition .text-ptr-red {\n  color: #e71845;\n}\n.wp-admin.post-type-petitioner-petition .ptr-action-buttons {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-wrapper {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel {\n  width: 100%;\n  display: flex;\n  gap: 64px;\n  flex-wrap: wrap;\n  padding: 16px 0px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel label {\n  font-weight: bold;\n  display: block;\n  min-width: 100px;\n}\n.wp-admin.post-type-petitioner-petition .petition-tablink.components-tab-panel__tabs-item {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab.active {\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field {\n  position: relative;\n  padding: var(--ptr-admin-spacing-md, 8px);\n  border-radius: 4px;\n  border: 1px dashed transparent;\n  transition: 0.15s;\n  transition-delay: 0;\n  background: white;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--input, .wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox, .wp-admin.post-type-petitioner-petition .ptr-fake-field--content {\n  border: 1px solid transparent;\n  border-radius: 4px;\n  background-color: #fff;\n  font-size: 14px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox input[type=checkbox] {\n  width: 16px;\n  height: 16px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox label {\n  font-size: 14px;\n  margin-bottom: 0px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--submit > button {\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  background-color: var(--ptr-admin-color-primary, #000);\n  border-color: var(--ptr-admin-color-primary, #000);\n  color: white;\n  width: 100%;\n  min-height: 37px;\n  pointer-events: none;\n  outline: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover {\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover .ptr-actions, .wp-admin.post-type-petitioner-petition .ptr-fake-field--active .ptr-actions {\n  display: flex;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder .components-button {\n  width: 100%;\n  text-align: center;\n  justify-content: center;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form {\n  width: 70%;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position {\n  width: 100%;\n  opacity: 0 !important;\n  height: 5px;\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position.active {\n  background: var(--ptr-admin-color-primary, #000);\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging {\n  cursor: grabbing;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-fake-field:hover {\n  border: 0px solid transparent;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-actions {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-visual-position {\n  opacity: 1;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header {\n  padding: 16px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header h3,\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header p {\n  margin-top: 0;\n  margin-bottom: 0;\n}\n.wp-admin.post-type-petitioner-petition .ptr-actions {\n  position: absolute;\n  right: 4px;\n  display: none;\n  gap: 4px;\n  top: 2px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable {\n  opacity: 1;\n  position: relative;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable:after {\n  position: absolute;\n  content: \"\";\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: var(--ptr-admin-color-primary, #000);\n  border: 1px dashed var(--ptr-admin-color-primary, #000);\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  opacity: 0;\n  transition: opacity 0.15s ease-in-out;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected {\n  overflow: hidden;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected:after {\n  opacity: 0.05;\n}\n\n.ptr-color-picker__overlay {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  z-index: 1;\n}\n\n.ptr-hidden-fields {\n  display: none;\n}/*$vite$:1*/";
+        __vite_style__.textContent = ".wp-admin.post-type-petitioner-petition {\n  --ptr-admin-color-primary: #e01a2b;\n  --ptr-admin-color-dark: #000000;\n  --ptr-admin-color-grey: #efefef;\n  --ptr-admin-color-light: #f7f7f7;\n  --ptr-admin-fs-sm: 14px;\n  --ptr-admin-fs-md: 18px;\n  --ptr-admin-spacing-xs: 4px;\n  --ptr-admin-spacing-sm: 8px;\n  --ptr-admin-spacing-md: 12px;\n  --ptr-admin-spacing-lg: 16px;\n  --ptr-admin-spacing-xl: 24px;\n  --ptr-admin-spacing-2xl: 32px;\n  --ptr-admin-spacing-3xl: 40px;\n  --ptr-admin-spacing-4xl: 48px;\n  --ptr-admin-spacing-5xl: 64px;\n  --ptr-admin-spacing-x: 12px;\n  --ptr-admin-spacing-y: 12px;\n  --ptr-admin-wrapper-bg: white;\n  --ptr-admin-wrapper-radius: 12px;\n  --ptr-admin-input-border-width: 1px;\n  --ptr-admin-input-border-color: #a1a1a1;\n  --ptr-admin-input-border-color-active: #00000;\n  --ptr-admin-input-border-radius: 8px;\n  --ptr-admin-input-spacing-y: 0.7rem;\n  --ptr-admin-input-spacing-x: 12px;\n  --ptr-admin-label-font-size: var(--ptr-admin-fs-sm);\n  --ptr-admin-btn-font-size: var(--ptr-admin-fs-md);\n  --ptr-admin-btn-bg: var(--ptr-admin-color-primary);\n  --ptr-admin-btn-bg-hover: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-width: var(--ptr-admin-input-border-width);\n  --ptr-admin-button-border-color: transparent;\n  --ptr-admin-button-border-color-active: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-radius: 8px;\n  --ptr-admin-progress-height: 8px;\n  --ptr-admin-progress-bg: var(--ptr-admin-color-grey);\n  --ptr-admin-progress-radius: 4px;\n  --ptr-admin-progress-inner-bg: var(--ptr-admin-color-primary);\n}\n.wp-admin.post-type-petitioner-petition #edit-slug-box,\n.wp-admin.post-type-petitioner-petition #wp-admin-bar-view {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-is-loading {\n  opacity: 0;\n  visibility: hidden;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text {\n  display: flex;\n  flex-direction: column;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text h4 {\n  margin-bottom: 4px !important;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text .help {\n  font-size: 12px;\n  color: #666;\n  margin-top: 0px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text textarea {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets {\n  display: flex;\n  gap: 8px;\n  margin-bottom: 12px;\n  margin-top: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets input {\n  font-size: 12px;\n  font-weight: bold;\n  border: 1px solid #efefef;\n  background: #fbf0f0;\n  color: black;\n  outline: none;\n  text-align: center;\n  padding: 4px;\n  border-radius: 4px;\n  max-width: 120px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box {\n  margin-top: 16px;\n  padding: 16px;\n  border-radius: 8px;\n  background: #f4f6fc;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box h2 {\n  font-weight: bold;\n  padding-left: 0 !important;\n  margin-left: 0 !important;\n  text-transform: uppercase;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box {\n  padding: 16px 16px 32px 16px;\n  border-radius: 8px;\n  background: #fff;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-tab-panel__tabs {\n  margin-bottom: 32px;\n}\n@media (max-width: 1200px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n@media (max-width: 992px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: 1fr;\n  }\n}\n.wp-admin.post-type-petitioner-petition .text-ptr-red {\n  color: #e71845;\n}\n.wp-admin.post-type-petitioner-petition .ptr-action-buttons {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-wrapper {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel {\n  width: 100%;\n  display: flex;\n  gap: 64px;\n  flex-wrap: wrap;\n  padding: 16px 0px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel label {\n  font-weight: bold;\n  display: block;\n  min-width: 100px;\n}\n.wp-admin.post-type-petitioner-petition .petition-tablink.components-tab-panel__tabs-item {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab.active {\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field {\n  position: relative;\n  padding: var(--ptr-admin-spacing-md, 8px);\n  border-radius: 4px;\n  border: 1px dashed transparent;\n  transition: 0.15s;\n  transition-delay: 0;\n  background: white;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--input, .wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox, .wp-admin.post-type-petitioner-petition .ptr-fake-field--content {\n  border: 1px solid transparent;\n  border-radius: 4px;\n  background-color: #fff;\n  font-size: 14px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox input[type=checkbox] {\n  width: 16px;\n  height: 16px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox label {\n  font-size: 14px;\n  margin-bottom: 0px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--submit > button {\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  background-color: var(--ptr-admin-color-primary, #000);\n  border-color: var(--ptr-admin-color-primary, #000);\n  color: white;\n  width: 100%;\n  min-height: 37px;\n  pointer-events: none;\n  outline: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover {\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover .ptr-actions, .wp-admin.post-type-petitioner-petition .ptr-fake-field--active .ptr-actions {\n  display: flex;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder .components-button {\n  width: 100%;\n  text-align: center;\n  justify-content: center;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form {\n  width: 70%;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position {\n  width: 100%;\n  opacity: 0 !important;\n  height: 5px;\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position.active {\n  background: var(--ptr-admin-color-primary, #000);\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging {\n  cursor: grabbing;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-fake-field:hover {\n  border: 0px solid transparent;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-actions {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-visual-position {\n  opacity: 1;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header {\n  padding: 16px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header h3,\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header p {\n  margin-top: 0;\n  margin-bottom: 0;\n}\n.wp-admin.post-type-petitioner-petition .ptr-actions {\n  position: absolute;\n  right: 4px;\n  display: none;\n  gap: 4px;\n  top: 2px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable {\n  opacity: 1;\n  position: relative;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable:after {\n  position: absolute;\n  content: \"\";\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: var(--ptr-admin-color-primary, #000);\n  border: 1px dashed var(--ptr-admin-color-primary, #000);\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  opacity: 0;\n  transition: opacity 0.15s ease-in-out;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected {\n  overflow: hidden;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected:after {\n  opacity: 0.05;\n}\n\n.ptr-color-picker__overlay {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  z-index: 1;\n}\n\n.ptr-hidden-fields {\n  display: none;\n}/*$vite$:1*/";
         document.head.appendChild(__vite_style__);
         function _mergeNamespaces(n, m) {
           for (var i = 0; i < m.length; i++) {
@@ -8010,6 +8010,643 @@
         }
 
         /**
+         * Returns a string with greater-than sign replaced.
+         *
+         * Note that if a resolution for Trac#45387 comes to fruition, it is no longer
+         * necessary for `__unstableEscapeGreaterThan` to exist.
+         *
+         * See: https://core.trac.wordpress.org/ticket/45387
+         *
+         * @param value Original string.
+         *
+         * @return Escaped string.
+         */
+        function __unstableEscapeGreaterThan(value) {
+          return value.replace(/>/g, '&gt;');
+        }
+
+        /**
+         * Internal dependencies
+         */
+
+        /**
+         * Regular expression matching invalid attribute names.
+         *
+         * "Attribute names must consist of one or more characters other than controls,
+         * U+0020 SPACE, U+0022 ("), U+0027 ('), U+003E (>), U+002F (/), U+003D (=),
+         * and noncharacters."
+         *
+         * @see https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
+         */
+        const REGEXP_INVALID_ATTRIBUTE_NAME = /[\u007F-\u009F "'>/="\uFDD0-\uFDEF]/;
+
+        /**
+         * Returns a string with ampersands escaped. Note that this is an imperfect
+         * implementation, where only ampersands which do not appear as a pattern of
+         * named, decimal, or hexadecimal character references are escaped. Invalid
+         * named references (i.e. ambiguous ampersand) are still permitted.
+         *
+         * @see https://w3c.github.io/html/syntax.html#character-references
+         * @see https://w3c.github.io/html/syntax.html#ambiguous-ampersand
+         * @see https://w3c.github.io/html/syntax.html#named-character-references
+         *
+         * @param value Original string.
+         *
+         * @return Escaped string.
+         */
+        function escapeAmpersand(value) {
+          return value.replace(/&(?!([a-z0-9]+|#[0-9]+|#x[a-f0-9]+);)/gi, '&amp;');
+        }
+
+        /**
+         * Returns a string with quotation marks replaced.
+         *
+         * @param value Original string.
+         *
+         * @return Escaped string.
+         */
+        function escapeQuotationMark(value) {
+          return value.replace(/"/g, '&quot;');
+        }
+
+        /**
+         * Returns a string with less-than sign replaced.
+         *
+         * @param value Original string.
+         *
+         * @return Escaped string.
+         */
+        function escapeLessThan(value) {
+          return value.replace(/</g, '&lt;');
+        }
+
+        /**
+         * Returns an escaped attribute value.
+         *
+         * @see https://w3c.github.io/html/syntax.html#elements-attributes
+         *
+         * "[...] the text cannot contain an ambiguous ampersand [...] must not contain
+         * any literal U+0022 QUOTATION MARK characters (")"
+         *
+         * Note we also escape the greater than symbol, as this is used by wptexturize to
+         * split HTML strings. This is a WordPress specific fix
+         *
+         * Note that if a resolution for Trac#45387 comes to fruition, it is no longer
+         * necessary for `__unstableEscapeGreaterThan` to be used.
+         *
+         * See: https://core.trac.wordpress.org/ticket/45387
+         *
+         * @param value Attribute value.
+         *
+         * @return Escaped attribute value.
+         */
+        function escapeAttribute(value) {
+          return __unstableEscapeGreaterThan(escapeQuotationMark(escapeAmpersand(value)));
+        }
+
+        /**
+         * Returns an escaped HTML element value.
+         *
+         * @see https://w3c.github.io/html/syntax.html#writing-html-documents-elements
+         *
+         * "the text must not contain the character U+003C LESS-THAN SIGN (<) or an
+         * ambiguous ampersand."
+         *
+         * @param value Element value.
+         *
+         * @return Escaped HTML element value.
+         */
+        function escapeHTML(value) {
+          return escapeLessThan(escapeAmpersand(value));
+        }
+
+        /**
+         * Returns true if the given attribute name is valid, or false otherwise.
+         *
+         * @param name Attribute name to test.
+         *
+         * @return Whether attribute is valid.
+         */
+        function isValidAttributeName(name) {
+          return !REGEXP_INVALID_ATTRIBUTE_NAME.test(name);
+        }
+
+        /**
+         * Internal dependencies
+         */
+
+        /** @typedef {{children: string} & import('react').ComponentPropsWithoutRef<'div'>} RawHTMLProps */
+
+        /**
+         * Component used as equivalent of Fragment with unescaped HTML, in cases where
+         * it is desirable to render dangerous HTML without needing a wrapper element.
+         * To preserve additional props, a `div` wrapper _will_ be created if any props
+         * aside from `children` are passed.
+         *
+         * @param {RawHTMLProps} props Children should be a string of HTML or an array
+         *                             of strings. Other props will be passed through
+         *                             to the div wrapper.
+         *
+         * @return {JSX.Element} Dangerously-rendering component.
+         */
+        function RawHTML({
+          children,
+          ...props
+        }) {
+          let rawHtml = '';
+
+          // Cast children as an array, and concatenate each element if it is a string.
+          reactExports.Children.toArray(children).forEach(child => {
+            if (typeof child === 'string' && child.trim() !== '') {
+              rawHtml += child;
+            }
+          });
+
+          // The `div` wrapper will be stripped by the `renderElement` serializer in
+          // `./serialize.js` unless there are non-children props present.
+          return reactExports.createElement('div', {
+            dangerouslySetInnerHTML: {
+              __html: rawHtml
+            },
+            ...props
+          });
+        }
+
+        /**
+         * Parts of this source were derived and modified from fast-react-render,
+         * released under the MIT license.
+         *
+         * https://github.com/alt-j/fast-react-render
+         *
+         * Copyright (c) 2016 Andrey Morozov
+         *
+         * Permission is hereby granted, free of charge, to any person obtaining a copy
+         * of this software and associated documentation files (the "Software"), to deal
+         * in the Software without restriction, including without limitation the rights
+         * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+         * copies of the Software, and to permit persons to whom the Software is
+         * furnished to do so, subject to the following conditions:
+         *
+         * The above copyright notice and this permission notice shall be included in
+         * all copies or substantial portions of the Software.
+         *
+         * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+         * THE SOFTWARE.
+         */
+
+        /** @typedef {import('react').ReactElement} ReactElement */
+
+        const {
+          Provider,
+          Consumer
+        } = reactExports.createContext(undefined);
+        const ForwardRef = reactExports.forwardRef(() => {
+          return null;
+        });
+
+        /**
+         * Valid attribute types.
+         *
+         * @type {Set<string>}
+         */
+        const ATTRIBUTES_TYPES = new Set(['string', 'boolean', 'number']);
+
+        /**
+         * Element tags which can be self-closing.
+         *
+         * @type {Set<string>}
+         */
+        const SELF_CLOSING_TAGS = new Set(['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
+
+        /**
+         * Boolean attributes are attributes whose presence as being assigned is
+         * meaningful, even if only empty.
+         *
+         * See: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes
+         * Extracted from: https://html.spec.whatwg.org/multipage/indices.html#attributes-3
+         *
+         * Object.keys( [ ...document.querySelectorAll( '#attributes-1 > tbody > tr' ) ]
+         *     .filter( ( tr ) => tr.lastChild.textContent.indexOf( 'Boolean attribute' ) !== -1 )
+         *     .reduce( ( result, tr ) => Object.assign( result, {
+         *         [ tr.firstChild.textContent.trim() ]: true
+         *     } ), {} ) ).sort();
+         *
+         * @type {Set<string>}
+         */
+        const BOOLEAN_ATTRIBUTES = new Set(['allowfullscreen', 'allowpaymentrequest', 'allowusermedia', 'async', 'autofocus', 'autoplay', 'checked', 'controls', 'default', 'defer', 'disabled', 'download', 'formnovalidate', 'hidden', 'ismap', 'itemscope', 'loop', 'multiple', 'muted', 'nomodule', 'novalidate', 'open', 'playsinline', 'readonly', 'required', 'reversed', 'selected', 'typemustmatch']);
+
+        /**
+         * Enumerated attributes are attributes which must be of a specific value form.
+         * Like boolean attributes, these are meaningful if specified, even if not of a
+         * valid enumerated value.
+         *
+         * See: https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#enumerated-attribute
+         * Extracted from: https://html.spec.whatwg.org/multipage/indices.html#attributes-3
+         *
+         * Object.keys( [ ...document.querySelectorAll( '#attributes-1 > tbody > tr' ) ]
+         *     .filter( ( tr ) => /^("(.+?)";?\s*)+/.test( tr.lastChild.textContent.trim() ) )
+         *     .reduce( ( result, tr ) => Object.assign( result, {
+         *         [ tr.firstChild.textContent.trim() ]: true
+         *     } ), {} ) ).sort();
+         *
+         * Some notable omissions:
+         *
+         *  - `alt`: https://blog.whatwg.org/omit-alt
+         *
+         * @type {Set<string>}
+         */
+        const ENUMERATED_ATTRIBUTES = new Set(['autocapitalize', 'autocomplete', 'charset', 'contenteditable', 'crossorigin', 'decoding', 'dir', 'draggable', 'enctype', 'formenctype', 'formmethod', 'http-equiv', 'inputmode', 'kind', 'method', 'preload', 'scope', 'shape', 'spellcheck', 'translate', 'type', 'wrap']);
+
+        /**
+         * Set of CSS style properties which support assignment of unitless numbers.
+         * Used in rendering of style properties, where `px` unit is assumed unless
+         * property is included in this set or value is zero.
+         *
+         * Generated via:
+         *
+         * Object.entries( document.createElement( 'div' ).style )
+         *     .filter( ( [ key ] ) => (
+         *         ! /^(webkit|ms|moz)/.test( key ) &&
+         *         ( e.style[ key ] = 10 ) &&
+         *         e.style[ key ] === '10'
+         *     ) )
+         *     .map( ( [ key ] ) => key )
+         *     .sort();
+         *
+         * @type {Set<string>}
+         */
+        const CSS_PROPERTIES_SUPPORTS_UNITLESS = new Set(['animation', 'animationIterationCount', 'baselineShift', 'borderImageOutset', 'borderImageSlice', 'borderImageWidth', 'columnCount', 'cx', 'cy', 'fillOpacity', 'flexGrow', 'flexShrink', 'floodOpacity', 'fontWeight', 'gridColumnEnd', 'gridColumnStart', 'gridRowEnd', 'gridRowStart', 'lineHeight', 'opacity', 'order', 'orphans', 'r', 'rx', 'ry', 'shapeImageThreshold', 'stopOpacity', 'strokeDasharray', 'strokeDashoffset', 'strokeMiterlimit', 'strokeOpacity', 'strokeWidth', 'tabSize', 'widows', 'x', 'y', 'zIndex', 'zoom']);
+
+        /**
+         * Returns true if the specified string is prefixed by one of an array of
+         * possible prefixes.
+         *
+         * @param {string}   string   String to check.
+         * @param {string[]} prefixes Possible prefixes.
+         *
+         * @return {boolean} Whether string has prefix.
+         */
+        function hasPrefix(string, prefixes) {
+          return prefixes.some(prefix => string.indexOf(prefix) === 0);
+        }
+
+        /**
+         * Returns true if the given prop name should be ignored in attributes
+         * serialization, or false otherwise.
+         *
+         * @param {string} attribute Attribute to check.
+         *
+         * @return {boolean} Whether attribute should be ignored.
+         */
+        function isInternalAttribute(attribute) {
+          return 'key' === attribute || 'children' === attribute;
+        }
+
+        /**
+         * Returns the normal form of the element's attribute value for HTML.
+         *
+         * @param {string} attribute Attribute name.
+         * @param {*}      value     Non-normalized attribute value.
+         *
+         * @return {*} Normalized attribute value.
+         */
+        function getNormalAttributeValue(attribute, value) {
+          switch (attribute) {
+            case 'style':
+              return renderStyle(value);
+          }
+          return value;
+        }
+        /**
+         * This is a map of all SVG attributes that have dashes. Map(lower case prop => dashed lower case attribute).
+         * We need this to render e.g strokeWidth as stroke-width.
+         *
+         * List from: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute.
+         */
+        const SVG_ATTRIBUTE_WITH_DASHES_LIST = ['accentHeight', 'alignmentBaseline', 'arabicForm', 'baselineShift', 'capHeight', 'clipPath', 'clipRule', 'colorInterpolation', 'colorInterpolationFilters', 'colorProfile', 'colorRendering', 'dominantBaseline', 'enableBackground', 'fillOpacity', 'fillRule', 'floodColor', 'floodOpacity', 'fontFamily', 'fontSize', 'fontSizeAdjust', 'fontStretch', 'fontStyle', 'fontVariant', 'fontWeight', 'glyphName', 'glyphOrientationHorizontal', 'glyphOrientationVertical', 'horizAdvX', 'horizOriginX', 'imageRendering', 'letterSpacing', 'lightingColor', 'markerEnd', 'markerMid', 'markerStart', 'overlinePosition', 'overlineThickness', 'paintOrder', 'panose1', 'pointerEvents', 'renderingIntent', 'shapeRendering', 'stopColor', 'stopOpacity', 'strikethroughPosition', 'strikethroughThickness', 'strokeDasharray', 'strokeDashoffset', 'strokeLinecap', 'strokeLinejoin', 'strokeMiterlimit', 'strokeOpacity', 'strokeWidth', 'textAnchor', 'textDecoration', 'textRendering', 'underlinePosition', 'underlineThickness', 'unicodeBidi', 'unicodeRange', 'unitsPerEm', 'vAlphabetic', 'vHanging', 'vIdeographic', 'vMathematical', 'vectorEffect', 'vertAdvY', 'vertOriginX', 'vertOriginY', 'wordSpacing', 'writingMode', 'xmlnsXlink', 'xHeight'].reduce((map, attribute) => {
+          // The keys are lower-cased for more robust lookup.
+          map[attribute.toLowerCase()] = attribute;
+          return map;
+        }, {});
+
+        /**
+         * This is a map of all case-sensitive SVG attributes. Map(lowercase key => proper case attribute).
+         * The keys are lower-cased for more robust lookup.
+         * Note that this list only contains attributes that contain at least one capital letter.
+         * Lowercase attributes don't need mapping, since we lowercase all attributes by default.
+         */
+        const CASE_SENSITIVE_SVG_ATTRIBUTES = ['allowReorder', 'attributeName', 'attributeType', 'autoReverse', 'baseFrequency', 'baseProfile', 'calcMode', 'clipPathUnits', 'contentScriptType', 'contentStyleType', 'diffuseConstant', 'edgeMode', 'externalResourcesRequired', 'filterRes', 'filterUnits', 'glyphRef', 'gradientTransform', 'gradientUnits', 'kernelMatrix', 'kernelUnitLength', 'keyPoints', 'keySplines', 'keyTimes', 'lengthAdjust', 'limitingConeAngle', 'markerHeight', 'markerUnits', 'markerWidth', 'maskContentUnits', 'maskUnits', 'numOctaves', 'pathLength', 'patternContentUnits', 'patternTransform', 'patternUnits', 'pointsAtX', 'pointsAtY', 'pointsAtZ', 'preserveAlpha', 'preserveAspectRatio', 'primitiveUnits', 'refX', 'refY', 'repeatCount', 'repeatDur', 'requiredExtensions', 'requiredFeatures', 'specularConstant', 'specularExponent', 'spreadMethod', 'startOffset', 'stdDeviation', 'stitchTiles', 'suppressContentEditableWarning', 'suppressHydrationWarning', 'surfaceScale', 'systemLanguage', 'tableValues', 'targetX', 'targetY', 'textLength', 'viewBox', 'viewTarget', 'xChannelSelector', 'yChannelSelector'].reduce((map, attribute) => {
+          // The keys are lower-cased for more robust lookup.
+          map[attribute.toLowerCase()] = attribute;
+          return map;
+        }, {});
+
+        /**
+         * This is a map of all SVG attributes that have colons.
+         * Keys are lower-cased and stripped of their colons for more robust lookup.
+         */
+        const SVG_ATTRIBUTES_WITH_COLONS = ['xlink:actuate', 'xlink:arcrole', 'xlink:href', 'xlink:role', 'xlink:show', 'xlink:title', 'xlink:type', 'xml:base', 'xml:lang', 'xml:space', 'xmlns:xlink'].reduce((map, attribute) => {
+          map[attribute.replace(':', '').toLowerCase()] = attribute;
+          return map;
+        }, {});
+
+        /**
+         * Returns the normal form of the element's attribute name for HTML.
+         *
+         * @param {string} attribute Non-normalized attribute name.
+         *
+         * @return {string} Normalized attribute name.
+         */
+        function getNormalAttributeName(attribute) {
+          switch (attribute) {
+            case 'htmlFor':
+              return 'for';
+            case 'className':
+              return 'class';
+          }
+          const attributeLowerCase = attribute.toLowerCase();
+          if (CASE_SENSITIVE_SVG_ATTRIBUTES[attributeLowerCase]) {
+            return CASE_SENSITIVE_SVG_ATTRIBUTES[attributeLowerCase];
+          } else if (SVG_ATTRIBUTE_WITH_DASHES_LIST[attributeLowerCase]) {
+            return paramCase(SVG_ATTRIBUTE_WITH_DASHES_LIST[attributeLowerCase]);
+          } else if (SVG_ATTRIBUTES_WITH_COLONS[attributeLowerCase]) {
+            return SVG_ATTRIBUTES_WITH_COLONS[attributeLowerCase];
+          }
+          return attributeLowerCase;
+        }
+
+        /**
+         * Returns the normal form of the style property name for HTML.
+         *
+         * - Converts property names to kebab-case, e.g. 'backgroundColor' → 'background-color'
+         * - Leaves custom attributes alone, e.g. '--myBackgroundColor' → '--myBackgroundColor'
+         * - Converts vendor-prefixed property names to -kebab-case, e.g. 'MozTransform' → '-moz-transform'
+         *
+         * @param {string} property Property name.
+         *
+         * @return {string} Normalized property name.
+         */
+        function getNormalStylePropertyName(property) {
+          if (property.startsWith('--')) {
+            return property;
+          }
+          if (hasPrefix(property, ['ms', 'O', 'Moz', 'Webkit'])) {
+            return '-' + paramCase(property);
+          }
+          return paramCase(property);
+        }
+
+        /**
+         * Returns the normal form of the style property value for HTML. Appends a
+         * default pixel unit if numeric, not a unitless property, and not zero.
+         *
+         * @param {string} property Property name.
+         * @param {*}      value    Non-normalized property value.
+         *
+         * @return {*} Normalized property value.
+         */
+        function getNormalStylePropertyValue(property, value) {
+          if (typeof value === 'number' && 0 !== value && !CSS_PROPERTIES_SUPPORTS_UNITLESS.has(property)) {
+            return value + 'px';
+          }
+          return value;
+        }
+
+        /**
+         * Serializes a React element to string.
+         *
+         * @param {import('react').ReactNode} element         Element to serialize.
+         * @param {Object}                    [context]       Context object.
+         * @param {Object}                    [legacyContext] Legacy context object.
+         *
+         * @return {string} Serialized element.
+         */
+        function renderElement(element, context, legacyContext = {}) {
+          if (null === element || undefined === element || false === element) {
+            return '';
+          }
+          if (Array.isArray(element)) {
+            return renderChildren(element, context, legacyContext);
+          }
+          switch (typeof element) {
+            case 'string':
+              return escapeHTML(element);
+            case 'number':
+              return element.toString();
+          }
+          const {
+            type,
+            props
+          } = /** @type {{type?: any, props?: any}} */
+          element;
+          switch (type) {
+            case reactExports.StrictMode:
+            case reactExports.Fragment:
+              return renderChildren(props.children, context, legacyContext);
+            case RawHTML:
+              const {
+                children,
+                ...wrapperProps
+              } = props;
+              return renderNativeComponent(!Object.keys(wrapperProps).length ? null : 'div', {
+                ...wrapperProps,
+                dangerouslySetInnerHTML: {
+                  __html: children
+                }
+              }, context, legacyContext);
+          }
+          switch (typeof type) {
+            case 'string':
+              return renderNativeComponent(type, props, context, legacyContext);
+            case 'function':
+              if (type.prototype && typeof type.prototype.render === 'function') {
+                return renderComponent(type, props, context, legacyContext);
+              }
+              return renderElement(type(props, legacyContext), context, legacyContext);
+          }
+          switch (type && type.$$typeof) {
+            case Provider.$$typeof:
+              return renderChildren(props.children, props.value, legacyContext);
+            case Consumer.$$typeof:
+              return renderElement(props.children(context || type._currentValue), context, legacyContext);
+            case ForwardRef.$$typeof:
+              return renderElement(type.render(props), context, legacyContext);
+          }
+          return '';
+        }
+
+        /**
+         * Serializes a native component type to string.
+         *
+         * @param {?string} type            Native component type to serialize, or null if
+         *                                  rendering as fragment of children content.
+         * @param {Object}  props           Props object.
+         * @param {Object}  [context]       Context object.
+         * @param {Object}  [legacyContext] Legacy context object.
+         *
+         * @return {string} Serialized element.
+         */
+        function renderNativeComponent(type, props, context, legacyContext = {}) {
+          let content = '';
+          if (type === 'textarea' && props.hasOwnProperty('value')) {
+            // Textarea children can be assigned as value prop. If it is, render in
+            // place of children. Ensure to omit so it is not assigned as attribute
+            // as well.
+            content = renderChildren(props.value, context, legacyContext);
+            const {
+              value,
+              ...restProps
+            } = props;
+            props = restProps;
+          } else if (props.dangerouslySetInnerHTML && typeof props.dangerouslySetInnerHTML.__html === 'string') {
+            // Dangerous content is left unescaped.
+            content = props.dangerouslySetInnerHTML.__html;
+          } else if (typeof props.children !== 'undefined') {
+            content = renderChildren(props.children, context, legacyContext);
+          }
+          if (!type) {
+            return content;
+          }
+          const attributes = renderAttributes(props);
+          if (SELF_CLOSING_TAGS.has(type)) {
+            return '<' + type + attributes + '/>';
+          }
+          return '<' + type + attributes + '>' + content + '</' + type + '>';
+        }
+
+        /** @typedef {import('react').ComponentType} ComponentType */
+
+        /**
+         * Serializes a non-native component type to string.
+         *
+         * @param {ComponentType} Component       Component type to serialize.
+         * @param {Object}        props           Props object.
+         * @param {Object}        [context]       Context object.
+         * @param {Object}        [legacyContext] Legacy context object.
+         *
+         * @return {string} Serialized element
+         */
+        function renderComponent(Component, props, context, legacyContext = {}) {
+          const instance = new (/** @type {import('react').ComponentClass} */
+          Component)(props, legacyContext);
+          if (typeof
+          // Ignore reason: Current prettier reformats parens and mangles type assertion
+          // prettier-ignore
+          /** @type {{getChildContext?: () => unknown}} */
+          instance.getChildContext === 'function') {
+            Object.assign(legacyContext, /** @type {{getChildContext?: () => unknown}} */instance.getChildContext());
+          }
+          const html = renderElement(instance.render(), context, legacyContext);
+          return html;
+        }
+
+        /**
+         * Serializes an array of children to string.
+         *
+         * @param {import('react').ReactNodeArray} children        Children to serialize.
+         * @param {Object}                         [context]       Context object.
+         * @param {Object}                         [legacyContext] Legacy context object.
+         *
+         * @return {string} Serialized children.
+         */
+        function renderChildren(children, context, legacyContext = {}) {
+          let result = '';
+          children = Array.isArray(children) ? children : [children];
+          for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+            result += renderElement(child, context, legacyContext);
+          }
+          return result;
+        }
+
+        /**
+         * Renders a props object as a string of HTML attributes.
+         *
+         * @param {Object} props Props object.
+         *
+         * @return {string} Attributes string.
+         */
+        function renderAttributes(props) {
+          let result = '';
+          for (const key in props) {
+            const attribute = getNormalAttributeName(key);
+            if (!isValidAttributeName(attribute)) {
+              continue;
+            }
+            let value = getNormalAttributeValue(key, props[key]);
+
+            // If value is not of serializable type, skip.
+            if (!ATTRIBUTES_TYPES.has(typeof value)) {
+              continue;
+            }
+
+            // Don't render internal attribute names.
+            if (isInternalAttribute(key)) {
+              continue;
+            }
+            const isBooleanAttribute = BOOLEAN_ATTRIBUTES.has(attribute);
+
+            // Boolean attribute should be omitted outright if its value is false.
+            if (isBooleanAttribute && value === false) {
+              continue;
+            }
+            const isMeaningfulAttribute = isBooleanAttribute || hasPrefix(key, ['data-', 'aria-']) || ENUMERATED_ATTRIBUTES.has(attribute);
+
+            // Only write boolean value as attribute if meaningful.
+            if (typeof value === 'boolean' && !isMeaningfulAttribute) {
+              continue;
+            }
+            result += ' ' + attribute;
+
+            // Boolean attributes should write attribute name, but without value.
+            // Mere presence of attribute name is effective truthiness.
+            if (isBooleanAttribute) {
+              continue;
+            }
+            if (typeof value === 'string') {
+              value = escapeAttribute(value);
+            }
+            result += '="' + value + '"';
+          }
+          return result;
+        }
+
+        /**
+         * Renders a style object as a string attribute value.
+         *
+         * @param {Object} style Style object.
+         *
+         * @return {string} Style attribute value.
+         */
+        function renderStyle(style) {
+          // Only generate from object, e.g. tolerate string value.
+          if (!isPlainObject(style)) {
+            return style;
+          }
+          let result;
+          for (const property in style) {
+            const value = style[property];
+            if (null === value || undefined === value) {
+              continue;
+            }
+            if (result) {
+              result += ';';
+            } else {
+              result = '';
+            }
+            const normalName = getNormalStylePropertyName(property);
+            const normalValue = getNormalStylePropertyValue(property, value);
+            result += normalName + ':' + normalValue;
+          }
+          return result;
+        }
+
+        /**
          * External dependencies
          */
 
@@ -12122,7 +12759,7 @@
         };
 
         // src/utils/misc.ts
-        function noop$8(..._) {}
+        function noop$9(..._) {}
         function applyState(argument, currentValue) {
           if (isUpdater(argument)) {
             const value = isLazyValue(currentValue) ? currentValue() : currentValue;
@@ -12774,7 +13411,7 @@
           let state = initialState;
           let prevStateBatch = state;
           let lastUpdate = Symbol();
-          let destroy = noop$8;
+          let destroy = noop$9;
           const instances = /* @__PURE__ */new Set();
           const updatedKeys = /* @__PURE__ */new Set();
           const setups = /* @__PURE__ */new Set();
@@ -12893,7 +13530,7 @@
           };
           return finalStore;
         }
-        function setup(store, ...args) {
+        function setup$1(store, ...args) {
           if (!store) return;
           return getInternal(store, "setup")(...args);
         }
@@ -13140,13 +13777,13 @@
             privateStore.setState("renderedItems", sortedItems);
             collection.setState("renderedItems", sortedItems);
           };
-          setup(collection, () => init(privateStore));
-          setup(privateStore, () => {
+          setup$1(collection, () => init(privateStore));
+          setup$1(privateStore, () => {
             return batch(privateStore, ["items"], state => {
               collection.setState("items", state.items);
             });
           });
-          setup(privateStore, () => {
+          setup$1(privateStore, () => {
             return batch(privateStore, ["renderedItems"], state => {
               let firstRun = true;
               let raf = requestAnimationFrame(() => {
@@ -13373,7 +14010,7 @@
             focusShift: defaultValue$3(props.focusShift, syncState == null ? void 0 : syncState.focusShift, false)
           });
           const composite = createStore(initialState, collection, props.store);
-          setup(composite, () => sync(composite, ["renderedItems", "activeId"], state => {
+          setup$1(composite, () => sync(composite, ["renderedItems", "activeId"], state => {
             composite.setState("activeId", activeId2 => {
               var _a2;
               if (activeId2 !== void 0) return activeId2;
@@ -13540,7 +14177,7 @@
             selectOnMove: defaultValue$3(props.selectOnMove, syncState == null ? void 0 : syncState.selectOnMove, true)
           });
           const tab = createStore(initialState, composite, store);
-          setup(tab, () => sync(tab, ["moves"], () => {
+          setup$1(tab, () => sync(tab, ["moves"], () => {
             const {
               activeId,
               selectOnMove
@@ -13554,7 +14191,7 @@
             tab.setState("selectedId", tabItem.id);
           }));
           let syncActiveId = true;
-          setup(tab, () => batch(tab, ["selectedId"], (state, prev) => {
+          setup$1(tab, () => batch(tab, ["selectedId"], (state, prev) => {
             if (!syncActiveId) {
               syncActiveId = true;
               return;
@@ -13562,7 +14199,7 @@
             if (parentComposite && state.selectedId === prev.selectedId) return;
             tab.setState("activeId", state.selectedId);
           }));
-          setup(tab, () => sync(tab, ["selectedId", "renderedItems"], state => {
+          setup$1(tab, () => sync(tab, ["selectedId", "renderedItems"], state => {
             if (state.selectedId !== void 0) return;
             const {
               activeId,
@@ -13576,7 +14213,7 @@
               tab.setState("selectedId", tabItem2 == null ? void 0 : tabItem2.id);
             }
           }));
-          setup(tab, () => sync(tab, ["renderedItems"], state => {
+          setup$1(tab, () => sync(tab, ["renderedItems"], state => {
             const tabs = state.renderedItems;
             if (!tabs.length) return;
             return sync(panels, ["renderedItems"], state2 => {
@@ -13594,7 +14231,7 @@
             });
           }));
           let selectedIdFromSelectedValue = null;
-          setup(tab, () => {
+          setup$1(tab, () => {
             const backupSelectedId = () => {
               selectedIdFromSelectedValue = tab.getState().selectedId;
             };
@@ -15141,15 +15778,15 @@
             disclosureElement: defaultValue$3(syncState == null ? void 0 : syncState.disclosureElement, null)
           };
           const disclosure = createStore(initialState, store);
-          setup(disclosure, () => sync(disclosure, ["animated", "animating"], state => {
+          setup$1(disclosure, () => sync(disclosure, ["animated", "animating"], state => {
             if (state.animated) return;
             disclosure.setState("animating", false);
           }));
-          setup(disclosure, () => subscribe(disclosure, ["open"], () => {
+          setup$1(disclosure, () => subscribe(disclosure, ["open"], () => {
             if (!disclosure.getState().animated) return;
             disclosure.setState("animating", true);
           }));
-          setup(disclosure, () => sync(disclosure, ["open", "animating"], state => {
+          setup$1(disclosure, () => sync(disclosure, ["open", "animating"], state => {
             disclosure.setState("mounted", state.open || state.animating);
           }));
           return __spreadProps(__spreadValues({}, disclosure), {
@@ -16311,15 +16948,15 @@
           return setAttribute(element, "aria-hidden", "true");
         }
         function disableTree(element, ignoredElements) {
-          if (!("style" in element)) return noop$8;
+          if (!("style" in element)) return noop$9;
           if (supportsInert()) {
             return setProperty(element, "inert", true);
           }
           const tabbableElements = getAllTabbableIn(element, true);
           const enableElements = tabbableElements.map(element2 => {
-            if (ignoredElements == null ? void 0 : ignoredElements.some(el => el && contains(el, element2))) return noop$8;
+            if (ignoredElements == null ? void 0 : ignoredElements.some(el => el && contains(el, element2))) return noop$9;
             const restoreFocusMethod = orchestrate(element2, "focus", () => {
-              element2.focus = noop$8;
+              element2.focus = noop$9;
               return () => {
                 delete element2.focus;
               };
@@ -24834,9 +25471,9 @@
             return v;
           }
         }
-        function noop$7() {}
+        function noop$8() {}
         function chain(...fns) {
-          if (fns.length === 0) return noop$7;
+          if (fns.length === 0) return noop$8;
           if (fns.length === 1) return fns[0];
           return function () {
             let result;
@@ -26251,7 +26888,7 @@
         /**
          * External dependencies
          */
-        const noop$6 = () => {};
+        const noop$7 = () => {};
         function InputField({
           disabled = false,
           dragDirection = 'n',
@@ -26259,13 +26896,13 @@
           id,
           isDragEnabled = false,
           isPressEnterToChange = false,
-          onBlur = noop$6,
-          onChange = noop$6,
-          onDrag = noop$6,
-          onDragEnd = noop$6,
-          onDragStart = noop$6,
-          onKeyDown = noop$6,
-          onValidate = noop$6,
+          onBlur = noop$7,
+          onChange = noop$7,
+          onDrag = noop$7,
+          onDragEnd = noop$7,
+          onDragStart = noop$7,
+          onKeyDown = noop$7,
+          onValidate = noop$7,
           size = 'default',
           stateReducer = state => state,
           value: valueProp,
@@ -26581,7 +27218,7 @@
         /**
          * External dependencies
          */
-        const noop$5 = () => {};
+        const noop$6 = () => {};
         function useUniqueId$2(idProp) {
           const instanceId = useInstanceId(InputControl);
           const id = `inspector-input-control-${instanceId}`;
@@ -26600,9 +27237,9 @@
             isPressEnterToChange = false,
             label,
             labelPosition = 'top',
-            onChange = noop$5,
-            onValidate = noop$5,
-            onKeyDown = noop$5,
+            onChange = noop$6,
+            onValidate = noop$6,
+            onKeyDown = noop$6,
             prefix,
             size = 'default',
             style,
@@ -27322,7 +27959,7 @@
         /**
          * External dependencies
          */
-        const noop$4 = () => {};
+        const noop$5 = () => {};
         function UnforwardedNumberControl(props, forwardedRef) {
           const {
             __unstableStateReducer: stateReducerProp,
@@ -27343,7 +27980,7 @@
             value: valueProp,
             size = 'default',
             suffix,
-            onChange = noop$4,
+            onChange = noop$5,
             ...restProps
           } = useDeprecated36pxDefaultSizeProp(props);
           if (hideHTMLArrows) {
@@ -27512,6 +28149,222 @@
           });
         }
         const NumberControl = reactExports.forwardRef(UnforwardedNumberControl);
+
+        /**
+         * @typedef {() => void} Callback
+         *
+         * TODO: Remove this typedef and inline `() => void` type.
+         *
+         * This typedef is used so that a descriptive type is provided in our
+         * automatically generated documentation.
+         *
+         * An in-line type `() => void` would be preferable, but the generated
+         * documentation is `null` in that case.
+         *
+         * @see https://github.com/WordPress/gutenberg/issues/18045
+         */
+
+        /**
+         * Specify a function to execute when the DOM is fully loaded.
+         *
+         * @param {Callback} callback A function to execute after the DOM is ready.
+         *
+         * @example
+         * ```js
+         * import domReady from '@wordpress/dom-ready';
+         *
+         * domReady( function() {
+         * 	//do something after DOM loads.
+         * } );
+         * ```
+         *
+         * @return {void}
+         */
+        function domReady(callback) {
+          if (typeof document === 'undefined') {
+            return;
+          }
+          if (document.readyState === 'complete' ||
+          // DOMContentLoaded + Images/Styles/etc loaded, so we call directly.
+          document.readyState === 'interactive' // DOMContentLoaded fires at this point, so we call directly.
+          ) {
+            return void callback();
+          }
+
+          // DOMContentLoaded has not fired yet, delay callback until then.
+          document.addEventListener('DOMContentLoaded', callback);
+        }
+
+        /**
+         * Build the live regions markup.
+         *
+         * @param {string} [ariaLive] Value for the 'aria-live' attribute; default: 'polite'.
+         *
+         * @return {HTMLDivElement} The ARIA live region HTML element.
+         */
+        function addContainer(ariaLive = 'polite') {
+          const container = document.createElement('div');
+          container.id = `a11y-speak-${ariaLive}`;
+          container.className = 'a11y-speak-region';
+          container.setAttribute('style', 'position: absolute;' + 'margin: -1px;' + 'padding: 0;' + 'height: 1px;' + 'width: 1px;' + 'overflow: hidden;' + 'clip: rect(1px, 1px, 1px, 1px);' + '-webkit-clip-path: inset(50%);' + 'clip-path: inset(50%);' + 'border: 0;' + 'word-wrap: normal !important;');
+          container.setAttribute('aria-live', ariaLive);
+          container.setAttribute('aria-relevant', 'additions text');
+          container.setAttribute('aria-atomic', 'true');
+          const {
+            body
+          } = document;
+          if (body) {
+            body.appendChild(container);
+          }
+          return container;
+        }
+
+        /**
+         * WordPress dependencies
+         */
+
+        /**
+         * Build the explanatory text to be placed before the aria live regions.
+         *
+         * This text is initially hidden from assistive technologies by using a `hidden`
+         * HTML attribute which is then removed once a message fills the aria-live regions.
+         *
+         * @return {HTMLParagraphElement} The explanatory text HTML element.
+         */
+        function addIntroText() {
+          const introText = document.createElement('p');
+          introText.id = 'a11y-speak-intro-text';
+          introText.className = 'a11y-speak-intro-text';
+          introText.textContent = __('Notifications');
+          introText.setAttribute('style', 'position: absolute;' + 'margin: -1px;' + 'padding: 0;' + 'height: 1px;' + 'width: 1px;' + 'overflow: hidden;' + 'clip: rect(1px, 1px, 1px, 1px);' + '-webkit-clip-path: inset(50%);' + 'clip-path: inset(50%);' + 'border: 0;' + 'word-wrap: normal !important;');
+          introText.setAttribute('hidden', 'hidden');
+          const {
+            body
+          } = document;
+          if (body) {
+            body.appendChild(introText);
+          }
+          return introText;
+        }
+
+        /**
+         * Clears the a11y-speak-region elements and hides the explanatory text.
+         */
+        function clear() {
+          const regions = document.getElementsByClassName('a11y-speak-region');
+          const introText = document.getElementById('a11y-speak-intro-text');
+          for (let i = 0; i < regions.length; i++) {
+            regions[i].textContent = '';
+          }
+
+          // Make sure the explanatory text is hidden from assistive technologies.
+          if (introText) {
+            introText.setAttribute('hidden', 'hidden');
+          }
+        }
+        let previousMessage = '';
+
+        /**
+         * Filter the message to be announced to the screenreader.
+         *
+         * @param {string} message The message to be announced.
+         *
+         * @return {string} The filtered message.
+         */
+        function filterMessage(message) {
+          /*
+           * Strip HTML tags (if any) from the message string. Ideally, messages should
+           * be simple strings, carefully crafted for specific use with A11ySpeak.
+           * When re-using already existing strings this will ensure simple HTML to be
+           * stripped out and replaced with a space. Browsers will collapse multiple
+           * spaces natively.
+           */
+          message = message.replace(/<[^<>]+>/g, ' ');
+
+          /*
+           * Safari + VoiceOver don't announce repeated, identical strings. We use
+           * a `no-break space` to force them to think identical strings are different.
+           */
+          if (previousMessage === message) {
+            message += '\u00A0';
+          }
+          previousMessage = message;
+          return message;
+        }
+
+        /**
+         * Internal dependencies
+         */
+
+        /**
+         * Allows you to easily announce dynamic interface updates to screen readers using ARIA live regions.
+         * This module is inspired by the `speak` function in `wp-a11y.js`.
+         *
+         * @param {string}               message    The message to be announced by assistive technologies.
+         * @param {'polite'|'assertive'} [ariaLive] The politeness level for aria-live; default: 'polite'.
+         *
+         * @example
+         * ```js
+         * import { speak } from '@wordpress/a11y';
+         *
+         * // For polite messages that shouldn't interrupt what screen readers are currently announcing.
+         * speak( 'The message you want to send to the ARIA live region' );
+         *
+         * // For assertive messages that should interrupt what screen readers are currently announcing.
+         * speak( 'The message you want to send to the ARIA live region', 'assertive' );
+         * ```
+         */
+        function speak(message, ariaLive) {
+          /*
+           * Clear previous messages to allow repeated strings being read out and hide
+           * the explanatory text from assistive technologies.
+           */
+          clear();
+          message = filterMessage(message);
+          const introText = document.getElementById('a11y-speak-intro-text');
+          const containerAssertive = document.getElementById('a11y-speak-assertive');
+          const containerPolite = document.getElementById('a11y-speak-polite');
+          if (containerAssertive && ariaLive === 'assertive') {
+            containerAssertive.textContent = message;
+          } else if (containerPolite) {
+            containerPolite.textContent = message;
+          }
+
+          /*
+           * Make the explanatory text available to assistive technologies by removing
+           * the 'hidden' HTML attribute.
+           */
+          if (introText) {
+            introText.removeAttribute('hidden');
+          }
+        }
+
+        /**
+         * WordPress dependencies
+         */
+
+        /**
+         * Create the live regions.
+         */
+        function setup() {
+          const introText = document.getElementById('a11y-speak-intro-text');
+          const containerAssertive = document.getElementById('a11y-speak-assertive');
+          const containerPolite = document.getElementById('a11y-speak-polite');
+          if (introText === null) {
+            addIntroText();
+          }
+          if (containerAssertive === null) {
+            addContainer('assertive');
+          }
+          if (containerPolite === null) {
+            addContainer('polite');
+          }
+        }
+
+        /**
+         * Run setup on domReady.
+         */
+        domReady(setup);
 
         // Unique ID creation requires a high quality random # generator. In the browser we therefore
         // require the crypto API and do not support built-in fallback to lower quality random number
@@ -28386,7 +29239,7 @@
         /**
          * External dependencies
          */
-        const noop$3 = () => {};
+        const noop$4 = () => {};
 
         /**
          * Computes the value that `RangeControl` should reset to when pressing
@@ -28422,11 +29275,11 @@
             marks = false,
             max = 100,
             min = 0,
-            onBlur = noop$3,
-            onChange = noop$3,
-            onFocus = noop$3,
-            onMouseLeave = noop$3,
-            onMouseMove = noop$3,
+            onBlur = noop$4,
+            onChange = noop$4,
+            onFocus = noop$4,
+            onMouseLeave = noop$4,
+            onMouseMove = noop$4,
             railColor,
             renderTooltipContent = v => v,
             resetFallbackValue,
@@ -31198,14 +32051,14 @@
         /**
          * External dependencies
          */
-        const noop$2 = () => {};
+        const noop$3 = () => {};
         function UnforwardedFormToggle(props, ref) {
           const {
             className,
             checked,
             id,
             disabled,
-            onChange = noop$2,
+            onChange = noop$3,
             ...additionalProps
           } = props;
           const wrapperClasses = clsx('components-form-toggle', className, {
@@ -31251,6 +32104,131 @@
          * ```
          */
         const FormToggle = reactExports.forwardRef(UnforwardedFormToggle);
+
+        /**
+         * External dependencies
+         */
+        const noop$2 = () => {};
+
+        /**
+         * Custom hook which announces the message with the given politeness, if a
+         * valid message is provided.
+         */
+        function useSpokenMessage(message, politeness) {
+          const spokenMessage = typeof message === 'string' ? message : renderElement(message);
+          reactExports.useEffect(() => {
+            if (spokenMessage) {
+              speak(spokenMessage, politeness);
+            }
+          }, [spokenMessage, politeness]);
+        }
+        function getDefaultPoliteness(status) {
+          switch (status) {
+            case 'success':
+            case 'warning':
+            case 'info':
+              return 'polite';
+            // The default will also catch the 'error' status.
+            default:
+              return 'assertive';
+          }
+        }
+        function getStatusLabel(status) {
+          switch (status) {
+            case 'warning':
+              return __('Warning notice');
+            case 'info':
+              return __('Information notice');
+            case 'error':
+              return __('Error notice');
+            // The default will also catch the 'success' status.
+            default:
+              return __('Notice');
+          }
+        }
+
+        /**
+         * `Notice` is a component used to communicate feedback to the user.
+         *
+         *```jsx
+         * import { Notice } from `@wordpress/components`;
+         *
+         * const MyNotice = () => (
+         *   <Notice status="error">An unknown error occurred.</Notice>
+         * );
+         * ```
+         */
+        function Notice({
+          className,
+          status = 'info',
+          children,
+          spokenMessage = children,
+          onRemove = noop$2,
+          isDismissible = true,
+          actions = [],
+          politeness = getDefaultPoliteness(status),
+          __unstableHTML,
+          // onDismiss is a callback executed when the notice is dismissed.
+          // It is distinct from onRemove, which _looks_ like a callback but is
+          // actually the function to call to remove the notice from the UI.
+          onDismiss = noop$2
+        }) {
+          useSpokenMessage(spokenMessage, politeness);
+          const classes = clsx(className, 'components-notice', 'is-' + status, {
+            'is-dismissible': isDismissible
+          });
+          if (__unstableHTML && typeof children === 'string') {
+            children = /*#__PURE__*/jsxRuntimeExports.jsx(RawHTML, {
+              children: children
+            });
+          }
+          const onDismissNotice = () => {
+            onDismiss();
+            onRemove();
+          };
+          return /*#__PURE__*/jsxRuntimeExports.jsxs("div", {
+            className: classes,
+            children: [/*#__PURE__*/jsxRuntimeExports.jsx(VisuallyHidden, {
+              children: getStatusLabel(status)
+            }), /*#__PURE__*/jsxRuntimeExports.jsxs("div", {
+              className: "components-notice__content",
+              children: [children, /*#__PURE__*/jsxRuntimeExports.jsx("div", {
+                className: "components-notice__actions",
+                children: actions.map(({
+                  className: buttonCustomClasses,
+                  label,
+                  isPrimary,
+                  variant,
+                  noDefaultClasses = false,
+                  onClick,
+                  url
+                }, index) => {
+                  let computedVariant = variant;
+                  if (variant !== 'primary' && !noDefaultClasses) {
+                    computedVariant = !url ? 'secondary' : 'link';
+                  }
+                  if (typeof computedVariant === 'undefined' && isPrimary) {
+                    computedVariant = 'primary';
+                  }
+                  return /*#__PURE__*/jsxRuntimeExports.jsx(Button, {
+                    __next40pxDefaultSize: true,
+                    href: url,
+                    variant: computedVariant,
+                    onClick: url ? undefined : onClick,
+                    className: clsx('components-notice__action', buttonCustomClasses),
+                    children: label
+                  }, index);
+                })
+              })]
+            }), isDismissible && /*#__PURE__*/jsxRuntimeExports.jsx(Button, {
+              size: "small",
+              className: "components-notice__dismiss",
+              icon: close,
+              label: __('Close'),
+              onClick: onDismissNotice
+            })]
+          });
+        }
 
         /**
          * Internal dependencies
@@ -31794,6 +32772,42 @@
           });
         }
         const ToggleControl = reactExports.forwardRef(UnforwardedToggleControl);
+        function ApprovalStatus(props) {
+          const {
+            item,
+            onStatusChange = () => {},
+            defaultApprovalState
+          } = props;
+          const {
+            id,
+            approval_status
+          } = item;
+          const currentStatus = approval_status ?? defaultApprovalState;
+          const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
+          return /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
+            children: [/* @__PURE__ */jsxRuntimeExports.jsx("p", {
+              style: {
+                color: currentStatus === "Confirmed" ? "green" : "red"
+              },
+              children: currentStatus
+            }), /* @__PURE__ */jsxRuntimeExports.jsx("div", {
+              style: {
+                display: "flex",
+                gap: "5px"
+              },
+              children: /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                size: "small",
+                isDestructive: currentStatus === "Confirmed",
+                variant: "secondary",
+                onClick: e => {
+                  e.stopPropagation();
+                  onStatusChange(id, currentStatus === "Confirmed" ? "Declined" : "Confirmed", changeAction);
+                },
+                children: changeAction
+              })
+            })]
+          });
+        }
         function ResendButton(props) {
           const {
             id,
@@ -31883,44 +32897,6 @@
                 },
                 children: "Warning"
               }), ": This action will resend confirmation emails to all unconfirmed signees. Proceed with caution: sending a large number of emails at once may negatively impact your domain’s reputation."]
-            })]
-          });
-        }
-        function ApprovalStatus(props) {
-          const {
-            item,
-            onStatusChange = () => {},
-            defaultApprovalState
-          } = props;
-          const {
-            id,
-            approval_status
-          } = item;
-          const currentStatus = approval_status ?? defaultApprovalState;
-          const changeAction = currentStatus === "Confirmed" ? "Decline" : "Confirm";
-          return /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
-            children: [/* @__PURE__ */jsxRuntimeExports.jsx("p", {
-              style: {
-                color: currentStatus === "Confirmed" ? "green" : "red"
-              },
-              children: currentStatus
-            }), /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
-              style: {
-                display: "flex",
-                gap: "5px"
-              },
-              children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
-                size: "small",
-                isDestructive: currentStatus === "Confirmed",
-                variant: "secondary",
-                onClick: e => {
-                  e.stopPropagation();
-                  onStatusChange(id, currentStatus === "Confirmed" ? "Declined" : "Confirmed", changeAction);
-                },
-                children: changeAction
-              }), window?.petitionerData?.approval_state === "Email" && /* @__PURE__ */jsxRuntimeExports.jsx(ResendButton, {
-                item
-              })]
             })]
           });
         }
@@ -33534,6 +34510,7 @@
             })
           });
         }
+        const PER_PAGE = 100;
         const UPDATE_ACTION = "petitioner_update_submission";
         const FETCH_ACTION = "petitioner_fetch_submissions";
         const DELETE_ACTION = "petitioner_delete_submission";
@@ -35105,7 +36082,7 @@
           onError = msg => {}
         }) => {
           if (!data?.id) {
-            console.error("Submission fetch error: missing the submission id");
+            onError("Submission update error: missing the submission id");
             return;
           }
           const finalQuery = new URLSearchParams();
@@ -35126,10 +36103,10 @@
             if (response.success) {
               onSuccess(response.data);
             } else {
-              onError("Failed to fetch data");
+              onError("Failed to update data");
             }
           } catch (error) {
-            onError("Error fetching data: " + error);
+            onError("Error updating data: " + error);
           }
         };
         const deleteSubmissions = async ({
@@ -35138,7 +36115,7 @@
           onError
         }) => {
           if (!id) {
-            onError("Submission fetch error: missing the submission id");
+            onError("Submission delete error: missing the submission id");
             return;
           }
           const finalQuery = new URLSearchParams();
@@ -35155,10 +36132,10 @@
             if (response.success) {
               onSuccess();
             } else {
-              onError("Failed to fetch data");
+              onError("Failed to delete data");
             }
           } catch (error) {
-            onError("Error fetching data: " + error);
+            onError("Error deleting data: " + error);
           }
         };
         const getFieldLabels = () => {
@@ -35215,9 +36192,13 @@
         };
         const ExportButtonWrapper = dt.div`
 	display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+	flex-direction: column;
+	align-items: flex-start;
 	justify-content: space-between;
+`;
+        const SubmissionTabWrapper = dt.div``;
+        const EntriesWrapper = dt.div`
+	position: relative;
 `;
         const COLORS = {
           grey: "var(--ptr-admin-color-grey)",
@@ -35225,13 +36206,16 @@
         };
         const SPACINGS = {
           xs: "var(--ptr-admin-spacing-xs)",
-          sm: "var(--ptr-admin-spacing-sm)"
+          sm: "var(--ptr-admin-spacing-sm)",
+          "4xl": "var(--ptr-admin-spacing-4xl)"
         };
         const TRANSITIONS = {
           sm: "0.15s"
         };
         const TableHeading = dt.th`
-	${$width => `width: ${$width}`};
+	${({
+          $width
+        }) => `width: ${$width};`}
 	cursor: pointer;
 	&,
 	&.sorted {
@@ -35251,16 +36235,45 @@
 		${({
           $clickable
         }) => $clickable && lt`
-			tr {
-				transition: ${TRANSITIONS.sm};
-				&:hover {
-					cursor: pointer;
-					background: ${COLORS.grey} !important;
+				tr {
+					transition: ${TRANSITIONS.sm};
+					&:hover {
+						cursor: pointer;
+						background: ${COLORS.grey} !important;
+					}
 				}
-			}
-		`}
+			`}
 	}
 `;
+        const usePagination = (total, perPage, currentPage, onPageChange) => {
+          return reactExports.useMemo(() => {
+            const totalPages = Math.ceil(total / perPage);
+            const buttons = [];
+            for (let i = 1; i <= totalPages; i++) {
+              buttons.push(/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                variant: currentPage !== i ? "secondary" : "primary",
+                onClick: () => onPageChange(i),
+                "data-page": i,
+                children: i
+              }, i));
+            }
+            return buttons;
+          }, [total, perPage, currentPage]);
+        };
+        const useTableHeadings = (baseHeadings, conditionalHeadings = []) => {
+          return reactExports.useMemo(() => {
+            const finalHeadings = [...baseHeadings];
+            conditionalHeadings.forEach(({
+              condition,
+              heading
+            }) => {
+              if (condition) {
+                finalHeadings.push(heading);
+              }
+            });
+            return finalHeadings;
+          }, [baseHeadings, conditionalHeadings]);
+        };
         function Table({
           headings,
           rows,
@@ -35355,6 +36368,8 @@
 `;
         const ActionButtonWrapper = dt.div`
 	display: flex;
+	align-items: center;
+	justify-content: flex-end;
 	gap: ${SPACINGS.sm};
 `;
         function PTRichText({
@@ -35437,6 +36452,7 @@
             success_message_title: "",
             success_message: "",
             from_field: "",
+            from_name: "",
             add_honeypot: true,
             form_id: null,
             hide_last_names: true,
@@ -35504,6 +36520,7 @@
           const DEFAULT_CONTENT = __("Thank you for signing the {{petition_title}}. Your signature has been recorded and will be sent to {{petition_target}}.", "petitioner");
           const defaultValues = {
             from_field: "",
+            from_name: "",
             ty_email_subject: DEFAULT_SUBJECT,
             ty_email: DEFAULT_CONTENT,
             ty_email_subject_confirm: DEFAULT_SUBJECT,
@@ -35544,6 +36561,7 @@
           } = useEditFormContext();
           const defaultValues = normalizeDefaultValues(window.petitionerData?.default_values);
           const defaultFromField = defaultValues?.from_field || "";
+          const defaultFromName = defaultValues?.from_name || "";
           const confirmEmails = formState.approval_state === "Email";
           const {
             subject: defaultTYSubject,
@@ -35570,6 +36588,20 @@
                 name: "petitioner_from_field",
                 id: "petitioner_from_field",
                 onChange: value => updateFormState("from_field", value)
+              })
+            }), /* @__PURE__ */jsxRuntimeExports.jsx("p", {
+              children: /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
+                style: {
+                  width: "100%"
+                },
+                label: __("From name", "petitioner"),
+                value: formState.from_name,
+                defaultValue: defaultFromName,
+                type: "text",
+                help: __(`This is the name next to the email address that will appear in the 'From' field of the email. If empty will default to '${defaultFromName}'.`, "petitioner"),
+                name: "petitioner_from_name",
+                id: "petitioner_from_name",
+                onChange: value => updateFormState("from_name", value)
               })
             }), /* @__PURE__ */jsxRuntimeExports.jsx(CheckboxInput, {
               checked: formState.require_approval,
@@ -35725,14 +36757,15 @@
           if (label === "country") {
             const defaultValues = normalizeDefaultValues(window.petitionerData.default_values);
             const allCountries = defaultValues.country_list;
+            const countries = allCountries || [];
+            const countryOptions = countries.map(item => ({
+              label: item,
+              value: item
+            }));
             return /* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
               value,
               onChange,
-              children: allCountries.map(item => /* @__PURE__ */jsxRuntimeExports.jsx("option", {
-                selected: value === item,
-                value: item,
-                children: item
-              }))
+              options: countryOptions
             });
           }
           if (type === "textarea") {
@@ -35761,10 +36794,6 @@
           const [valuesChanged, setValuesChanged] = reactExports.useState(false);
           const [submissionDetails, setSubmissionDetails] = reactExports.useState(submission);
           const updateSubmissionDetails = reactExports.useCallback((key, value) => {
-            const oldState = submission?.[key] || "";
-            if (oldState != value) {
-              setValuesChanged(true);
-            }
             setSubmissionDetails(prevState => ({
               ...prevState,
               [key]: value
@@ -35772,6 +36801,12 @@
           }, []);
           const submissionEntries = Object.entries(submissionDetails);
           const lastRowIndex = submissionEntries.length - 1;
+          reactExports.useEffect(() => {
+            const hasChanged = Object.keys(submissionDetails).some(key => {
+              return submissionDetails[key] !== submission[key];
+            });
+            setValuesChanged(hasChanged);
+          }, [submissionDetails, submission]);
           const SubmissionDetails = submissionEntries.map(([label, value], index) => {
             if (!isValidFieldKey(label)) {
               return;
@@ -35843,10 +36878,12 @@
             shouldCloseOnClickOutside: !valuesChanged,
             shouldCloseOnEsc: !valuesChanged,
             size: "large",
-            title: __("Submission details", "petitioner-theme"),
+            title: __("Submission details", "petitioner"),
             onRequestClose,
             headerActions: /* @__PURE__ */jsxRuntimeExports.jsxs(ActionButtonWrapper, {
-              children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+              children: [window?.petitionerData?.approval_state === "Email" && /* @__PURE__ */jsxRuntimeExports.jsx(ResendButton, {
+                item: submissionDetails
+              }), /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
                 variant: "secondary",
                 isDestructive: true,
                 onClick: handleOnDelete,
@@ -35893,6 +36930,54 @@
             })
           });
         }
+        const AlertStatusWrapper = dt.div`
+	position: fixed;
+	width: 80%;
+	max-width: 768px;
+	margin: auto;
+	top: ${SPACINGS["4xl"]};
+	left: 0;
+	right: 0;
+`;
+        const useNoticeSystem = () => {
+          const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
+          const [noticeText, setNoticeText] = reactExports.useState(void 0);
+          const showNotice = reactExports.useCallback((status, text) => {
+            setNoticeStatus(status);
+            setNoticeText(text);
+          }, []);
+          const hideNotice = reactExports.useCallback(() => {
+            setNoticeStatus(void 0);
+            setNoticeText(void 0);
+          }, []);
+          reactExports.useEffect(() => {
+            if (noticeText) {
+              const timeout = setTimeout(hideNotice, 3e3);
+              return () => clearTimeout(timeout);
+            }
+          }, [noticeText, hideNotice]);
+          return {
+            showNotice,
+            hideNotice,
+            noticeStatus,
+            noticeText
+          };
+        };
+        function NoticeSystem({
+          noticeStatus,
+          noticeText,
+          hideNotice
+        }) {
+          if (!noticeStatus || !noticeText) return null;
+          return /* @__PURE__ */jsxRuntimeExports.jsx(AlertStatusWrapper, {
+            children: /* @__PURE__ */jsxRuntimeExports.jsx(Notice, {
+              isDismissible: true,
+              onDismiss: hideNotice,
+              status: noticeStatus,
+              children: noticeText
+            })
+          });
+        }
         const SUBMISSION_LABELS = getFieldLabels();
         function Submissions() {
           const {
@@ -35903,24 +36988,37 @@
           const approvalState = window.petitionerData.approval_state;
           const [submissions, setSubmissions] = reactExports.useState([]);
           const [total, setTotal] = reactExports.useState(0);
-          const [currentPage, setCurrentPage] = reactExports.useState(1);
-          const [order, setOrder] = reactExports.useState();
-          const [orderby, setOrderBy] = reactExports.useState();
+          const [tableState, setTableState] = reactExports.useState({
+            currentPage: 1,
+            order: null,
+            orderby: null
+          });
+          const updateTableState = reactExports.useCallback(newState => {
+            setTableState(prevState => ({
+              ...prevState,
+              ...newState
+            }));
+          }, []);
           const [showApproval, setShowApproval] = reactExports.useState(requireApproval);
           const [defaultApprovalState, setDefaultApprovalState] = reactExports.useState(() => {
             return approvalState === "Email" ? "Declined" : approvalState;
           });
           const [activeModal, setActiveModal] = reactExports.useState();
           const [showExportModal, setShowExportModal] = reactExports.useState(false);
+          const {
+            showNotice,
+            noticeStatus,
+            noticeText,
+            hideNotice
+          } = useNoticeSystem();
           const hasSubmissions = submissions.length > 0;
-          const perPage = 100;
           const fetchData = async () => {
             return fetchSubmissions({
-              currentPage,
+              currentPage: tableState.currentPage,
               formID: form_id,
-              perPage,
-              order,
-              orderby,
+              perPage: PER_PAGE,
+              order: tableState.order,
+              orderby: tableState.orderby,
               onSuccess: data => {
                 setTotal(data.total);
                 setSubmissions(data.submissions);
@@ -35930,51 +37028,62 @@
           reactExports.useEffect(() => {
             if (!form_id) return;
             fetchData();
-          }, [currentPage, form_id, order, orderby]);
+          }, [tableState.currentPage, form_id, tableState.order, tableState.orderby]);
           reactExports.useEffect(() => {
-            window.addEventListener("onPtrApprovalChange", () => {
+            const handleApprovalChange = () => {
               setShowApproval(requireApproval);
               if (approvalState) {
                 setDefaultApprovalState(approvalState);
               }
-            });
+            };
+            window.addEventListener("onPtrApprovalChange", handleApprovalChange);
+            return () => {
+              window.removeEventListener("onPtrApprovalChange", handleApprovalChange);
+            };
           }, []);
           const handleStatusChange = async (id, newStatus, changeAction) => {
             const question = `Are you sure you want to ${String(changeAction).toLowerCase()} this submission?`;
             if (window.confirm(question)) {
-              const finalAjaxURL = `${ajaxurl}?action=${UPDATE_ACTION}`;
-              try {
-                const finalData = new FormData();
-                finalData.append("id", String(id));
-                finalData.append("status", newStatus);
-                const response = await fetch(finalAjaxURL, {
-                  method: "POST",
-                  body: finalData
-                });
-                const data = await response.json();
-                if (data.success) {
+              updateSubmissions({
+                data: {
+                  id,
+                  approval_status: newStatus
+                },
+                onSuccess: () => {
                   fetchData();
-                } else {
-                  console.error("Failed to update submission status");
+                  showNotice("success", __("Submission status updated!", "petitioner"));
+                },
+                onError: msg => {
+                  console.error(msg);
+                  showNotice("error", __("Failed to update submission status!", "petitioner"));
                 }
-              } catch (error) {
-                console.error("Error updating submission status:", error);
-              }
+              });
             }
           };
-          const handlePaginationClick = page => {
-            setCurrentPage(page);
-          };
-          const totalPages = Math.ceil(total / perPage);
-          const buttons = [];
-          for (let i = 1; i <= totalPages; i++) {
-            buttons.push(/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
-              variant: currentPage !== i ? "secondary" : "primary",
-              onClick: () => handlePaginationClick(i),
-              "data-page": i,
-              children: i
-            }, i));
-          }
+          const paginationButtons = usePagination(total, PER_PAGE, tableState.currentPage, page => updateTableState({
+            currentPage: page
+          }));
+          const headingData = useTableHeadings([{
+            id: "email",
+            label: SUBMISSION_LABELS.email,
+            width: "20%"
+          }, {
+            id: "name",
+            label: SUBMISSION_LABELS.name
+          }, {
+            id: "consent",
+            label: SUBMISSION_LABELS.consent,
+            width: "80px"
+          }, {
+            id: "submitted_at",
+            label: SUBMISSION_LABELS.submitted_at
+          }], [{
+            condition: showApproval,
+            heading: {
+              id: "status",
+              label: __("Status", "petitioner")
+            }
+          }]);
           const ExportComponent = () => {
             return /* @__PURE__ */jsxRuntimeExports.jsxs(ExportButtonWrapper, {
               children: [/* @__PURE__ */jsxRuntimeExports.jsx(ShortcodeElement, {
@@ -35990,28 +37099,6 @@
               })]
             });
           };
-          const headingData = [{
-            id: "email",
-            label: SUBMISSION_LABELS.email,
-            width: "20%"
-          }, {
-            id: "name",
-            label: SUBMISSION_LABELS.name
-          }, {
-            id: "consent",
-            label: SUBMISSION_LABELS.consent,
-            width: "60px"
-          }, {
-            id: "submitted_at",
-            label: SUBMISSION_LABELS.submitted_at
-          }];
-          if (showApproval) {
-            headingData.push({
-              id: "status",
-              label: __("Status", "petitioner"),
-              width: "200px"
-            });
-          }
           const tableRows = submissions.map(item => {
             const cells = [item.email, `${item.fname} ${item.lname}`, getHumanValue(String(item.accept_tos), "checkbox"), getHumanValue(item.submitted_at, "date")];
             if (showApproval) {
@@ -36027,12 +37114,14 @@
             };
           });
           const handleSortChange = ({
-            order: order2,
-            orderby: orderby2
+            order,
+            orderby
           }) => {
-            setOrder(order2);
-            setOrderBy(orderby2);
-            setCurrentPage(1);
+            updateTableState({
+              order,
+              orderby,
+              currentPage: 1
+            });
           };
           const selectedSubmission = submissions.find(item => item.id === activeModal);
           const onModalClose = reactExports.useCallback(() => setActiveModal(void 0), []);
@@ -36040,12 +37129,12 @@
             await updateSubmissions({
               data: newData,
               onSuccess: () => {
-                alert(__("Submission updated!", "petitioner"));
+                showNotice("success", __("Submission updated!", "petitioner"));
                 onModalClose();
               },
               onError: msg => {
                 console.error(msg);
-                alert(__("Failed to update submission!", "petitioner"));
+                showNotice("error", __("Failed to update submission!", "petitioner"));
                 onModalClose();
               }
             });
@@ -36055,13 +37144,13 @@
             deleteSubmissions({
               id,
               onSuccess: () => {
-                alert("Successfully deleted!");
+                showNotice("success", __("Submission deleted!", "petitioner"));
                 onModalClose();
                 fetchData();
               },
               onError: msg => {
                 console.error(msg);
-                alert(__("Failed to delete! Check console for errors", "petitioner"));
+                showNotice("error", __("Failed to delete submission!", "petitioner"));
                 onModalClose();
               }
             });
@@ -36069,15 +37158,18 @@
           const handleExportClose = reactExports.useCallback(() => {
             setShowExportModal(false);
           }, []);
-          return /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
+          return /* @__PURE__ */jsxRuntimeExports.jsxs(SubmissionTabWrapper, {
             id: "AV_Petitioner_Submissions",
             children: [/* @__PURE__ */jsxRuntimeExports.jsxs("div", {
               children: [/* @__PURE__ */jsxRuntimeExports.jsx("h3", {
                 children: __("Submissions", "petitioner-theme")
               }), hasSubmissions && /* @__PURE__ */jsxRuntimeExports.jsx(ExportComponent, {})]
-            }), /* @__PURE__ */jsxRuntimeExports.jsxs("div", {
-              className: "petitioner-admin__entries",
-              children: [/* @__PURE__ */jsxRuntimeExports.jsxs("p", {
+            }), /* @__PURE__ */jsxRuntimeExports.jsxs(EntriesWrapper, {
+              children: [/* @__PURE__ */jsxRuntimeExports.jsx(NoticeSystem, {
+                noticeStatus,
+                noticeText,
+                hideNotice
+              }), /* @__PURE__ */jsxRuntimeExports.jsxs("p", {
                 children: [__("Total:", "petitioner-theme"), " ", total]
               }), /* @__PURE__ */jsxRuntimeExports.jsx(Table, {
                 headings: headingData,
@@ -36086,8 +37178,8 @@
                 clickable: true,
                 onItemSelect: id => setActiveModal(id)
               })]
-            }), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), hasSubmissions && /* @__PURE__ */jsxRuntimeExports.jsx(ResendAllButton, {}), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), buttons?.length > 1 && /* @__PURE__ */jsxRuntimeExports.jsx(ButtonGroup, {
-              children: buttons
+            }), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), hasSubmissions && /* @__PURE__ */jsxRuntimeExports.jsx(ResendAllButton, {}), /* @__PURE__ */jsxRuntimeExports.jsx("br", {}), paginationButtons?.length > 1 && /* @__PURE__ */jsxRuntimeExports.jsx(ButtonGroup, {
+              children: paginationButtons
             }), selectedSubmission ? /* @__PURE__ */jsxRuntimeExports.jsx(SubmissionEditModal, {
               submission: selectedSubmission,
               onClose: onModalClose,
@@ -40762,7 +41854,7 @@
           } = props;
           const tabKeys = tabs.map(tab => tab.name);
           const [activeTab, setActiveTab] = reactExports.useState(() => {
-            return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : "";
+            return tabKeys.indexOf(defaultTab) !== -1 ? defaultTab : tabKeys[0];
           });
           const handleTabSelect = reactExports.useCallback(tabName => {
             setActiveTab(tabName);
@@ -40770,7 +41862,7 @@
             if (updateURL) {
               updateActiveTabURL(tabName, tabKeys);
             }
-          }, []);
+          }, [onTabSelect, tabKeys, updateURL]);
           return /* @__PURE__ */jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, {
             children: [/* @__PURE__ */jsxRuntimeExports.jsx(TabPanel, {
               onSelect: handleTabSelect,

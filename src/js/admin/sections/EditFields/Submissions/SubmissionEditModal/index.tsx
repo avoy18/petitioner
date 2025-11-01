@@ -1,4 +1,4 @@
-import { useCallback, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import type { SubmissionItem } from '../consts';
 import {
@@ -14,6 +14,7 @@ import { getFieldLabels } from './../utilities';
 import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
 import SubmissionEditField from './SubmissionEditField';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
+import ResendButton from '../ApprovalStatus/ResendButton';
 
 const SUBMISSION_LABELS = getFieldLabels();
 
@@ -41,15 +42,6 @@ export default function SubmissionEditModal({
 
 	const updateSubmissionDetails = useCallback(
 		(key: FieldKey, value: string) => {
-			const oldState = submission?.[key as keyof SubmissionItem] || '';
-
-			/**
-			 * If the value actually changed, update the state
-			 */
-			if (oldState != value) {
-				setValuesChanged(true);
-			}
-
 			setSubmissionDetails((prevState) => ({
 				...prevState,
 				[key]: value,
@@ -60,6 +52,16 @@ export default function SubmissionEditModal({
 
 	const submissionEntries = Object.entries(submissionDetails);
 	const lastRowIndex = submissionEntries.length - 1;
+
+	// Track if any values have changed from the original submission
+	useEffect(() => {
+		const hasChanged = (
+			Object.keys(submissionDetails) as Array<keyof SubmissionItem>
+		).some((key) => {
+			return submissionDetails[key] !== submission[key];
+		});
+		setValuesChanged(hasChanged);
+	}, [submissionDetails, submission]);
 
 	const SubmissionDetails = submissionEntries.map(([label, value], index) => {
 		if (!isValidFieldKey(label)) {
@@ -164,10 +166,13 @@ export default function SubmissionEditModal({
 			shouldCloseOnClickOutside={!valuesChanged}
 			shouldCloseOnEsc={!valuesChanged}
 			size="large"
-			title={__('Submission details', 'petitioner-theme')}
+			title={__('Submission details', 'petitioner')}
 			onRequestClose={onRequestClose}
 			headerActions={
 				<ActionButtonWrapper>
+					{window?.petitionerData?.approval_state === 'Email' && (
+						<ResendButton item={submissionDetails} />
+					)}
 					<Button
 						variant="secondary"
 						isDestructive={true}

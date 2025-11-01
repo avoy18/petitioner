@@ -1,5 +1,5 @@
 import { Button } from '@wordpress/components';
-import type { ApprovalStatusProps } from './consts';
+import type { ApprovalStatusProps } from '../consts';
 import ResendButton from './ResendButton';
 
 export default function ApprovalStatus(props: ApprovalStatusProps) {
@@ -36,9 +36,6 @@ export default function ApprovalStatus(props: ApprovalStatusProps) {
 				>
 					{changeAction}
 				</Button>
-				{window?.petitionerData?.approval_state === 'Email' && (
-					<ResendButton item={item} />
-				)}
 			</div>
 		</div>
 	);

@@ -97,6 +97,17 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.6.0 =
+* Improved submissions
+    * Added sorting of submissions in admin
+    * Added ability to edit and delete submissions
+* Tabs now remember the state on refresh
+* Improved the code structure overall
+
+= 0.5.3 =
+* Add a new "From name" field that allows you to customize the sender name in outgoing emails, overriding the default email format to display your preferred sender name.
+* Bugfix: fixed missing default from name if you don't pass anything at all
+
 = 0.5.2 =
 * Bug: fixed an issue with making checkboxed checked by default
 * Bug: fixed placeholders not working
@@ -104,12 +115,6 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 = 0.5.1 =
 * Bug: remove double escaping of html attributes on the form
-
-= 0.5.0 =
-* Improved submissions
-    * Added sorting of submissions in admin
-* Tabs now remember the state on refresh
-* Improved the code structure overall
 
 = 0.5.0 =
 * New comment textarea field
