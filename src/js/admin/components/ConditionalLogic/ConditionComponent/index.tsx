@@ -1,17 +1,9 @@
 import { memo } from '@wordpress/element';
 import { SelectControl, TextControl, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import type { Condition } from '../consts';
+import type { ConditionComponentProps } from '../consts';
 import { OPERATORS } from '../consts';
 import { ConditionRow } from '../styled';
-
-type ConditionComponentProps = {
-	condition: Condition;
-	availableFields: Array<{ value: string; label: string }>;
-	onChange: (condition: Condition) => void;
-	onRemove: () => void;
-	showRemove: boolean;
-};
 
 const ConditionComponent = memo(
 	({

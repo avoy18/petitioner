@@ -20,6 +20,20 @@ export type ConditionalLogicProps = {
 	availableFields: Array<{ value: string; label: string }>;
 };
 
+export type GroupComponentProps = {
+	group: ConditionGroup;
+	availableFields: Array<{ value: string; label: string }>;
+	onChange: (group: ConditionGroup) => void;
+};
+
+export type ConditionComponentProps = {
+	condition: Condition;
+	availableFields: Array<{ value: string; label: string }>;
+	onChange: (condition: Condition) => void;
+	onRemove: () => void;
+	showRemove: boolean;
+};
+
 // Operators
 export const OPERATORS = [
 	{ value: 'equals', label: __('Equals', 'petitioner') },
