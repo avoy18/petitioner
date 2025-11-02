@@ -52,7 +52,6 @@ export default function ExportModal({
 						<Button
 							icon="filter"
 							variant="secondary"
-							size="small"
 							onClick={() => setShowFilters(!showFilters)}
 						>
 							{showFilters

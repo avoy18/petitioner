@@ -1,6 +1,5 @@
 import { memo } from '@wordpress/element';
 import type { ConditionalLogicProps } from './consts';
-import { ConditionalLogicWrapper } from './styled';
 import GroupComponent from './GroupComponent';
 
 export { formatLogicToString } from './utilities';
@@ -18,13 +17,11 @@ const ConditionalLogic = ({
 	availableFields,
 }: ConditionalLogicProps) => {
 	return (
-		<ConditionalLogicWrapper>
-			<GroupComponent
-				group={value}
-				availableFields={availableFields}
-				onChange={onChange}
-			/>
-		</ConditionalLogicWrapper>
+		<GroupComponent
+			group={value}
+			availableFields={availableFields}
+			onChange={onChange}
+		/>
 	);
 };
 

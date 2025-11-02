@@ -1,19 +1,13 @@
 import styled from 'styled-components';
-import { SPACINGS } from '@admin/theme';
-
-export const ConditionalLogicWrapper = styled.div`
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	border-radius: 4px;
-	padding: ${SPACINGS.md};
-	background: #fff;
-`;
+import { SPACINGS, COLORS } from '@admin/theme';
 
 export const GroupWrapper = styled.div`
-	border: 2px dashed rgba(0, 0, 0, 0.2);
+	width: 100%;
+	border: 1px dashed ${COLORS.darkGrey};
 	border-radius: 4px;
 	padding: ${SPACINGS.md};
 	margin-bottom: ${SPACINGS.md};
-	background: rgba(0, 0, 0, 0.02);
+	background: ${COLORS.light};
 `;
 
 export const GroupHeader = styled.div`

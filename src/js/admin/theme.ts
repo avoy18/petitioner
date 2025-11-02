@@ -3,6 +3,7 @@ export const COLORS = {
 	dark: 'var(--ptr-admin-color-dark)',
 	grey: 'var(--ptr-admin-color-grey)',
 	light: 'var(--ptr-admin-color-light)',
+	darkGrey: 'var(--ptr-admin-color-dark-grey)',
 };
 
 export const SPACINGS = {

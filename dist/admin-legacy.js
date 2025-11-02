@@ -10,7 +10,7 @@
       }],
       execute: function () {
         var __vite_style__ = document.createElement('style');
-        __vite_style__.textContent = ".wp-admin.post-type-petitioner-petition {\n  --ptr-admin-color-primary: #e01a2b;\n  --ptr-admin-color-dark: #000000;\n  --ptr-admin-color-grey: #efefef;\n  --ptr-admin-color-light: #f7f7f7;\n  --ptr-admin-fs-sm: 14px;\n  --ptr-admin-fs-md: 18px;\n  --ptr-admin-spacing-xs: 4px;\n  --ptr-admin-spacing-sm: 8px;\n  --ptr-admin-spacing-md: 12px;\n  --ptr-admin-spacing-lg: 16px;\n  --ptr-admin-spacing-xl: 24px;\n  --ptr-admin-spacing-2xl: 32px;\n  --ptr-admin-spacing-3xl: 40px;\n  --ptr-admin-spacing-4xl: 48px;\n  --ptr-admin-spacing-5xl: 64px;\n  --ptr-admin-spacing-x: 12px;\n  --ptr-admin-spacing-y: 12px;\n  --ptr-admin-wrapper-bg: white;\n  --ptr-admin-wrapper-radius: 12px;\n  --ptr-admin-input-border-width: 1px;\n  --ptr-admin-input-border-color: #a1a1a1;\n  --ptr-admin-input-border-color-active: #00000;\n  --ptr-admin-input-border-radius: 8px;\n  --ptr-admin-input-spacing-y: 0.7rem;\n  --ptr-admin-input-spacing-x: 12px;\n  --ptr-admin-label-font-size: var(--ptr-admin-fs-sm);\n  --ptr-admin-btn-font-size: var(--ptr-admin-fs-md);\n  --ptr-admin-btn-bg: var(--ptr-admin-color-primary);\n  --ptr-admin-btn-bg-hover: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-width: var(--ptr-admin-input-border-width);\n  --ptr-admin-button-border-color: transparent;\n  --ptr-admin-button-border-color-active: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-radius: 8px;\n  --ptr-admin-progress-height: 8px;\n  --ptr-admin-progress-bg: var(--ptr-admin-color-grey);\n  --ptr-admin-progress-radius: 4px;\n  --ptr-admin-progress-inner-bg: var(--ptr-admin-color-primary);\n}\n.wp-admin.post-type-petitioner-petition #edit-slug-box,\n.wp-admin.post-type-petitioner-petition #wp-admin-bar-view {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-is-loading {\n  opacity: 0;\n  visibility: hidden;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text {\n  display: flex;\n  flex-direction: column;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text h4 {\n  margin-bottom: 4px !important;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text .help {\n  font-size: 12px;\n  color: #666;\n  margin-top: 0px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text textarea {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets {\n  display: flex;\n  gap: 8px;\n  margin-bottom: 12px;\n  margin-top: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets input {\n  font-size: 12px;\n  font-weight: bold;\n  border: 1px solid #efefef;\n  background: #fbf0f0;\n  color: black;\n  outline: none;\n  text-align: center;\n  padding: 4px;\n  border-radius: 4px;\n  max-width: 120px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box {\n  margin-top: 16px;\n  padding: 16px;\n  border-radius: 8px;\n  background: #f4f6fc;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box h2 {\n  font-weight: bold;\n  padding-left: 0 !important;\n  margin-left: 0 !important;\n  text-transform: uppercase;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box {\n  padding: 16px 16px 32px 16px;\n  border-radius: 8px;\n  background: #fff;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-tab-panel__tabs {\n  margin-bottom: 32px;\n}\n@media (max-width: 1200px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n@media (max-width: 992px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: 1fr;\n  }\n}\n.wp-admin.post-type-petitioner-petition .text-ptr-red {\n  color: #e71845;\n}\n.wp-admin.post-type-petitioner-petition .ptr-action-buttons {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-wrapper {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel {\n  width: 100%;\n  display: flex;\n  gap: 64px;\n  flex-wrap: wrap;\n  padding: 16px 0px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel label {\n  font-weight: bold;\n  display: block;\n  min-width: 100px;\n}\n.wp-admin.post-type-petitioner-petition .petition-tablink.components-tab-panel__tabs-item {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab.active {\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field {\n  position: relative;\n  padding: var(--ptr-admin-spacing-md, 8px);\n  border-radius: 4px;\n  border: 1px dashed transparent;\n  transition: 0.15s;\n  transition-delay: 0;\n  background: white;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--input, .wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox, .wp-admin.post-type-petitioner-petition .ptr-fake-field--content {\n  border: 1px solid transparent;\n  border-radius: 4px;\n  background-color: #fff;\n  font-size: 14px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox input[type=checkbox] {\n  width: 16px;\n  height: 16px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox label {\n  font-size: 14px;\n  margin-bottom: 0px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--submit > button {\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  background-color: var(--ptr-admin-color-primary, #000);\n  border-color: var(--ptr-admin-color-primary, #000);\n  color: white;\n  width: 100%;\n  min-height: 37px;\n  pointer-events: none;\n  outline: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover {\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover .ptr-actions, .wp-admin.post-type-petitioner-petition .ptr-fake-field--active .ptr-actions {\n  display: flex;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder .components-button {\n  width: 100%;\n  text-align: center;\n  justify-content: center;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form {\n  width: 70%;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position {\n  width: 100%;\n  opacity: 0 !important;\n  height: 5px;\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position.active {\n  background: var(--ptr-admin-color-primary, #000);\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging {\n  cursor: grabbing;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-fake-field:hover {\n  border: 0px solid transparent;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-actions {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-visual-position {\n  opacity: 1;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header {\n  padding: 16px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header h3,\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header p {\n  margin-top: 0;\n  margin-bottom: 0;\n}\n.wp-admin.post-type-petitioner-petition .ptr-actions {\n  position: absolute;\n  right: 4px;\n  display: none;\n  gap: 4px;\n  top: 2px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable {\n  opacity: 1;\n  position: relative;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable:after {\n  position: absolute;\n  content: \"\";\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: var(--ptr-admin-color-primary, #000);\n  border: 1px dashed var(--ptr-admin-color-primary, #000);\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  opacity: 0;\n  transition: opacity 0.15s ease-in-out;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected {\n  overflow: hidden;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected:after {\n  opacity: 0.05;\n}\n\n.ptr-color-picker__overlay {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  z-index: 1;\n}\n\n.ptr-hidden-fields {\n  display: none;\n}/*$vite$:1*/";
+        __vite_style__.textContent = ".wp-admin.post-type-petitioner-petition {\n  --ptr-admin-color-primary: #e01a2b;\n  --ptr-admin-color-dark: #000000;\n  --ptr-admin-color-grey: #efefef;\n  --ptr-admin-color-light: #f7f7f7;\n  --ptr-admin-color-dark-grey: #777777;\n  --ptr-admin-fs-sm: 14px;\n  --ptr-admin-fs-md: 18px;\n  --ptr-admin-spacing-xs: 4px;\n  --ptr-admin-spacing-sm: 8px;\n  --ptr-admin-spacing-md: 12px;\n  --ptr-admin-spacing-lg: 16px;\n  --ptr-admin-spacing-xl: 24px;\n  --ptr-admin-spacing-2xl: 32px;\n  --ptr-admin-spacing-3xl: 40px;\n  --ptr-admin-spacing-4xl: 48px;\n  --ptr-admin-spacing-5xl: 64px;\n  --ptr-admin-spacing-x: 12px;\n  --ptr-admin-spacing-y: 12px;\n  --ptr-admin-wrapper-bg: white;\n  --ptr-admin-wrapper-radius: 12px;\n  --ptr-admin-input-border-width: 1px;\n  --ptr-admin-input-border-color: #a1a1a1;\n  --ptr-admin-input-border-color-active: #00000;\n  --ptr-admin-input-border-radius: 8px;\n  --ptr-admin-input-spacing-y: 0.7rem;\n  --ptr-admin-input-spacing-x: 12px;\n  --ptr-admin-label-font-size: var(--ptr-admin-fs-sm);\n  --ptr-admin-btn-font-size: var(--ptr-admin-fs-md);\n  --ptr-admin-btn-bg: var(--ptr-admin-color-primary);\n  --ptr-admin-btn-bg-hover: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-width: var(--ptr-admin-input-border-width);\n  --ptr-admin-button-border-color: transparent;\n  --ptr-admin-button-border-color-active: var(--ptr-admin-color-dark);\n  --ptr-admin-button-border-radius: 8px;\n  --ptr-admin-progress-height: 8px;\n  --ptr-admin-progress-bg: var(--ptr-admin-color-grey);\n  --ptr-admin-progress-radius: 4px;\n  --ptr-admin-progress-inner-bg: var(--ptr-admin-color-primary);\n}\n.wp-admin.post-type-petitioner-petition #edit-slug-box,\n.wp-admin.post-type-petitioner-petition #wp-admin-bar-view {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-is-loading {\n  opacity: 0;\n  visibility: hidden;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text {\n  display: flex;\n  flex-direction: column;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text h4 {\n  margin-bottom: 4px !important;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text .help {\n  font-size: 12px;\n  color: #666;\n  margin-top: 0px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-rich-text textarea {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets {\n  display: flex;\n  gap: 8px;\n  margin-bottom: 12px;\n  margin-top: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-code-snippets input {\n  font-size: 12px;\n  font-weight: bold;\n  border: 1px solid #efefef;\n  background: #fbf0f0;\n  color: black;\n  outline: none;\n  text-align: center;\n  padding: 4px;\n  border-radius: 4px;\n  max-width: 120px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box {\n  margin-top: 16px;\n  padding: 16px;\n  border-radius: 8px;\n  background: #f4f6fc;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-callout-box h2 {\n  font-weight: bold;\n  padding-left: 0 !important;\n  margin-left: 0 !important;\n  text-transform: uppercase;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box {\n  padding: 16px 16px 32px 16px;\n  border-radius: 8px;\n  background: #fff;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-tab-panel__tabs {\n  margin-bottom: 32px;\n}\n@media (max-width: 1200px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n@media (max-width: 992px) {\n  .wp-admin.post-type-petitioner-petition .petitioner-settings-box .components-grid {\n    grid-template-columns: 1fr;\n  }\n}\n.wp-admin.post-type-petitioner-petition .text-ptr-red {\n  color: #e71845;\n}\n.wp-admin.post-type-petitioner-petition .ptr-action-buttons {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-wrapper {\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel {\n  width: 100%;\n  display: flex;\n  gap: 64px;\n  flex-wrap: wrap;\n  padding: 16px 0px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-field-panel label {\n  font-weight: bold;\n  display: block;\n  min-width: 100px;\n}\n.wp-admin.post-type-petitioner-petition .petition-tablink.components-tab-panel__tabs-item {\n  display: flex;\n  gap: 4px;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .petitioner-tab.active {\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field {\n  position: relative;\n  padding: var(--ptr-admin-spacing-md, 8px);\n  border-radius: 4px;\n  border: 1px dashed transparent;\n  transition: 0.15s;\n  transition-delay: 0;\n  background: white;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--input, .wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox, .wp-admin.post-type-petitioner-petition .ptr-fake-field--content {\n  border: 1px solid transparent;\n  border-radius: 4px;\n  background-color: #fff;\n  font-size: 14px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox {\n  display: flex;\n  align-items: center;\n  gap: 4px;\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox input[type=checkbox] {\n  width: 16px;\n  height: 16px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox label {\n  font-size: 14px;\n  margin-bottom: 0px;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--submit > button {\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  background-color: var(--ptr-admin-color-primary, #000);\n  border-color: var(--ptr-admin-color-primary, #000);\n  color: white;\n  width: 100%;\n  min-height: 37px;\n  pointer-events: none;\n  outline: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover {\n  cursor: pointer;\n}\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover .ptr-actions, .wp-admin.post-type-petitioner-petition .ptr-fake-field--active .ptr-actions {\n  display: flex;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder .components-button {\n  width: 100%;\n  text-align: center;\n  justify-content: center;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form {\n  width: 70%;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position {\n  width: 100%;\n  opacity: 0 !important;\n  height: 5px;\n  display: block;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position.active {\n  background: var(--ptr-admin-color-primary, #000);\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging {\n  cursor: grabbing;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-fake-field:hover {\n  border: 0px solid transparent;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-actions {\n  display: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-visual-position {\n  opacity: 1;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header {\n  padding: 16px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header h3,\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header p {\n  margin-top: 0;\n  margin-bottom: 0;\n}\n.wp-admin.post-type-petitioner-petition .ptr-actions {\n  position: absolute;\n  right: 4px;\n  display: none;\n  gap: 4px;\n  top: 2px;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable {\n  opacity: 1;\n  position: relative;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable:after {\n  position: absolute;\n  content: \"\";\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: var(--ptr-admin-color-primary, #000);\n  border: 1px dashed var(--ptr-admin-color-primary, #000);\n  border-radius: var(--ptr-admin-input-border-radius, 4px);\n  opacity: 0;\n  transition: opacity 0.15s ease-in-out;\n  pointer-events: none;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected {\n  overflow: hidden;\n}\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected:after {\n  opacity: 0.05;\n}\n\n.ptr-color-picker__overlay {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0;\n  top: 0;\n  z-index: 1;\n}\n\n.ptr-hidden-fields {\n  display: none;\n}/*$vite$:1*/";
         document.head.appendChild(__vite_style__);
         function _mergeNamespaces(n, m) {
           for (var i = 0; i < m.length; i++) {
@@ -36202,7 +36202,8 @@
 `;
         const COLORS = {
           grey: "var(--ptr-admin-color-grey)",
-          light: "var(--ptr-admin-color-light)"
+          light: "var(--ptr-admin-color-light)",
+          darkGrey: "var(--ptr-admin-color-dark-grey)"
         };
         const SPACINGS = {
           xs: "var(--ptr-admin-spacing-xs)",
@@ -36926,65 +36927,6 @@
     align-items: flex-start;
 	gap: ${SPACINGS.md};
 `;
-        const ConditionalLogicWrapper = dt.div`
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	border-radius: 4px;
-	padding: ${SPACINGS.md};
-	background: #fff;
-`;
-        const GroupWrapper = dt.div`
-	border: 2px dashed rgba(0, 0, 0, 0.2);
-	border-radius: 4px;
-	padding: ${SPACINGS.md};
-	margin-bottom: ${SPACINGS.md};
-	background: rgba(0, 0, 0, 0.02);
-`;
-        const GroupHeader = dt.div`
-	display: flex;
-	align-items: center;
-	gap: ${SPACINGS.sm};
-	margin-bottom: ${SPACINGS.md};
-
-	span {
-		font-weight: 500;
-		color: rgba(0, 0, 0, 0.7);
-	}
-
-	.components-base-control {
-		margin-bottom: 0;
-		width: auto;
-		min-width: 100px;
-	}
-
-	.components-base-control__field {
-		margin-bottom: 0;
-	}
-`;
-        const ConditionRow = dt.div`
-	display: flex;
-	align-items: flex-start;
-	gap: ${SPACINGS.sm};
-	margin-bottom: ${SPACINGS.sm};
-
-	.components-base-control {
-		margin-bottom: 0;
-		flex: 1;
-	}
-
-	.components-base-control__field {
-		margin-bottom: 0;
-	}
-
-	> button {
-		flex-shrink: 0;
-		margin-top: 2px;
-	}
-`;
-        const ActionButtons = dt.div`
-	display: flex;
-	gap: ${SPACINGS.sm};
-	margin-top: ${SPACINGS.sm};
-`;
         const OPERATORS = [{
           value: "equals",
           label: __("Equals", "petitioner")
@@ -37039,6 +36981,60 @@
           }
           return parts.join(` ${logic.logic} `);
         };
+        const GroupWrapper = dt.div`
+	width: 100%;
+	border: 1px dashed ${COLORS.darkGrey};
+	border-radius: 4px;
+	padding: ${SPACINGS.md};
+	margin-bottom: ${SPACINGS.md};
+	background: ${COLORS.light};
+`;
+        const GroupHeader = dt.div`
+	display: flex;
+	align-items: center;
+	gap: ${SPACINGS.sm};
+	margin-bottom: ${SPACINGS.md};
+
+	span {
+		font-weight: 500;
+		color: rgba(0, 0, 0, 0.7);
+	}
+
+	.components-base-control {
+		margin-bottom: 0;
+		width: auto;
+		min-width: 100px;
+	}
+
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+`;
+        const ConditionRow = dt.div`
+	display: flex;
+	align-items: flex-start;
+	gap: ${SPACINGS.sm};
+	margin-bottom: ${SPACINGS.sm};
+
+	.components-base-control {
+		margin-bottom: 0;
+		flex: 1;
+	}
+
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+
+	> button {
+		flex-shrink: 0;
+		margin-top: 2px;
+	}
+`;
+        const ActionButtons = dt.div`
+	display: flex;
+	gap: ${SPACINGS.sm};
+	margin-top: ${SPACINGS.sm};
+`;
         const ConditionComponent = reactExports.memo(({
           condition,
           availableFields,
@@ -37194,12 +37190,10 @@
           onChange,
           availableFields
         }) => {
-          return /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogicWrapper, {
-            children: /* @__PURE__ */jsxRuntimeExports.jsx(GroupComponent$1, {
-              group: value,
-              availableFields,
-              onChange
-            })
+          return /* @__PURE__ */jsxRuntimeExports.jsx(GroupComponent$1, {
+            group: value,
+            availableFields,
+            onChange
           });
         };
         const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
@@ -37228,7 +37222,6 @@
                   children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
                     icon: "filter",
                     variant: "secondary",
-                    size: "small",
                     onClick: () => setShowFilters(!showFilters),
                     children: showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner")
                   }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
