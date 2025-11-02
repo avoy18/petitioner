@@ -100,6 +100,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 = 0.6.1 =
 * Allow passing images to the WYSIWYG editor
+* New field: Date of Birth
 * Fix a bug with "Confirmed" DB value being translatable
 
 = 0.6.0 =
