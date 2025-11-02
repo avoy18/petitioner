@@ -16,6 +16,7 @@ const screenKeys = [
 	'email',
 	'tel',
 	'text',
+	'date',
 	'select',
 	'checkbox',
 	'wysiwyg',
@@ -54,6 +55,7 @@ export default function BuilderSettings() {
 		email: () => <EditInput />,
 		tel: () => <EditInput />,
 		text: () => <EditInput />,
+		date: () => <EditInput />,
 		textarea: () => <EditInput />,
 		select: () => <EditDropdown />,
 		checkbox: () => <EditCheckbox />,
@@ -74,7 +76,7 @@ export default function BuilderSettings() {
 						variant="secondary"
 						size="small"
 						icon="arrow-left-alt2"
-						onClick={(e) => {
+						onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
 							e.preventDefault();
 							setBuilderEditScreen('default');
 						}}
