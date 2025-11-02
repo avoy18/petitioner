@@ -33,6 +33,7 @@ class AV_Petitioner_Submissions_Controller
         $form_id                    = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
         $fname                      = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
         $lname                      = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
+        $date_of_birth              = isset($_POST['petitioner_date_of_birth']) ? sanitize_text_field(wp_unslash($_POST['petitioner_date_of_birth'])) : '';
         $country                    = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
         $phone                      = isset($_POST['petitioner_phone']) ? sanitize_text_field(wp_unslash($_POST['petitioner_phone'])) : '';
         $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
@@ -41,7 +42,7 @@ class AV_Petitioner_Submissions_Controller
         $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
-        $approval_status            = __('Confirmed', 'petitioner');
+        $approval_status            = 'Confirmed';
         $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
         $accept_tos                 = !empty($_POST['petitioner_accept_tos']) && sanitize_text_field(wp_unslash($_POST['petitioner_accept_tos'])) === 'on';
 
@@ -111,6 +112,11 @@ class AV_Petitioner_Submissions_Controller
             'submitted_at'      => current_time('mysql'),
             'approval_status'   => $approval_status,
         );
+
+        // Add date_of_birth if it's provided
+        if (!empty($date_of_birth)) {
+            $data['date_of_birth'] = $date_of_birth;
+        }
 
         if ($confirmation_token) {
             $data['confirmation_token'] = $confirmation_token;
@@ -275,7 +281,7 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
+        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'date_of_birth', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
 
         $fetch_settings = [
             'per_page'          => $per_page,

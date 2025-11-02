@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.6.0
+Stable Tag: 0.6.2
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -33,6 +33,7 @@ Create and manage an unlimited number of petitions.
 - Ability to manually approve/deny petitions and set the default approval behavior (approved by default or declined)
 - Option to confirm emails via email
 - Customize email confirmations, petition letters, and thank you emails
+- Option to edit and delete submissions
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
 
 **Design & layout features**
@@ -96,6 +97,16 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.6.2 =
+* Allow passing images to the petition letter
+* Fix relative paths on images in the email templates
+* Allow displaying date of birth on submissions
+
+= 0.6.1 =
+* Allow passing images to the WYSIWYG editor
+* New field: Date of Birth
+* Fix a bug with "Confirmed" DB value being translatable
 
 = 0.6.0 =
 * Improved submissions

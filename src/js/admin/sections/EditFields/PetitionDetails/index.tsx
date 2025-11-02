@@ -105,6 +105,8 @@ export default function PetitionDetails() {
 			</p>
 
 			<PTRichText
+				plugins="lists link image"
+				toolbar="formatselect | bold italic | bullist numlist | link | image"
 				label="Petition letter"
 				id="petitioner_letter"
 				help="This will be the main content of the email sent to the representative."

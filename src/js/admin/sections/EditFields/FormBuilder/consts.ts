@@ -5,6 +5,8 @@ export type FieldType =
 	| 'checkbox'
 	| 'wysiwyg'
 	| 'date'
+	| 'tel'
+	| 'textarea'
 	| 'submit';
 
 interface BaseField {
@@ -17,7 +19,7 @@ interface BaseField {
 }
 
 export interface TextField extends BaseField {
-	type: 'text' | 'email';
+	type: 'text' | 'email' | 'tel' | 'date' | 'textarea';
 	placeholder: string;
 }
 
@@ -50,6 +52,7 @@ export type FieldKey =
 	| 'fname'
 	| 'lname' 
 	| 'email'
+	| 'date_of_birth'
 	| 'submit'
 	| 'phone'
 	| 'country'

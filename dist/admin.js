@@ -28477,6 +28477,19 @@ const DRAGGABLE_FIELD_TYPES = [
     )
   },
   {
+    fieldKey: "date_of_birth",
+    type: "date",
+    fieldName: __("Date of Birth", "petitioner"),
+    label: __("Date of Birth", "petitioner"),
+    value: "",
+    required: false,
+    removable: true,
+    description: __(
+      "Allows users to enter their date of birth using a date picker.",
+      "petitioner"
+    )
+  },
+  {
     fieldKey: "country",
     type: "select",
     fieldName: __("Country", "petitioner"),
@@ -28767,18 +28780,13 @@ const getHumanValue = (val, type) => {
     return val === "1" ? "✅" : "❌";
   }
   if (type === "date") {
-    const date = new Date(val);
+    const date = /* @__PURE__ */ new Date(val + "T00:00:00");
     if (!isNaN(date.getTime())) {
-      const dateString = date.toLocaleDateString(void 0, {
+      return date.toLocaleDateString(void 0, {
+        day: "numeric",
         month: "short",
-        day: "numeric"
+        year: "numeric"
       });
-      const timeString = date.toLocaleTimeString(void 0, {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true
-      });
-      return "".concat(dateString, " ").concat(timeString);
     }
   }
   return val;
@@ -28933,6 +28941,8 @@ function PTRichText({
   value = "",
   height = 300,
   help = "",
+  plugins = "lists link",
+  toolbar = "formatselect | bold italic | bullist numlist | link",
   onChange = (value2) => {
   }
 }) {
@@ -28943,8 +28953,9 @@ function PTRichText({
       tinymce.init({
         selector: "#".concat(id2),
         menubar: false,
-        plugins: "lists link",
-        toolbar: "formatselect | bold italic | bullist numlist | link",
+        plugins,
+        toolbar,
+        relative_urls: false,
         block_formats: "Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3",
         height,
         setup: (editor) => {
@@ -29279,6 +29290,8 @@ function AdvancedSettings() {
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         PTRichText,
         {
+          plugins: "lists link image",
+          toolbar: "formatselect | bold italic | bullist numlist | link | image",
           label: __("Thank you email content", "petitioner"),
           id: "petitioner_ty_email",
           help: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -29351,6 +29364,8 @@ function AdvancedSettings() {
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         PTRichText,
         {
+          plugins: "lists link image",
+          toolbar: "formatselect | bold italic | bullist numlist | link | image",
           label: __("Success message content", "petitioner"),
           id: "petitioner_success_message",
           help: __(
@@ -29419,7 +29434,9 @@ function SubmissionEditField({
     }
   );
 }
-const SUBMISSION_LABELS$1 = getFieldLabels();
+const SUBMISSION_LABELS$1 = Object.fromEntries(
+  Object.entries(getFieldLabels()).filter(([key]) => key !== "submitted_at")
+);
 const isValidFieldKey = (key) => {
   return key in SUBMISSION_LABELS$1;
 };
@@ -33969,7 +33986,7 @@ function DndSortableProvider({
   );
 }
 const isInputField = (field) => {
-  return field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "textarea";
+  return field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "textarea" || field.type === "date";
 };
 function EditInput() {
   const { formBuilderFields, updateFormBuilderFields, builderEditScreen } = useFormBuilderContext();
@@ -34009,7 +34026,7 @@ function EditInput() {
         onBlur: onLabelEditComplete
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    currentField.type !== "date" && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextControl,
       {
         label: "Placeholder",
@@ -34234,6 +34251,7 @@ const screenKeys = [
   "email",
   "tel",
   "text",
+  "date",
   "select",
   "checkbox",
   "wysiwyg",
@@ -34249,6 +34267,7 @@ function BuilderSettings() {
     email: () => /* @__PURE__ */ jsxRuntimeExports.jsx(EditInput, {}),
     tel: () => /* @__PURE__ */ jsxRuntimeExports.jsx(EditInput, {}),
     text: () => /* @__PURE__ */ jsxRuntimeExports.jsx(EditInput, {}),
+    date: () => /* @__PURE__ */ jsxRuntimeExports.jsx(EditInput, {}),
     textarea: () => /* @__PURE__ */ jsxRuntimeExports.jsx(EditInput, {}),
     select: () => /* @__PURE__ */ jsxRuntimeExports.jsx(EditDropdown, {}),
     checkbox: () => /* @__PURE__ */ jsxRuntimeExports.jsx(EditCheckbox, {}),
@@ -34652,6 +34671,8 @@ function PetitionDetails() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       PTRichText,
       {
+        plugins: "lists link image",
+        toolbar: "formatselect | bold italic | bullist numlist | link | image",
         label: "Petition letter",
         id: "petitioner_letter",
         help: "This will be the main content of the email sent to the representative.",
