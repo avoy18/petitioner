@@ -35887,6 +35887,15 @@
           removable: true,
           description: __("Allows users to enter their phone number. The pattern is set to allow only digits.", "petitioner")
         }, {
+          fieldKey: "date_of_birth",
+          type: "date",
+          fieldName: __("Date of Birth", "petitioner"),
+          label: __("Date of Birth", "petitioner"),
+          value: "",
+          required: false,
+          removable: true,
+          description: __("Allows users to enter their date of birth using a date picker.", "petitioner")
+        }, {
           fieldKey: "country",
           type: "select",
           fieldName: __("Country", "petitioner"),
@@ -36160,18 +36169,13 @@
             return val === "1" ? "✅" : "❌";
           }
           if (type === "date") {
-            const date = new Date(val);
+            const date = /* @__PURE__ */new Date(val + "T00:00:00");
             if (!isNaN(date.getTime())) {
-              const dateString = date.toLocaleDateString(void 0, {
+              return date.toLocaleDateString(void 0, {
+                day: "numeric",
                 month: "short",
-                day: "numeric"
+                year: "numeric"
               });
-              const timeString = date.toLocaleTimeString(void 0, {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true
-              });
-              return `${dateString} ${timeString}`;
             }
           }
           return val;
@@ -36779,7 +36783,7 @@
             onChange
           });
         }
-        const SUBMISSION_LABELS$1 = getFieldLabels();
+        const SUBMISSION_LABELS$1 = Object.fromEntries(Object.entries(getFieldLabels()).filter(([key]) => key !== "submitted_at"));
         const isValidFieldKey = key => {
           return key in SUBMISSION_LABELS$1;
         };
@@ -41013,7 +41017,7 @@
           });
         }
         const isInputField = field => {
-          return field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "textarea";
+          return field.type === "text" || field.type === "email" || field.type === "date";
         };
         function EditInput() {
           const {
@@ -41053,7 +41057,7 @@
                 onChange: setDraftLabelValue,
                 onBlur: onLabelEditComplete
               })
-            }), /* @__PURE__ */jsxRuntimeExports.jsx("p", {
+            }), currentField.type !== "date" && /* @__PURE__ */jsxRuntimeExports.jsx("p", {
               children: /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
                 label: "Placeholder",
                 value: draftPlaceholderValue,
@@ -41310,7 +41314,7 @@
             }, field.fieldKey))]
           });
         }
-        const screenKeys = ["email", "tel", "text", "select", "checkbox", "wysiwyg", "submit", "textarea"];
+        const screenKeys = ["email", "tel", "text", "date", "select", "checkbox", "wysiwyg", "submit", "textarea"];
         const BuilderSettingsWrapper = dt.div`
 	padding: var(--ptr-admin-spacing-md);
 	border-radius: 8px;
@@ -41340,6 +41344,7 @@
             email: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             tel: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             text: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
+            date: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             textarea: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             select: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditDropdown, {}),
             checkbox: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditCheckbox, {}),

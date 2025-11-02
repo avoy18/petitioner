@@ -33,6 +33,7 @@ class AV_Petitioner_Submissions_Controller
         $form_id                    = isset($_POST['form_id']) ? sanitize_text_field(wp_unslash($_POST['form_id'])) : '';
         $fname                      = isset($_POST['petitioner_fname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_fname'])) : '';
         $lname                      = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
+        $date_of_birth              = isset($_POST['petitioner_date_of_birth']) ? sanitize_text_field(wp_unslash($_POST['petitioner_date_of_birth'])) : '';
         $country                    = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
         $phone                      = isset($_POST['petitioner_phone']) ? sanitize_text_field(wp_unslash($_POST['petitioner_phone'])) : '';
         $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
@@ -111,6 +112,11 @@ class AV_Petitioner_Submissions_Controller
             'submitted_at'      => current_time('mysql'),
             'approval_status'   => $approval_status,
         );
+
+        // Add date_of_birth if it's provided
+        if (!empty($date_of_birth)) {
+            $data['date_of_birth'] = $date_of_birth;
+        }
 
         if ($confirmation_token) {
             $data['confirmation_token'] = $confirmation_token;

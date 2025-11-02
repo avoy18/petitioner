@@ -1,10 +1,15 @@
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import { TextControl, CheckboxControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import type { BuilderField, TextField } from '@admin/sections/EditFields/FormBuilder/consts';
+import type {
+	BuilderField,
+	TextField,
+} from '@admin/sections/EditFields/FormBuilder/consts';
 
 const isInputField = (field: BuilderField): field is TextField => {
-	return field.type === 'text' || field.type === 'email'  || field.type === 'tel' || field.type === 'textarea';
+	return (
+		field.type === 'text' || field.type === 'email' || field.type === 'date'
+	);
 };
 
 export default function EditInput() {
@@ -54,14 +59,16 @@ export default function EditInput() {
 					onBlur={onLabelEditComplete}
 				/>
 			</p>
-			<p>
-				<TextControl
-					label="Placeholder"
-					value={draftPlaceholderValue}
-					onChange={setDraftPlaceholderValue}
-					onBlur={onPlaceholderEditComplete}
-				/>
-			</p>
+			{currentField.type !== 'date' && (
+				<p>
+					<TextControl
+						label="Placeholder"
+						value={draftPlaceholderValue}
+						onChange={setDraftPlaceholderValue}
+						onBlur={onPlaceholderEditComplete}
+					/>
+				</p>
+			)}
 			{currentField?.type !== 'email' && (
 				<p>
 					<CheckboxControl

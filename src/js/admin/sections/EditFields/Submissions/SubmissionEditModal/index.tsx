@@ -16,7 +16,9 @@ import SubmissionEditField from './SubmissionEditField';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
 
-const SUBMISSION_LABELS = getFieldLabels();
+const SUBMISSION_LABELS = Object.fromEntries(
+	Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
+) as Partial<Record<FieldKey, string>>;
 
 export const isValidFieldKey = (
 	key: string
