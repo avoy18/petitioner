@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.6.1
+Stable Tag: 0.6.2
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -97,6 +97,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 9. Integrations
 
 == Changelog ==
+
+= 0.6.2 =
+* Allow passing images to the petition letter
+* Fix relative paths on images in the email templates
+* Allow displaying date of birth on submissions
 
 = 0.6.1 =
 * Allow passing images to the WYSIWYG editor

@@ -281,7 +281,7 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
+        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'date_of_birth', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
 
         $fetch_settings = [
             'per_page'          => $per_page,
