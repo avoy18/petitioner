@@ -41017,7 +41017,7 @@
           });
         }
         const isInputField = field => {
-          return field.type === "text" || field.type === "email" || field.type === "date";
+          return field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "textarea" || field.type === "date";
         };
         function EditInput() {
           const {

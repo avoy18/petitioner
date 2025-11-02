@@ -8,7 +8,11 @@ import type {
 
 const isInputField = (field: BuilderField): field is TextField => {
 	return (
-		field.type === 'text' || field.type === 'email' || field.type === 'date'
+		field.type === 'text' ||
+		field.type === 'email' ||
+		field.type === 'tel' ||
+		field.type === 'textarea' ||
+		field.type === 'date'
 	);
 };
 
