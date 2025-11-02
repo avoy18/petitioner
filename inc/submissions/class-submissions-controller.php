@@ -536,84 +536,20 @@ class AV_Petitioner_Submissions_Controller
         wp_send_json_success(['count' => (int) $count]);
     }
 
-    /**
+     /**
      * Export submissions to CSV
+     * deprecated
+     * use AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv instead
      */
     public static function admin_petitioner_export_csv()
     {
-        global $wpdb;
-
-        $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare(
-                'SELECT * FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
-                $form_id,
-            )
+        _deprecated_function(
+            __METHOD__, 
+            '0.7.0', 
+            'AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv'
         );
 
-        if (empty($results)) {
-            wp_die('No submissions available.');
-        }
-
-        // Set the headers to force download
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=petition_submissions.csv');
-
-        // Open output stream for writing
-        $output = fopen('php://output', 'w');
-
-        // Output the column headings (matches DB schema)
-        fputcsv($output, array(
-            'ID',
-            'Form ID',
-            'First Name',
-            'Last Name',
-            'Email',
-            'Country',
-            'Salutation',
-            'Phone',
-            'Street Address',
-            'City',
-            'Postal Code',
-            'BCC Yourself',
-            'Newsletter',
-            'Hide Name',
-            'Accept TOS',
-            'Approval Status',
-            'Submitted At',
-            'Confirmation Token'
-        ));
-
-        // Loop over the rows and output them as CSV
-        foreach ($results as $row) {
-            fputcsv($output, array(
-                $row->id,
-                $row->form_id,
-                $row->fname,
-                $row->lname,
-                $row->email,
-                $row->country,
-                $row->salutation,
-                $row->phone,
-                $row->street_address,
-                $row->city,
-                $row->postal_code,
-                $row->bcc_yourself,
-                $row->newsletter,
-                $row->hide_name,
-                $row->accept_tos,
-                $row->approval_status,
-                $row->submitted_at,
-                $row->confirmation_token
-            ));
-        }
-
-        // Close the output stream
-        fclose($output);
-
-        // Prevent any further output (like HTML or errors)
-        exit;
+        AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv();
     }
 
     /**
