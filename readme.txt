@@ -98,6 +98,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.6.2 =
+* Allow passing images to the petition letter
+
 = 0.6.1 =
 * Allow passing images to the WYSIWYG editor
 * New field: Date of Birth
