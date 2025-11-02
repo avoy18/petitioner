@@ -180,17 +180,12 @@ export const getHumanValue = (val: string, type: string): string => {
 
 		if (!isNaN(date.getTime())) {
 			const dateString = date.toLocaleDateString(undefined, {
-				month: 'short',
 				day: 'numeric',
+				month: 'short',
+				year: 'numeric',
 			});
 
-			const timeString = date.toLocaleTimeString(undefined, {
-				hour: 'numeric',
-				minute: '2-digit',
-				hour12: true,
-			});
-
-			return `${dateString} ${timeString}`;
+			return dateString;
 		}
 	}
 
