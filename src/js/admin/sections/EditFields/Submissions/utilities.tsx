@@ -176,16 +176,15 @@ export const getHumanValue = (val: string, type: string): string => {
 	}
 
 	if (type === 'date') {
-		const date = new Date(val);
+		// Append time to force UTC interpretation and avoid timezone shifts
+		const date = new Date(val + 'T00:00:00');
 
 		if (!isNaN(date.getTime())) {
-			const dateString = date.toLocaleDateString(undefined, {
+			return date.toLocaleDateString(undefined, {
 				day: 'numeric',
 				month: 'short',
 				year: 'numeric',
 			});
-
-			return dateString;
 		}
 	}
 

@@ -28780,14 +28780,13 @@ const getHumanValue = (val, type) => {
     return val === "1" ? "✅" : "❌";
   }
   if (type === "date") {
-    const date = new Date(val);
+    const date = /* @__PURE__ */ new Date(val + "T00:00:00");
     if (!isNaN(date.getTime())) {
-      const dateString = date.toLocaleDateString(void 0, {
+      return date.toLocaleDateString(void 0, {
         day: "numeric",
         month: "short",
         year: "numeric"
       });
-      return dateString;
     }
   }
   return val;
