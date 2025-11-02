@@ -168,6 +168,6 @@ class AV_Petitioner_Shortcodes
 
     static public function get_available_fields()
     {
-        return ['name', 'country', 'date', 'postal_code', 'city', 'street_address', 'postal_code', 'comments', 'submitted_at'];
+        return ['name', 'country', 'date_of_birth', 'salutation', 'city', 'street_address', 'postal_code', 'comments', 'submitted_at'];
     }
 }
