@@ -6,6 +6,8 @@ export default function PTRichText({
 	value = '',
 	height = 300,
 	help = '',
+	plugins = 'lists link',
+	toolbar = 'formatselect | bold italic | bullist numlist | link',
 	onChange = (value) => {},
 }: {
 	id: string;
@@ -13,6 +15,8 @@ export default function PTRichText({
 	value: any;
 	height?: number;
 	help?: any;
+	plugins?: string;
+	toolbar?: string;
 	onChange: (value: string) => void;
 }) {
 	const editorRef = useRef(null);
@@ -25,8 +29,8 @@ export default function PTRichText({
 			tinymce.init({
 				selector: `#${id}`,
 				menubar: false,
-				plugins: 'lists link',
-				toolbar: 'formatselect | bold italic | bullist numlist | link',
+				plugins,
+				toolbar,
 				block_formats:
 					'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3',
 				height,
