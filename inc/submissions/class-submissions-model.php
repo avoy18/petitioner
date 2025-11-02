@@ -202,7 +202,6 @@ class AV_Petitioner_Submissions_Model
             $operator = $condition['operator'];
             $value = $condition['value'];
 
-            // Validate field
             if (!in_array($field, $allowed_fields)) continue;
 
             switch ($operator) {
@@ -366,14 +365,23 @@ class AV_Petitioner_Submissions_Model
         global $wpdb;
 
         $table_name = self::table_name();
+        $query = isset($settings['query']) ? $settings['query'] : [];
+        $relation = isset($settings['relation']) ? $settings['relation'] : 'AND';
 
-        // Get the total count of submissions for the form
-        return $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table_name} WHERE form_id = %d AND approval_status = 'Confirmed'",
-                $form_id,
-            )
-        );
+        // Default: only count confirmed submissions if no query is provided
+        if (empty($query)) {
+            $query = [
+                ['field' => 'approval_status', 'operator' => 'equals', 'value' => 'Confirmed']
+            ];
+        }
+
+        // Build WHERE clause
+        $where_data = self::build_where_clause($form_id, $query, self::$ALLOWED_FIELDS, $relation);
+
+        // Get the count
+        $sql = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_data['where']}";
+        
+        return (int) $wpdb->get_var($wpdb->prepare($sql, ...$where_data['params']));
     }
 
     /**
