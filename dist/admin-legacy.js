@@ -41022,7 +41022,7 @@
           });
         }
         const isInputField = field => {
-          return field.type === "text" || field.type === "email" || field.type === "tel" || field.type === "textarea";
+          return field.type === "text" || field.type === "email" || field.type === "date";
         };
         function EditInput() {
           const {
@@ -41062,7 +41062,7 @@
                 onChange: setDraftLabelValue,
                 onBlur: onLabelEditComplete
               })
-            }), /* @__PURE__ */jsxRuntimeExports.jsx("p", {
+            }), currentField.type !== "date" && /* @__PURE__ */jsxRuntimeExports.jsx("p", {
               children: /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
                 label: "Placeholder",
                 value: draftPlaceholderValue,
@@ -41319,7 +41319,7 @@
             }, field.fieldKey))]
           });
         }
-        const screenKeys = ["email", "tel", "text", "select", "checkbox", "wysiwyg", "submit", "textarea"];
+        const screenKeys = ["email", "tel", "text", "date", "select", "checkbox", "wysiwyg", "submit", "textarea"];
         const BuilderSettingsWrapper = dt.div`
 	padding: var(--ptr-admin-spacing-md);
 	border-radius: 8px;
@@ -41349,6 +41349,7 @@
             email: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             tel: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             text: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
+            date: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             textarea: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditInput, {}),
             select: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditDropdown, {}),
             checkbox: () => /* @__PURE__ */jsxRuntimeExports.jsx(EditCheckbox, {}),
