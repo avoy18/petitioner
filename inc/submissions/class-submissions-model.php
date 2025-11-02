@@ -118,7 +118,7 @@ class AV_Petitioner_Submissions_Model
      * @example
      * // Get confirmed submissions only
      * $result = AV_Petitioner_Submissions_Model::get_form_submissions(123, [
-     *     'query' => ['approval_status' => 'Confirmed']
+     *     'query' => [['field' => 'approval_status', 'operator' => 'equals', 'value' => 'Confirmed']]
      * ]);
      */
     public static function get_form_submissions($form_id, $settings)
@@ -143,19 +143,10 @@ class AV_Petitioner_Submissions_Model
             }
         }
 
-        $where = ['form_id = %d'];
-        $params = [$form_id];
+        $where_clause = self::build_where_clause($form_id, $query, $allowed_fields);
+        $params = $where_clause['params'];
 
-        if (!empty($query)) {
-            foreach ($query as $k => $v) {
-                if (preg_match('/^[a-zA-Z0-9_]+$/', $k) && in_array($k, $allowed_fields)) {
-                    $where[] = "`$k` = %s";
-                    $params[] = $v;
-                }
-            }
-        }
-
-        $where_sql = implode(' AND ', $where);
+        $where_sql = $where_clause['where'];
 
         $orderby = in_array($orderby, $allowed_fields, true) ? $orderby : 'submitted_at';
         $order   = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
@@ -185,6 +176,50 @@ class AV_Petitioner_Submissions_Model
             'submissions'   => $submissions,
             'total'         => $total_submissions,
         ];
+    }
+
+    /**
+     * Build WHERE clause with parameters for submissions query
+     * 
+     * @param int $form_id Form ID
+     * @param array $query Query conditions (can be simple key-value or operator arrays)
+     * @param array $allowed_fields List of allowed field names
+     * @return array ['where' => string, 'params' => array]
+     * 
+     * @since 0.7.0
+     */
+    public static function build_where_clause($form_id, $query, $allowed_fields)
+    {
+        $where = ['form_id = %d'];
+        $params = [$form_id];
+
+        foreach ($query as $condition) {
+            $field = $condition['field'];
+            $operator = $condition['operator'];
+            $value = $condition['value'];
+
+            // Validate field
+            if (!in_array($field, $allowed_fields)) continue;
+
+            switch ($operator) {
+                case 'equals':
+                    $where[] = "`$field` = %s";
+                    $params[] = $value;
+                    break;
+                case 'not_equals':
+                    $where[] = "`$field` != %s";
+                    $params[] = $value;
+                    break;
+                case 'is_empty':
+                    $where[] = "(`$field` = '' OR `$field` IS NULL)";
+                    break;
+                case 'is_not_empty':
+                    $where[] = "(`$field` != '' AND `$field` IS NOT NULL)";
+                    break;
+            }
+        }
+
+        return ['where' => implode(' AND ', $where), 'params' => $params];
     }
 
     public static function get_unconfirmed_submissions($form_id)

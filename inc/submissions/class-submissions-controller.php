@@ -282,7 +282,11 @@ class AV_Petitioner_Submissions_Controller
             'offset'            => $offset,
             'fields'            => $fields,
             'query'             => [
-                'approval_status' => 'Confirmed',
+                [
+                    'field'     => 'approval_status',
+                    'operator'  => 'equals',
+                    'value'     => 'Confirmed',
+                ]
             ],
         ];
 
@@ -536,16 +540,19 @@ class AV_Petitioner_Submissions_Controller
         wp_send_json_success(['count' => (int) $count]);
     }
 
-     /**
+    /**
      * Export submissions to CSV
-     * deprecated
-     * use AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv instead
+     * 
+     * @deprecated 0.7.0 Use AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv() instead
+     * @see AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv()
+     * 
+     * @return void
      */
     public static function admin_petitioner_export_csv()
     {
         _deprecated_function(
-            __METHOD__, 
-            '0.7.0', 
+            __METHOD__,
+            '0.7.0',
             'AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv'
         );
 

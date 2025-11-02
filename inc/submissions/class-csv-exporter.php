@@ -16,41 +16,35 @@ class AV_Petitioner_CSV_Exporter
      */
     public static function api_admin_petitioner_export_csv()
     {
-        AV_Petitioner_Submissions_Controller::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
-        
+        self::check_permissions();
+
         $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : false;
-        
+
         if (!$form_id) {
             wp_die(AV_Petitioner_Labels::get('invalid_form_id'));
         }
 
-        // Parse conditional logic from request
         $conditional_logic_raw = isset($_POST['conditional_logic']) ? wp_unslash($_POST['conditional_logic']) : null;
         $conditional_logic = self::parse_conditional_logic($conditional_logic_raw);
 
-        // Build query for model
         $query = self::build_model_query($conditional_logic);
 
-        // Fetch submissions with filters
+
         $results = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
             'query' => $query,
-            'per_page' => 999999, // Get all matching results
+            'per_page' => 999999,
         ]);
 
         if (empty($results['submissions'])) {
             wp_die(AV_Petitioner_Labels::get('no_submissions_to_export'));
         }
 
-        // Generate filename with timestamp
         $filename = 'petition_submissions_' . date('Y-m-d_H-i-s') . '.csv';
-        
-        // Send download headers
+
         self::send_download_headers($filename);
 
-        // Stream CSV to output
         self::stream_csv($results['submissions']);
 
-        // Prevent any further output
         exit;
     }
 
@@ -74,7 +68,6 @@ class AV_Petitioner_CSV_Exporter
             return null;
         }
 
-        // Validate structure
         if (!is_array($conditional_logic) || !isset($conditional_logic['conditions'])) {
             av_ptr_error_log('Petitioner CSV Export: Invalid conditional_logic structure');
             return null;
@@ -85,11 +78,10 @@ class AV_Petitioner_CSV_Exporter
 
     /**
      * Convert conditional logic to model query array
-     * NOTE: Model currently only supports 'equals' operator with AND logic
-     * Other operators (contains, starts_with, etc.) are ignored
+     * Supports: equals, not_equals, is_empty, is_not_empty
      * 
      * @param array|null $conditional_logic Parsed conditional logic
-     * @return array Query array for model
+     * @return array Query array for model in format: [['field' => 'x', 'operator' => 'y', 'value' => 'z'], ...]
      */
     private static function build_model_query($conditional_logic)
     {
@@ -99,24 +91,34 @@ class AV_Petitioner_CSV_Exporter
             return $query;
         }
 
+        $supported_operators = ['equals', 'not_equals', 'is_empty', 'is_not_empty'];
         $ignored_operators = [];
 
         foreach ($conditional_logic['conditions'] as $condition) {
-            // Validate condition structure
             if (
                 !isset($condition['field']) ||
                 !isset($condition['operator']) ||
-                !isset($condition['value'])
+                empty($condition['field'])
             ) {
                 continue;
             }
 
-            // Only process conditions with the 'equals' operator
-            if ($condition['operator'] === 'equals' && !empty($condition['field']) && $condition['value'] !== '') {
-                $query[$condition['field']] = $condition['value'];
-            } else if ($condition['operator'] !== 'equals' && !in_array($condition['operator'], $ignored_operators)) {
+            $operator = $condition['operator'];
+            $field = $condition['field'];
+            $value = isset($condition['value']) ? $condition['value'] : null;
+
+            // Process supported operators
+            if ($operator === 'equals' && $value !== '' && $value !== null) {
+                $query[] = ['field' => $field, 'operator' => 'equals', 'value' => $value];
+            } else if ($operator === 'not_equals' && $value !== '' && $value !== null) {
+                $query[] = ['field' => $field, 'operator' => 'not_equals', 'value' => $value];
+            } else if ($operator === 'is_empty') {
+                $query[] = ['field' => $field, 'operator' => 'is_empty', 'value' => null];
+            } else if ($operator === 'is_not_empty') {
+                $query[] = ['field' => $field, 'operator' => 'is_not_empty', 'value' => null];
+            } else if (!in_array($operator, $supported_operators) && !in_array($operator, $ignored_operators)) {
                 // Track ignored operators for logging
-                $ignored_operators[] = $condition['operator'];
+                $ignored_operators[] = $operator;
             }
         }
 
@@ -205,7 +207,7 @@ class AV_Petitioner_CSV_Exporter
     private static function get_csv_row($submission)
     {
         $row = [];
-        
+
         // Build row based on allowed fields from model
         foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
             $row[] = isset($submission->$field) ? $submission->$field : '';
@@ -230,5 +232,18 @@ class AV_Petitioner_CSV_Exporter
         header('Content-Disposition: attachment; filename=' . sanitize_file_name($filename));
         header('Cache-Control: no-cache, must-revalidate');
         header('Expires: 0');
+    }
+
+    private static function check_permissions()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_die(AV_Petitioner_Labels::get('missing_permissions'));
+        }
+
+        // Nonce check
+        $nonce_label = AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL;
+        if (!isset($_POST['petitioner_nonce']) || !wp_verify_nonce($_POST['petitioner_nonce'], $nonce_label)) {
+            wp_die(AV_Petitioner_Labels::get('invalid_nonce'));
+        }
     }
 }
