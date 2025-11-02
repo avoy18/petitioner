@@ -55,7 +55,7 @@ class AV_Petitioner_CSV_Exporter
      * @param string|null $raw_json Raw JSON string from POST data
      * @return array|null Parsed conditional logic or null if invalid
      */
-    private static function parse_conditional_logic($raw_json)
+    public static function parse_conditional_logic($raw_json)
     {
         if (empty($raw_json)) {
             return null;
@@ -84,7 +84,7 @@ class AV_Petitioner_CSV_Exporter
      * @param array|null $conditional_logic Parsed conditional logic
      * @return array Query array for model in format: [['field' => 'x', 'operator' => 'y', 'value' => 'z'], ...]
      */
-    private static function build_model_query($conditional_logic)
+    public static function build_model_query($conditional_logic)
     {
         $query = [];
 

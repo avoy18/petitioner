@@ -432,6 +432,36 @@ class AV_Petitioner_Submissions_Controller
     }
 
     /**
+     * @since 0.7.0
+     */
+    public static function api_get_submission_count()
+    {
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
+
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
+        $settings = [];
+
+        if (!$form_id) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('invalid_form_id')]);
+        }
+
+        $conditional_logic_raw = isset($_POST['conditional_logic']) ? wp_unslash($_POST['conditional_logic']) : null;
+
+        if ($conditional_logic_raw) {
+            $conditional_logic = AV_Petitioner_CSV_Exporter::parse_conditional_logic($conditional_logic_raw);
+            $settings['query'] = AV_Petitioner_CSV_Exporter::build_model_query($conditional_logic);
+        }
+
+        $count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings);
+
+        if ($count === false) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        wp_send_json_success(['count' => $count]);
+    }
+
+    /**
      * Update submission status via backend
      */
     public static function api_change_submission_status()
