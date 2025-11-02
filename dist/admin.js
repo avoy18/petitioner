@@ -29805,7 +29805,7 @@ function ExportModal({
         label
       };
     }).filter(Boolean);
-  }, [submissionExample]);
+  }, [submissionExample, potentialLabels]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
     {

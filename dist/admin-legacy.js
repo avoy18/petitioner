@@ -37208,7 +37208,7 @@
                 label
               };
             }).filter(Boolean);
-          }, [submissionExample]);
+          }, [submissionExample, potentialLabels]);
           return /* @__PURE__ */jsxRuntimeExports.jsxs(Modal, {
             size: "large",
             title: __("Export submissions", "petitioner-theme"),

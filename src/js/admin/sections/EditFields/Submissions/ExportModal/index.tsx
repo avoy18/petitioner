@@ -59,7 +59,7 @@ export default function ExportModal({
 				};
 			})
 			.filter(Boolean) as Array<{ value: string; label: string }>;
-	}, [submissionExample]);
+	}, [submissionExample, potentialLabels]);
 
 	return (
 		<Modal
