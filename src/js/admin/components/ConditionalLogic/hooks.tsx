@@ -48,5 +48,6 @@ export const useConditionalLogic = (options?: {
 		setLogic,
 		resetLogic,
 		isValid,
+		validCount: logic.conditions.filter((condition) => condition.field).length,
 	};
 };

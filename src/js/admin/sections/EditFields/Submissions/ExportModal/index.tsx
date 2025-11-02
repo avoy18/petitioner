@@ -29,7 +29,7 @@ export default function ExportModal({
 	total: number;
 }) {
 	const [showFilters, setShowFilters] = useState(false);
-	const { logic, setLogic } = useConditionalLogic();
+	const { logic, setLogic, validCount } = useConditionalLogic();
 
 	const exportURL = useMemo(() => getExportURL(), []);
 
@@ -43,7 +43,8 @@ export default function ExportModal({
 				<CardBody>
 					<SummaryWrapper>
 						<SummaryItem>
-							Total: <strong>{total}</strong>
+							{__('Total:', 'petitioner')}{' '}
+							<strong>{total}</strong>
 						</SummaryItem>
 						<SummaryItem>
 							{__('Filters:', 'petitioner')}{' '}
@@ -62,9 +63,7 @@ export default function ExportModal({
 								? __('Hide filters', 'petitioner')
 								: __('Show filters', 'petitioner')}
 
-								<span>
-									({logic.conditions.length})
-								</span>
+							<span>({validCount})</span>
 						</Button>
 						{showFilters && (
 							<ConditionalLogic

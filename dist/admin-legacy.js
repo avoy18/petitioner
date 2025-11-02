@@ -37164,7 +37164,8 @@
             logic,
             setLogic,
             resetLogic,
-            isValid
+            isValid,
+            validCount: logic.conditions.filter(condition => condition.field).length
           };
         };
         const ConditionalLogic = ({
@@ -37186,7 +37187,8 @@
           const [showFilters, setShowFilters] = reactExports.useState(false);
           const {
             logic,
-            setLogic
+            setLogic,
+            validCount
           } = useConditionalLogic();
           const exportURL = reactExports.useMemo(() => getExportURL(), []);
           return /* @__PURE__ */jsxRuntimeExports.jsxs(Modal, {
@@ -37197,7 +37199,7 @@
               children: /* @__PURE__ */jsxRuntimeExports.jsxs(CardBody, {
                 children: [/* @__PURE__ */jsxRuntimeExports.jsxs(SummaryWrapper, {
                   children: [/* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
-                    children: ["Total: ", /* @__PURE__ */jsxRuntimeExports.jsx("strong", {
+                    children: [__("Total:", "petitioner"), " ", /* @__PURE__ */jsxRuntimeExports.jsx("strong", {
                       children: total
                     })]
                   }), /* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
@@ -37211,7 +37213,7 @@
                     variant: "secondary",
                     onClick: () => setShowFilters(!showFilters),
                     children: [showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"), /* @__PURE__ */jsxRuntimeExports.jsxs("span", {
-                      children: ["(", logic.conditions.length, ")"]
+                      children: ["(", validCount, ")"]
                     })]
                   }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
                     value: logic,
