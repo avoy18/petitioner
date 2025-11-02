@@ -36172,15 +36172,11 @@
             const date = new Date(val);
             if (!isNaN(date.getTime())) {
               const dateString = date.toLocaleDateString(void 0, {
+                day: "numeric",
                 month: "short",
-                day: "numeric"
+                year: "numeric"
               });
-              const timeString = date.toLocaleTimeString(void 0, {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true
-              });
-              return `${dateString} ${timeString}`;
+              return dateString;
             }
           }
           return val;
@@ -36788,7 +36784,7 @@
             onChange
           });
         }
-        const SUBMISSION_LABELS$1 = getFieldLabels();
+        const SUBMISSION_LABELS$1 = Object.fromEntries(Object.entries(getFieldLabels()).filter(([key]) => key !== "submitted_at"));
         const isValidFieldKey = key => {
           return key in SUBMISSION_LABELS$1;
         };
