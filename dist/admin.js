@@ -29569,19 +29569,10 @@ const SummaryWrapper = dt.div(_o || (_o = __template(["\n	display: flex;\n	flex-
 const SummaryItem = dt.div(_p || (_p = __template(["\n	font-size: 1rem;\n"])));
 const FiltersWrapper = dt.div(_q || (_q = __template(["\n	display: flex;\n	flex-direction: column;\n    justify-content: flex-start;\n    align-items: flex-start;\n	gap: ", ";\n"])), SPACINGS.md);
 const OPERATORS = [
-  { value: "equals", label: __("Equals", "petitioner") },
-  { value: "not_equals", label: __("Not Equals", "petitioner") },
-  { value: "contains", label: __("Contains", "petitioner") },
-  { value: "not_contains", label: __("Does Not Contain", "petitioner") },
-  { value: "starts_with", label: __("Starts With", "petitioner") },
-  {
-    value: "not_starts_with",
-    label: __("Does Not Start With", "petitioner")
-  },
-  { value: "ends_with", label: __("Ends With", "petitioner") },
-  { value: "not_ends_with", label: __("Does Not End With", "petitioner") },
-  { value: "is_empty", label: __("Is Empty", "petitioner") },
-  { value: "is_not_empty", label: __("Is Not Empty", "petitioner") }
+  { value: "equals", label: __("equals", "petitioner") },
+  { value: "not_equals", label: __("not equals", "petitioner") },
+  { value: "is_empty", label: __("is empty", "petitioner") },
+  { value: "is_not_empty", label: __("is not empty", "petitioner") }
 ];
 const LOGIC_OPTIONS = [
   { value: "AND", label: __("AND", "petitioner") },
@@ -29817,13 +29808,20 @@ function ExportModal({
             /* @__PURE__ */ jsxRuntimeExports.jsx(CardDivider, {})
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(FiltersWrapper, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               Button,
               {
                 icon: "filter",
                 variant: "secondary",
                 onClick: () => setShowFilters(!showFilters),
-                children: showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner")
+                children: [
+                  showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                    "(",
+                    logic.conditions.length,
+                    ")"
+                  ] })
+                ]
               }
             ),
             showFilters && /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -29839,7 +29837,7 @@ function ExportModal({
             )
           ] })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { action: exportURL, method: "POST", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { action: exportURL, method: "POST", target: "_blank", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {

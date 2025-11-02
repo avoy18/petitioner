@@ -61,6 +61,10 @@ export default function ExportModal({
 							{showFilters
 								? __('Hide filters', 'petitioner')
 								: __('Show filters', 'petitioner')}
+
+								<span>
+									({logic.conditions.length})
+								</span>
 						</Button>
 						{showFilters && (
 							<ConditionalLogic
@@ -75,7 +79,7 @@ export default function ExportModal({
 					</FiltersWrapper>
 				</CardBody>
 			</Card>
-			<form action={exportURL} method="POST">
+			<form action={exportURL} method="POST" target="_blank">
 				<input
 					type="hidden"
 					name="conditional_logic"

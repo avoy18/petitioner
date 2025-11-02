@@ -36929,34 +36929,16 @@
 `;
         const OPERATORS = [{
           value: "equals",
-          label: __("Equals", "petitioner")
+          label: __("equals", "petitioner")
         }, {
           value: "not_equals",
-          label: __("Not Equals", "petitioner")
-        }, {
-          value: "contains",
-          label: __("Contains", "petitioner")
-        }, {
-          value: "not_contains",
-          label: __("Does Not Contain", "petitioner")
-        }, {
-          value: "starts_with",
-          label: __("Starts With", "petitioner")
-        }, {
-          value: "not_starts_with",
-          label: __("Does Not Start With", "petitioner")
-        }, {
-          value: "ends_with",
-          label: __("Ends With", "petitioner")
-        }, {
-          value: "not_ends_with",
-          label: __("Does Not End With", "petitioner")
+          label: __("not equals", "petitioner")
         }, {
           value: "is_empty",
-          label: __("Is Empty", "petitioner")
+          label: __("is empty", "petitioner")
         }, {
           value: "is_not_empty",
-          label: __("Is Not Empty", "petitioner")
+          label: __("is not empty", "petitioner")
         }];
         const LOGIC_OPTIONS = [{
           value: "AND",
@@ -37224,11 +37206,13 @@
                     })]
                   }), /* @__PURE__ */jsxRuntimeExports.jsx(CardDivider, {})]
                 }), /* @__PURE__ */jsxRuntimeExports.jsxs(FiltersWrapper, {
-                  children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                  children: [/* @__PURE__ */jsxRuntimeExports.jsxs(Button, {
                     icon: "filter",
                     variant: "secondary",
                     onClick: () => setShowFilters(!showFilters),
-                    children: showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner")
+                    children: [showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"), /* @__PURE__ */jsxRuntimeExports.jsxs("span", {
+                      children: ["(", logic.conditions.length, ")"]
+                    })]
                   }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
                     value: logic,
                     onChange: setLogic,
@@ -37245,6 +37229,7 @@
             }), /* @__PURE__ */jsxRuntimeExports.jsxs("form", {
               action: exportURL,
               method: "POST",
+              target: "_blank",
               children: [/* @__PURE__ */jsxRuntimeExports.jsx("input", {
                 type: "hidden",
                 name: "conditional_logic",

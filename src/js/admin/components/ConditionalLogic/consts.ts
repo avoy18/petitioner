@@ -36,19 +36,10 @@ export type ConditionComponentProps = {
 
 // Operators
 export const OPERATORS = [
-	{ value: 'equals', label: __('Equals', 'petitioner') },
-	{ value: 'not_equals', label: __('Not Equals', 'petitioner') },
-	{ value: 'contains', label: __('Contains', 'petitioner') },
-	{ value: 'not_contains', label: __('Does Not Contain', 'petitioner') },
-	{ value: 'starts_with', label: __('Starts With', 'petitioner') },
-	{
-		value: 'not_starts_with',
-		label: __('Does Not Start With', 'petitioner'),
-	},
-	{ value: 'ends_with', label: __('Ends With', 'petitioner') },
-	{ value: 'not_ends_with', label: __('Does Not End With', 'petitioner') },
-	{ value: 'is_empty', label: __('Is Empty', 'petitioner') },
-	{ value: 'is_not_empty', label: __('Is Not Empty', 'petitioner') },
+	{ value: 'equals', label: __('equals', 'petitioner') },
+	{ value: 'not_equals', label: __('not equals', 'petitioner') },
+	{ value: 'is_empty', label: __('is empty', 'petitioner') },
+	{ value: 'is_not_empty', label: __('is not empty', 'petitioner') },
 ];
 
 export const LOGIC_OPTIONS = [
