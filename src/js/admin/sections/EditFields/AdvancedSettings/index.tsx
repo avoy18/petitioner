@@ -266,6 +266,8 @@ export default function AdvancedSettings() {
 						/>
 					</p>
 					<PTRichText
+						plugins="lists link image"
+						toolbar="formatselect | bold italic | bullist numlist | link | image"
 						label={__('Thank you email content', 'petitioner')}
 						id="petitioner_ty_email"
 						help={
@@ -343,6 +345,8 @@ export default function AdvancedSettings() {
 						/>
 					</p>
 					<PTRichText
+						plugins="lists link image"
+						toolbar="formatselect | bold italic | bullist numlist | link | image"
 						label={__('Success message content', 'petitioner')}
 						id="petitioner_success_message"
 						help={__(

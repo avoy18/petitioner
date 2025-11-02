@@ -1,1 +1,559 @@
-import{s as o}from"./assets/utilities-Cs0l2Oez.js";function g(){import.meta.url,import("_").catch(()=>1),async function*(){}().next()}class h{constructor(t){if(typeof window.petitionerCaptcha<"u"&&window.petitionerCaptcha.recaptchaSiteKey){const i=t.querySelector('[name="petitioner-g-recaptcha-response"]');t.addEventListener("focusin",function(){i&&i.value||typeof grecaptcha>"u"||typeof(grecaptcha==null?void 0:grecaptcha.ready)>"u"||grecaptcha.ready(function(){grecaptcha.execute(window.petitionerCaptcha.recaptchaSiteKey,{}).then(e=>{i&&(i.value=e)})})},{once:!0})}else console.error("petitioner - reCAPTCHA site key is missing or reCAPTCHA failed to load.")}}class l{constructor(t){this.widgetId=null,this.callbackFunction=null,this.form=t,this.hcaptchaField=this.form.querySelector('[name="petitioner-h-captcha-response"]'),this.hcaptchaContainer=this.form.querySelector(".petitioner-h-captcha-container"),this.isHCaptchaReady()&&this.initHCaptcha()}isHCaptchaReady(){var t,i;return!!(typeof hcaptcha<"u"&&((t=window.petitionerCaptcha)!=null&&t.enableHcaptcha)&&((i=window.petitionerCaptcha)!=null&&i.hcaptchaSiteKey)&&this.hcaptchaContainer)}initHCaptcha(){var t;!hcaptcha||!((t=window.petitionerCaptcha)!=null&&t.hcaptchaSiteKey)||!this.hcaptchaContainer||(this.widgetId=hcaptcha.render(this.hcaptchaContainer,{sitekey:window.petitionerCaptcha.hcaptchaSiteKey,size:"invisible",callback:this.handleSuccess.bind(this)}))}handleSuccess(t){if(!t){console.warn("❌ petitioner - hCaptcha token missing.");return}if(!this.hcaptchaField){console.error("❌ petitioner - hCaptcha input field not found.");return}this.hcaptchaField.value=t,typeof this.callbackFunction=="function"&&this.callbackFunction()}validate(t){if(!this.hcaptchaField||this.hcaptchaField.value){t();return}this.callbackFunction=t,hcaptcha&&this.widgetId&&hcaptcha.execute(this.widgetId)}}class c{constructor(t){var i;this.widgetId=null,this.callbackFunction=null,this.form=t,this.turnstileField=this.form.querySelector('[name="petitioner-turnstile-response"]'),this.turnstileContainer=this.form.querySelector(".petitioner-turnstile-container"),!(typeof(window==null?void 0:window.turnstile)>"u"||!((i=window.petitionerCaptcha)!=null&&i.turnstileSiteKey)||!this.turnstileContainer)&&this.initTurnstile()}initTurnstile(){var i,e,s;const t=(i=window.petitionerCaptcha)==null?void 0:i.turnstileSiteKey;if(!t){this.handleError();return}this.widgetId=(s=(e=window==null?void 0:window.turnstile)==null?void 0:e.render)==null?void 0:s.call(e,this.turnstileContainer,{sitekey:t,callback:this.handleSuccess.bind(this),theme:"light","error-callback":this.handleError.bind(this)})}handleSuccess(t){if(!t){console.warn("❌ petitioner - Turnstile token missing.");return}if(!this.turnstileField){console.error("❌ petitioner - Turnstile input field not found.");return}this.turnstileField.value=t,typeof this.callbackFunction=="function"&&this.callbackFunction()}handleError(){console.error("❌ petitioner - Turnstile encountered an error.")}validate(t){var i,e;if(!this.turnstileField||this.turnstileField.value){t();return}this.callbackFunction=t,this.widgetId&&((e=(i=window==null?void 0:window.turnstile)==null?void 0:i.execute)==null||e.call(i,this.widgetId))}}class p{constructor(t){this.captchaValidated=!1,this.hcaptcha=null,this.turnstile=null,this._escListener=null,this.wrapper=t,this.responseTitle=null,this.responseText=null,this.formEl=null,this.viewLetterBTN=null,this.petitionerModal=null,this.modalClose=null,this.backdrop=null;const i=(window==null?void 0:window.petitionerFormSettings)||{},{actionPath:e="",nonce:s=""}=i;this.actionPath=e||"",this.nonce=s,this.wrapper&&(this.responseTitle=this.wrapper.querySelector(".petitioner__response > h3"),this.responseText=this.wrapper.querySelector(".petitioner__response > p"),this.formEl=this.wrapper.querySelector("form"),this.viewLetterBTN=this.wrapper.querySelector(".petitioner__btn--letter"),this.petitionerModal=this.wrapper.querySelector(".petitioner-modal"),this.modalClose=this.wrapper.querySelector(".petitioner-modal__close"),this.backdrop=this.wrapper.querySelector(".petitioner-modal__backdrop"),this.initializeCaptcha(),this.setupEventListeners())}initializeCaptcha(){typeof window.petitionerCaptcha>"u"||(window.petitionerCaptcha.enableRecaptcha&&this.formEl&&new h(this.formEl),window.petitionerCaptcha.enableHcaptcha&&this.formEl&&(this.hcaptcha=new l(this.formEl)),window.petitionerCaptcha.enableTurnstile&&this.formEl&&(this.turnstile=new c(this.formEl)))}setupEventListeners(){this.formEl&&this.formEl.addEventListener("submit",this.handleFormSubmit.bind(this)),this.viewLetterBTN&&this.viewLetterBTN.addEventListener("click",()=>this.toggleModal(!0)),this.backdrop&&this.backdrop.addEventListener("click",()=>this.toggleModal(!1)),this.modalClose&&this.modalClose.addEventListener("click",()=>this.toggleModal(!1))}showResponseMSG(t,i=!1){this.wrapper.classList.add("petitioner--submitted");const{title:e,message:s}=t||{title:"",message:""};this.responseTitle&&(this.responseTitle.innerText=e),this.responseText&&(this.responseText.innerHTML=s)}toggleModal(t=!0){this.petitionerModal&&(this.petitionerModal.classList[t?"add":"remove"]("petitioner-modal--visible"),t?(this._escListener=i=>{i.key==="Escape"&&this.toggleModal(!1)},document.addEventListener("keydown",this._escListener)):this._escListener&&(document.removeEventListener("keydown",this._escListener),this._escListener=null))}handleFormSubmit(t){if(t.preventDefault(),this.shouldValidateHCaptcha()){this.hcaptcha.validate(()=>{this.captchaValidated=!0,this.submitForm()});return}if(this.shouldValidateTurnstile()){this.turnstile.validate(()=>{this.captchaValidated=!0,this.submitForm()});return}this.submitForm()}shouldValidateHCaptcha(){return!!(petitionerCaptcha!=null&&petitionerCaptcha.enableHcaptcha&&this.hcaptcha&&!this.captchaValidated)}shouldValidateTurnstile(){return!!(petitionerCaptcha!=null&&petitionerCaptcha.enableTurnstile&&this.turnstile&&!this.captchaValidated)}submitForm(){if(!this.formEl)return;this.wrapper.classList.add("petitioner--loading");const t=new FormData(this.formEl);t.append("petitioner_nonce",this.nonce),fetch(this.actionPath,{method:"POST",body:t,credentials:"same-origin",headers:{"X-Requested-With":"XMLHttpRequest"}}).then(i=>{if(!i.ok)throw new Error("HTTP error! status: ".concat(i.status));return i.json()}).then(i=>{i.success?this.showResponseMSG(i.data,!0):this.showResponseMSG(i.data,!1),this.handleSubmissionComplete(t)}).catch(i=>{console.error("Error:",i),alert("An unexpected error occurred. Please try again later."),this.handleSubmissionComplete()})}handleSubmissionComplete(t){var i;if(this.wrapper.classList.remove("petitioner--loading"),(i=this.formEl)==null||i.reset(),this.captchaValidated=!1,t){const e=new CustomEvent("petitionerFormSubmit",{detail:{formData:t}});document.dispatchEvent(e)}}}class a{constructor(t){if(this.options=t,this.options.currentPage=this.options.currentPage||1,this.submissionListDiv=document.createElement("div"),this.submissionListDiv.className="submissions__list",this.paginationDiv=document.createElement("div"),this.paginationDiv.className="submissions__pagination",!this.options.wrapper)throw new Error("Element not found")}attachEventListeners(){this.paginationDiv&&this.paginationDiv.addEventListener("click",async t=>{const i=t.target;if(i.tagName==="BUTTON"){const e=parseInt(i.dataset.page||"1",10);if(!isNaN(e)){this.options.currentPage=e;const s=await this.options.onPageChange(e);this.options.submissions=s,this.update()}}})}render(){this.options.submissions&&(this.options.wrapper.appendChild(this.submissionListDiv),this.options.wrapper.appendChild(this.paginationDiv),this.submissionListDiv.innerHTML=this.renderSubmissionsList(),this.paginationDiv.innerHTML=this.renderPagination(),this.attachEventListeners())}update(){var t;this.submissionListDiv.innerHTML=this.renderSubmissionsList(),this.paginationDiv.querySelectorAll(".active").forEach(i=>{i.classList.remove("active")}),(t=this.paginationDiv.querySelector('[data-page="'.concat(this.options.currentPage,'"]')))==null||t.classList.add("active")}renderSubmissionsList(){return!this.options.submissions||this.options.submissions.length===0?"":this.options.submissions.map(t=>this.renderSubmissionItem(t)).join(", ")}renderSubmissionItem(t){return'<span class="submissions__item">'.concat(t.name,"</span>")}renderPagination(){if(!this.options.total||!this.options.perPage||!this.options.pagination)return"";const t=Math.ceil(this.options.total/this.options.perPage);if(t<=1)return"";let i='<div class="ptr-pagination">';for(let e=1;e<=t;e++)i+='<button class="ptr-pagination__item '.concat(e===this.options.currentPage?"active":"",'" data-page="').concat(e,'">').concat(e,"</button>");return i+="</div>",i}}class u extends a{constructor(t){super(t),this.options=t}render(){this.options.submissions&&(this.options.wrapper.appendChild(this.submissionListDiv),this.options.wrapper.appendChild(this.paginationDiv),this.options.wrapper.style=this.getWrapperStyles(),this.submissionListDiv.innerHTML=this.renderSubmissionsList(),this.paginationDiv.innerHTML=this.renderPagination(),this.attachEventListeners())}renderSubmissionsList(){if(!this.options.submissions||this.options.submissions.length===0)return"";const t=this.prepareLabels(),i=this.options.submissions.map(e=>this.renderSubmissionItem(e)).join("");return'\n		<div class="submissions__item submissions__item--heading">\n			'.concat(t.map(e=>"<div>".concat(e,"</div>")).join(""),"\n		</div>\n		").concat(i)}prepareLabels(){const t=[],i=this.options.submissions[0];return Object.keys(i).forEach(e=>{var s,r;!((s=this.options.labels)!=null&&s[e])||!this.options.fields.includes(e)||t.push((r=this.options.labels)==null?void 0:r[e])}),t}renderSubmissionItem(t){const i=Object.keys(t).filter(e=>e in this.options.labels&&this.options.fields.includes(e));return'<div class="submissions__item">\n			'.concat(i.map(e=>{var r;const s=e==="fname"?"".concat(t.fname," ").concat(t.lname):t==null?void 0:t[e];return'<div class="submissions__item__inner">\n						<strong>'.concat(((r=this.options.labels)==null?void 0:r[e])||e,":</strong>\n						").concat(s||"","\n					</div>")}).join(""),"\n		</div>")}getWrapperStyles(){const t=this.prepareLabels();return"--ptr-submission-columns: ".concat(t.length)}}class d{constructor(t){var s,r;if(this.wrapper=t,this.currentPage=1,this.totalResults=10,!this.wrapper)throw new Error("Element not found");const i=this.wrapper.dataset.ptrSettings;if(this.ajaxurl=((s=window==null?void 0:window.petitionerSubmissionSettings)==null?void 0:s.actionPath)||"",this.nonce=((r=window==null?void 0:window.petitionerSubmissionSettings)==null?void 0:r.nonce)||"",this.labels={},!this.ajaxurl||!this.nonce)throw new Error("AJAX URL or nonce is not defined in settings");if(!i)throw new Error("Wrapper is missing data-ptr-settings attribute");const e=o(i);if(!e||typeof e!="object"||!e.form_id||!e.per_page||!e.style)throw new Error("Invalid settings provided for PetitionerSubmissions");this.settings=e,this.init()}async init(){var t;if(this.settings&&(await this.fetchSubmissions(),typeof this.submissions=="object"&&((t=this.submissions)==null?void 0:t.length)>0)){const i=this.settings.style==="simple"?a:u;this.renderer=new i({wrapper:this.wrapper,submissions:this.submissions,perPage:this.settings.per_page,total:this.totalResults,currentPage:this.currentPage,labels:this.labels,fields:this.settings.fields?this.settings.fields.split(",").map(e=>e.trim()):[],pagination:this.settings.show_pagination,onPageChange:async e=>{var s;return this.currentPage=e,await this.fetchSubmissions(),(s=this.submissions)!=null?s:[]}}),this.renderer.render()}}buildURL(){var i,e,s;const t=new URL(this.ajaxurl,window.location.origin);return t.searchParams.set("form_id",String((i=this.settings)==null?void 0:i.form_id)),t.searchParams.set("per_page",String((e=this.settings)==null?void 0:e.per_page)),t.searchParams.set("page",String(this.currentPage)),(s=this.settings)!=null&&s.fields&&t.searchParams.set("fields",this.settings.fields),t.toString()}async fetchSubmissions(){const t=this.buildURL(),i=await fetch(t);if(!i.ok)throw new Error("Failed to fetch submissions");const e=await i.json();if(!e.success)throw new Error("Failed to fetch submissions: "+e.data);this.totalResults=Number(e.data.total)||0,this.submissions=e.data.submissions||[],this.labels=e.data.labels||[]}}const m=document.querySelectorAll(".petitioner");m.forEach(n=>{n instanceof HTMLElement&&new p(n)});const f=document.querySelectorAll(".petitioner-submissions");f.forEach(n=>{n instanceof HTMLElement&&new d(n)});window.location.search.includes("petitioner=confirmed")&&alert("Thank you for confirming your email!");window.location.search.includes("petitioner=invalid")&&alert("Something went wrong - could not confirm your email");export{g as __vite_legacy_guard};
+function __vite_legacy_guard() {
+  import.meta.url;
+  import("_").catch(() => 1);
+  (async function* () {
+  })().next();
+}
+;
+import { s as safelyParseJSON } from "./assets/utilities-BF7HqmGn.js";
+class ReCaptcha {
+  constructor(petitionForm) {
+    if (typeof window.petitionerCaptcha !== "undefined" && window.petitionerCaptcha.recaptchaSiteKey) {
+      const recaptchaField = petitionForm.querySelector(
+        '[name="petitioner-g-recaptcha-response"]'
+      );
+      petitionForm.addEventListener(
+        "focusin",
+        function() {
+          if (recaptchaField && recaptchaField.value) {
+            return;
+          }
+          if (typeof grecaptcha === "undefined" || typeof (grecaptcha == null ? void 0 : grecaptcha.ready) === "undefined") {
+            return;
+          }
+          grecaptcha.ready(function() {
+            grecaptcha.execute(window.petitionerCaptcha.recaptchaSiteKey, {
+              // action: 'submit',
+            }).then((token) => {
+              if (recaptchaField) {
+                recaptchaField.value = token;
+              }
+            });
+          });
+        },
+        { once: true }
+      );
+    } else {
+      console.error(
+        "petitioner - reCAPTCHA site key is missing or reCAPTCHA failed to load."
+      );
+    }
+  }
+}
+class HCaptcha {
+  constructor(currentForm) {
+    this.widgetId = null;
+    this.callbackFunction = null;
+    this.form = currentForm;
+    this.hcaptchaField = this.form.querySelector(
+      '[name="petitioner-h-captcha-response"]'
+    );
+    this.hcaptchaContainer = this.form.querySelector(
+      ".petitioner-h-captcha-container"
+    );
+    if (!this.isHCaptchaReady()) {
+      return;
+    }
+    this.initHCaptcha();
+  }
+  isHCaptchaReady() {
+    var _a, _b;
+    return !!(typeof hcaptcha !== "undefined" && ((_a = window.petitionerCaptcha) == null ? void 0 : _a.enableHcaptcha) && ((_b = window.petitionerCaptcha) == null ? void 0 : _b.hcaptchaSiteKey) && this.hcaptchaContainer);
+  }
+  initHCaptcha() {
+    var _a;
+    if (!hcaptcha || !((_a = window.petitionerCaptcha) == null ? void 0 : _a.hcaptchaSiteKey) || !this.hcaptchaContainer) {
+      return;
+    }
+    this.widgetId = hcaptcha.render(this.hcaptchaContainer, {
+      sitekey: window.petitionerCaptcha.hcaptchaSiteKey,
+      size: "invisible",
+      callback: this.handleSuccess.bind(this)
+    });
+  }
+  handleSuccess(token) {
+    if (!token) {
+      console.warn("❌ petitioner - hCaptcha token missing.");
+      return;
+    }
+    if (!this.hcaptchaField) {
+      console.error("❌ petitioner - hCaptcha input field not found.");
+      return;
+    }
+    this.hcaptchaField.value = token;
+    if (typeof this.callbackFunction === "function") {
+      this.callbackFunction();
+    }
+  }
+  validate(callback) {
+    if (!this.hcaptchaField || this.hcaptchaField.value) {
+      callback();
+      return;
+    }
+    this.callbackFunction = callback;
+    if (hcaptcha && this.widgetId) {
+      hcaptcha.execute(this.widgetId);
+    }
+  }
+}
+class Turnstile {
+  constructor(petitionForm) {
+    var _a;
+    this.widgetId = null;
+    this.callbackFunction = null;
+    this.form = petitionForm;
+    this.turnstileField = this.form.querySelector(
+      '[name="petitioner-turnstile-response"]'
+    );
+    this.turnstileContainer = this.form.querySelector(
+      ".petitioner-turnstile-container"
+    );
+    if (typeof (window == null ? void 0 : window.turnstile) === "undefined" || !((_a = window.petitionerCaptcha) == null ? void 0 : _a.turnstileSiteKey) || !this.turnstileContainer) {
+      return;
+    }
+    this.initTurnstile();
+  }
+  initTurnstile() {
+    var _a, _b, _c;
+    const sitekey = (_a = window.petitionerCaptcha) == null ? void 0 : _a.turnstileSiteKey;
+    if (!sitekey) {
+      this.handleError();
+      return;
+    }
+    this.widgetId = (_c = (_b = window == null ? void 0 : window.turnstile) == null ? void 0 : _b.render) == null ? void 0 : _c.call(_b, this.turnstileContainer, {
+      sitekey,
+      callback: this.handleSuccess.bind(this),
+      theme: "light",
+      "error-callback": this.handleError.bind(this)
+    });
+  }
+  handleSuccess(token) {
+    if (!token) {
+      console.warn("❌ petitioner - Turnstile token missing.");
+      return;
+    }
+    if (!this.turnstileField) {
+      console.error("❌ petitioner - Turnstile input field not found.");
+      return;
+    }
+    this.turnstileField.value = token;
+    if (typeof this.callbackFunction === "function") {
+      this.callbackFunction();
+    }
+  }
+  handleError() {
+    console.error("❌ petitioner - Turnstile encountered an error.");
+  }
+  validate(callback) {
+    var _a, _b;
+    if (!this.turnstileField || this.turnstileField.value) {
+      callback();
+      return;
+    }
+    this.callbackFunction = callback;
+    if (this.widgetId) {
+      (_b = (_a = window == null ? void 0 : window.turnstile) == null ? void 0 : _a.execute) == null ? void 0 : _b.call(_a, this.widgetId);
+    }
+  }
+}
+class PetitionerForm {
+  constructor(wrapper) {
+    this.captchaValidated = false;
+    this.hcaptcha = null;
+    this.turnstile = null;
+    this._escListener = null;
+    this.wrapper = wrapper;
+    this.responseTitle = null;
+    this.responseText = null;
+    this.formEl = null;
+    this.viewLetterBTN = null;
+    this.petitionerModal = null;
+    this.modalClose = null;
+    this.backdrop = null;
+    const settings = (window == null ? void 0 : window.petitionerFormSettings) || {};
+    const { actionPath = "", nonce = "" } = settings;
+    this.actionPath = actionPath || "";
+    this.nonce = nonce;
+    if (!this.wrapper) return;
+    this.responseTitle = this.wrapper.querySelector(
+      ".petitioner__response > h3"
+    );
+    this.responseText = this.wrapper.querySelector(
+      ".petitioner__response > p"
+    );
+    this.formEl = this.wrapper.querySelector("form");
+    this.viewLetterBTN = this.wrapper.querySelector(
+      ".petitioner__btn--letter"
+    );
+    this.petitionerModal = this.wrapper.querySelector(".petitioner-modal");
+    this.modalClose = this.wrapper.querySelector(
+      ".petitioner-modal__close"
+    );
+    this.backdrop = this.wrapper.querySelector(
+      ".petitioner-modal__backdrop"
+    );
+    this.initializeCaptcha();
+    this.setupEventListeners();
+  }
+  initializeCaptcha() {
+    if (typeof window.petitionerCaptcha === "undefined") return;
+    if (window.petitionerCaptcha.enableRecaptcha && this.formEl) {
+      new ReCaptcha(this.formEl);
+    }
+    if (window.petitionerCaptcha.enableHcaptcha && this.formEl) {
+      this.hcaptcha = new HCaptcha(this.formEl);
+    }
+    if (window.petitionerCaptcha.enableTurnstile && this.formEl) {
+      this.turnstile = new Turnstile(this.formEl);
+    }
+  }
+  setupEventListeners() {
+    if (this.formEl) {
+      this.formEl.addEventListener(
+        "submit",
+        this.handleFormSubmit.bind(this)
+      );
+    }
+    if (this.viewLetterBTN) {
+      this.viewLetterBTN.addEventListener(
+        "click",
+        () => this.toggleModal(true)
+      );
+    }
+    if (this.backdrop) {
+      this.backdrop.addEventListener(
+        "click",
+        () => this.toggleModal(false)
+      );
+    }
+    if (this.modalClose) {
+      this.modalClose.addEventListener(
+        "click",
+        () => this.toggleModal(false)
+      );
+    }
+  }
+  showResponseMSG(messaging, isSuccess = false) {
+    this.wrapper.classList.add("petitioner--submitted");
+    const { title, message } = messaging || { title: "", message: "" };
+    if (this.responseTitle) this.responseTitle.innerText = title;
+    if (this.responseText) this.responseText.innerHTML = message;
+  }
+  toggleModal(isShow = true) {
+    if (!this.petitionerModal) return;
+    this.petitionerModal.classList[isShow ? "add" : "remove"](
+      "petitioner-modal--visible"
+    );
+    if (isShow) {
+      this._escListener = (e) => {
+        if (e.key === "Escape") this.toggleModal(false);
+      };
+      document.addEventListener("keydown", this._escListener);
+    } else if (this._escListener) {
+      document.removeEventListener("keydown", this._escListener);
+      this._escListener = null;
+    }
+  }
+  handleFormSubmit(e) {
+    e.preventDefault();
+    if (this.shouldValidateHCaptcha()) {
+      this.hcaptcha.validate(() => {
+        this.captchaValidated = true;
+        this.submitForm();
+      });
+      return;
+    }
+    if (this.shouldValidateTurnstile()) {
+      this.turnstile.validate(() => {
+        this.captchaValidated = true;
+        this.submitForm();
+      });
+      return;
+    }
+    this.submitForm();
+  }
+  shouldValidateHCaptcha() {
+    return !!((petitionerCaptcha == null ? void 0 : petitionerCaptcha.enableHcaptcha) && this.hcaptcha && !this.captchaValidated);
+  }
+  shouldValidateTurnstile() {
+    return !!((petitionerCaptcha == null ? void 0 : petitionerCaptcha.enableTurnstile) && this.turnstile && !this.captchaValidated);
+  }
+  submitForm() {
+    if (!this.formEl) return;
+    this.wrapper.classList.add("petitioner--loading");
+    const formData = new FormData(this.formEl);
+    formData.append("petitioner_nonce", this.nonce);
+    fetch(this.actionPath, {
+      method: "POST",
+      body: formData,
+      credentials: "same-origin",
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error! status: ".concat(response.status));
+      }
+      return response.json();
+    }).then((res) => {
+      if (res.success) {
+        this.showResponseMSG(res.data, true);
+      } else {
+        this.showResponseMSG(res.data, false);
+      }
+      this.handleSubmissionComplete(formData);
+    }).catch((error) => {
+      console.error("Error:", error);
+      alert("An unexpected error occurred. Please try again later.");
+      this.handleSubmissionComplete();
+    });
+  }
+  handleSubmissionComplete(formData) {
+    var _a;
+    this.wrapper.classList.remove("petitioner--loading");
+    (_a = this.formEl) == null ? void 0 : _a.reset();
+    this.captchaValidated = false;
+    if (formData) {
+      const event = new CustomEvent(
+        "petitionerFormSubmit",
+        {
+          detail: { formData }
+        }
+      );
+      document.dispatchEvent(event);
+    }
+  }
+}
+class SubmissionsRenderer {
+  constructor(options) {
+    this.options = options;
+    this.options.currentPage = this.options.currentPage || 1;
+    this.submissionListDiv = document.createElement("div");
+    this.submissionListDiv.className = "submissions__list";
+    this.paginationDiv = document.createElement("div");
+    this.paginationDiv.className = "submissions__pagination";
+    if (!this.options.wrapper) {
+      throw new Error("Element not found");
+    }
+  }
+  attachEventListeners() {
+    if (!this.paginationDiv) return;
+    this.paginationDiv.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (target.tagName === "BUTTON") {
+        const page = parseInt(target.dataset.page || "1", 10);
+        if (!isNaN(page)) {
+          this.options.currentPage = page;
+          const newSubmissions = await this.options.onPageChange(page);
+          this.options.submissions = newSubmissions;
+          this.update();
+        }
+      }
+    });
+  }
+  render() {
+    if (!this.options.submissions) {
+      return;
+    }
+    this.options.wrapper.appendChild(this.submissionListDiv);
+    this.options.wrapper.appendChild(this.paginationDiv);
+    this.submissionListDiv.innerHTML = this.renderSubmissionsList();
+    this.paginationDiv.innerHTML = this.renderPagination();
+    this.attachEventListeners();
+  }
+  update() {
+    var _a;
+    this.submissionListDiv.innerHTML = this.renderSubmissionsList();
+    this.paginationDiv.querySelectorAll(".active").forEach((btn) => {
+      btn.classList.remove("active");
+    });
+    (_a = this.paginationDiv.querySelector('[data-page="'.concat(this.options.currentPage, '"]'))) == null ? void 0 : _a.classList.add("active");
+  }
+  renderSubmissionsList() {
+    if (!this.options.submissions || this.options.submissions.length === 0) {
+      return "";
+    }
+    return this.options.submissions.map((submission) => {
+      return this.renderSubmissionItem(submission);
+    }).join(", ");
+  }
+  renderSubmissionItem(submission) {
+    return '<span class="submissions__item">'.concat(submission.name, "</span>");
+  }
+  renderPagination() {
+    if (!this.options.total || !this.options.perPage || !this.options.pagination) {
+      return "";
+    }
+    const totalPages = Math.ceil(this.options.total / this.options.perPage);
+    if (totalPages <= 1) {
+      return "";
+    }
+    let paginationHTML = '<div class="ptr-pagination">';
+    for (let i = 1; i <= totalPages; i++) {
+      paginationHTML += '<button class="ptr-pagination__item '.concat(i === this.options.currentPage ? "active" : "", '" data-page="').concat(i, '">').concat(i, "</button>");
+    }
+    paginationHTML += "</div>";
+    return paginationHTML;
+  }
+}
+class SubmissionsRendererTable extends SubmissionsRenderer {
+  constructor(options) {
+    super(options);
+    this.options = options;
+  }
+  render() {
+    if (!this.options.submissions) {
+      return;
+    }
+    this.options.wrapper.appendChild(this.submissionListDiv);
+    this.options.wrapper.appendChild(this.paginationDiv);
+    this.options.wrapper.style = this.getWrapperStyles();
+    this.submissionListDiv.innerHTML = this.renderSubmissionsList();
+    this.paginationDiv.innerHTML = this.renderPagination();
+    this.attachEventListeners();
+  }
+  renderSubmissionsList() {
+    if (!this.options.submissions || this.options.submissions.length === 0) {
+      return "";
+    }
+    const labels = this.prepareLabels();
+    const list = this.options.submissions.map((submission) => {
+      return this.renderSubmissionItem(submission);
+    }).join("");
+    return '\n		<div class="submissions__item submissions__item--heading">\n			'.concat(labels.map((key) => {
+      return "<div>".concat(key, "</div>");
+    }).join(""), "\n		</div>\n		").concat(list);
+  }
+  prepareLabels() {
+    const labels = [];
+    const submissionEntry = this.options.submissions[0];
+    Object.keys(submissionEntry).forEach((key) => {
+      var _a, _b;
+      if (!((_a = this.options.labels) == null ? void 0 : _a[key]) || !this.options.fields.includes(key)) {
+        return;
+      }
+      labels.push((_b = this.options.labels) == null ? void 0 : _b[key]);
+    });
+    return labels;
+  }
+  renderSubmissionItem(submission) {
+    const filteredKeys = Object.keys(submission).filter(
+      (key) => key in this.options.labels && this.options.fields.includes(key)
+    );
+    return '<div class="submissions__item">\n			'.concat(filteredKeys.map((key) => {
+      var _a;
+      const renderedValue = key === "fname" ? "".concat(submission.fname, " ").concat(submission.lname) : submission == null ? void 0 : submission[key];
+      return '<div class="submissions__item__inner">\n						<strong>'.concat(((_a = this.options.labels) == null ? void 0 : _a[key]) || key, ":</strong>\n						").concat(renderedValue ? renderedValue : "", "\n					</div>");
+    }).join(""), "\n		</div>");
+  }
+  /**
+   *
+   * @returns string final CSS for the wrapper
+   */
+  getWrapperStyles() {
+    const labels = this.prepareLabels();
+    return "--ptr-submission-columns: ".concat(labels.length);
+  }
+}
+class PetitionerSubmissions {
+  constructor(wrapper) {
+    var _a, _b;
+    this.wrapper = wrapper;
+    this.currentPage = 1;
+    this.totalResults = 10;
+    if (!this.wrapper) {
+      throw new Error("Element not found");
+    }
+    const settings = this.wrapper.dataset.ptrSettings;
+    this.ajaxurl = ((_a = window == null ? void 0 : window.petitionerSubmissionSettings) == null ? void 0 : _a.actionPath) || "";
+    this.nonce = ((_b = window == null ? void 0 : window.petitionerSubmissionSettings) == null ? void 0 : _b.nonce) || "";
+    this.labels = {};
+    if (!this.ajaxurl || !this.nonce) {
+      throw new Error("AJAX URL or nonce is not defined in settings");
+    }
+    if (!settings) {
+      throw new Error("Wrapper is missing data-ptr-settings attribute");
+    }
+    const settingsJSON = safelyParseJSON(settings);
+    if (!settingsJSON || typeof settingsJSON !== "object" || !settingsJSON.form_id || !settingsJSON.per_page || !settingsJSON.style) {
+      throw new Error(
+        "Invalid settings provided for PetitionerSubmissions"
+      );
+    }
+    this.settings = settingsJSON;
+    this.init();
+  }
+  async init() {
+    var _a;
+    if (!this.settings) {
+      return;
+    }
+    await this.fetchSubmissions();
+    if (typeof this.submissions === "object" && ((_a = this.submissions) == null ? void 0 : _a.length) > 0) {
+      const RenderClass = this.settings.style === "simple" ? SubmissionsRenderer : SubmissionsRendererTable;
+      this.renderer = new RenderClass({
+        wrapper: this.wrapper,
+        submissions: this.submissions,
+        perPage: this.settings.per_page,
+        total: this.totalResults,
+        currentPage: this.currentPage,
+        labels: this.labels,
+        fields: this.settings.fields ? this.settings.fields.split(",").map((f) => f.trim()) : [],
+        pagination: this.settings.show_pagination,
+        onPageChange: async (pageNum) => {
+          var _a2;
+          this.currentPage = pageNum;
+          await this.fetchSubmissions();
+          return (_a2 = this.submissions) != null ? _a2 : [];
+        }
+      });
+      this.renderer.render();
+    }
+  }
+  buildURL() {
+    var _a, _b, _c;
+    const url = new URL(this.ajaxurl, window.location.origin);
+    url.searchParams.set("form_id", String((_a = this.settings) == null ? void 0 : _a.form_id));
+    url.searchParams.set("per_page", String((_b = this.settings) == null ? void 0 : _b.per_page));
+    url.searchParams.set("page", String(this.currentPage));
+    if ((_c = this.settings) == null ? void 0 : _c.fields) {
+      url.searchParams.set("fields", this.settings.fields);
+    }
+    return url.toString();
+  }
+  async fetchSubmissions() {
+    const fetchURL = this.buildURL();
+    const submissions = await fetch(fetchURL);
+    if (!submissions.ok) {
+      throw new Error("Failed to fetch submissions");
+    }
+    const response = await submissions.json();
+    if (!response.success) {
+      throw new Error("Failed to fetch submissions: " + response.data);
+    }
+    this.totalResults = Number(response.data.total) || 0;
+    this.submissions = response.data.submissions || [];
+    this.labels = response.data.labels || [];
+  }
+}
+const allPetitions = document.querySelectorAll(".petitioner");
+allPetitions.forEach((petition) => {
+  if (!(petition instanceof HTMLElement)) {
+    return;
+  }
+  new PetitionerForm(petition);
+});
+const allSubmissions = document.querySelectorAll(".petitioner-submissions");
+allSubmissions.forEach((submissionsDiv) => {
+  if (!(submissionsDiv instanceof HTMLElement)) {
+    return;
+  }
+  new PetitionerSubmissions(submissionsDiv);
+});
+if (window.location.search.includes("petitioner=confirmed")) {
+  alert("Thank you for confirming your email!");
+}
+if (window.location.search.includes("petitioner=invalid")) {
+  alert("Something went wrong - could not confirm your email");
+}
+export {
+  __vite_legacy_guard
+};
