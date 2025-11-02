@@ -31,8 +31,9 @@ class AV_Petitioner_CSV_Exporter
 
 
         $results = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
-            'query' => $query,
-            'per_page' => 999999,
+            'query'         => $query,
+            'relation'      => $conditional_logic['logic'] ?? 'AND',
+            'per_page'      => 999999,
         ]);
 
         if (empty($results['submissions'])) {

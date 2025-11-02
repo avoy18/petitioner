@@ -29574,7 +29574,7 @@ const OPERATORS = [
   { value: "is_empty", label: __("is empty", "petitioner") },
   { value: "is_not_empty", label: __("is not empty", "petitioner") }
 ];
-[
+const LOGIC_OPTIONS = [
   { value: "AND", label: __("AND", "petitioner") },
   { value: "OR", label: __("OR", "petitioner") }
 ];
@@ -29697,7 +29697,18 @@ const GroupComponent = ({
   };
   const showRemoveCondition = group.conditions.length > 1;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupWrapper, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(GroupHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Match if all of the following are true:", "petitioner") }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupHeader, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Relation:", "petitioner") }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        SelectControl$1,
+        {
+          value: group.logic,
+          onChange: (logic) => onChange({ ...group, logic }),
+          options: LOGIC_OPTIONS
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: group.logic === "AND" ? __("(all conditions must be true to match)", "petitioner") : __("(any condition can be true to match)", "petitioner") })
+    ] }),
     group.conditions.map((condition, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       ConditionComponent,
       {
@@ -29835,6 +29846,14 @@ function ExportModal({
               type: "hidden",
               name: "conditional_logic",
               value: JSON.stringify(logic)
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "hidden",
+              name: "petitioner_nonce",
+              value: getAjaxNonce()
             }
           ),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(StyledExportButton, { type: "submit", variant: "primary", children: [

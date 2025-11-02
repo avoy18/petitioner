@@ -125,12 +125,13 @@ class AV_Petitioner_Submissions_Model
     {
         global $wpdb;
 
-        $per_page = isset($settings['per_page']) ? absint($settings['per_page']) : 10;
-        $offset   = isset($settings['offset']) ? absint($settings['offset']) : 0;
-        $fields   = isset($settings['fields']) ? $settings['fields'] : '*';
-        $query    = isset($settings['query']) ? $settings['query'] : [];
-        $order    = isset($settings['order']) ? $settings['order'] : 'DESC';
-        $orderby  = isset($settings['orderby']) ? $settings['orderby'] : 'submitted_at';
+        $per_page   = isset($settings['per_page']) ? absint($settings['per_page']) : 10;
+        $offset     = isset($settings['offset']) ? absint($settings['offset']) : 0;
+        $fields     = isset($settings['fields']) ? $settings['fields'] : '*';
+        $query      = isset($settings['query']) ? $settings['query'] : [];
+        $relation   = isset($settings['relation']) ? $settings['relation'] : 'AND';
+        $order      = isset($settings['order']) ? $settings['order'] : 'DESC';
+        $orderby    = isset($settings['orderby']) ? $settings['orderby'] : 'submitted_at';
 
         // Validate fields
         $allowed_fields = self::$ALLOWED_FIELDS;
@@ -143,7 +144,7 @@ class AV_Petitioner_Submissions_Model
             }
         }
 
-        $where_clause = self::build_where_clause($form_id, $query, $allowed_fields);
+        $where_clause = self::build_where_clause($form_id, $query, $allowed_fields, $relation);
         $params = $where_clause['params'];
 
         $where_sql = $where_clause['where'];
@@ -188,10 +189,13 @@ class AV_Petitioner_Submissions_Model
      * 
      * @since 0.7.0
      */
-    public static function build_where_clause($form_id, $query, $allowed_fields)
+    public static function build_where_clause($form_id, $query, $allowed_fields, $relation = 'AND')
     {
+        $relation = strtoupper($relation) === 'OR' ? 'OR' : 'AND';
         $where = ['form_id = %d'];
         $params = [$form_id];
+
+        $conditions = [];
 
         foreach ($query as $condition) {
             $field = $condition['field'];
@@ -203,20 +207,24 @@ class AV_Petitioner_Submissions_Model
 
             switch ($operator) {
                 case 'equals':
-                    $where[] = "`$field` = %s";
+                    $conditions[] = "`$field` = %s";
                     $params[] = $value;
                     break;
                 case 'not_equals':
-                    $where[] = "`$field` != %s";
+                    $conditions[] = "`$field` != %s";
                     $params[] = $value;
                     break;
                 case 'is_empty':
-                    $where[] = "(`$field` = '' OR `$field` IS NULL)";
+                    $conditions[] = "(`$field` = '' OR `$field` IS NULL)";
                     break;
                 case 'is_not_empty':
-                    $where[] = "(`$field` != '' AND `$field` IS NOT NULL)";
+                    $conditions[] = "(`$field` != '' AND `$field` IS NOT NULL)";
                     break;
             }
+        }
+
+        if (!empty($conditions)) {
+            $where[] = '(' . implode(' ' . $relation . ' ', $conditions) . ')';
         }
 
         return ['where' => implode(' AND ', $where), 'params' => $params];

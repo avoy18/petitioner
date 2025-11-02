@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from '@wordpress/element';
+import { useState, useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	Card,
@@ -20,6 +20,7 @@ import ConditionalLogic, {
 	useConditionalLogic,
 	formatLogicToString,
 } from '@admin/components/ConditionalLogic';
+import { getAjaxNonce } from '@admin/utilities';
 
 export default function ExportModal({
 	onClose = () => {},
@@ -83,6 +84,11 @@ export default function ExportModal({
 					type="hidden"
 					name="conditional_logic"
 					value={JSON.stringify(logic)}
+				/>
+				<input
+					type="hidden"
+					name="petitioner_nonce"
+					value={getAjaxNonce()}
 				/>
 				<StyledExportButton type="submit" variant="primary">
 					{__('Export as CSV', 'petitioner')} ({total})

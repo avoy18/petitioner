@@ -58,10 +58,7 @@ const GroupComponent = ({
 	return (
 		<GroupWrapper>
 			<GroupHeader>
-				<span>{__('Match if all of the following are true:', 'petitioner')}</span>
-			</GroupHeader> 
-			{/* <GroupHeader>
-				<span>{__('Match', 'petitioner')}</span>
+				<span>{__('Relation:', 'petitioner')}</span>
 				<SelectControl
 					value={group.logic}
 					onChange={(logic) =>
@@ -69,8 +66,12 @@ const GroupComponent = ({
 					}
 					options={LOGIC_OPTIONS}
 				/>
-				<span>{__('of the following:', 'petitioner')}</span>
-			</GroupHeader> */}
+				<span>
+					{group.logic === 'AND'
+						? __('(all conditions must be true to match)', 'petitioner')
+						: __('(any condition can be true to match)', 'petitioner')}
+				</span>
+			</GroupHeader>
 
 			{group.conditions.map((condition, index) => (
 				<ConditionComponent
