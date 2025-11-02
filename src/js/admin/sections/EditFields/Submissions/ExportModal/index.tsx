@@ -3,9 +3,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	Card,
 	CardDivider,
-	CardHeader,
 	CardBody,
-	CardFooter,
 	__experimentalText as Text,
 	__experimentalHeading as Heading,
 	Button,
@@ -31,7 +29,9 @@ export default function ExportModal({
 	total: number;
 }) {
 	const [showFilters, setShowFilters] = useState(false);
-	const { logic, setLogic, isValid } = useConditionalLogic();
+	const { logic, setLogic } = useConditionalLogic();
+
+	const exportURL = useMemo(() => getExportURL(), []);
 
 	return (
 		<Modal
@@ -42,10 +42,14 @@ export default function ExportModal({
 			<Card>
 				<CardBody>
 					<SummaryWrapper>
-						<SummaryItem>Total: {total}</SummaryItem>
 						<SummaryItem>
-							Filters: {formatLogicToString(logic)}
+							Total: <strong>{total}</strong>
 						</SummaryItem>
+						<SummaryItem>
+							{__('Filters:', 'petitioner')}{' '}
+							<strong>{formatLogicToString(logic)}</strong>
+						</SummaryItem>
+						<CardDivider />
 					</SummaryWrapper>
 
 					<FiltersWrapper>
@@ -71,9 +75,16 @@ export default function ExportModal({
 					</FiltersWrapper>
 				</CardBody>
 			</Card>
-			<StyledExportButton variant="primary" href={getExportURL()}>
-				{__('Export as CSV', 'petitioner')} ({total})
-			</StyledExportButton>
+			<form action={exportURL} method="POST">
+				<input
+					type="hidden"
+					name="conditional_logic"
+					value={JSON.stringify(logic)}
+				/>
+				<StyledExportButton type="submit" variant="primary">
+					{__('Export as CSV', 'petitioner')} ({total})
+				</StyledExportButton>
+			</form>
 		</Modal>
 	);
 }

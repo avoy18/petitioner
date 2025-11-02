@@ -29795,6 +29795,7 @@ function ExportModal({
 }) {
   const [showFilters, setShowFilters] = reactExports.useState(false);
   const { logic, setLogic } = useConditionalLogic();
+  const exportURL = reactExports.useMemo(() => getExportURL(), []);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
     {
@@ -29806,12 +29807,14 @@ function ExportModal({
           /* @__PURE__ */ jsxRuntimeExports.jsxs(SummaryWrapper, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs(SummaryItem, { children: [
               "Total: ",
-              total
+              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: total })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(SummaryItem, { children: [
-              "Filters: ",
-              formatLogicToString(logic)
-            ] })
+              __("Filters:", "petitioner"),
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: formatLogicToString(logic) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(CardDivider, {})
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(FiltersWrapper, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -29836,11 +29839,21 @@ function ExportModal({
             )
           ] })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(StyledExportButton, { variant: "primary", href: getExportURL(), children: [
-          __("Export as CSV", "petitioner"),
-          " (",
-          total,
-          ")"
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { action: exportURL, method: "POST", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "hidden",
+              name: "conditional_logic",
+              value: JSON.stringify(logic)
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(StyledExportButton, { type: "submit", variant: "primary", children: [
+            __("Export as CSV", "petitioner"),
+            " (",
+            total,
+            ")"
+          ] })
         ] })
       ]
     }
