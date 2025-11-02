@@ -3,7 +3,9 @@ import type { ConditionalLogicProps } from './consts';
 import { ConditionalLogicWrapper } from './styled';
 import GroupComponent from './GroupComponent';
 
+export { formatLogicToString } from './utilities';
 export { useConditionalLogic } from './hooks';
+
 export type {
 	Condition,
 	ConditionGroup,

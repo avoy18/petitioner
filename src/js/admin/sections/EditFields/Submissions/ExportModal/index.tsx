@@ -11,10 +11,16 @@ import {
 	Button,
 	Modal,
 } from '@wordpress/components';
-import { StyledExportButton } from './styled';
+import {
+	StyledExportButton,
+	SummaryWrapper,
+	SummaryItem,
+	FiltersWrapper,
+} from './styled';
 import { getExportURL } from '../utilities';
 import ConditionalLogic, {
 	useConditionalLogic,
+	formatLogicToString,
 } from '@admin/components/ConditionalLogic';
 
 export default function ExportModal({
@@ -24,6 +30,7 @@ export default function ExportModal({
 	onClose: () => void;
 	total: number;
 }) {
+	const [showFilters, setShowFilters] = useState(false);
 	const { logic, setLogic, isValid } = useConditionalLogic();
 
 	return (
@@ -33,23 +40,41 @@ export default function ExportModal({
 			onRequestClose={onClose}
 		>
 			<Card>
-				<CardHeader>
-					<Heading>Preparing to export {total} submissions</Heading>
-				</CardHeader>
 				<CardBody>
-					<ConditionalLogic
-						value={logic}
-						onChange={setLogic}
-						availableFields={[
-							{ value: 'email', label: 'Email' },
-							{ value: 'name', label: 'Name' },
-						]}
-					/>
-					<StyledExportButton variant="primary" href={getExportURL()}>
-						{__('Export as CSV', 'petitioner')}
-					</StyledExportButton>
+					<SummaryWrapper>
+						<SummaryItem>Total: {total}</SummaryItem>
+						<SummaryItem>
+							Filters: {formatLogicToString(logic)}
+						</SummaryItem>
+					</SummaryWrapper>
+
+					<FiltersWrapper>
+						<Button
+							icon="filter"
+							variant="secondary"
+							size="small"
+							onClick={() => setShowFilters(!showFilters)}
+						>
+							{showFilters
+								? __('Hide filters', 'petitioner')
+								: __('Show filters', 'petitioner')}
+						</Button>
+						{showFilters && (
+							<ConditionalLogic
+								value={logic}
+								onChange={setLogic}
+								availableFields={[
+									{ value: 'email', label: 'Email' },
+									{ value: 'name', label: 'Name' },
+								]}
+							/>
+						)}
+					</FiltersWrapper>
 				</CardBody>
 			</Card>
+			<StyledExportButton variant="primary" href={getExportURL()}>
+				{__('Export as CSV', 'petitioner')} ({total})
+			</StyledExportButton>
 		</Modal>
 	);
 }

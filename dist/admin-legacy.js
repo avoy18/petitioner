@@ -36901,7 +36901,31 @@
             })
           });
         }
-        const StyledExportButton = dt(Button)``;
+        const StyledExportButton = dt(Button)`
+    width: 100%;
+    text-align: center;
+    font-size: 1.125rem;
+    justify-content: center;
+    display: flex;
+    margin-top: ${SPACINGS.md};
+    padding: ${SPACINGS.md};
+`;
+        const SummaryWrapper = dt.div`
+	display: flex;
+	flex-direction: column;
+	gap: ${SPACINGS.sm};
+    margin-bottom: ${SPACINGS.md};
+`;
+        const SummaryItem = dt.div`
+	font-size: 1rem;
+`;
+        const FiltersWrapper = dt.div`
+	display: flex;
+	flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+	gap: ${SPACINGS.md};
+`;
         const ConditionalLogicWrapper = dt.div`
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 4px;
@@ -36999,7 +37023,22 @@
           value: "OR",
           label: __("OR", "petitioner")
         }];
-        const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const generateId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+        const formatLogicToString = (logic, fieldLabels = {}, emptyMessage = __("No filters applied", "petitioner")) => {
+          const formatCondition = condition => {
+            const fieldLabel = fieldLabels[condition.field] || condition.field;
+            const operatorLabel = OPERATORS.find(op => op.value === condition.operator)?.label || condition.operator;
+            if (condition.operator === "is_empty" || condition.operator === "is_not_empty") {
+              return `${fieldLabel} ${operatorLabel}`;
+            }
+            return `${fieldLabel} ${operatorLabel} "${condition.value}"`;
+          };
+          const parts = logic.conditions.filter(c => c.field).map(formatCondition);
+          if (parts.length === 0) {
+            return emptyMessage;
+          }
+          return parts.join(` ${logic.logic} `);
+        };
         const ConditionComponent = reactExports.memo(({
           condition,
           availableFields,
@@ -37168,37 +37207,48 @@
           onClose = () => {},
           total = 0
         }) {
+          const [showFilters, setShowFilters] = reactExports.useState(false);
           const {
             logic,
             setLogic
           } = useConditionalLogic();
-          return /* @__PURE__ */jsxRuntimeExports.jsx(Modal, {
+          return /* @__PURE__ */jsxRuntimeExports.jsxs(Modal, {
             size: "large",
             title: __("Export submissions", "petitioner-theme"),
             onRequestClose: onClose,
-            children: /* @__PURE__ */jsxRuntimeExports.jsxs(Card, {
-              children: [/* @__PURE__ */jsxRuntimeExports.jsx(CardHeader, {
-                children: /* @__PURE__ */jsxRuntimeExports.jsxs(Heading, {
-                  children: ["Preparing to export ", total, " submissions"]
-                })
-              }), /* @__PURE__ */jsxRuntimeExports.jsxs(CardBody, {
-                children: [/* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
-                  value: logic,
-                  onChange: setLogic,
-                  availableFields: [{
-                    value: "email",
-                    label: "Email"
-                  }, {
-                    value: "name",
-                    label: "Name"
-                  }]
-                }), /* @__PURE__ */jsxRuntimeExports.jsx(StyledExportButton, {
-                  variant: "primary",
-                  href: getExportURL(),
-                  children: __("Export as CSV", "petitioner")
+            children: [/* @__PURE__ */jsxRuntimeExports.jsx(Card, {
+              children: /* @__PURE__ */jsxRuntimeExports.jsxs(CardBody, {
+                children: [/* @__PURE__ */jsxRuntimeExports.jsxs(SummaryWrapper, {
+                  children: [/* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
+                    children: ["Total: ", total]
+                  }), /* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
+                    children: ["Filters: ", formatLogicToString(logic)]
+                  })]
+                }), /* @__PURE__ */jsxRuntimeExports.jsxs(FiltersWrapper, {
+                  children: [/* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+                    icon: "filter",
+                    variant: "secondary",
+                    size: "small",
+                    onClick: () => setShowFilters(!showFilters),
+                    children: showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner")
+                  }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
+                    value: logic,
+                    onChange: setLogic,
+                    availableFields: [{
+                      value: "email",
+                      label: "Email"
+                    }, {
+                      value: "name",
+                      label: "Name"
+                    }]
+                  })]
                 })]
-              })]
-            })
+              })
+            }), /* @__PURE__ */jsxRuntimeExports.jsxs(StyledExportButton, {
+              variant: "primary",
+              href: getExportURL(),
+              children: [__("Export as CSV", "petitioner"), " (", total, ")"]
+            })]
           });
         }
         const AlertStatusWrapper = dt.div`
