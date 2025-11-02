@@ -29574,7 +29574,7 @@ const OPERATORS = [
   { value: "is_empty", label: __("is empty", "petitioner") },
   { value: "is_not_empty", label: __("is not empty", "petitioner") }
 ];
-const LOGIC_OPTIONS = [
+[
   { value: "AND", label: __("AND", "petitioner") },
   { value: "OR", label: __("OR", "petitioner") }
 ];
@@ -29697,18 +29697,7 @@ const GroupComponent = ({
   };
   const showRemoveCondition = group.conditions.length > 1;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupWrapper, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupHeader, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Match", "petitioner") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        SelectControl$1,
-        {
-          value: group.logic,
-          onChange: (logic) => onChange({ ...group, logic }),
-          options: LOGIC_OPTIONS
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("of the following:", "petitioner") })
-    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(GroupHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Match if all of the following are true:", "petitioner") }) }),
     group.conditions.map((condition, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       ConditionComponent,
       {
