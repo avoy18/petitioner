@@ -101,6 +101,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 = 0.6.2 =
 * Allow passing images to the petition letter
 * Fix relative paths on images in the email templates
+* Allow displaying date of birth on submissions
 
 = 0.6.1 =
 * Allow passing images to the WYSIWYG editor
