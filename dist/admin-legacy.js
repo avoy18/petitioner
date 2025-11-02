@@ -35887,6 +35887,15 @@
           removable: true,
           description: __("Allows users to enter their phone number. The pattern is set to allow only digits.", "petitioner")
         }, {
+          fieldKey: "date_of_birth",
+          type: "date",
+          fieldName: __("Date of Birth", "petitioner"),
+          label: __("Date of Birth", "petitioner"),
+          value: "",
+          required: false,
+          removable: true,
+          description: __("Allows users to enter their date of birth using a date picker.", "petitioner")
+        }, {
           fieldKey: "country",
           type: "select",
           fieldName: __("Country", "petitioner"),
