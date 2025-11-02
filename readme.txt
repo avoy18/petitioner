@@ -33,6 +33,7 @@ Create and manage an unlimited number of petitions.
 - Ability to manually approve/deny petitions and set the default approval behavior (approved by default or declined)
 - Option to confirm emails via email
 - Customize email confirmations, petition letters, and thank you emails
+- Option to edit and delete submissions
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
 
 **Design & layout features**
