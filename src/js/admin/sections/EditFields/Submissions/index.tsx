@@ -323,7 +323,7 @@ export default function Submissions() {
 				/>
 			) : null}
 
-			{showExportModal && <ExportModal total={total} onClose={handleExportClose} />}
+			{showExportModal && <ExportModal total={total} onClose={handleExportClose} submissionExample={submissions[0]} />}
 		</SubmissionTabWrapper>
 	);
 }

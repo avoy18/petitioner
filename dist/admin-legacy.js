@@ -36148,7 +36148,7 @@
           return {
             ...fieldMap,
             name: __("First/Last name", "petitioner"),
-            consent: __("Consent", "petitioner"),
+            accept_tos: __("Consent", "petitioner"),
             submitted_at: __("Submitted at", "petitioner")
           };
         };
@@ -37180,9 +37180,11 @@
           });
         };
         const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
+        const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "approval_status", "legal"];
         function ExportModal({
           onClose = () => {},
-          total = 0
+          total = 0,
+          submissionExample
         }) {
           const [showFilters, setShowFilters] = reactExports.useState(false);
           const {
@@ -37190,7 +37192,23 @@
             setLogic,
             validCount
           } = useConditionalLogic();
+          const potentialLabels = getFieldLabels();
           const exportURL = reactExports.useMemo(() => getExportURL(), []);
+          const availableFields = reactExports.useMemo(() => {
+            return Object.keys(submissionExample).map(key => {
+              if (EXCLUDED_FIELDS.includes(key)) {
+                return null;
+              }
+              const label = potentialLabels?.[key];
+              if (!label) {
+                return null;
+              }
+              return {
+                value: key,
+                label
+              };
+            }).filter(Boolean);
+          }, [submissionExample]);
           return /* @__PURE__ */jsxRuntimeExports.jsxs(Modal, {
             size: "large",
             title: __("Export submissions", "petitioner-theme"),
@@ -37218,13 +37236,7 @@
                   }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
                     value: logic,
                     onChange: setLogic,
-                    availableFields: [{
-                      value: "email",
-                      label: "Email"
-                    }, {
-                      value: "name",
-                      label: "Name"
-                    }]
+                    availableFields
                   })]
                 })]
               })
@@ -37505,7 +37517,8 @@
               onDelete: onModalDelete
             }) : null, showExportModal && /* @__PURE__ */jsxRuntimeExports.jsx(ExportModal, {
               total,
-              onClose: handleExportClose
+              onClose: handleExportClose,
+              submissionExample: submissions[0]
             })]
           });
         }

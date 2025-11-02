@@ -150,7 +150,7 @@ export const getFieldLabels = (): Partial<Record<FieldKey, string>> => {
 	return {
 		...fieldMap,
 		name: __('First/Last name', 'petitioner'),
-		consent: __('Consent', 'petitioner'),
+		accept_tos: __('Consent', 'petitioner'),
 		submitted_at: __('Submitted at', 'petitioner'),
 	};
 };

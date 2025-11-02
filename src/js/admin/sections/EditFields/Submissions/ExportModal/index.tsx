@@ -15,24 +15,51 @@ import {
 	SummaryItem,
 	FiltersWrapper,
 } from './styled';
-import { getExportURL } from '../utilities';
+import { getExportURL, getFieldLabels } from '../utilities';
 import ConditionalLogic, {
 	useConditionalLogic,
 	formatLogicToString,
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
+import type { SubmissionItem } from '../consts';
+
+const EXCLUDED_FIELDS = ['id', 'form_id', 'confirmation_token', 'comments', 'submitted_at', 'approval_status', 'legal'];
 
 export default function ExportModal({
 	onClose = () => {},
 	total = 0,
+	submissionExample,
 }: {
 	onClose: () => void;
 	total: number;
+	submissionExample: SubmissionItem;
 }) {
 	const [showFilters, setShowFilters] = useState(false);
 	const { logic, setLogic, validCount } = useConditionalLogic();
+	const potentialLabels = getFieldLabels();
 
 	const exportURL = useMemo(() => getExportURL(), []);
+	const availableFields = useMemo(() => {
+		return Object.keys(submissionExample)
+			.map((key) => {
+				if (EXCLUDED_FIELDS.includes(key)) {
+					return null;
+				}
+
+				const label =
+					potentialLabels?.[key as keyof typeof potentialLabels];
+
+				if (!label) {
+					return null;
+				}
+
+				return {
+					value: key,
+					label,
+				};
+			})
+			.filter(Boolean) as Array<{ value: string; label: string }>;
+	}, [submissionExample]);
 
 	return (
 		<Modal
@@ -70,10 +97,7 @@ export default function ExportModal({
 							<ConditionalLogic
 								value={logic}
 								onChange={setLogic}
-								availableFields={[
-									{ value: 'email', label: 'Email' },
-									{ value: 'name', label: 'Name' },
-								]}
+								availableFields={availableFields}
 							/>
 						)}
 					</FiltersWrapper>
