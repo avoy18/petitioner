@@ -9,9 +9,9 @@ export const COLORS = {
 export const SPACINGS = {
 	xs: 'var(--ptr-admin-spacing-xs, 4px)',
 	sm: 'var(--ptr-admin-spacing-sm, 8px)',
-	md: 'var(--ptr-admin-spacing-md, 16px)',
-	lg: 'var(--ptr-admin-spacing-lg, 24px)',
-	xl: 'var(--ptr-admin-spacing-xl)',
+	md: 'var(--ptr-admin-spacing-md, 12px)',
+	lg: 'var(--ptr-admin-spacing-lg, 16px)',
+	xl: 'var(--ptr-admin-spacing-xl, 24px)',
 	'2xl': 'var(--ptr-admin-spacing-2xl, 32px)',
 	'3xl': 'var(--ptr-admin-spacing-3xl, 40px)',
 	'4xl': 'var(--ptr-admin-spacing-4xl, 48px)',
