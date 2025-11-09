@@ -162,14 +162,19 @@ class AV_Petitioner_Submissions_Model
                 LIMIT %d OFFSET %d";
 
         $params_with_limit = array_merge($params, [$per_page, $offset]);
-        $submissions = $wpdb->get_results($wpdb->prepare($sql, ...$params_with_limit));
+        $submissions = $wpdb->get_results(
+            call_user_func_array([$wpdb, 'prepare'], array_merge([$sql], $params_with_limit))
+        );
 
         // Get total count (do NOT include limit/offset)
         $count_sql = "SELECT COUNT(*) 
                       FROM {$wpdb->prefix}av_petitioner_submissions 
                       WHERE $where_sql";
 
-        $total_submissions = (int) $wpdb->get_var($wpdb->prepare($count_sql, ...$params));
+        $prepared_count = !empty($params)
+            ? call_user_func_array([$wpdb, 'prepare'], array_merge([$count_sql], $params))
+            : $count_sql;
+        $total_submissions = (int) $wpdb->get_var($prepared_count);
 
         if ($total_submissions === null) {
             $total_submissions = 0; // Ensure we return 0 if no submissions found
