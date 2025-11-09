@@ -36187,7 +36187,8 @@
             ...fieldMap,
             name: __("First/Last name", "petitioner"),
             accept_tos: __("Consent", "petitioner"),
-            submitted_at: __("Submitted at", "petitioner")
+            submitted_at: __("Submitted at", "petitioner"),
+            approval_status: __("Status", "petitioner")
           };
         };
         const getHumanValue = (val, type) => {
@@ -37317,7 +37318,7 @@
           });
         };
         const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
-        const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "approval_status", "legal"];
+        const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "legal"];
         function ExportModal({
           onClose = () => {},
           total = 0,
@@ -37330,7 +37331,7 @@
             setLogic,
             validCount
           } = useConditionalLogic();
-          const formID = reactExports.useMemo(() => submissionExample.form_id, [submissionExample]);
+          const formID = submissionExample.form_id;
           const potentialLabels = getFieldLabels();
           const handleLogicChange = reactExports.useCallback(newValue => {
             setLogic(newValue);
@@ -37532,7 +37533,7 @@
             condition: showApproval,
             heading: {
               id: "status",
-              label: __("Status", "petitioner")
+              label: SUBMISSION_LABELS.approval_status
             }
           }]);
           const ExportComponent = () => {

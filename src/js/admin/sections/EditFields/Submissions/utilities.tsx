@@ -174,7 +174,7 @@ export const getSubmissionCount = async ({
 /**
  * Returns a mapping from fieldKey to label for all available form fields.
  */
-export const getFieldLabels = (): Partial<Record<FieldKey, string>> => {
+export const getFieldLabels = (): Record<string, string> => {
 	const fieldMap: Record<string, string> = {};
 
 	ALl_POSSIBLE_FIELDS.forEach((field) => {
@@ -188,6 +188,7 @@ export const getFieldLabels = (): Partial<Record<FieldKey, string>> => {
 		name: __('First/Last name', 'petitioner'),
 		accept_tos: __('Consent', 'petitioner'),
 		submitted_at: __('Submitted at', 'petitioner'),
+		approval_status: __('Status', 'petitioner'),
 	};
 };
 

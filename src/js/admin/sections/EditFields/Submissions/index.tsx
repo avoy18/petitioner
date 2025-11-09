@@ -169,7 +169,7 @@ export default function Submissions() {
 				condition: showApproval,
 				heading: {
 					id: 'status',
-					label: __('Status', 'petitioner'),
+					label: SUBMISSION_LABELS.approval_status,
 				},
 			},
 		]

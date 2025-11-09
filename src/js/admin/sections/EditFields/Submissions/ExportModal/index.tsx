@@ -31,7 +31,6 @@ const EXCLUDED_FIELDS = [
 	'confirmation_token',
 	'comments',
 	'submitted_at',
-	'approval_status',
 	'legal',
 ];
 
@@ -47,7 +46,7 @@ export default function ExportModal({
 	const [totalCount, setTotalCount] = useState(total);
 	const [showFilters, setShowFilters] = useState(false);
 	const { logic, setLogic, validCount } = useConditionalLogic();
-	const formID = useMemo(() => submissionExample.form_id, [submissionExample]);
+	const formID = submissionExample.form_id;
 	const potentialLabels = getFieldLabels();
 
 	const handleLogicChange = useCallback((newValue: ConditionGroup) => {

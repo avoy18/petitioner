@@ -28800,7 +28800,8 @@ const getFieldLabels = () => {
     ...fieldMap,
     name: __("First/Last name", "petitioner"),
     accept_tos: __("Consent", "petitioner"),
-    submitted_at: __("Submitted at", "petitioner")
+    submitted_at: __("Submitted at", "petitioner"),
+    approval_status: __("Status", "petitioner")
   };
 };
 const getHumanValue = (val, type) => {
@@ -29898,7 +29899,6 @@ const EXCLUDED_FIELDS = [
   "confirmation_token",
   "comments",
   "submitted_at",
-  "approval_status",
   "legal"
 ];
 function ExportModal({
@@ -29910,7 +29910,7 @@ function ExportModal({
   const [totalCount, setTotalCount] = reactExports.useState(total);
   const [showFilters, setShowFilters] = reactExports.useState(false);
   const { logic, setLogic, validCount } = useConditionalLogic();
-  const formID = reactExports.useMemo(() => submissionExample.form_id, [submissionExample]);
+  const formID = submissionExample.form_id;
   const potentialLabels = getFieldLabels();
   const handleLogicChange = reactExports.useCallback((newValue) => {
     setLogic(newValue);
@@ -30143,7 +30143,7 @@ function Submissions() {
         condition: showApproval,
         heading: {
           id: "status",
-          label: __("Status", "petitioner")
+          label: SUBMISSION_LABELS.approval_status
         }
       }
     ]
