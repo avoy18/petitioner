@@ -8,15 +8,17 @@ export default function NoticeSystem({
 	noticeStatus,
 	noticeText,
 	hideNotice,
+	className,
 }: {
 	noticeStatus: NoticeStatus | undefined;
 	noticeText: string | undefined;
 	hideNotice: () => void;
+	className?: string;
 }) {
 	if (!noticeStatus || !noticeText) return null;
 
 	return (
-		<AlertStatusWrapper>
+		<AlertStatusWrapper className={className}>
 			<Notice
 				isDismissible={true}
 				onDismiss={hideNotice}

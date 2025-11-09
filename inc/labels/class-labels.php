@@ -80,7 +80,8 @@ class AV_Petitioner_Labels
             'missing_fields'                 => __('Missing required fields', 'petitioner'),
             'already_confirmed'              => __('Submission already confirmed or not found.', 'petitioner'),
             'missing_confirmation_token'     => __('Missing confirmation token', 'petitioner'),
-            'confirmation_resent'            => __('Confirmation email resent.', 'petitioner')
+            'confirmation_resent'            => __('Confirmation email resent.', 'petitioner'),
+            'no_submissions_to_export'       => __('No submissions available to export.', 'petitioner'),
         ];
     }
 
