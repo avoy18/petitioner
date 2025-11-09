@@ -80,10 +80,13 @@ class AV_Petitioner_CSV_Exporter
 
         for ($page = 1; $page <= $total_pages; $page++) {
             wp_suspend_cache_addition(true);
+
+            $offset = ($page - 1) * self::BATCH_SIZE;
+
             $results = AV_Petitioner_Submissions_Model::get_form_submissions(
                 $form_id,
                 array_merge($settings, [
-                    'page'      => $page,
+                    'offset'    => $offset,
                     'per_page'  => self::BATCH_SIZE,
                 ])
             );
