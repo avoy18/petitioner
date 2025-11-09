@@ -1,12 +1,21 @@
 import styled from 'styled-components';
 import { SPACINGS, COLORS } from '@admin/theme';
 
+export const ConditionalLogicWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	gap: ${SPACINGS.sm};
+
+
+`;
+
 export const GroupWrapper = styled.div`
 	width: 100%;
 	border: 1px dashed ${COLORS.darkGrey};
 	border-radius: 4px;
 	padding: ${SPACINGS.md};
-	margin-bottom: ${SPACINGS.md};
 	background: ${COLORS.light};
 `;
 
