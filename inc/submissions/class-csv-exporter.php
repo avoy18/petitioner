@@ -69,7 +69,7 @@ class AV_Petitioner_CSV_Exporter
             wp_die(AV_Petitioner_Labels::get('error_generic'));
         }
 
-        fputcsv($output, self::get_csv_headers());
+        fputcsv($output, self::get_csv_headers($form_id));
 
         $total_pages = ceil($total_count / self::BATCH_SIZE);
 
@@ -106,35 +106,26 @@ class AV_Petitioner_CSV_Exporter
      * 
      * @return array Array of column header names
      */
-    private static function get_csv_headers()
+    private static function get_csv_headers($form_id)
     {
-        $field_labels = [
-            'id' => 'ID',
-            'form_id' => 'Form ID',
-            'fname' => 'First Name',
-            'lname' => 'Last Name',
-            'email' => 'Email',
-            'country' => 'Country',
-            'salutation' => 'Salutation',
-            'phone' => 'Phone',
-            'street_address' => 'Street Address',
-            'city' => 'City',
-            'postal_code' => 'Postal Code',
-            'comments' => 'Comments',
-            'bcc_yourself' => 'BCC Yourself',
-            'newsletter' => 'Newsletter',
-            'hide_name' => 'Hide Name',
-            'accept_tos' => 'Accept TOS',
-            'approval_status' => 'Approval Status',
-            'submitted_at' => 'Submitted At',
-            'confirmation_token' => 'Confirmation Token',
-        ];
+        $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
+
+        //get defaults
+        $default_labels = AV_Petitioner_Labels::get_field_labels();
+
+        // Get custom labels from form builder
+        $custom_labels = av_petitioner_get_form_labels(
+            $form_id,
+            $allowed_fields
+        );
+
+        $all_labels = array_merge($default_labels, $custom_labels);
 
         $headers = [];
-        foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
-            if (isset($field_labels[$field])) {
-                $headers[] = $field_labels[$field];
-            }
+
+        foreach ($allowed_fields as $field) {
+            // Use label if available, otherwise generate from field name
+            $headers[] = $all_labels[$field] ?? ucwords(str_replace('_', ' ', $field));
         }
 
         return $headers;
