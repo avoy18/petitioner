@@ -35945,6 +35945,15 @@
           required: true,
           removable: true
         }, {
+          fieldKey: "hide_name",
+          type: "checkbox",
+          fieldName: __("Keep me anonymous checkbox", "petitioner"),
+          label: __("Keep my name anonymous", "petitioner"),
+          defaultValue: false,
+          required: false,
+          removable: true,
+          description: __("Allows users to opt-in to keep their name anonymous in public signature lists.", "petitioner")
+        }, {
           fieldKey: "legal",
           type: "wysiwyg",
           fieldName: __("Legal text", "petitioner"),
