@@ -47,6 +47,7 @@ export default function ExportModal({
 	const [totalCount, setTotalCount] = useState(total);
 	const [showFilters, setShowFilters] = useState(false);
 	const { logic, setLogic, validCount } = useConditionalLogic();
+	const formID = useMemo(() => submissionExample.form_id, [submissionExample]);
 	const potentialLabels = getFieldLabels();
 
 	const handleLogicChange = useCallback((newValue: ConditionGroup) => {
@@ -57,7 +58,7 @@ export default function ExportModal({
 
 	useEffect(() => {
 		getSubmissionCount({
-			formID: submissionExample.form_id,
+			formID,
 			filters: logic,
 			onSuccess: (count: number) => {
 				setTotalCount(count);

@@ -29910,6 +29910,7 @@ function ExportModal({
   const [totalCount, setTotalCount] = reactExports.useState(total);
   const [showFilters, setShowFilters] = reactExports.useState(false);
   const { logic, setLogic, validCount } = useConditionalLogic();
+  const formID = reactExports.useMemo(() => submissionExample.form_id, [submissionExample]);
   const potentialLabels = getFieldLabels();
   const handleLogicChange = reactExports.useCallback((newValue) => {
     setLogic(newValue);
@@ -29918,7 +29919,7 @@ function ExportModal({
   }, []);
   reactExports.useEffect(() => {
     getSubmissionCount({
-      formID: submissionExample.form_id,
+      formID,
       filters: logic,
       onSuccess: (count) => {
         setTotalCount(count);
