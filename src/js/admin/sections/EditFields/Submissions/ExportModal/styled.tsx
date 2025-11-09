@@ -1,7 +1,11 @@
 import styled from 'styled-components';
-import { Button } from '@wordpress/components';
+import { Button, CardBody } from '@wordpress/components';
 import { SPACINGS } from '@admin/theme';
 import NoticeSystem from '@admin/components/NoticeSystem';
+
+export const StyledCardBody = styled(CardBody)`
+    padding-block: ${SPACINGS['4xl']} ${SPACINGS['2xl']} !important;
+`;
 
 export const StyledExportButton = styled(Button)`
     width: 100%;

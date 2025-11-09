@@ -36213,6 +36213,7 @@
           xs: "var(--ptr-admin-spacing-xs, 4px)",
           sm: "var(--ptr-admin-spacing-sm, 8px)",
           md: "var(--ptr-admin-spacing-md, 16px)",
+          "2xl": "var(--ptr-admin-spacing-2xl, 32px)",
           "4xl": "var(--ptr-admin-spacing-4xl, 48px)"
         };
         const TRANSITIONS = {
@@ -36968,6 +36969,9 @@
             })
           });
         }
+        const StyledCardBody = dt(CardBody)`
+    padding-block: ${SPACINGS["4xl"]} ${SPACINGS["2xl"]} !important;
+`;
         const StyledExportButton = dt(Button)`
     width: 100%;
     text-align: center;
@@ -37210,7 +37214,7 @@
             }, condition.id)), /* @__PURE__ */jsxRuntimeExports.jsx(ActionButtons, {
               children: /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
                 icon: "plus",
-                variant: "secondary",
+                variant: "tertiary",
                 size: "small",
                 onClick: addCondition,
                 children: __("Add Condition", "petitioner")
@@ -37330,7 +37334,7 @@
             title: __("Export submissions", "petitioner-theme"),
             onRequestClose: onClose,
             children: [/* @__PURE__ */jsxRuntimeExports.jsx(Card, {
-              children: /* @__PURE__ */jsxRuntimeExports.jsxs(CardBody, {
+              children: /* @__PURE__ */jsxRuntimeExports.jsxs(StyledCardBody, {
                 children: [/* @__PURE__ */jsxRuntimeExports.jsx(NoticeSystemWrapper, {
                   noticeStatus,
                   noticeText,

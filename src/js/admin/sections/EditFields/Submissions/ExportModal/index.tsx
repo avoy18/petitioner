@@ -14,6 +14,7 @@ import {
 	SummaryItem,
 	FiltersWrapper,
 	NoticeSystemWrapper,
+	StyledCardBody,
 } from './styled';
 import { getExportURL, getFieldLabels } from '../utilities';
 import ConditionalLogic, {
@@ -85,7 +86,7 @@ export default function ExportModal({
 			onRequestClose={onClose}
 		>
 			<Card>
-				<CardBody>
+				<StyledCardBody>
 					<NoticeSystemWrapper
 						noticeStatus={noticeStatus}
 						noticeText={noticeText}
@@ -123,7 +124,7 @@ export default function ExportModal({
 							/>
 						)}
 					</FiltersWrapper>
-				</CardBody>
+				</StyledCardBody>
 			</Card>
 			<form action={exportURL} method="POST" target="_blank">
 				<input
