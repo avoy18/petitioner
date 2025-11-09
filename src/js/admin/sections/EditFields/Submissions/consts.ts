@@ -74,3 +74,16 @@ export const FETCH_ACTION = 'petitioner_fetch_submissions';
 export const DELETE_ACTION = 'petitioner_delete_submission';
 
 export type NoticeStatus = 'success' | 'error' | undefined;
+
+export const DEFAULT_EXPORT_LOGIC = {
+	id: 'default-group',
+	logic: 'AND' as const,
+	conditions: [
+		{
+			id: 'default-condition',
+			field: 'approval_status',
+			operator: 'equals',
+			value: 'Confirmed',
+		},
+	],
+};

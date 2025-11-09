@@ -34514,6 +34514,16 @@
         const UPDATE_ACTION = "petitioner_update_submission";
         const FETCH_ACTION = "petitioner_fetch_submissions";
         const DELETE_ACTION = "petitioner_delete_submission";
+        const DEFAULT_EXPORT_LOGIC = {
+          id: "default-group",
+          logic: "AND",
+          conditions: [{
+            id: "default-condition",
+            field: "approval_status",
+            operator: "equals",
+            value: "Confirmed"
+          }]
+        };
 
         /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 
@@ -37259,7 +37269,7 @@
             logic: logic2,
             conditions: [createEmptyCondition()]
           });
-          const defaultValue = createEmptyGroup(options?.defaultLogic);
+          const defaultValue = options?.initialValue || createEmptyGroup(options?.defaultLogic);
           const [logic, setLogic] = reactExports.useState(defaultValue);
           const resetLogic = reactExports.useCallback(() => {
             setLogic(createEmptyGroup(options?.defaultLogic));
@@ -37318,7 +37328,7 @@
 	align-items: flex-start;
 	gap: ${SPACINGS.md};
 `;
-        const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "approval_status", "legal"];
+        const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "legal"];
         const Filters = ({
           validCount,
           logic,
@@ -37372,7 +37382,9 @@
             logic,
             setLogic,
             validCount
-          } = useConditionalLogic();
+          } = useConditionalLogic({
+            initialValue: DEFAULT_EXPORT_LOGIC
+          });
           const formID = submissionExample.form_id;
           const handleLogicChange = reactExports.useCallback(newValue => {
             setLogic(newValue);

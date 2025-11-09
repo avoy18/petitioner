@@ -16,7 +16,7 @@ import {
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
 import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
-import type { SubmissionItem } from '../consts';
+import {type SubmissionItem, DEFAULT_EXPORT_LOGIC } from '../consts';
 import Filters from '../Filters';
 
 export default function ExportModal({
@@ -29,7 +29,9 @@ export default function ExportModal({
 	submissionExample: SubmissionItem;
 }) {
 	const [totalCount, setTotalCount] = useState(total);
-	const { logic, setLogic, validCount } = useConditionalLogic();
+	const { logic, setLogic, validCount } = useConditionalLogic({
+		initialValue: DEFAULT_EXPORT_LOGIC,
+	});
 	const formID = submissionExample.form_id;
 
 	const handleLogicChange = useCallback((newValue: ConditionGroup) => {

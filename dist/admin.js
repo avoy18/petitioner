@@ -27460,6 +27460,18 @@ const PER_PAGE = 100;
 const UPDATE_ACTION = "petitioner_update_submission";
 const FETCH_ACTION = "petitioner_fetch_submissions";
 const DELETE_ACTION = "petitioner_delete_submission";
+const DEFAULT_EXPORT_LOGIC = {
+  id: "default-group",
+  logic: "AND",
+  conditions: [
+    {
+      id: "default-condition",
+      field: "approval_status",
+      operator: "equals",
+      value: "Confirmed"
+    }
+  ]
+};
 /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
 const {
   entries,
@@ -29840,7 +29852,7 @@ const useConditionalLogic = (options2) => {
     logic: logic2,
     conditions: [createEmptyCondition()]
   });
-  const defaultValue2 = createEmptyGroup(options2 == null ? void 0 : options2.defaultLogic);
+  const defaultValue2 = (options2 == null ? void 0 : options2.initialValue) || createEmptyGroup(options2 == null ? void 0 : options2.defaultLogic);
   const [logic, setLogic] = reactExports.useState(defaultValue2);
   const resetLogic = reactExports.useCallback(() => {
     setLogic(createEmptyGroup(options2 == null ? void 0 : options2.defaultLogic));
@@ -29899,7 +29911,6 @@ const EXCLUDED_FIELDS = [
   "confirmation_token",
   "comments",
   "submitted_at",
-  "approval_status",
   "legal"
 ];
 const Filters = ({
@@ -29964,7 +29975,9 @@ function ExportModal({
   submissionExample
 }) {
   const [totalCount, setTotalCount] = reactExports.useState(total);
-  const { logic, setLogic, validCount } = useConditionalLogic();
+  const { logic, setLogic, validCount } = useConditionalLogic({
+    initialValue: DEFAULT_EXPORT_LOGIC
+  });
   const formID = submissionExample.form_id;
   const handleLogicChange = reactExports.useCallback((newValue) => {
     setLogic(newValue);

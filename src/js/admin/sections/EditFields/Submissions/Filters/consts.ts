@@ -7,7 +7,6 @@ export const EXCLUDED_FIELDS = [
 	'confirmation_token',
 	'comments',
 	'submitted_at',
-	'approval_status',
 	'legal',
 ];
 
