@@ -107,7 +107,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		),
 	},
 	{
-		fieldKey: 'newsletter_opt_in',
+		fieldKey: 'newsletter',
 		type: 'checkbox',
 		fieldName: __('Newsletter opt-in checkbox', 'petitioner'),
 		label: __('Subscribe to newsletter', 'petitioner'),

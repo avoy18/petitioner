@@ -42,7 +42,7 @@ class AV_Petitioner_Submissions_Controller
         $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $hide_name                  = !empty($_POST['petitioner_hide_name']) && sanitize_text_field(wp_unslash($_POST['petitioner_hide_name'])) === 'on';
-        $newsletter_opt_in          = !empty($_POST['petitioner_newsletter_opt_in']) && sanitize_text_field(wp_unslash($_POST['petitioner_newsletter_opt_in'])) === 'on';
+        $newsletter                 = !empty($_POST['petitioner_newsletter']) && sanitize_text_field(wp_unslash($_POST['petitioner_newsletter'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status            = 'Confirmed';
         $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
@@ -104,7 +104,7 @@ class AV_Petitioner_Submissions_Controller
             'postal_code'       => $postal_code,
             'comments'          => $comments,
             'bcc_yourself'      => $bcc ? 1 : 0,
-            'newsletter'        => $newsletter_opt_in ? 1 : 0,
+            'newsletter'        => $newsletter ? 1 : 0,
             'hide_name'         => $hide_name ? 1 : 0,
             'accept_tos'        => $accept_tos ? 1 : 0,
             'submitted_at'      => current_time('mysql'),

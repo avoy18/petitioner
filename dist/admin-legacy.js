@@ -35954,6 +35954,15 @@
           removable: true,
           description: __("Allows users to opt-in to keep their name anonymous in public signature lists.", "petitioner")
         }, {
+          fieldKey: "newsletter",
+          type: "checkbox",
+          fieldName: __("Newsletter opt-in checkbox", "petitioner"),
+          label: __("Subscribe to newsletter", "petitioner"),
+          defaultValue: false,
+          required: false,
+          removable: true,
+          description: __("Allows users to opt-in to receive newsletter updates.", "petitioner")
+        }, {
           fieldKey: "legal",
           type: "wysiwyg",
           fieldName: __("Legal text", "petitioner"),
@@ -36873,6 +36882,7 @@
             });
             setValuesChanged(hasChanged);
           }, [submissionDetails, submission]);
+          console.log(submissionDetails, SUBMISSION_LABELS$1);
           const SubmissionDetails = submissionEntries.map(([label, value], index) => {
             if (!isValidFieldKey(label)) {
               return;
