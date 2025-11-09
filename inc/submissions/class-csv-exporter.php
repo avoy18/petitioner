@@ -11,6 +11,11 @@ if (!defined('ABSPATH')) {
 class AV_Petitioner_CSV_Exporter
 {
     /**
+     * Number of submissions to process per batch
+     */
+    const BATCH_SIZE = 1000;
+
+    /**
      * Main export entry point
      * Handles the CSV export request and streams the file to the browser
      */
@@ -29,14 +34,14 @@ class AV_Petitioner_CSV_Exporter
 
         $query = av_petitioner_build_model_query($conditional_logic);
 
-
-        $results = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
+        $settings = [
             'query'         => $query,
             'relation'      => $conditional_logic['logic'] ?? 'AND',
-            'per_page'      => 999999,
-        ]);
+        ];
 
-        if (empty($results['submissions'])) {
+        $total_count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, false);
+
+        if ($total_count === 0) {
             wp_die(AV_Petitioner_Labels::get('no_submissions_to_export'));
         }
 
@@ -44,35 +49,54 @@ class AV_Petitioner_CSV_Exporter
 
         self::send_download_headers($filename);
 
-        self::stream_csv($results['submissions']);
+        self::stream_csv_chunked($form_id, $settings, $total_count);
 
         exit;
     }
 
-
     /**
-     * Stream CSV content directly to output
+     * Stream CSV content in chunks to avoid memory issues
      * 
-     * @param array $submissions Array of submission objects
+     * @param int   $form_id      Form ID to export
+     * @param array $settings     Query settings (query, relation)
+     * @param int   $total_count  Total number of submissions
      */
-    private static function stream_csv($submissions)
+    private static function stream_csv_chunked($form_id, $settings, $total_count)
     {
-        // Open output stream for writing
         $output = fopen('php://output', 'w');
 
         if ($output === false) {
             wp_die(AV_Petitioner_Labels::get('error_generic'));
         }
 
-        // Output the column headings
         fputcsv($output, self::get_csv_headers());
 
-        // Loop over the rows and output them as CSV
-        foreach ($submissions as $row) {
-            fputcsv($output, self::get_csv_row($row));
+        $total_pages = ceil($total_count / self::BATCH_SIZE);
+
+        for ($page = 1; $page <= $total_pages; $page++) {
+            wp_suspend_cache_addition(true);
+            $results = AV_Petitioner_Submissions_Model::get_form_submissions(
+                $form_id,
+                array_merge($settings, [
+                    'page'      => $page,
+                    'per_page'  => self::BATCH_SIZE,
+                ])
+            );
+
+            if (!empty($results['submissions'])) {
+                foreach ($results['submissions'] as $row) {
+                    fputcsv($output, self::get_csv_row($row));
+                }
+            }
+
+            unset($results);
+
+            if (ob_get_level() > 0) {
+                ob_flush();
+            }
+            flush();
         }
 
-        // Close the output stream
         fclose($output);
     }
 
@@ -106,7 +130,6 @@ class AV_Petitioner_CSV_Exporter
             'confirmation_token' => 'Confirmation Token',
         ];
 
-        // Get labels for fields that exist in the model
         $headers = [];
         foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
             if (isset($field_labels[$field])) {
@@ -148,10 +171,18 @@ class AV_Petitioner_CSV_Exporter
             wp_die(AV_Petitioner_Labels::get('error_generic'));
         }
 
+        // Disable output buffering to allow streaming
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=' . sanitize_file_name($filename));
         header('Cache-Control: no-cache, must-revalidate');
         header('Expires: 0');
+
+        // Prevent timeout on large exports
+        set_time_limit(0);
     }
 
     private static function check_permissions()
