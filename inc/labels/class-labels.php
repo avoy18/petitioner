@@ -10,16 +10,18 @@ if (! defined('ABSPATH')) {
  */
 class AV_Petitioner_Labels
 {
-    private static $all_labels_cache = null; // Cache for labels + filters
+    private static $core_labels_cache = null;
+    private static $field_labels_cache = null;
 
     /**
      * Get a label by key
      *
      * @param string $key The key of the label to retrieve
      * @param int|null $form_id Optional form ID for form-specific labels
+     * @param bool $include_fields Whether to include field labels in lookup
      * @return string The label text
      */
-    public static function get($key, $form_id = null)
+    public static function get($key, $form_id = null, $include_fields = false)
     {
         if (empty($key)) {
             av_ptr_error_log('AV_Petitioner_Labels::get called with empty key');
@@ -30,21 +32,23 @@ class AV_Petitioner_Labels
             return self::get_form_label($key, $form_id);
         }
 
-        // Get cached labels (only built once per request)
-        $defaults = self::get_all_with_filters();
+        // Get labels based on whether fields are needed
+        $labels = $include_fields
+            ? self::get_all_with_fields()
+            : self::get_core_labels();
 
-        return isset($defaults[$key]) ? $defaults[$key] : '';
+        return isset($labels[$key]) ? $labels[$key] : '';
     }
 
     /**
-     * Get all labels with filters applied (cached)
+     * Get core labels only (cached)
      * 
-     * @return array All labels with filters applied
+     * @return array Core labels with filters applied
      */
-    private static function get_all_with_filters()
+    private static function get_core_labels()
     {
-        if (self::$all_labels_cache !== null) {
-            return self::$all_labels_cache;
+        if (self::$core_labels_cache !== null) {
+            return self::$core_labels_cache;
         }
 
         $labels = self::get_all();
@@ -55,15 +59,36 @@ class AV_Petitioner_Labels
          * @param array $labels Array of default labels.
          * @return array Modified default labels.
          */
-        self::$all_labels_cache = apply_filters('av_petitioner_labels_defaults', $labels);
+        self::$core_labels_cache = apply_filters('av_petitioner_labels_defaults', $labels);
 
-        return self::$all_labels_cache;
+        return self::$core_labels_cache;
     }
 
     /**
-     * Get all labels (without filters)
+     * Get all labels including field labels (cached)
+     * 
+     * @return array All labels including field labels
+     */
+    private static function get_all_with_fields()
+    {
+        if (self::$field_labels_cache !== null) {
+            return self::$field_labels_cache;
+        }
+
+        $labels = array_merge(
+            self::get_all(),
+            self::get_field_labels()
+        );
+
+        self::$field_labels_cache = apply_filters('av_petitioner_labels_defaults', $labels);
+
+        return self::$field_labels_cache;
+    }
+
+    /**
+     * Get core labels (without field labels)
      *
-     * @return array An array of all labels
+     * @return array An array of core labels
      */
     public static function get_all()
     {
@@ -103,8 +128,17 @@ class AV_Petitioner_Labels
             'id'                             => __('ID', 'petitioner'),
             'created_at'                     => __('Submission date', 'petitioner'),
             'name'                           => __('Name', 'petitioner'),
+        ];
+    }
 
-            // Form field labels
+    /**
+     * Get form field labels (separate from core labels)
+     *
+     * @return array An array of field labels
+     */
+    public static function get_field_labels()
+    {
+        return [
             'form_id'                        => __('Form ID', 'petitioner'),
             'fname'                          => __('First name', 'petitioner'),
             'lname'                          => __('Last name', 'petitioner'),
@@ -135,6 +169,6 @@ class AV_Petitioner_Labels
      */
     public static function get_form_label($key, $form_id)
     {
-        return get_post_meta('' . $form_id, '_petitioner_' . $key, true) ?: self::get($key);
+        return get_post_meta('' . $form_id, '_petitioner_' . $key, true) ?: self::get($key, null, true);
     }
 }
