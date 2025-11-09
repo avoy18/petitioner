@@ -89,7 +89,7 @@ const GroupComponent = ({
 			<ActionButtons>
 				<Button
 					icon="plus"
-					variant="secondary"
+					variant="tertiary"
 					size="small"
 					onClick={addCondition}
 				>
