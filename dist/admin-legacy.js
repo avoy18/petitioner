@@ -36882,7 +36882,6 @@
             });
             setValuesChanged(hasChanged);
           }, [submissionDetails, submission]);
-          console.log(submissionDetails, SUBMISSION_LABELS$1);
           const SubmissionDetails = submissionEntries.map(([label, value], index) => {
             if (!isValidFieldKey(label)) {
               return;

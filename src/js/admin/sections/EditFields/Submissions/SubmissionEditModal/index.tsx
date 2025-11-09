@@ -64,7 +64,7 @@ export default function SubmissionEditModal({
 		});
 		setValuesChanged(hasChanged);
 	}, [submissionDetails, submission]);
-	console.log(submissionDetails, SUBMISSION_LABELS);
+
 	const SubmissionDetails = submissionEntries.map(([label, value], index) => {
 		if (!isValidFieldKey(label)) {
 			return;
