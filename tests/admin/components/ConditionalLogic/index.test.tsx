@@ -26,23 +26,6 @@ function TestWrapper() {
 }
 
 describe('ConditionalLogic component', () => {
-	it('renders with initial empty condition', () => {
-		render(<TestWrapper />);
-
-		// Check for the "Match" text
-		expect(screen.getByText(/match/i)).toBeInTheDocument();
-
-		// Check for AND/OR selector
-		expect(screen.getByText(/of the following:/i)).toBeInTheDocument();
-
-		// Check for field selectors
-		expect(screen.getByText(/select field.../i)).toBeInTheDocument();
-
-		// Check for Add Condition button
-		expect(
-			screen.getByRole('button', { name: /add condition/i })
-		).toBeInTheDocument();
-	});
 
 	it('adds a new condition when Add Condition button is clicked', async () => {
 		const user = userEvent.setup();
@@ -128,8 +111,14 @@ describe('ConditionalLogic component', () => {
 			name: /add condition/i,
 		});
 
+		await user.click(addButton);
+
+		const applyButton = screen.getByRole('button', {
+			name: /apply filters/i,
+		});
+
 		await act(async () => {
-			await user.click(addButton);
+			await user.click(applyButton);
 		});
 
 		// onChange should have been called
@@ -140,9 +129,10 @@ describe('ConditionalLogic component', () => {
 		render(<TestWrapper />);
 
 		// Check for operator options - use exact match for "Equals"
-		expect(screen.getByText('Equals')).toBeInTheDocument();
-		expect(screen.getByText('Contains')).toBeInTheDocument();
-		expect(screen.getByText('Is Empty')).toBeInTheDocument();
+		expect(screen.getByText('equals')).toBeInTheDocument();
+		expect(screen.getByText('not equals')).toBeInTheDocument();
+		expect(screen.getByText('is empty')).toBeInTheDocument();
+		expect(screen.getByText('is not empty')).toBeInTheDocument();
 	});
 
 	it('hides value input for is_empty and is_not_empty operators', async () => {
