@@ -232,20 +232,32 @@ class AV_Petitioner_CSV_Exporter
 
     /**
      * Sanitize CSV value to prevent formula injection attacks
+     * Trims leading whitespace and checks for dangerous characters
+     * that could be interpreted as formulas by spreadsheet applications
      * 
      * @param string $value Raw value
      * @return string Sanitized value
      */
     private static function sanitize_csv_value($value)
     {
-        // Convert to string
-        $value = (string) $value;
+        // Convert to string and trim leading whitespace
+        // (attackers may use spaces to hide dangerous characters)
+        $value = ltrim((string) $value);
 
-        // Check if value starts with dangerous characters
-        $dangerous_chars = ['=', '+', '-', '@', "\t", "\r"];
+        // Expanded list of dangerous characters that can trigger formula injection
+        // = : Formula start
+        // + : Addition formula
+        // - : Subtraction formula (also hyphen for command line)
+        // @ : Excel formula
+        // \t : Tab (can be used in some injection contexts)
+        // \r : Carriage return (can break parsing)
+        // \n : Newline (can break parsing)
+        // | : Pipe (command execution in some contexts)
+        $dangerous_chars = ['=', '+', '-', '@', "\t", "\r", "\n", '|'];
 
-        if (strlen($value) > 0 && in_array($value[0], $dangerous_chars)) {
+        if (strlen($value) > 0 && in_array($value[0], $dangerous_chars, true)) {
             // Prefix with single quote to neutralize
+            // This tells spreadsheet apps to treat it as text, not formula
             $value = "'" . $value;
         }
 
