@@ -39,13 +39,15 @@ class AV_Petitioner_CSV_Exporter
             'relation'      => $conditional_logic['logic'] ?? 'AND',
         ];
 
-        $total_count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, false);
+        $skip_unconfirmed = false;
+
+        $total_count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, $skip_unconfirmed);
 
         if ($total_count === 0) {
             wp_die(AV_Petitioner_Labels::get('no_submissions_to_export'));
         }
 
-        $filename = 'petition_submissions_' . date('Y-m-d_H-i-s') . '.csv';
+        $filename = 'petition_submissions_' . current_time('Y-m-d_H-i-s') . '.csv';
 
         self::send_download_headers($filename);
 
@@ -68,6 +70,9 @@ class AV_Petitioner_CSV_Exporter
         if ($output === false) {
             wp_die(AV_Petitioner_Labels::get('error_generic'));
         }
+
+        // Add UTF-8 BOM for Excel compatibility (must be first thing)
+        fprintf($output, "\xEF\xBB\xBF");
 
         fputcsv($output, self::get_csv_headers($form_id));
 
@@ -116,7 +121,7 @@ class AV_Petitioner_CSV_Exporter
     {
         $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
 
-        //get defaults
+        // Get defaults
         $default_labels = AV_Petitioner_Labels::get_field_labels();
 
         // Get custom labels from form builder
@@ -140,6 +145,7 @@ class AV_Petitioner_CSV_Exporter
     /**
      * Get CSV row data from submission object
      * Dynamically builds row based on allowed fields from model
+     * Sanitizes values to prevent CSV injection attacks
      * 
      * @param object $submission Submission database row object
      * @return array Array of values for CSV row
@@ -148,9 +154,11 @@ class AV_Petitioner_CSV_Exporter
     {
         $row = [];
 
-        // Build row based on allowed fields from model
         foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
-            $row[] = isset($submission->$field) ? $submission->$field : '';
+            $value = isset($submission->$field) ? $submission->$field : '';
+
+            // Sanitize to prevent CSV injection
+            $row[] = self::sanitize_csv_value($value);
         }
 
         return $row;
@@ -193,6 +201,11 @@ class AV_Petitioner_CSV_Exporter
         remove_action('shutdown', 'wp_ob_end_flush_all', 1);
     }
 
+    /**
+     * Check user permissions and nonce
+     * 
+     * @return void
+     */
     private static function check_permissions()
     {
         if (!current_user_can('manage_options')) {
@@ -204,5 +217,27 @@ class AV_Petitioner_CSV_Exporter
         if (!isset($_POST['petitioner_nonce']) || !wp_verify_nonce($_POST['petitioner_nonce'], $nonce_label)) {
             wp_die(AV_Petitioner_Labels::get('invalid_nonce'));
         }
+    }
+
+    /**
+     * Sanitize CSV value to prevent formula injection attacks
+     * 
+     * @param string $value Raw value
+     * @return string Sanitized value
+     */
+    private static function sanitize_csv_value($value)
+    {
+        // Convert to string
+        $value = (string) $value;
+
+        // Check if value starts with dangerous characters
+        $dangerous_chars = ['=', '+', '-', '@', "\t", "\r"];
+
+        if (strlen($value) > 0 && in_array($value[0], $dangerous_chars)) {
+            // Prefix with single quote to neutralize
+            $value = "'" . $value;
+        }
+
+        return $value;
     }
 }
