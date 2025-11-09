@@ -1,7 +1,7 @@
 var __freeze = Object.freeze;
 var __defProp = Object.defineProperty;
 var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(raw || cooked.slice()) }));
-var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K;
+var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M;
 function __vite_legacy_guard() {
   import.meta.url;
   import("_").catch(() => 1);
@@ -28817,10 +28817,10 @@ const COLORS = {
   darkGrey: "var(--ptr-admin-color-dark-grey)"
 };
 const SPACINGS = {
-  xs: "var(--ptr-admin-spacing-xs)",
-  sm: "var(--ptr-admin-spacing-sm)",
-  md: "var(--ptr-admin-spacing-md)",
-  "4xl": "var(--ptr-admin-spacing-4xl)"
+  xs: "var(--ptr-admin-spacing-xs, 4px)",
+  sm: "var(--ptr-admin-spacing-sm, 8px)",
+  md: "var(--ptr-admin-spacing-md, 16px)",
+  "4xl": "var(--ptr-admin-spacing-4xl, 48px)"
 };
 const TRANSITIONS = {
   sm: "0.15s"
@@ -29581,10 +29581,53 @@ function SubmissionEditModal({
     }
   );
 }
-const StyledExportButton = dt(Button)(_n || (_n = __template(["\n    width: 100%;\n    text-align: center;\n    font-size: 1.125rem;\n    justify-content: center;\n    display: flex;\n    margin-top: ", ";\n    padding: ", ";\n"])), SPACINGS.md, SPACINGS.md);
-const SummaryWrapper = dt.div(_o || (_o = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: ", ";\n    margin-bottom: ", ";\n"])), SPACINGS.sm, SPACINGS.md);
-const SummaryItem = dt.div(_p || (_p = __template(["\n	font-size: 1rem;\n"])));
-const FiltersWrapper = dt.div(_q || (_q = __template(["\n	display: flex;\n	flex-direction: column;\n    justify-content: flex-start;\n    align-items: flex-start;\n	gap: ", ";\n"])), SPACINGS.md);
+const AlertStatusWrapper = dt.div(_n || (_n = __template(["\n	--notice-system-z-index: 1000;\n	--notice-system-top: ", ";\n	position: fixed;\n	width: 80%;\n	max-width: 768px;\n	margin: auto;\n	top: var(--notice-system-top);\n	left: 0;\n	right: 0;\n	z-index: var(--notice-system-z-index);\n"])), SPACINGS["4xl"]);
+const useNoticeSystem = ({ timeoutDuration = 3e3 } = {}) => {
+  const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
+  const [noticeText, setNoticeText] = reactExports.useState(void 0);
+  const showNotice = reactExports.useCallback((status, text2) => {
+    setNoticeStatus(status);
+    setNoticeText(text2);
+  }, []);
+  const hideNotice = reactExports.useCallback(() => {
+    setNoticeStatus(void 0);
+    setNoticeText(void 0);
+  }, []);
+  reactExports.useEffect(() => {
+    if (noticeText) {
+      const timeout = setTimeout(hideNotice, timeoutDuration);
+      return () => clearTimeout(timeout);
+    }
+  }, [noticeText, hideNotice]);
+  return {
+    showNotice,
+    hideNotice,
+    noticeStatus,
+    noticeText
+  };
+};
+function NoticeSystem({
+  noticeStatus,
+  noticeText,
+  hideNotice,
+  className
+}) {
+  if (!noticeStatus || !noticeText) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(AlertStatusWrapper, { className, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Notice,
+    {
+      isDismissible: true,
+      onDismiss: hideNotice,
+      status: noticeStatus,
+      children: noticeText
+    }
+  ) });
+}
+const StyledExportButton = dt(Button)(_o || (_o = __template(["\n    width: 100%;\n    text-align: center;\n    font-size: 1.125rem;\n    justify-content: center;\n    display: flex;\n    margin-top: ", ";\n    padding: ", ";\n"])), SPACINGS.md, SPACINGS.md);
+const SummaryWrapper = dt.div(_p || (_p = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: ", ";\n    margin-bottom: ", ";\n"])), SPACINGS.sm, SPACINGS.md);
+const SummaryItem = dt.div(_q || (_q = __template(["\n	font-size: 1rem;\n"])));
+const FiltersWrapper = dt.div(_r || (_r = __template(["\n	display: flex;\n	flex-direction: column;\n    justify-content: flex-start;\n    align-items: flex-start;\n	gap: ", ";\n"])), SPACINGS.md);
+const NoticeSystemWrapper = dt(NoticeSystem)(_s || (_s = __template(["\n    position: absolute;\n    --notice-system-z-index: 9999;\n	--notice-system-top: ", ";\n\n    .components-notice {\n        padding: ", " ", ";\n    }\n"])), SPACINGS.md, SPACINGS.xs, SPACINGS.xs);
 const OPERATORS = [
   { value: "equals", label: __("equals", "petitioner") },
   { value: "not_equals", label: __("not equals", "petitioner") },
@@ -29612,10 +29655,11 @@ const formatLogicToString = (logic, fieldLabels = {}, emptyMessage = __("No filt
   }
   return parts.join(" ".concat(logic.logic, " "));
 };
-const GroupWrapper = dt.div(_r || (_r = __template(["\n	width: 100%;\n	border: 1px dashed ", ";\n	border-radius: 4px;\n	padding: ", ";\n	margin-bottom: ", ";\n	background: ", ";\n"])), COLORS.darkGrey, SPACINGS.md, SPACINGS.md, COLORS.light);
-const GroupHeader = dt.div(_s || (_s = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	span {\n		font-weight: 500;\n		color: rgba(0, 0, 0, 0.7);\n	}\n\n	.components-base-control {\n		margin-bottom: 0;\n		width: auto;\n		min-width: 100px;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n"])), SPACINGS.sm, SPACINGS.md);
-const ConditionRow = dt.div(_t || (_t = __template(["\n	display: flex;\n	align-items: flex-start;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	.components-base-control {\n		margin-bottom: 0;\n		flex: 1;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n\n	> button {\n		flex-shrink: 0;\n		margin-top: 2px;\n	}\n"])), SPACINGS.sm, SPACINGS.sm);
-const ActionButtons = dt.div(_u || (_u = __template(["\n	display: flex;\n	gap: ", ";\n	margin-top: ", ";\n"])), SPACINGS.sm, SPACINGS.sm);
+const ConditionalLogicWrapper = dt.div(_t || (_t = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	width: 100%;\n	gap: ", ";\n\n\n"])), SPACINGS.sm);
+const GroupWrapper = dt.div(_u || (_u = __template(["\n	width: 100%;\n	border: 1px dashed ", ";\n	border-radius: 4px;\n	padding: ", ";\n	background: ", ";\n"])), COLORS.darkGrey, SPACINGS.md, COLORS.light);
+const GroupHeader = dt.div(_v || (_v = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	span {\n		font-weight: 500;\n		color: rgba(0, 0, 0, 0.7);\n	}\n\n	.components-base-control {\n		margin-bottom: 0;\n		width: auto;\n		min-width: 100px;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n"])), SPACINGS.sm, SPACINGS.md);
+const ConditionRow = dt.div(_w || (_w = __template(["\n	display: flex;\n	align-items: flex-start;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	.components-base-control {\n		margin-bottom: 0;\n		flex: 1;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n\n	> button {\n		flex-shrink: 0;\n		margin-top: 2px;\n	}\n"])), SPACINGS.sm, SPACINGS.sm);
+const ActionButtons = dt.div(_x || (_x = __template(["\n	display: flex;\n	gap: ", ";\n	margin-top: ", ";\n"])), SPACINGS.sm, SPACINGS.sm);
 const ConditionComponent = reactExports.memo(
   ({
     condition,
@@ -29787,17 +29831,42 @@ const ConditionalLogic = ({
   onChange,
   availableFields
 }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    GroupComponent$1,
-    {
-      group: value,
-      availableFields,
-      onChange
-    }
-  );
+  const [localValue, setLocalValue] = reactExports.useState(value);
+  const [hasChanges, setHasChanges] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    setLocalValue(value);
+    setHasChanges(false);
+  }, [value]);
+  const handleLocalChange = (newValue) => {
+    setLocalValue(newValue);
+    setHasChanges(true);
+  };
+  const handleApply = () => {
+    onChange(localValue);
+    setHasChanges(false);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(ConditionalLogicWrapper, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      GroupComponent$1,
+      {
+        group: localValue,
+        availableFields,
+        onChange: handleLocalChange
+      }
+    ),
+    hasChanges && /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", onClick: handleApply, children: __("Apply filters", "petitioner") })
+  ] });
 };
 const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
-const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "approval_status", "legal"];
+const EXCLUDED_FIELDS = [
+  "id",
+  "form_id",
+  "confirmation_token",
+  "comments",
+  "submitted_at",
+  "approval_status",
+  "legal"
+];
 function ExportModal({
   onClose = () => {
   },
@@ -29807,6 +29876,11 @@ function ExportModal({
   const [showFilters, setShowFilters] = reactExports.useState(false);
   const { logic, setLogic, validCount } = useConditionalLogic();
   const potentialLabels = getFieldLabels();
+  const handleLogicChange = reactExports.useCallback((newValue) => {
+    setLogic(newValue);
+    setShowFilters(false);
+    showNotice("success", __("Filters applied successfully", "petitioner"));
+  }, []);
   const exportURL = reactExports.useMemo(() => getExportURL(), []);
   const availableFields = reactExports.useMemo(() => {
     return Object.keys(submissionExample).map((key) => {
@@ -29823,6 +29897,7 @@ function ExportModal({
       };
     }).filter(Boolean);
   }, [submissionExample, potentialLabels]);
+  const { showNotice, noticeStatus, noticeText, hideNotice } = useNoticeSystem({ timeoutDuration: 1e5 });
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
     {
@@ -29831,6 +29906,14 @@ function ExportModal({
       onRequestClose: onClose,
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(CardBody, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            NoticeSystemWrapper,
+            {
+              noticeStatus,
+              noticeText,
+              hideNotice
+            }
+          ),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(SummaryWrapper, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs(SummaryItem, { children: [
               __("Total:", "petitioner"),
@@ -29865,7 +29948,7 @@ function ExportModal({
               ConditionalLogic$1,
               {
                 value: logic,
-                onChange: setLogic,
+                onChange: handleLogicChange,
                 availableFields
               }
             )
@@ -29898,47 +29981,6 @@ function ExportModal({
       ]
     }
   );
-}
-const AlertStatusWrapper = dt.div(_v || (_v = __template(["\n	position: fixed;\n	width: 80%;\n	max-width: 768px;\n	margin: auto;\n	top: ", ";\n	left: 0;\n	right: 0;\n"])), SPACINGS["4xl"]);
-const useNoticeSystem = () => {
-  const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
-  const [noticeText, setNoticeText] = reactExports.useState(void 0);
-  const showNotice = reactExports.useCallback((status, text2) => {
-    setNoticeStatus(status);
-    setNoticeText(text2);
-  }, []);
-  const hideNotice = reactExports.useCallback(() => {
-    setNoticeStatus(void 0);
-    setNoticeText(void 0);
-  }, []);
-  reactExports.useEffect(() => {
-    if (noticeText) {
-      const timeout = setTimeout(hideNotice, 3e3);
-      return () => clearTimeout(timeout);
-    }
-  }, [noticeText, hideNotice]);
-  return {
-    showNotice,
-    hideNotice,
-    noticeStatus,
-    noticeText
-  };
-};
-function NoticeSystem({
-  noticeStatus,
-  noticeText,
-  hideNotice
-}) {
-  if (!noticeStatus || !noticeText) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(AlertStatusWrapper, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Notice,
-    {
-      isDismissible: true,
-      onDismiss: hideNotice,
-      status: noticeStatus,
-      children: noticeText
-    }
-  ) });
 }
 const SUBMISSION_LABELS = getFieldLabels();
 function Submissions() {
@@ -34193,9 +34235,9 @@ function EditSubmit() {
 }
 const DragHandle = dt.div.attrs(() => ({
   className: "ptr-drag-handle"
-}))(_w || (_w = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
-const FieldPaletteWrapper = dt.div(_x || (_x = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
-const FieldPaletteItem = dt.div(_y || (_y = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
+}))(_y || (_y = __template(["\n	cursor: grab;\n	padding: 4px;\n	font-size: 18px;\n	user-select: none;\n\n	&:before {\n		content: '⋮⋮';\n		font-weight: bold;\n		font-size: 18px;\n		// content: '≡';\n	}\n"])));
+const FieldPaletteWrapper = dt.div(_z || (_z = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
+const FieldPaletteItem = dt.div(_A || (_A = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
 const D_PREFIX = "ptr_insert_";
 const getIDNoPrefix = (id2) => id2.replace(D_PREFIX, "");
 function PaletteDraggable({ id: id2, label }) {
@@ -34258,7 +34300,7 @@ const screenKeys = [
   "submit",
   "textarea"
 ];
-const BuilderSettingsWrapper = dt.div(_z || (_z = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
+const BuilderSettingsWrapper = dt.div(_B || (_B = __template(["\n	padding: var(--ptr-admin-spacing-md);\n	border-radius: 8px;\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	background-color: var(--ptr-admin-color-light);\n	position: relative;\n\n	h3,\n	p {\n		margin-top: 0;\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n\n	button {\n		margin-bottom: var(--ptr-admin-spacing-md);\n	}\n"])));
 function BuilderSettings() {
   const { formBuilderFields, builderEditScreen, setBuilderEditScreen } = useFormBuilderContext();
   const currentField = formBuilderFields[builderEditScreen];
@@ -34303,9 +34345,9 @@ function BuilderSettings() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(ScreenComponent, {})
   ] });
 }
-const FakeFieldLabel = dt.p(_A || (_A = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
-const FakeField = dt.div(_B || (_B = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
-const StyledTextarea = dt(FakeField)(_C || (_C = __template(["\n	min-height: 100px;\n"])));
+const FakeFieldLabel = dt.p(_C || (_C = __template(["\n	min-height: 18px;\n	font-size: 14px;\n	color: rgba(var(--ptr-admin-color-dark), 0.6);\n	background: #fff;\n	margin-bottom: 0;\n"])));
+const FakeField = dt.div(_D || (_D = __template(["\n	border: 1px solid var(--ptr-admin-color-grey, #ccc);\n	width: 100%;\n	min-height: 37px;\n	padding: var(--ptr-admin-spacing-sm, 4px);\n	border-radius: var(--ptr-admin-input-border-radius, 4px);\n	box-sizing: border-box;\n	font-size: var(--ptr-admin-fs-sm);\n	color: rgba(var(--ptr-admin-color-dark, #000), 0.6);\n	pointer-events: none;\n"])));
+const StyledTextarea = dt(FakeField)(_E || (_E = __template(["\n	min-height: 100px;\n"])));
 function DynamicField({
   name = "",
   inputType = "text",
@@ -34430,7 +34472,7 @@ function DynamicField({
     }
   );
 }
-const Wrapper = dt.div(_D || (_D = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
+const Wrapper = dt.div(_F || (_F = __template(["\n	padding-left: 24px;\n	position: relative;\n	border-radius: 4px;\n	border: 1px solid transparent;\n\n	&.ptr-active,\n	&.ptr-active:hover {\n		border: 1px solid var(--ptr-admin-color-dark);\n	}\n\n	.ptr-drag-handle {\n		position: absolute;\n		left: 4px;\n		top: 50%;\n		transform: translateY(-50%);\n		opacity: 0;\n	}\n\n	&:hover {\n		border: 1px dashed rgba(00, 00, 00, 0.3);\n	}\n\n	&:hover,\n	&.ptr-active {\n		.ptr-drag-handle {\n			opacity: 1;\n		}\n	}\n"])));
 function SortableField({ id: id2 }) {
   const { formBuilderFields, builderEditScreen } = useFormBuilderContext();
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
@@ -34474,7 +34516,7 @@ function SortableField({ id: id2 }) {
     }
   );
 }
-const StyledPanel = dt(Panel)(_E || (_E = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
+const StyledPanel = dt(Panel)(_G || (_G = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
 function FormBuilderComponent() {
   const {
     fieldOrder,
@@ -34843,9 +34885,9 @@ function CodeEditor({ title = "", help = "", code = "" }) {
     )
   ] });
 }
-const PtrColorPicker = dt.div(_F || (_F = __template(["\n	position: relative;\n	display: inline-block;\n"])));
-const ColorPickerButton = dt(Button)(_G || (_G = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
-const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_H || (_H = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
+const PtrColorPicker = dt.div(_H || (_H = __template(["\n	position: relative;\n	display: inline-block;\n"])));
+const ColorPickerButton = dt(Button)(_I || (_I = __template(["\n	--wp-components-color-accent: #333;\n	--wp-components-color-accent-hover: #333;\n	display: flex;\n	gap: 8px;\n"])));
+const Palette = dt.div.attrs({ className: "ptr-color-picker__palette" })(_J || (_J = __template(["\n	padding: 4px;\n	border-radius: 4px;\n	background: white;\n	position: absolute;\n	display: ", ";\n	top: 0;\n	right: 0;\n	z-index: 9;\n	transform: translate(calc(100% + 36px), calc(-100% + 36px))\n		", ";\n"])), ({ $isOpen }) => $isOpen ? "block" : "none", ({ $topValue }) => $topValue ? "translateY(".concat($topValue, ")") : "");
 function ColorField({
   color = "#fff",
   onColorChange = (color2) => {
@@ -35387,9 +35429,9 @@ function Integrations() {
     integration.hiddenFields
   ] }, integration.name)) });
 }
-const StyledHeading = dt(Heading)(_I || (_I = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
-const StyledText = dt(Text)(_J || (_J = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
-const StyledTextControl = dt(TextControl)(_K || (_K = __template(["\n	width: 100%;\n"])));
+const StyledHeading = dt(Heading)(_K || (_K = __template(["\n	margin-bottom: var(--ptr-admin-spacing-sm) !important;\n"])));
+const StyledText = dt(Text)(_L || (_L = __template(["\n    padding-bottom: var(--ptr-admin-spacing-sm) !important;\n    margin-bottom: var(--ptr-admin-spacing-sm) !important;\n    border-bottom: 1px solid var(--ptr-admin-color-grey);\n"])));
+const StyledTextControl = dt(TextControl)(_M || (_M = __template(["\n	width: 100%;\n"])));
 function TextInput({
   id: id2,
   label,

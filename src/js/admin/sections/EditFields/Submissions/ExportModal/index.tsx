@@ -1,19 +1,19 @@
-import { useState, useMemo } from '@wordpress/element';
+import { useState, useMemo, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	Card,
 	CardDivider,
 	CardBody,
-	__experimentalText as Text,
-	__experimentalHeading as Heading,
 	Button,
 	Modal,
 } from '@wordpress/components';
+import { useNoticeSystem } from '@admin/components/NoticeSystem';
 import {
 	StyledExportButton,
 	SummaryWrapper,
 	SummaryItem,
 	FiltersWrapper,
+	NoticeSystemWrapper,
 } from './styled';
 import { getExportURL, getFieldLabels } from '../utilities';
 import ConditionalLogic, {
@@ -21,9 +21,18 @@ import ConditionalLogic, {
 	formatLogicToString,
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
+import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
 import type { SubmissionItem } from '../consts';
 
-const EXCLUDED_FIELDS = ['id', 'form_id', 'confirmation_token', 'comments', 'submitted_at', 'approval_status', 'legal'];
+const EXCLUDED_FIELDS = [
+	'id',
+	'form_id',
+	'confirmation_token',
+	'comments',
+	'submitted_at',
+	'approval_status',
+	'legal',
+];
 
 export default function ExportModal({
 	onClose = () => {},
@@ -37,6 +46,11 @@ export default function ExportModal({
 	const [showFilters, setShowFilters] = useState(false);
 	const { logic, setLogic, validCount } = useConditionalLogic();
 	const potentialLabels = getFieldLabels();
+	const handleLogicChange = useCallback((newValue: ConditionGroup) => {
+		setLogic(newValue);
+		setShowFilters(false);
+		showNotice('success', __('Filters applied successfully', 'petitioner'));
+	}, []);
 
 	const exportURL = useMemo(() => getExportURL(), []);
 	const availableFields = useMemo(() => {
@@ -61,6 +75,9 @@ export default function ExportModal({
 			.filter(Boolean) as Array<{ value: string; label: string }>;
 	}, [submissionExample, potentialLabels]);
 
+	const { showNotice, noticeStatus, noticeText, hideNotice } =
+		useNoticeSystem({ timeoutDuration: 100000 });
+
 	return (
 		<Modal
 			size="large"
@@ -69,6 +86,11 @@ export default function ExportModal({
 		>
 			<Card>
 				<CardBody>
+					<NoticeSystemWrapper
+						noticeStatus={noticeStatus}
+						noticeText={noticeText}
+						hideNotice={hideNotice}
+					/>
 					<SummaryWrapper>
 						<SummaryItem>
 							{__('Total:', 'petitioner')}{' '}
@@ -96,7 +118,7 @@ export default function ExportModal({
 						{showFilters && (
 							<ConditionalLogic
 								value={logic}
-								onChange={setLogic}
+								onChange={handleLogicChange}
 								availableFields={availableFields}
 							/>
 						)}

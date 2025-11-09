@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Button } from '@wordpress/components';
 import { SPACINGS } from '@admin/theme';
+import NoticeSystem from '@admin/components/NoticeSystem';
 
 export const StyledExportButton = styled(Button)`
     width: 100%;
@@ -29,4 +30,14 @@ export const FiltersWrapper = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
 	gap: ${SPACINGS.md};
+`;
+
+export const NoticeSystemWrapper = styled(NoticeSystem)`
+    position: absolute;
+    --notice-system-z-index: 9999;
+	--notice-system-top: ${SPACINGS.md};
+
+    .components-notice {
+        padding: ${SPACINGS.xs} ${SPACINGS.xs};
+    }
 `;

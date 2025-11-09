@@ -36210,10 +36210,10 @@
           darkGrey: "var(--ptr-admin-color-dark-grey)"
         };
         const SPACINGS = {
-          xs: "var(--ptr-admin-spacing-xs)",
-          sm: "var(--ptr-admin-spacing-sm)",
-          md: "var(--ptr-admin-spacing-md)",
-          "4xl": "var(--ptr-admin-spacing-4xl)"
+          xs: "var(--ptr-admin-spacing-xs, 4px)",
+          sm: "var(--ptr-admin-spacing-sm, 8px)",
+          md: "var(--ptr-admin-spacing-md, 16px)",
+          "4xl": "var(--ptr-admin-spacing-4xl, 48px)"
         };
         const TRANSITIONS = {
           sm: "0.15s"
@@ -36913,6 +36913,61 @@
             })
           });
         }
+        const AlertStatusWrapper = dt.div`
+	--notice-system-z-index: 1000;
+	--notice-system-top: ${SPACINGS["4xl"]};
+	position: fixed;
+	width: 80%;
+	max-width: 768px;
+	margin: auto;
+	top: var(--notice-system-top);
+	left: 0;
+	right: 0;
+	z-index: var(--notice-system-z-index);
+`;
+        const useNoticeSystem = ({
+          timeoutDuration = 3e3
+        } = {}) => {
+          const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
+          const [noticeText, setNoticeText] = reactExports.useState(void 0);
+          const showNotice = reactExports.useCallback((status, text) => {
+            setNoticeStatus(status);
+            setNoticeText(text);
+          }, []);
+          const hideNotice = reactExports.useCallback(() => {
+            setNoticeStatus(void 0);
+            setNoticeText(void 0);
+          }, []);
+          reactExports.useEffect(() => {
+            if (noticeText) {
+              const timeout = setTimeout(hideNotice, timeoutDuration);
+              return () => clearTimeout(timeout);
+            }
+          }, [noticeText, hideNotice]);
+          return {
+            showNotice,
+            hideNotice,
+            noticeStatus,
+            noticeText
+          };
+        };
+        function NoticeSystem({
+          noticeStatus,
+          noticeText,
+          hideNotice,
+          className
+        }) {
+          if (!noticeStatus || !noticeText) return null;
+          return /* @__PURE__ */jsxRuntimeExports.jsx(AlertStatusWrapper, {
+            className,
+            children: /* @__PURE__ */jsxRuntimeExports.jsx(Notice, {
+              isDismissible: true,
+              onDismiss: hideNotice,
+              status: noticeStatus,
+              children: noticeText
+            })
+          });
+        }
         const StyledExportButton = dt(Button)`
     width: 100%;
     text-align: center;
@@ -36937,6 +36992,15 @@
     justify-content: flex-start;
     align-items: flex-start;
 	gap: ${SPACINGS.md};
+`;
+        const NoticeSystemWrapper = dt(NoticeSystem)`
+    position: absolute;
+    --notice-system-z-index: 9999;
+	--notice-system-top: ${SPACINGS.md};
+
+    .components-notice {
+        padding: ${SPACINGS.xs} ${SPACINGS.xs};
+    }
 `;
         const OPERATORS = [{
           value: "equals",
@@ -36974,12 +37038,20 @@
           }
           return parts.join(` ${logic.logic} `);
         };
+        const ConditionalLogicWrapper = dt.div`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	gap: ${SPACINGS.sm};
+
+
+`;
         const GroupWrapper = dt.div`
 	width: 100%;
 	border: 1px dashed ${COLORS.darkGrey};
 	border-radius: 4px;
 	padding: ${SPACINGS.md};
-	margin-bottom: ${SPACINGS.md};
 	background: ${COLORS.light};
 `;
         const GroupHeader = dt.div`
@@ -37184,10 +37256,30 @@
           onChange,
           availableFields
         }) => {
-          return /* @__PURE__ */jsxRuntimeExports.jsx(GroupComponent$1, {
-            group: value,
-            availableFields,
-            onChange
+          const [localValue, setLocalValue] = reactExports.useState(value);
+          const [hasChanges, setHasChanges] = reactExports.useState(false);
+          reactExports.useEffect(() => {
+            setLocalValue(value);
+            setHasChanges(false);
+          }, [value]);
+          const handleLocalChange = newValue => {
+            setLocalValue(newValue);
+            setHasChanges(true);
+          };
+          const handleApply = () => {
+            onChange(localValue);
+            setHasChanges(false);
+          };
+          return /* @__PURE__ */jsxRuntimeExports.jsxs(ConditionalLogicWrapper, {
+            children: [/* @__PURE__ */jsxRuntimeExports.jsx(GroupComponent$1, {
+              group: localValue,
+              availableFields,
+              onChange: handleLocalChange
+            }), hasChanges && /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+              variant: "primary",
+              onClick: handleApply,
+              children: __("Apply filters", "petitioner")
+            })]
           });
         };
         const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
@@ -37204,6 +37296,11 @@
             validCount
           } = useConditionalLogic();
           const potentialLabels = getFieldLabels();
+          const handleLogicChange = reactExports.useCallback(newValue => {
+            setLogic(newValue);
+            setShowFilters(false);
+            showNotice("success", __("Filters applied successfully", "petitioner"));
+          }, []);
           const exportURL = reactExports.useMemo(() => getExportURL(), []);
           const availableFields = reactExports.useMemo(() => {
             return Object.keys(submissionExample).map(key => {
@@ -37220,13 +37317,25 @@
               };
             }).filter(Boolean);
           }, [submissionExample, potentialLabels]);
+          const {
+            showNotice,
+            noticeStatus,
+            noticeText,
+            hideNotice
+          } = useNoticeSystem({
+            timeoutDuration: 1e5
+          });
           return /* @__PURE__ */jsxRuntimeExports.jsxs(Modal, {
             size: "large",
             title: __("Export submissions", "petitioner-theme"),
             onRequestClose: onClose,
             children: [/* @__PURE__ */jsxRuntimeExports.jsx(Card, {
               children: /* @__PURE__ */jsxRuntimeExports.jsxs(CardBody, {
-                children: [/* @__PURE__ */jsxRuntimeExports.jsxs(SummaryWrapper, {
+                children: [/* @__PURE__ */jsxRuntimeExports.jsx(NoticeSystemWrapper, {
+                  noticeStatus,
+                  noticeText,
+                  hideNotice
+                }), /* @__PURE__ */jsxRuntimeExports.jsxs(SummaryWrapper, {
                   children: [/* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
                     children: [__("Total:", "petitioner"), " ", /* @__PURE__ */jsxRuntimeExports.jsx("strong", {
                       children: total
@@ -37246,7 +37355,7 @@
                     })]
                   }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
                     value: logic,
-                    onChange: setLogic,
+                    onChange: handleLogicChange,
                     availableFields
                   })]
                 })]
@@ -37269,54 +37378,6 @@
                 children: [__("Export as CSV", "petitioner"), " (", total, ")"]
               })]
             })]
-          });
-        }
-        const AlertStatusWrapper = dt.div`
-	position: fixed;
-	width: 80%;
-	max-width: 768px;
-	margin: auto;
-	top: ${SPACINGS["4xl"]};
-	left: 0;
-	right: 0;
-`;
-        const useNoticeSystem = () => {
-          const [noticeStatus, setNoticeStatus] = reactExports.useState(void 0);
-          const [noticeText, setNoticeText] = reactExports.useState(void 0);
-          const showNotice = reactExports.useCallback((status, text) => {
-            setNoticeStatus(status);
-            setNoticeText(text);
-          }, []);
-          const hideNotice = reactExports.useCallback(() => {
-            setNoticeStatus(void 0);
-            setNoticeText(void 0);
-          }, []);
-          reactExports.useEffect(() => {
-            if (noticeText) {
-              const timeout = setTimeout(hideNotice, 3e3);
-              return () => clearTimeout(timeout);
-            }
-          }, [noticeText, hideNotice]);
-          return {
-            showNotice,
-            hideNotice,
-            noticeStatus,
-            noticeText
-          };
-        };
-        function NoticeSystem({
-          noticeStatus,
-          noticeText,
-          hideNotice
-        }) {
-          if (!noticeStatus || !noticeText) return null;
-          return /* @__PURE__ */jsxRuntimeExports.jsx(AlertStatusWrapper, {
-            children: /* @__PURE__ */jsxRuntimeExports.jsx(Notice, {
-              isDismissible: true,
-              onDismiss: hideNotice,
-              status: noticeStatus,
-              children: noticeText
-            })
           });
         }
         const SUBMISSION_LABELS = getFieldLabels();
