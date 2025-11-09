@@ -29661,8 +29661,7 @@ const StyledCardBody = dt(CardBody)(_o || (_o = __template(["\n    padding-block
 const StyledExportButton = dt(Button)(_p || (_p = __template(["\n    width: 100%;\n    text-align: center;\n    font-size: 1.125rem;\n    justify-content: center !important;\n    display: flex;\n    margin-top: ", ";\n    padding-block: ", " !important;\n"])), SPACINGS.md, SPACINGS.xl);
 const SummaryWrapper = dt.div(_q || (_q = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: ", ";\n    margin-bottom: ", ";\n"])), SPACINGS.sm, SPACINGS.md);
 const SummaryItem = dt.div(_r || (_r = __template(["\n	font-size: 1rem;\n"])));
-const FiltersWrapper = dt.div(_s || (_s = __template(["\n	display: flex;\n	flex-direction: column;\n    justify-content: flex-start;\n    align-items: flex-start;\n	gap: ", ";\n"])), SPACINGS.md);
-const NoticeSystemWrapper = dt(NoticeSystem)(_t || (_t = __template(["\n    position: absolute;\n    --notice-system-z-index: 9999;\n	--notice-system-top: ", ";\n\n    .components-notice {\n        padding: ", ";\n    }\n"])), SPACINGS.md, SPACINGS.xs);
+const NoticeSystemWrapper = dt(NoticeSystem)(_s || (_s = __template(["\n    position: absolute;\n    --notice-system-z-index: 9999;\n	--notice-system-top: ", ";\n\n    .components-notice {\n        padding: ", ";\n    }\n"])), SPACINGS.md, SPACINGS.xs);
 const OPERATORS = [
   { value: "equals", label: __("equals", "petitioner") },
   { value: "not_equals", label: __("not equals", "petitioner") },
@@ -29690,11 +29689,11 @@ const formatLogicToString = (logic, fieldLabels = {}, emptyMessage = __("No filt
   }
   return parts.join(" ".concat(logic.logic, " "));
 };
-const ConditionalLogicWrapper = dt.div(_u || (_u = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	width: 100%;\n	gap: ", ";\n\n\n"])), SPACINGS.sm);
-const GroupWrapper = dt.div(_v || (_v = __template(["\n	width: 100%;\n	border: 1px dashed ", ";\n	border-radius: 4px;\n	padding: ", ";\n	background: ", ";\n"])), COLORS.darkGrey, SPACINGS.md, COLORS.light);
-const GroupHeader = dt.div(_w || (_w = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	span {\n		font-weight: 500;\n		color: rgba(0, 0, 0, 0.7);\n	}\n\n	.components-base-control {\n		margin-bottom: 0;\n		width: auto;\n		min-width: 100px;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n"])), SPACINGS.sm, SPACINGS.md);
-const ConditionRow = dt.div(_x || (_x = __template(["\n	display: flex;\n	align-items: flex-start;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	.components-base-control {\n		margin-bottom: 0;\n		flex: 1;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n\n	> button {\n		flex-shrink: 0;\n		margin-top: 2px;\n	}\n"])), SPACINGS.sm, SPACINGS.sm);
-const ActionButtons = dt.div(_y || (_y = __template(["\n	display: flex;\n	gap: ", ";\n	margin-top: ", ";\n"])), SPACINGS.sm, SPACINGS.sm);
+const ConditionalLogicWrapper = dt.div(_t || (_t = __template(["\n	display: flex;\n	flex-direction: column;\n	align-items: flex-start;\n	width: 100%;\n	gap: ", ";\n\n\n"])), SPACINGS.sm);
+const GroupWrapper = dt.div(_u || (_u = __template(["\n	width: 100%;\n	border: 1px dashed ", ";\n	border-radius: 4px;\n	padding: ", ";\n	background: ", ";\n"])), COLORS.darkGrey, SPACINGS.md, COLORS.light);
+const GroupHeader = dt.div(_v || (_v = __template(["\n	display: flex;\n	align-items: center;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	span {\n		font-weight: 500;\n		color: rgba(0, 0, 0, 0.7);\n	}\n\n	.components-base-control {\n		margin-bottom: 0;\n		width: auto;\n		min-width: 100px;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n"])), SPACINGS.sm, SPACINGS.md);
+const ConditionRow = dt.div(_w || (_w = __template(["\n	display: flex;\n	align-items: flex-start;\n	gap: ", ";\n	margin-bottom: ", ";\n\n	.components-base-control {\n		margin-bottom: 0;\n		flex: 1;\n	}\n\n	.components-base-control__field {\n		margin-bottom: 0;\n	}\n\n	> button {\n		flex-shrink: 0;\n		margin-top: 2px;\n	}\n"])), SPACINGS.sm, SPACINGS.sm);
+const ActionButtons = dt.div(_x || (_x = __template(["\n	display: flex;\n	gap: ", ";\n	margin-top: ", ";\n"])), SPACINGS.sm, SPACINGS.sm);
 const ConditionComponent = reactExports.memo(
   ({
     condition,
@@ -29893,43 +29892,28 @@ const ConditionalLogic = ({
   ] });
 };
 const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
+const FiltersWrapper = dt.div(_y || (_y = __template(["\n	display: flex;\n	flex-direction: column;\n	justify-content: flex-start;\n	align-items: flex-start;\n	gap: ", ";\n"])), SPACINGS.md);
 const EXCLUDED_FIELDS = [
   "id",
   "form_id",
   "confirmation_token",
   "comments",
   "submitted_at",
+  "approval_status",
   "legal"
 ];
-function ExportModal({
-  onClose = () => {
-  },
-  total = 0,
+const Filters = ({
+  validCount,
+  logic,
+  onLogicChange,
   submissionExample
-}) {
-  const [totalCount, setTotalCount] = reactExports.useState(total);
+}) => {
   const [showFilters, setShowFilters] = reactExports.useState(false);
-  const { logic, setLogic, validCount } = useConditionalLogic();
-  const formID = submissionExample.form_id;
   const potentialLabels = getFieldLabels();
-  const handleLogicChange = reactExports.useCallback((newValue) => {
-    setLogic(newValue);
+  const handleLogicChange = (newValue) => {
+    onLogicChange(newValue);
     setShowFilters(false);
-    showNotice("success", __("Filters applied successfully", "petitioner"));
-  }, []);
-  reactExports.useEffect(() => {
-    getSubmissionCount({
-      formID,
-      filters: logic,
-      onSuccess: (count) => {
-        setTotalCount(count);
-      },
-      onError: () => {
-        showNotice("error", __("Error getting submission count", "petitioner"));
-      }
-    });
-  }, [logic]);
-  const exportURL = reactExports.useMemo(() => getExportURL(), []);
+  };
   const availableFields = reactExports.useMemo(() => {
     return Object.keys(submissionExample).map((key) => {
       if (EXCLUDED_FIELDS.includes(key)) {
@@ -29945,6 +29929,63 @@ function ExportModal({
       };
     }).filter(Boolean);
   }, [submissionExample, potentialLabels]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(FiltersWrapper, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      Button,
+      {
+        icon: "filter",
+        variant: "secondary",
+        onClick: () => setShowFilters(!showFilters),
+        children: [
+          showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+            "(",
+            validCount,
+            ")"
+          ] })
+        ]
+      }
+    ),
+    showFilters && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ConditionalLogic$1,
+      {
+        value: logic,
+        onChange: handleLogicChange,
+        availableFields
+      }
+    )
+  ] });
+};
+const Filters$1 = reactExports.memo(Filters);
+function ExportModal({
+  onClose = () => {
+  },
+  total = 0,
+  submissionExample
+}) {
+  const [totalCount, setTotalCount] = reactExports.useState(total);
+  const { logic, setLogic, validCount } = useConditionalLogic();
+  const formID = submissionExample.form_id;
+  const handleLogicChange = reactExports.useCallback((newValue) => {
+    setLogic(newValue);
+    showNotice("success", __("Filters applied successfully", "petitioner"));
+  }, []);
+  reactExports.useEffect(() => {
+    getSubmissionCount({
+      formID,
+      filters: logic,
+      onSuccess: (count) => {
+        setTotalCount(count);
+      },
+      onError: () => {
+        showNotice(
+          "error",
+          __("Error getting submission count", "petitioner")
+        );
+      }
+    });
+  }, [logic]);
+  const exportURL = reactExports.useMemo(() => getExportURL(), []);
   const { showNotice, noticeStatus, noticeText, hideNotice } = useNoticeSystem({ timeoutDuration: 1500 });
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
@@ -29975,32 +30016,15 @@ function ExportModal({
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(CardDivider, {})
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(FiltersWrapper, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              Button,
-              {
-                icon: "filter",
-                variant: "secondary",
-                onClick: () => setShowFilters(!showFilters),
-                children: [
-                  showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-                    "(",
-                    validCount,
-                    ")"
-                  ] })
-                ]
-              }
-            ),
-            showFilters && /* @__PURE__ */ jsxRuntimeExports.jsx(
-              ConditionalLogic$1,
-              {
-                value: logic,
-                onChange: handleLogicChange,
-                availableFields
-              }
-            )
-          ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Filters$1,
+            {
+              validCount,
+              logic,
+              onLogicChange: handleLogicChange,
+              submissionExample
+            }
+          )
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { action: exportURL, method: "POST", target: "_blank", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(

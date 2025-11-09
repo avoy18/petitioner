@@ -37021,13 +37021,6 @@
         const SummaryItem = dt.div`
 	font-size: 1rem;
 `;
-        const FiltersWrapper = dt.div`
-	display: flex;
-	flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-	gap: ${SPACINGS.md};
-`;
         const NoticeSystemWrapper = dt(NoticeSystem)`
     position: absolute;
     --notice-system-z-index: 9999;
@@ -37318,39 +37311,26 @@
           });
         };
         const ConditionalLogic$1 = reactExports.memo(ConditionalLogic);
-        const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "legal"];
-        function ExportModal({
-          onClose = () => {},
-          total = 0,
+        const FiltersWrapper = dt.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	gap: ${SPACINGS.md};
+`;
+        const EXCLUDED_FIELDS = ["id", "form_id", "confirmation_token", "comments", "submitted_at", "approval_status", "legal"];
+        const Filters = ({
+          validCount,
+          logic,
+          onLogicChange,
           submissionExample
-        }) {
-          const [totalCount, setTotalCount] = reactExports.useState(total);
+        }) => {
           const [showFilters, setShowFilters] = reactExports.useState(false);
-          const {
-            logic,
-            setLogic,
-            validCount
-          } = useConditionalLogic();
-          const formID = submissionExample.form_id;
           const potentialLabels = getFieldLabels();
-          const handleLogicChange = reactExports.useCallback(newValue => {
-            setLogic(newValue);
+          const handleLogicChange = newValue => {
+            onLogicChange(newValue);
             setShowFilters(false);
-            showNotice("success", __("Filters applied successfully", "petitioner"));
-          }, []);
-          reactExports.useEffect(() => {
-            getSubmissionCount({
-              formID,
-              filters: logic,
-              onSuccess: count => {
-                setTotalCount(count);
-              },
-              onError: () => {
-                showNotice("error", __("Error getting submission count", "petitioner"));
-              }
-            });
-          }, [logic]);
-          const exportURL = reactExports.useMemo(() => getExportURL(), []);
+          };
           const availableFields = reactExports.useMemo(() => {
             return Object.keys(submissionExample).map(key => {
               if (EXCLUDED_FIELDS.includes(key)) {
@@ -37366,6 +37346,51 @@
               };
             }).filter(Boolean);
           }, [submissionExample, potentialLabels]);
+          return /* @__PURE__ */jsxRuntimeExports.jsxs(FiltersWrapper, {
+            children: [/* @__PURE__ */jsxRuntimeExports.jsxs(Button, {
+              icon: "filter",
+              variant: "secondary",
+              onClick: () => setShowFilters(!showFilters),
+              children: [showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"), /* @__PURE__ */jsxRuntimeExports.jsxs("span", {
+                children: ["(", validCount, ")"]
+              })]
+            }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
+              value: logic,
+              onChange: handleLogicChange,
+              availableFields
+            })]
+          });
+        };
+        const Filters$1 = reactExports.memo(Filters);
+        function ExportModal({
+          onClose = () => {},
+          total = 0,
+          submissionExample
+        }) {
+          const [totalCount, setTotalCount] = reactExports.useState(total);
+          const {
+            logic,
+            setLogic,
+            validCount
+          } = useConditionalLogic();
+          const formID = submissionExample.form_id;
+          const handleLogicChange = reactExports.useCallback(newValue => {
+            setLogic(newValue);
+            showNotice("success", __("Filters applied successfully", "petitioner"));
+          }, []);
+          reactExports.useEffect(() => {
+            getSubmissionCount({
+              formID,
+              filters: logic,
+              onSuccess: count => {
+                setTotalCount(count);
+              },
+              onError: () => {
+                showNotice("error", __("Error getting submission count", "petitioner"));
+              }
+            });
+          }, [logic]);
+          const exportURL = reactExports.useMemo(() => getExportURL(), []);
           const {
             showNotice,
             noticeStatus,
@@ -37394,19 +37419,11 @@
                       children: formatLogicToString(logic)
                     })]
                   }), /* @__PURE__ */jsxRuntimeExports.jsx(CardDivider, {})]
-                }), /* @__PURE__ */jsxRuntimeExports.jsxs(FiltersWrapper, {
-                  children: [/* @__PURE__ */jsxRuntimeExports.jsxs(Button, {
-                    icon: "filter",
-                    variant: "secondary",
-                    onClick: () => setShowFilters(!showFilters),
-                    children: [showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"), /* @__PURE__ */jsxRuntimeExports.jsxs("span", {
-                      children: ["(", validCount, ")"]
-                    })]
-                  }), showFilters && /* @__PURE__ */jsxRuntimeExports.jsx(ConditionalLogic$1, {
-                    value: logic,
-                    onChange: handleLogicChange,
-                    availableFields
-                  })]
+                }), /* @__PURE__ */jsxRuntimeExports.jsx(Filters$1, {
+                  validCount,
+                  logic,
+                  onLogicChange: handleLogicChange,
+                  submissionExample
                 })]
               })
             }), /* @__PURE__ */jsxRuntimeExports.jsxs("form", {

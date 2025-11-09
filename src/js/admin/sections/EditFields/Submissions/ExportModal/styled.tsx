@@ -28,14 +28,6 @@ export const SummaryItem = styled.div`
 	font-size: 1rem;
 `;
 
-export const FiltersWrapper = styled.div`
-	display: flex;
-	flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-	gap: ${SPACINGS.md};
-`;
-
 export const NoticeSystemWrapper = styled(NoticeSystem)`
     position: absolute;
     --notice-system-z-index: 9999;
