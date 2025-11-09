@@ -135,6 +135,41 @@ export const deleteSubmissions = async ({
 	}
 };
 
+export const getSubmissionCount = async (
+	formID: number,
+	filters?: any
+): Promise<number> => {
+	const finalQuery = new URLSearchParams();
+	finalQuery.set('action', 'petitioner_get_submission_count');
+
+	const finalData = new FormData();
+	finalData.append('form_id', String(formID));
+	finalData.append('petitioner_nonce', getAjaxNonce());
+
+	if (filters) {
+		finalData.append('conditional_logic', JSON.stringify(filters));
+	}
+
+	try {
+		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+			method: 'POST',
+			body: finalData,
+		});
+
+		const response = await request.json();
+
+		if (response.success) {
+			return response.data.count;
+		} else {
+			console.error('Failed to get submission count:', response);
+			return 0;
+		}
+	} catch (error) {
+		console.error('Error getting submission count:', error);
+		return 0;
+	}
+};
+
 /**
  * Returns a mapping from fieldKey to label for all available form fields.
  */
