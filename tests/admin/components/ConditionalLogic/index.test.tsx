@@ -26,7 +26,6 @@ function TestWrapper() {
 }
 
 describe('ConditionalLogic component', () => {
-
 	it('adds a new condition when Add Condition button is clicked', async () => {
 		const user = userEvent.setup();
 		render(<TestWrapper />);
@@ -148,6 +147,61 @@ describe('ConditionalLogic component', () => {
 		// For now, just verify the value input exists by default
 		const valueInputs = screen.getAllByPlaceholderText(/enter value.../i);
 		expect(valueInputs.length).toBeGreaterThan(0);
+	});
+
+	it('does not show Apply button initially', () => {
+		render(<TestWrapper />);
+
+		expect(
+			screen.queryByRole('button', { name: /apply filters/i })
+		).not.toBeInTheDocument();
+	});
+
+	it('shows Apply button after making changes', async () => {
+		const user = userEvent.setup();
+		render(<TestWrapper />);
+
+		const addButton = screen.getByRole('button', {
+			name: /add condition/i,
+		});
+		await user.click(addButton);
+
+		expect(
+			screen.getByRole('button', { name: /apply filters/i })
+		).toBeInTheDocument();
+	});
+
+	it('allows removing all conditions', async () => {
+		const user = userEvent.setup();
+		const mockOnChange = vi.fn();
+
+		function TestWithMock() {
+			const { logic } = useConditionalLogic();
+			return (
+				<ConditionalLogic
+					value={logic}
+					onChange={mockOnChange}
+					availableFields={availableFields}
+				/>
+			);
+		}
+
+		render(<TestWithMock />);
+
+		const removeButton = screen.getByRole('button', {
+			name: /remove condition/i,
+		});
+		await user.click(removeButton);
+
+		expect(screen.queryAllByText(/select field.../i)).toHaveLength(0);
+
+		const applyButton = screen.getByRole('button', {
+			name: /apply filters/i,
+		});
+		await user.click(applyButton);
+
+		const calledWith = mockOnChange.mock.calls[0][0];
+		expect(calledWith.conditions).toHaveLength(0);
 	});
 });
 
