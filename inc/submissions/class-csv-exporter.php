@@ -78,9 +78,9 @@ class AV_Petitioner_CSV_Exporter
 
         $total_pages = ceil($total_count / self::BATCH_SIZE);
 
-        for ($page = 1; $page <= $total_pages; $page++) {
-            wp_suspend_cache_addition(true);
+        wp_suspend_cache_addition(true);
 
+        for ($page = 1; $page <= $total_pages; $page++) {
             $offset = ($page - 1) * self::BATCH_SIZE;
 
             $results = AV_Petitioner_Submissions_Model::get_form_submissions(
