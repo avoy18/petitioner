@@ -98,6 +98,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.7.0 =
+* Add improved export for submissions
+    * Allow filtering out unwanted items
+    * Handle large lists in steps to avoid timeouts
+
 = 0.6.2 =
 * Allow passing images to the petition letter
 * Fix relative paths on images in the email templates
