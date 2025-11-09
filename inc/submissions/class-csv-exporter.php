@@ -108,6 +108,7 @@ class AV_Petitioner_CSV_Exporter
     /**
      * Get CSV column headers
      * Maps database field names to human-readable labels
+     * Ensures all headers are unique and not empty
      * 
      * @return array Array of column header names
      */
@@ -127,10 +128,28 @@ class AV_Petitioner_CSV_Exporter
         $all_labels = array_merge($default_labels, $custom_labels);
 
         $headers = [];
+        $used_headers = []; // Track used headers to prevent duplicates
 
         foreach ($allowed_fields as $field) {
-            // Use label if available, otherwise generate from field name
-            $headers[] = $all_labels[$field] ?? ucwords(str_replace('_', ' ', $field));
+            // Get label with fallback to field name
+            $label = $all_labels[$field] ?? ucwords(str_replace('_', ' ', $field));
+            
+            // Ensure label is not empty
+            $label = trim($label);
+            if (empty($label)) {
+                $label = ucwords(str_replace('_', ' ', $field));
+            }
+            
+            // Make label unique if duplicate exists
+            $original_label = $label;
+            $counter = 1;
+            while (in_array($label, $used_headers)) {
+                $label = $original_label . ' (' . $counter . ')';
+                $counter++;
+            }
+            
+            $used_headers[] = $label;
+            $headers[] = $label;
         }
 
         return $headers;
