@@ -320,7 +320,7 @@ class AV_Petitioner_Submissions_Controller
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
             if ($submission->hide_name) {
-                $submission->fname = __('Anonymous', 'petitioner');
+                $submission->fname = AV_Petitioner_Labels::get('anonymous');
                 $submission->lname = '';
             }
 
@@ -461,7 +461,7 @@ class AV_Petitioner_Submissions_Controller
         }
 
         // $skip_unconfirmed is false because we want user to control this
-        $count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, false); 
+        $count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, false);
 
         if ($count === false) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
