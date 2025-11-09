@@ -42,6 +42,7 @@ class AV_Petitioner_Submissions_Controller
         $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $hide_name                  = !empty($_POST['petitioner_hide_name']) && sanitize_text_field(wp_unslash($_POST['petitioner_hide_name'])) === 'on';
+        $newsletter_opt_in          = !empty($_POST['petitioner_newsletter_opt_in']) && sanitize_text_field(wp_unslash($_POST['petitioner_newsletter_opt_in'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status            = 'Confirmed';
         $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
@@ -73,9 +74,6 @@ class AV_Petitioner_Submissions_Controller
                 'message'   => AV_Petitioner_Labels::get('flagged_as_spam'),
             ]);
         }
-
-        // todo: add these
-        $newsletter_opt_in  = false;
 
         // Insert into the custom table
 
