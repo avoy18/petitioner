@@ -31,7 +31,6 @@ export type ConditionComponentProps = {
 	availableFields: Array<{ value: string; label: string }>;
 	onChange: (condition: Condition) => void;
 	onRemove: () => void;
-	showRemove: boolean;
 };
 
 // Operators

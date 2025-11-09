@@ -29697,8 +29697,7 @@ const ConditionComponent = reactExports.memo(
     condition,
     availableFields,
     onChange,
-    onRemove,
-    showRemove
+    onRemove
   }) => {
     const showValueInput = condition.operator !== "is_empty" && condition.operator !== "is_not_empty";
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(ConditionRow, { children: [
@@ -29732,7 +29731,7 @@ const ConditionComponent = reactExports.memo(
           placeholder: __("Enter value...", "petitioner")
         }
       ),
-      showRemove && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Button,
         {
           icon: "trash",
@@ -29774,7 +29773,6 @@ const GroupComponent = ({
       ]
     });
   };
-  const showRemoveCondition = true;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupWrapper, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupHeader, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Relation:", "petitioner") }),
@@ -29794,8 +29792,7 @@ const GroupComponent = ({
         condition,
         availableFields,
         onChange: (updatedCondition) => updateCondition(index, updatedCondition),
-        onRemove: () => removeCondition(index),
-        showRemove: showRemoveCondition
+        onRemove: () => removeCondition(index)
       },
       condition.id
     )),

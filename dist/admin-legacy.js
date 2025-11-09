@@ -37129,8 +37129,7 @@
           condition,
           availableFields,
           onChange,
-          onRemove,
-          showRemove
+          onRemove
         }) => {
           const showValueInput = condition.operator !== "is_empty" && condition.operator !== "is_not_empty";
           return /* @__PURE__ */jsxRuntimeExports.jsxs(ConditionRow, {
@@ -37158,7 +37157,7 @@
                 value
               }),
               placeholder: __("Enter value...", "petitioner")
-            }), showRemove && /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
+            }), /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
               icon: "trash",
               isDestructive: true,
               variant: "secondary",
@@ -37199,7 +37198,6 @@
               }]
             });
           };
-          const showRemoveCondition = true;
           return /* @__PURE__ */jsxRuntimeExports.jsxs(GroupWrapper, {
             children: [/* @__PURE__ */jsxRuntimeExports.jsxs(GroupHeader, {
               children: [/* @__PURE__ */jsxRuntimeExports.jsx("span", {
@@ -37218,8 +37216,7 @@
               condition,
               availableFields,
               onChange: updatedCondition => updateCondition(index, updatedCondition),
-              onRemove: () => removeCondition(index),
-              showRemove: showRemoveCondition
+              onRemove: () => removeCondition(index)
             }, condition.id)), /* @__PURE__ */jsxRuntimeExports.jsx(ActionButtons, {
               children: /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
                 icon: "plus",

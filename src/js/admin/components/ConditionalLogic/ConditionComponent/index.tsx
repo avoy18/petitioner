@@ -11,7 +11,6 @@ const ConditionComponent = memo(
 		availableFields,
 		onChange,
 		onRemove,
-		showRemove,
 	}: ConditionComponentProps) => {
 		const showValueInput =
 			condition.operator !== 'is_empty' &&
@@ -44,16 +43,14 @@ const ConditionComponent = memo(
 						placeholder={__('Enter value...', 'petitioner')}
 					/>
 				)}
-				{showRemove && (
-					<Button
-						icon="trash"
-						isDestructive
-						variant="secondary"
-						size="small"
-						onClick={onRemove}
-						label={__('Remove condition', 'petitioner')}
-					/>
-				)}
+				<Button
+					icon="trash"
+					isDestructive
+					variant="secondary"
+					size="small"
+					onClick={onRemove}
+					label={__('Remove condition', 'petitioner')}
+				/>
 			</ConditionRow>
 		);
 	}

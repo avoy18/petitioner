@@ -38,8 +38,6 @@ const GroupComponent = ({
 		});
 	};
 
-	const showRemoveCondition = true; // Always allow removing conditions
-
 	return (
 		<GroupWrapper>
 			<GroupHeader>
@@ -67,7 +65,6 @@ const GroupComponent = ({
 						updateCondition(index, updatedCondition)
 					}
 					onRemove={() => removeCondition(index)}
-					showRemove={showRemoveCondition}
 				/>
 			))}
 
