@@ -41,6 +41,7 @@ class AV_Petitioner_Submissions_Controller
         $postal_code                = isset($_POST['petitioner_postal_code']) ? sanitize_text_field(wp_unslash($_POST['petitioner_postal_code'])) : '';
         $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
+        $hide_name                  = !empty($_POST['petitioner_hide_name']) && sanitize_text_field(wp_unslash($_POST['petitioner_hide_name'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status            = 'Confirmed';
         $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
@@ -74,7 +75,6 @@ class AV_Petitioner_Submissions_Controller
         }
 
         // todo: add these
-        $hide_name          = false;
         $newsletter_opt_in  = false;
 
         // Insert into the custom table
