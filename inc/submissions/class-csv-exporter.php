@@ -99,19 +99,10 @@ class AV_Petitioner_CSV_Exporter
 
             unset($results);
 
-            // Safe flushing: only if buffer exists and has content
-            if (ob_get_level() > 0 && ob_get_length() > 0) {
-                ob_flush();
-            }
             flush();
         }
 
         fclose($output);
-
-        // Final flush to ensure all data is sent
-        if (ob_get_level() > 0) {
-            ob_end_flush();
-        }
     }
 
     /**
@@ -184,8 +175,6 @@ class AV_Petitioner_CSV_Exporter
         while (ob_get_level() > 0) {
             ob_end_clean();
         }
-
-        ob_start();
 
         // Suppress non-fatal errors that could corrupt CSV
         // (Still logs to error_log if WP_DEBUG is on)
