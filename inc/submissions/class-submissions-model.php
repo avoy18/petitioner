@@ -393,8 +393,13 @@ class AV_Petitioner_Submissions_Model
 
         // Get the count
         $sql = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_data['where']}";
-        
-        return (int) $wpdb->get_var($wpdb->prepare($sql, ...$where_data['params']));
+
+        // Prepare query with params if any exist
+        $prepared_sql = !empty($where_data['params'])
+            ? call_user_func_array([$wpdb, 'prepare'], array_merge([$sql], $where_data['params']))
+            : $sql;
+
+        return (int) $wpdb->get_var($prepared_sql);
     }
 
     /**
