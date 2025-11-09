@@ -1,43 +1,68 @@
 # Cursor Rules for Petitioner Plugin
 
-This directory contains coding rules and guidelines for the Petitioner WordPress plugin.
+This directory contains coding rules and guidelines for the Petitioner WordPress plugin using Cursor's MDC format.
 
-## Files
+## Structure
 
-- **`rules-general.md`** - Core development patterns, component structure, TypeScript conventions, and WordPress integration
-- **`rules-styles.md`** - Styling guidelines, theme constants, styled-components patterns, and accessibility rules
-- **`rules-tests.md`** - Testing patterns, best practices, and examples using Vitest and Testing Library
-
-## How to Use
-
-These rules are automatically applied by Cursor when working in this repository. They help maintain consistency and follow best practices specific to this project.
-
-## Quick Reference
-
-### Common Patterns
-
-**Component Structure:**
 ```
-ComponentName/
-├── index.tsx       # Main component
-├── styled.tsx      # Styled components
-├── consts.ts       # Types and constants
-├── hooks.tsx       # Custom hooks
-└── utilities.ts    # Helper functions
+.cursor/
+├── README.md
+└── rules/
+    ├── general.mdc    # Component patterns, TypeScript, WordPress
+    ├── styles.mdc     # Styling guidelines and theme constants
+    └── tests.mdc      # Testing patterns and best practices
 ```
 
-**Import Order:**
-1. React/WordPress imports
-2. WordPress components
-3. WordPress utilities
-4. Local styled components
-5. Local utilities and hooks
-6. Local types and constants
+## MDC Format
 
-**Styling:**
-- Always use theme constants: `COLORS`, `SPACINGS`, `FONT_SIZES`, `TRANSITIONS`
-- Never hardcode values
-- Keep styled components in separate files
+Each `.mdc` file has metadata and content:
 
-For detailed information, see the individual rule files.
+```mdc
+---
+description: What this rule covers
+globs:
+  - "path/pattern/**/*.tsx"
+alwaysApply: true|false
+---
 
+# Rule content in Markdown
+```
+
+### Rule Types
+
+- **`alwaysApply: true`** - Applied to every chat and cmd-k session
+- **`alwaysApply: false`** - Applied intelligently when relevant
+- **Globs** - Automatically applies when matching files are referenced
+
+## Current Rules
+
+### `general.mdc`
+- Component structure and organization
+- Naming conventions
+- Import order and patterns
+- TypeScript conventions
+- WordPress integration (i18n, hooks, AJAX)
+- Component patterns (memo, hooks, state)
+
+**Applies to:** All `.ts` and `.tsx` files in `src/js/` and `tests/`
+
+### `styles.mdc`
+- Theme constants (COLORS, SPACINGS, TRANSITIONS)
+- Styled component patterns
+- className forwarding
+- WordPress component style resets
+- Accessibility guidelines
+
+**Applies to:** All styled components and TSX files
+
+### `tests.mdc`
+- Vitest and Testing Library patterns
+- Component and hook testing
+- WordPress-specific mocking
+- Query priorities and best practices
+
+**Applies to:** Test files only
+
+## Reference
+
+See [Cursor Rules Documentation](https://cursor.com/docs/context/rules) for more information.

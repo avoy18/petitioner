@@ -1,0 +1,159 @@
+---
+description: General coding patterns, component structure, TypeScript conventions, and WordPress integration for Petitioner plugin
+globs:
+  - "src/js/**/*.{ts,tsx}"
+  - "tests/**/*.{ts,tsx}"
+alwaysApply: true
+---
+
+# Petitioner WordPress Plugin - General Rules
+
+## Project Overview
+WordPress plugin built with React, TypeScript, styled-components, and WordPress components.
+
+## Component Structure
+```
+ComponentName/
+├── index.tsx       # Main component logic
+├── styled.tsx      # Styled components (if needed)
+├── consts.ts       # Constants and type definitions
+├── hooks.tsx       # Custom hooks (if needed)
+└── utilities.ts    # Helper functions (if needed)
+```
+
+## Naming Conventions
+- **Components**: PascalCase (e.g., `ConditionalLogic`, `NoticeSystem`)
+- **Styled Components**: PascalCase with descriptive names (e.g., `FiltersWrapper`, `StyledExportButton`)
+- **Hooks**: camelCase starting with 'use' (e.g., `useConditionalLogic`)
+- **Constants**: SCREAMING_SNAKE_CASE (e.g., `EXCLUDED_FIELDS`, `DEFAULT_LOGIC`)
+- **Types**: PascalCase (e.g., `SubmissionItem`, `FiltersProps`)
+
+## Import Order (always follow):
+1. React/WordPress imports
+2. WordPress components
+3. WordPress utilities (i18n, etc.)
+4. Local styled components
+5. Local utilities and hooks
+6. Local types and constants
+7. Relative imports from parent directories
+
+```typescript
+import { memo, useState, useCallback } from '@wordpress/element';
+import { Button, Modal } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import { FiltersWrapper, ActionButton } from './styled';
+import { getFieldLabels } from '../utilities';
+import type { ConditionGroup } from './consts';
+import { EXCLUDED_FIELDS } from './consts';
+```
+
+## Path Aliases
+- Use `@admin/*` for admin code
+- Use `@js/*` for shared code
+- Use relative paths for sibling/child components
+
+## TypeScript
+- Define types in `consts.ts` files
+- Use `type` for unions and simple objects
+- Use `interface` for component props that might be extended
+- Avoid `any` - use proper types or `unknown`
+
+```typescript
+interface ComponentProps {
+	// Required props first
+	value: string;
+	onChange: (value: string) => void;
+	// Optional props last
+	className?: string;
+	disabled?: boolean;
+}
+```
+
+## WordPress Integration
+
+### i18n
+```typescript
+import { __ } from '@wordpress/i18n';
+__('Apply filters', 'petitioner')
+```
+
+### React Hooks
+```typescript
+// Always use WordPress versions
+import { useState, useCallback, useMemo, useEffect, memo } from '@wordpress/element';
+```
+
+## Component Patterns
+
+### Functional Components
+```typescript
+import { memo } from '@wordpress/element';
+
+const Component = ({ prop1, prop2 }: ComponentProps) => {
+	return <div>...</div>;
+};
+
+export default memo(Component);
+```
+
+### Custom Hooks
+```typescript
+export const useCustomHook = (options?: { initialValue?: Type }) => {
+	const [state, setState] = useState(options?.initialValue);
+	
+	const someAction = useCallback(() => {
+		// action logic
+	}, [dependencies]);
+	
+	return { state, setState, someAction };
+};
+```
+
+### State Management
+- Use `useState` for component-level state
+- Use `useCallback` for callbacks passed to children
+- Use `useMemo` for expensive computations
+- Keep state as local as possible
+- Only lift state when it needs to be shared
+
+### Self-Contained Components
+- Manage internal state when possible
+- Keep filters, visibility toggles inside component
+- Close UI elements automatically after actions
+
+## AJAX Pattern
+```typescript
+const finalQuery = new URLSearchParams();
+finalQuery.set('action', 'petitioner_action_name');
+
+const finalData = new FormData();
+finalData.append('param', value);
+finalData.append('petitioner_nonce', getAjaxNonce());
+
+try {
+	const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+		method: 'POST',
+		body: finalData,
+	});
+	
+	const response = await request.json();
+	
+	if (response.success) {
+		onSuccess(response.data);
+	} else {
+		onError('Error message');
+	}
+} catch (error) {
+	onError('Error: ' + error);
+}
+```
+
+## Best Practices
+- Extract reusable components into their own directories
+- Each component should be self-contained
+- Use `memo` for components that don't re-render often
+- Use `useCallback` for callbacks passed to children
+- Extract primitive values from objects for dependency arrays
+- Always handle success and error cases in async operations
+- Use semantic HTML
+- Use WordPress components for built-in accessibility
