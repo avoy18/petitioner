@@ -25,9 +25,9 @@ class AV_Petitioner_CSV_Exporter
         }
 
         $conditional_logic_raw = isset($_POST['conditional_logic']) ? wp_unslash($_POST['conditional_logic']) : null;
-        $conditional_logic = self::parse_conditional_logic($conditional_logic_raw);
+        $conditional_logic = av_petitioner_parse_conditional_logic($conditional_logic_raw);
 
-        $query = self::build_model_query($conditional_logic);
+        $query = av_petitioner_build_model_query($conditional_logic);
 
 
         $results = AV_Petitioner_Submissions_Model::get_form_submissions($form_id, [
@@ -49,87 +49,6 @@ class AV_Petitioner_CSV_Exporter
         exit;
     }
 
-    /**
-     * Parse conditional logic from raw JSON string
-     * 
-     * @param string|null $raw_json Raw JSON string from POST data
-     * @return array|null Parsed conditional logic or null if invalid
-     */
-    public static function parse_conditional_logic($raw_json)
-    {
-        if (empty($raw_json)) {
-            return null;
-        }
-
-        $conditional_logic = json_decode($raw_json, true);
-
-        // Validate JSON parsing
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            av_ptr_error_log('Petitioner CSV Export: Invalid JSON in conditional_logic - ' . json_last_error_msg());
-            return null;
-        }
-
-        if (!is_array($conditional_logic) || !isset($conditional_logic['conditions'])) {
-            av_ptr_error_log('Petitioner CSV Export: Invalid conditional_logic structure');
-            return null;
-        }
-
-        return $conditional_logic;
-    }
-
-    /**
-     * Convert conditional logic to model query array
-     * Supports: equals, not_equals, is_empty, is_not_empty
-     * 
-     * @param array|null $conditional_logic Parsed conditional logic
-     * @return array Query array for model in format: [['field' => 'x', 'operator' => 'y', 'value' => 'z'], ...]
-     */
-    public static function build_model_query($conditional_logic)
-    {
-        $query = [];
-
-        if (!$conditional_logic || empty($conditional_logic['conditions'])) {
-            return $query;
-        }
-
-        $supported_operators = ['equals', 'not_equals', 'is_empty', 'is_not_empty'];
-        $ignored_operators = [];
-
-        foreach ($conditional_logic['conditions'] as $condition) {
-            if (
-                !isset($condition['field']) ||
-                !isset($condition['operator']) ||
-                empty($condition['field'])
-            ) {
-                continue;
-            }
-
-            $operator = $condition['operator'];
-            $field = $condition['field'];
-            $value = isset($condition['value']) ? $condition['value'] : null;
-
-            // Process supported operators
-            if ($operator === 'equals' && $value !== '' && $value !== null) {
-                $query[] = ['field' => $field, 'operator' => 'equals', 'value' => $value];
-            } else if ($operator === 'not_equals' && $value !== '' && $value !== null) {
-                $query[] = ['field' => $field, 'operator' => 'not_equals', 'value' => $value];
-            } else if ($operator === 'is_empty') {
-                $query[] = ['field' => $field, 'operator' => 'is_empty', 'value' => null];
-            } else if ($operator === 'is_not_empty') {
-                $query[] = ['field' => $field, 'operator' => 'is_not_empty', 'value' => null];
-            } else if (!in_array($operator, $supported_operators) && !in_array($operator, $ignored_operators)) {
-                // Track ignored operators for logging
-                $ignored_operators[] = $operator;
-            }
-        }
-
-        // Log ignored operators for debugging
-        if (!empty($ignored_operators)) {
-            av_ptr_error_log('Petitioner CSV Export: Ignoring unsupported operators: ' . implode(', ', $ignored_operators));
-        }
-
-        return $query;
-    }
 
     /**
      * Stream CSV content directly to output

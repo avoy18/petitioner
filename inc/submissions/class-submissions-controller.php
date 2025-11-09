@@ -456,8 +456,8 @@ class AV_Petitioner_Submissions_Controller
         $conditional_logic_raw = isset($_POST['conditional_logic']) ? wp_unslash($_POST['conditional_logic']) : null;
 
         if ($conditional_logic_raw) {
-            $conditional_logic = AV_Petitioner_CSV_Exporter::parse_conditional_logic($conditional_logic_raw);
-            $settings['query'] = AV_Petitioner_CSV_Exporter::build_model_query($conditional_logic);
+            $conditional_logic = av_petitioner_parse_conditional_logic($conditional_logic_raw);
+            $settings['query'] = av_petitioner_build_model_query($conditional_logic);
         }
 
         $count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings);
