@@ -12,7 +12,7 @@ import {
 import { getExportURL, getSubmissionCount } from '../utilities';
 import {
 	useConditionalLogic,
-	formatLogicToString,
+	FormattedLogic,
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
 import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
@@ -80,7 +80,7 @@ export default function ExportModal({
 						</SummaryItem>
 						<SummaryItem>
 							{__('Filters:', 'petitioner')}{' '}
-							<strong>{formatLogicToString(logic)}</strong>
+							<strong><FormattedLogic logic={logic} /></strong>
 						</SummaryItem>
 						<CardDivider />
 					</SummaryWrapper>

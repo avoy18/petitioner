@@ -36245,6 +36245,8 @@
 	position: relative;
 `;
         const COLORS = {
+          primary: "var(--ptr-admin-color-primary)",
+          dark: "var(--ptr-admin-color-dark)",
           grey: "var(--ptr-admin-color-grey)",
           light: "var(--ptr-admin-color-light)",
           darkGrey: "var(--ptr-admin-color-dark-grey)"
@@ -37061,21 +37063,6 @@
           label: __("OR", "petitioner")
         }];
         const generateId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-        const formatLogicToString = (logic, fieldLabels = {}, emptyMessage = __("No filters applied", "petitioner")) => {
-          const formatCondition = condition => {
-            const fieldLabel = fieldLabels[condition.field] || condition.field;
-            const operatorLabel = OPERATORS.find(op => op.value === condition.operator)?.label || condition.operator;
-            if (condition.operator === "is_empty" || condition.operator === "is_not_empty") {
-              return `${fieldLabel} ${operatorLabel}`;
-            }
-            return `${fieldLabel} ${operatorLabel} "${condition.value}"`;
-          };
-          const parts = logic.conditions.filter(c => c.field).map(formatCondition);
-          if (parts.length === 0) {
-            return emptyMessage;
-          }
-          return parts.join(` ${logic.logic} `);
-        };
         const ConditionalLogicWrapper = dt.div`
 	display: flex;
 	flex-direction: column;
@@ -37289,6 +37276,75 @@
             validCount: logic.conditions.filter(condition => condition.field).length
           };
         };
+        const LogicWrapper = dt.span`
+	display: inline-flex;
+	align-items: center;
+	gap: ${SPACINGS.xs};
+	flex-wrap: wrap;
+`;
+        const ConditionBadge = dt.span`
+	display: inline-flex;
+	align-items: center;
+	gap: ${SPACINGS.xs};
+	padding: 2px ${SPACINGS.xs};
+	border: 1px solid ${COLORS.grey};
+	border-radius: 3px;
+	font-size: 0.875rem;
+`;
+        const FieldName = dt.span`
+	font-weight: 600;
+	color: ${COLORS.primary};
+`;
+        const Operator = dt.span`
+	color: ${COLORS.darkGrey};
+	font-style: italic;
+`;
+        const Value = dt.span`
+	color: ${COLORS.dark};
+	font-weight: 500;
+`;
+        const LogicConnector = dt.span`
+	font-weight: 700;
+	color: ${COLORS.darkGrey};
+	padding: 0 ${SPACINGS.xs};
+`;
+        const EmptyState = dt.span`
+	color: ${COLORS.grey};
+	font-style: italic;
+`;
+        const FormattedLogic = ({
+          logic,
+          fieldLabels = {},
+          emptyMessage = __("No filters applied", "petitioner")
+        }) => {
+          const validConditions = logic.conditions.filter(c => c.field);
+          if (validConditions.length === 0) {
+            return /* @__PURE__ */jsxRuntimeExports.jsx(EmptyState, {
+              children: emptyMessage
+            });
+          }
+          return /* @__PURE__ */jsxRuntimeExports.jsx(LogicWrapper, {
+            children: validConditions.map((condition, index) => {
+              const fieldLabel = fieldLabels[condition.field] || condition.field;
+              const operatorLabel = OPERATORS.find(op => op.value === condition.operator)?.label || condition.operator;
+              const needsValue = condition.operator !== "is_empty" && condition.operator !== "is_not_empty";
+              return /* @__PURE__ */jsxRuntimeExports.jsxs("span", {
+                children: [/* @__PURE__ */jsxRuntimeExports.jsxs(ConditionBadge, {
+                  children: [/* @__PURE__ */jsxRuntimeExports.jsx(FieldName, {
+                    children: fieldLabel
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx(Operator, {
+                    children: operatorLabel
+                  }), needsValue && /* @__PURE__ */jsxRuntimeExports.jsx(Value, {
+                    children: condition.value
+                  })]
+                }), index < validConditions.length - 1 && /* @__PURE__ */jsxRuntimeExports.jsx(LogicConnector, {
+                  children: logic.logic
+                })]
+              }, condition.id);
+            })
+          });
+        };
+        const FormattedLogic$1 = reactExports.memo(FormattedLogic);
         const ConditionalLogic = ({
           value,
           onChange,
@@ -37428,7 +37484,9 @@
                     })]
                   }), /* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
                     children: [__("Filters:", "petitioner"), " ", /* @__PURE__ */jsxRuntimeExports.jsx("strong", {
-                      children: formatLogicToString(logic)
+                      children: /* @__PURE__ */jsxRuntimeExports.jsx(FormattedLogic$1, {
+                        logic
+                      })
                     })]
                   }), /* @__PURE__ */jsxRuntimeExports.jsx(CardDivider, {})]
                 }), /* @__PURE__ */jsxRuntimeExports.jsx(Filters$1, {

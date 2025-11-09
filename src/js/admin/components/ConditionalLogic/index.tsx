@@ -5,8 +5,8 @@ import type { ConditionalLogicProps, ConditionGroup } from './consts';
 import GroupComponent from './GroupComponent';
 import { ConditionalLogicWrapper } from './styled';
 
-export { formatLogicToString } from './utilities';
 export { useConditionalLogic } from './hooks';
+export { default as FormattedLogic } from './FormattedLogic';
 
 export type {
 	Condition,
