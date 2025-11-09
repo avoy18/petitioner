@@ -40,7 +40,7 @@ export const LogicConnector = styled.span`
 `;
 
 export const EmptyState = styled.span`
-	color: ${COLORS.grey};
+	color: ${COLORS.dark};
 	font-style: italic;
 `;
 

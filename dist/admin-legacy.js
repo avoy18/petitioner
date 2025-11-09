@@ -37183,22 +37183,10 @@
           };
           const removeCondition = index => {
             const newConditions = group.conditions.filter((_, i) => i !== index);
-            if (newConditions.length === 0) {
-              onChange({
-                ...group,
-                conditions: [{
-                  id: generateId(),
-                  field: "",
-                  operator: "equals",
-                  value: ""
-                }]
-              });
-            } else {
-              onChange({
-                ...group,
-                conditions: newConditions
-              });
-            }
+            onChange({
+              ...group,
+              conditions: newConditions
+            });
           };
           const addCondition = () => {
             onChange({
@@ -37211,7 +37199,7 @@
               }]
             });
           };
-          const showRemoveCondition = group.conditions.length > 1;
+          const showRemoveCondition = true;
           return /* @__PURE__ */jsxRuntimeExports.jsxs(GroupWrapper, {
             children: [/* @__PURE__ */jsxRuntimeExports.jsxs(GroupHeader, {
               children: [/* @__PURE__ */jsxRuntimeExports.jsx("span", {
@@ -37309,7 +37297,7 @@
 	padding: 0 ${SPACINGS.xs};
 `;
         const EmptyState = dt.span`
-	color: ${COLORS.grey};
+	color: ${COLORS.dark};
 	font-style: italic;
 `;
         const FormattedLogic = ({
@@ -37415,7 +37403,7 @@
           return /* @__PURE__ */jsxRuntimeExports.jsxs(FiltersWrapper, {
             children: [/* @__PURE__ */jsxRuntimeExports.jsxs(Button, {
               icon: "filter",
-              variant: "secondary",
+              variant: validCount > 0 ? "primary" : "secondary",
               onClick: () => setShowFilters(!showFilters),
               children: [showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"), /* @__PURE__ */jsxRuntimeExports.jsxs("span", {
                 children: ["(", validCount, ")"]

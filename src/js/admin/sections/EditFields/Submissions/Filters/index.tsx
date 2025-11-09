@@ -47,7 +47,7 @@ const Filters = ({
 		<FiltersWrapper>
 			<Button
 				icon="filter"
-				variant="secondary"
+				variant={validCount > 0 ? 'primary' : 'secondary'}
 				onClick={() => setShowFilters(!showFilters)}
 			>
 				{showFilters

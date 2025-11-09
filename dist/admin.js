@@ -29758,21 +29758,7 @@ const GroupComponent = ({
   };
   const removeCondition = (index) => {
     const newConditions = group.conditions.filter((_2, i2) => i2 !== index);
-    if (newConditions.length === 0) {
-      onChange({
-        ...group,
-        conditions: [
-          {
-            id: generateId(),
-            field: "",
-            operator: "equals",
-            value: ""
-          }
-        ]
-      });
-    } else {
-      onChange({ ...group, conditions: newConditions });
-    }
+    onChange({ ...group, conditions: newConditions });
   };
   const addCondition = () => {
     onChange({
@@ -29788,7 +29774,7 @@ const GroupComponent = ({
       ]
     });
   };
-  const showRemoveCondition = group.conditions.length > 1;
+  const showRemoveCondition = true;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupWrapper, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(GroupHeader, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: __("Relation:", "petitioner") }),
@@ -29864,7 +29850,7 @@ const FieldName = dt.span(_A || (_A = __template(["\n	font-weight: 600;\n	color:
 const Operator = dt.span(_B || (_B = __template(["\n	color: ", ";\n	font-style: italic;\n"])), COLORS.darkGrey);
 const Value = dt.span(_C || (_C = __template(["\n	color: ", ";\n	font-weight: 500;\n"])), COLORS.dark);
 const LogicConnector = dt.span(_D || (_D = __template(["\n	font-weight: 700;\n	color: ", ";\n	padding: 0 ", ";\n"])), COLORS.darkGrey, SPACINGS.xs);
-const EmptyState = dt.span(_E || (_E = __template(["\n	color: ", ";\n	font-style: italic;\n"])), COLORS.grey);
+const EmptyState = dt.span(_E || (_E = __template(["\n	color: ", ";\n	font-style: italic;\n"])), COLORS.dark);
 const FormattedLogic = ({
   logic,
   fieldLabels = {},
@@ -29963,7 +29949,7 @@ const Filters = ({
       Button,
       {
         icon: "filter",
-        variant: "secondary",
+        variant: validCount > 0 ? "primary" : "secondary",
         onClick: () => setShowFilters(!showFilters),
         children: [
           showFilters ? __("Hide filters", "petitioner") : __("Show filters", "petitioner"),

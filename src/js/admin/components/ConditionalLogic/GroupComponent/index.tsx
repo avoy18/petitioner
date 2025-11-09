@@ -20,22 +20,7 @@ const GroupComponent = ({
 
 	const removeCondition = (index: number) => {
 		const newConditions = group.conditions.filter((_, i) => i !== index);
-		if (newConditions.length === 0) {
-			// If removing the last condition, keep at least one empty condition
-			onChange({
-				...group,
-				conditions: [
-					{
-						id: generateId(),
-						field: '',
-						operator: 'equals',
-						value: '',
-					},
-				],
-			});
-		} else {
-			onChange({ ...group, conditions: newConditions });
-		}
+		onChange({ ...group, conditions: newConditions });
 	};
 
 	const addCondition = () => {
@@ -53,7 +38,7 @@ const GroupComponent = ({
 		});
 	};
 
-	const showRemoveCondition = group.conditions.length > 1;
+	const showRemoveCondition = true; // Always allow removing conditions
 
 	return (
 		<GroupWrapper>
