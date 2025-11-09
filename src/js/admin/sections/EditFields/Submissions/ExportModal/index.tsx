@@ -77,7 +77,7 @@ export default function ExportModal({
 	}, [submissionExample, potentialLabels]);
 
 	const { showNotice, noticeStatus, noticeText, hideNotice } =
-		useNoticeSystem({ timeoutDuration: 100000 });
+		useNoticeSystem({ timeoutDuration: 1500 });
 
 	return (
 		<Modal
@@ -137,7 +137,7 @@ export default function ExportModal({
 					name="petitioner_nonce"
 					value={getAjaxNonce()}
 				/>
-				<StyledExportButton type="submit" variant="primary">
+				<StyledExportButton icon="download" type="submit" variant="primary">
 					{__('Export as CSV', 'petitioner')} ({total})
 				</StyledExportButton>
 			</form>
