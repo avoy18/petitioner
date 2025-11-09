@@ -99,9 +99,12 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 == Changelog ==
 
 = 0.7.0 =
-* Add improved export for submissions
+* Improved export for submissions
     * Allow filtering out unwanted items
     * Handle large lists in steps to avoid timeouts
+* New fields
+    * Keep me anonymous field + allow editing "Anonymous" under Settings -> Labels
+    * Newsletter opt-in field
 
 = 0.6.2 =
 * Allow passing images to the petition letter
