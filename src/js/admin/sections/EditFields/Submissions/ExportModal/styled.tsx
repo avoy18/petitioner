@@ -11,10 +11,10 @@ export const StyledExportButton = styled(Button)`
     width: 100%;
     text-align: center;
     font-size: 1.125rem;
-    justify-content: center;
+    justify-content: center !important;
     display: flex;
     margin-top: ${SPACINGS.md};
-    padding: ${SPACINGS.md};
+    padding-block: ${SPACINGS.xl} !important;
 `;
 
 export const SummaryWrapper = styled.div`
@@ -42,6 +42,6 @@ export const NoticeSystemWrapper = styled(NoticeSystem)`
 	--notice-system-top: ${SPACINGS.md};
 
     .components-notice {
-        padding: ${SPACINGS.xs} ${SPACINGS.xs};
+        padding: ${SPACINGS.xs};
     }
 `;
