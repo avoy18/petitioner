@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from '@wordpress/element';
+import { useState, useMemo, useCallback, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	Card,
@@ -16,7 +16,7 @@ import {
 	NoticeSystemWrapper,
 	StyledCardBody,
 } from './styled';
-import { getExportURL, getFieldLabels } from '../utilities';
+import { getExportURL, getFieldLabels, getSubmissionCount } from '../utilities';
 import ConditionalLogic, {
 	useConditionalLogic,
 	formatLogicToString,
@@ -44,14 +44,29 @@ export default function ExportModal({
 	total: number;
 	submissionExample: SubmissionItem;
 }) {
+	const [totalCount, setTotalCount] = useState(total);
 	const [showFilters, setShowFilters] = useState(false);
 	const { logic, setLogic, validCount } = useConditionalLogic();
 	const potentialLabels = getFieldLabels();
+
 	const handleLogicChange = useCallback((newValue: ConditionGroup) => {
 		setLogic(newValue);
 		setShowFilters(false);
 		showNotice('success', __('Filters applied successfully', 'petitioner'));
 	}, []);
+
+	useEffect(() => {
+		getSubmissionCount({
+			formID: submissionExample.form_id,
+			filters: logic,
+			onSuccess: (count: number) => {
+				setTotalCount(count);
+			},
+			onError: () => {
+				showNotice('error', __('Error getting submission count', 'petitioner'));
+			},
+		});
+	}, [logic]);
 
 	const exportURL = useMemo(() => getExportURL(), []);
 	const availableFields = useMemo(() => {
@@ -95,7 +110,7 @@ export default function ExportModal({
 					<SummaryWrapper>
 						<SummaryItem>
 							{__('Total:', 'petitioner')}{' '}
-							<strong>{total}</strong>
+							<strong>{totalCount}</strong>
 						</SummaryItem>
 						<SummaryItem>
 							{__('Filters:', 'petitioner')}{' '}
@@ -137,8 +152,12 @@ export default function ExportModal({
 					name="petitioner_nonce"
 					value={getAjaxNonce()}
 				/>
-				<StyledExportButton icon="download" type="submit" variant="primary">
-					{__('Export as CSV', 'petitioner')} ({total})
+				<StyledExportButton
+					icon="download"
+					type="submit"
+					variant="primary"
+				>
+					{__('Export as CSV', 'petitioner')} ({totalCount})
 				</StyledExportButton>
 			</form>
 		</Modal>

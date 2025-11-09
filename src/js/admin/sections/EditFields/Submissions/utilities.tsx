@@ -4,6 +4,7 @@ import {
 	type FetchSettings,
 	type UpdateSettings,
 	type DeleteSettings,
+	type GetSubmissionCountSettings,
 	UPDATE_ACTION,
 	FETCH_ACTION,
 	DELETE_ACTION,
@@ -135,10 +136,12 @@ export const deleteSubmissions = async ({
 	}
 };
 
-export const getSubmissionCount = async (
-	formID: number,
-	filters?: any
-): Promise<number> => {
+export const getSubmissionCount = async ({
+	formID,
+	filters,
+	onSuccess = () => {},
+	onError = () => {},
+}: GetSubmissionCountSettings) => {
 	const finalQuery = new URLSearchParams();
 	finalQuery.set('action', 'petitioner_get_submission_count');
 
@@ -159,14 +162,12 @@ export const getSubmissionCount = async (
 		const response = await request.json();
 
 		if (response.success) {
-			return response.data.count;
+			onSuccess(response.data.count);
 		} else {
-			console.error('Failed to get submission count:', response);
-			return 0;
+			onError(response.message);
 		}
 	} catch (error) {
-		console.error('Error getting submission count:', error);
-		return 0;
+		onError('Error getting submission count: ' + (error as Error)?.message);
 	}
 };
 

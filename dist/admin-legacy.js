@@ -36147,6 +36147,35 @@
             onError("Error deleting data: " + error);
           }
         };
+        const getSubmissionCount = async ({
+          formID,
+          filters,
+          onSuccess = () => {},
+          onError = () => {}
+        }) => {
+          const finalQuery = new URLSearchParams();
+          finalQuery.set("action", "petitioner_get_submission_count");
+          const finalData = new FormData();
+          finalData.append("form_id", String(formID));
+          finalData.append("petitioner_nonce", getAjaxNonce());
+          if (filters) {
+            finalData.append("conditional_logic", JSON.stringify(filters));
+          }
+          try {
+            const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+              method: "POST",
+              body: finalData
+            });
+            const response = await request.json();
+            if (response.success) {
+              onSuccess(response.data.count);
+            } else {
+              onError(response.message);
+            }
+          } catch (error) {
+            onError("Error getting submission count: " + error?.message);
+          }
+        };
         const getFieldLabels = () => {
           const fieldMap = {};
           ALl_POSSIBLE_FIELDS.forEach(field => {
@@ -36212,7 +36241,8 @@
         const SPACINGS = {
           xs: "var(--ptr-admin-spacing-xs, 4px)",
           sm: "var(--ptr-admin-spacing-sm, 8px)",
-          md: "var(--ptr-admin-spacing-md, 16px)",
+          md: "var(--ptr-admin-spacing-md, 12px)",
+          xl: "var(--ptr-admin-spacing-xl, 24px)",
           "2xl": "var(--ptr-admin-spacing-2xl, 32px)",
           "4xl": "var(--ptr-admin-spacing-4xl, 48px)"
         };
@@ -36976,10 +37006,10 @@
     width: 100%;
     text-align: center;
     font-size: 1.125rem;
-    justify-content: center;
+    justify-content: center !important;
     display: flex;
     margin-top: ${SPACINGS.md};
-    padding: ${SPACINGS.md};
+    padding-block: ${SPACINGS.xl} !important;
 `;
         const SummaryWrapper = dt.div`
 	display: flex;
@@ -37003,7 +37033,7 @@
 	--notice-system-top: ${SPACINGS.md};
 
     .components-notice {
-        padding: ${SPACINGS.xs} ${SPACINGS.xs};
+        padding: ${SPACINGS.xs};
     }
 `;
         const OPERATORS = [{
@@ -37293,6 +37323,7 @@
           total = 0,
           submissionExample
         }) {
+          const [totalCount, setTotalCount] = reactExports.useState(total);
           const [showFilters, setShowFilters] = reactExports.useState(false);
           const {
             logic,
@@ -37305,6 +37336,18 @@
             setShowFilters(false);
             showNotice("success", __("Filters applied successfully", "petitioner"));
           }, []);
+          reactExports.useEffect(() => {
+            getSubmissionCount({
+              formID: submissionExample.form_id,
+              filters: logic,
+              onSuccess: count => {
+                setTotalCount(count);
+              },
+              onError: () => {
+                showNotice("error", __("Error getting submission count", "petitioner"));
+              }
+            });
+          }, [logic]);
           const exportURL = reactExports.useMemo(() => getExportURL(), []);
           const availableFields = reactExports.useMemo(() => {
             return Object.keys(submissionExample).map(key => {
@@ -37327,7 +37370,7 @@
             noticeText,
             hideNotice
           } = useNoticeSystem({
-            timeoutDuration: 1e5
+            timeoutDuration: 1500
           });
           return /* @__PURE__ */jsxRuntimeExports.jsxs(Modal, {
             size: "large",
@@ -37342,7 +37385,7 @@
                 }), /* @__PURE__ */jsxRuntimeExports.jsxs(SummaryWrapper, {
                   children: [/* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
                     children: [__("Total:", "petitioner"), " ", /* @__PURE__ */jsxRuntimeExports.jsx("strong", {
-                      children: total
+                      children: totalCount
                     })]
                   }), /* @__PURE__ */jsxRuntimeExports.jsxs(SummaryItem, {
                     children: [__("Filters:", "petitioner"), " ", /* @__PURE__ */jsxRuntimeExports.jsx("strong", {
@@ -37377,9 +37420,10 @@
                 name: "petitioner_nonce",
                 value: getAjaxNonce()
               }), /* @__PURE__ */jsxRuntimeExports.jsxs(StyledExportButton, {
+                icon: "download",
                 type: "submit",
                 variant: "primary",
-                children: [__("Export as CSV", "petitioner"), " (", total, ")"]
+                children: [__("Export as CSV", "petitioner"), " (", totalCount, ")"]
               })]
             })]
           });

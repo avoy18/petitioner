@@ -1,5 +1,6 @@
 import type { ApprovalState, FormID } from '@admin/sections/EditFields/consts';
 import { __ } from '@wordpress/i18n';
+import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
 
 export type SubmissionID = string | number;
 export type SubmissionStatus = 'Confirmed' | 'Declined';
@@ -45,6 +46,13 @@ export type FetchSettings = {
 	order?: Order | null;
 	orderby?: OrderBy | null;
 	onSuccess: (fetchData: { total: number; submissions: Submissions }) => void;
+};
+
+export type GetSubmissionCountSettings = {
+	formID: FormID;
+	filters?: ConditionGroup;
+	onSuccess: (count: number) => void;
+	onError: (error: string) => void;
 };
 
 export type UpdateSettings = {
