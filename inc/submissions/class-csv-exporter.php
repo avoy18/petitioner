@@ -91,13 +91,19 @@ class AV_Petitioner_CSV_Exporter
 
             unset($results);
 
-            if (ob_get_level() > 0) {
+            // Safe flushing: only if buffer exists and has content
+            if (ob_get_level() > 0 && ob_get_length() > 0) {
                 ob_flush();
             }
             flush();
         }
 
         fclose($output);
+
+        // Final flush to ensure all data is sent
+        if (ob_get_level() > 0) {
+            ob_end_flush();
+        }
     }
 
     /**
@@ -163,17 +169,28 @@ class AV_Petitioner_CSV_Exporter
         }
 
         // Disable output buffering to allow streaming
-        if (ob_get_level() > 0) {
+        // Clean ALL nested buffers
+        while (ob_get_level() > 0) {
             ob_end_clean();
         }
+
+        ob_start();
+
+        // Suppress non-fatal errors that could corrupt CSV
+        // (Still logs to error_log if WP_DEBUG is on)
+        error_reporting(E_ERROR | E_PARSE);
 
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=' . sanitize_file_name($filename));
         header('Cache-Control: no-cache, must-revalidate');
+        header('Pragma: no-cache');
         header('Expires: 0');
 
         // Prevent timeout on large exports
         set_time_limit(0);
+
+        // Prevent WordPress from interfering with output
+        remove_action('shutdown', 'wp_ob_end_flush_all', 1);
     }
 
     private static function check_permissions()
