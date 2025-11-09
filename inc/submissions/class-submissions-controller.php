@@ -438,6 +438,8 @@ class AV_Petitioner_Submissions_Controller
     }
 
     /**
+     * Get the count of submissions for a specific form
+     * 
      * @since 0.7.0
      */
     public static function api_get_submission_count()

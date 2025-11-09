@@ -361,9 +361,19 @@ class AV_Petitioner_Submissions_Model
      * adjusts the count based on whether approval is required and the default approval
      * status of the form.
      *
+     * @param int $form_id Form ID
+     * @param array $settings Optional settings for filtering and pagination. Supported keys:
+     *   - 'query' (array, default: []) - Filter criteria as key-value pairs (field => value)
+     *   - 'relation' (string, default: 'AND') - Logical relation between conditions (AND or OR)
+     *   - 'per_page' (int, default: 10) - Number of submissions per page
+     *   - 'offset' (int, default: 0) - Number of submissions to skip
+     *   - 'fields' (string|array, default: '*') - Fields to select. Can be '*' for all fields or array of specific field names
+     *   - 'order' (string, default: 'DESC') - Sort order (ASC or DESC)
+     *   - 'orderby' (string, default: 'submitted_at') - Field to sort by
+     * 
      * @return int The total count of submissions matching the criteria.
      */
-    public static function get_submission_count($form_id)
+    public static function get_submission_count($form_id, $settings = [])
     {
         global $wpdb;
 
