@@ -376,9 +376,10 @@ class AV_Petitioner_Submissions_Model
      *   - 'order' (string, default: 'DESC') - Sort order (ASC or DESC)
      *   - 'orderby' (string, default: 'submitted_at') - Field to sort by
      * 
+     * @param bool $skip_unconfirmed Whether to skip unconfirmed submissions (default: true)
      * @return int The total count of submissions matching the criteria.
      */
-    public static function get_submission_count($form_id, $settings = [])
+    public static function get_submission_count($form_id, $settings = [], $skip_unconfirmed = true)
     {
         global $wpdb;
 
@@ -387,7 +388,7 @@ class AV_Petitioner_Submissions_Model
         $relation = isset($settings['relation']) ? $settings['relation'] : 'AND';
 
         // Default: only count confirmed submissions if no query is provided
-        if (empty($query)) {
+        if (empty($query) && $skip_unconfirmed === true) {
             $query = [
                 ['field' => 'approval_status', 'operator' => 'equals', 'value' => 'Confirmed']
             ];

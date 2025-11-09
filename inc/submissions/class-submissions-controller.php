@@ -460,7 +460,8 @@ class AV_Petitioner_Submissions_Controller
             $settings['query'] = av_petitioner_build_model_query($conditional_logic);
         }
 
-        $count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings);
+        // $skip_unconfirmed is false because we want user to control this
+        $count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, false); 
 
         if ($count === false) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
