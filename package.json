@@ -65,6 +65,7 @@
 		"@wordpress/i18n": "^5.23.0",
 		"@wordpress/prettier-config": "^4.17.0",
 		"dompurify": "^3.2.6",
+		"lit": "^3.3.1",
 		"prettier": "^3.4.2",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",

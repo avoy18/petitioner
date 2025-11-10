@@ -1,5 +1,6 @@
 import PetitionerForm from '@js/frontend/form';
 import PetitionerSubmissions from '@js/frontend/submissions';
+import '@js/frontend/submissions-v2';
 import '../scss/style.scss';
 
 const allPetitions = document.querySelectorAll('.petitioner');
