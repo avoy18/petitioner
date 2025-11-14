@@ -96,7 +96,7 @@ class AV_Petitioner_Frontend_UI
         $total_submissions      = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
         $progress               = 0;
 
-        if ($total_submissions > 0) {
+        if ($goal > 0 && $total_submissions > 0) {
             $progress = round($total_submissions / $goal * 100);
         }
     ?>
