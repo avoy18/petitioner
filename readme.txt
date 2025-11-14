@@ -147,6 +147,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 * New fields
     * Keep me anonymous field + allow editing "Anonymous" under Settings -> Labels
     * Newsletter opt-in field
+* Bug fixes and UI improvements
 
 = 0.6.2 =
 * Allow passing images to the petition letter
