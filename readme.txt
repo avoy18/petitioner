@@ -9,13 +9,13 @@ Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create and manage petitions with Petitioner, send them to the target email, and export submissions to CSV.
+Create, target, and track high-impact petitions with Petitioner: automate delivery to decision-makers, manage approvals, and export rich submission data to CSV.
 
 == Description ==
 
 [Plugin homepage & demo](https://getpetitioner.com).
 [Documentation](https://getpetitioner.com/docs/).
-Petitioner is a WordPress plugin that allows you to create petitions and send them to the target email.
+Petitioner pairs unlimited, drag-and-drop petition forms with advanced targeting and export tools—everything you expect from premium petition builders, available free in the plugin directory.
 
 ### Features:
 **Unlimited petitions** 
@@ -23,6 +23,7 @@ Create and manage an unlimited number of petitions.
 
 **Drag and drop form builder**
 - Add/remove/reorder fields based on your needs
+- Supports over ten field types: text, email, phone, address, date of birth, newsletter opt-in, anonymous signature, terms acceptance, and more
 - Add rich text to the form for disclaimers and legal text
 - Edit field's label, placeholder, and required state
 
@@ -35,6 +36,7 @@ Create and manage an unlimited number of petitions.
 - Customize email confirmations, petition letters, and thank you emails
 - Option to edit and delete submissions
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
+- Filter out unwanted submissions before exporting by targeting any form field
 
 **Design & layout features**
 - The plugin features a modern, mobile-friendly design for a seamless user experience.
@@ -56,6 +58,10 @@ Create and manage an unlimited number of petitions.
 - Email confirmations
 - Compatible with all of the popular SMTP plugins (uses wp_mail behind the scenes)
 
+**Extremely lightweight and modern**
+- Vanilla JavaScript bundle weighs in at ~4KB gzipped
+- Theme-friendly CSS variables let you match any brand quickly
+- Rich hooks and filters make third-party integrations effortless
 
 == Development and Source Code ==
 
@@ -68,13 +74,33 @@ The source code for this plugin is publicly available on GitHub:
 
 Create your first petition under Petitioner -> Add new. Once you do that, you can either use a shortcode provided on the creation page or a Gutenberg block.
 
+= Can I collect petitions without sending emails? =
+
+Absolutely. Sending a petition letter to a representative is optional—just disable the rep email inside the petition’s Email tab and submissions will still be stored, displayed, and exportable.
+
+= How can I prevent unwanted submissions or spam? =
+
+Enable one (or more) of the built‑in defenses: reCAPTCHA / hCaptcha / Turnstile, Akismet integration, honeypot field under Advanced Settings, double opt-in email confirmations, manual approve/deny, and the ability to edit or delete entries directly from the Submissions tab. More guidance: https://getpetitioner.com/docs/captcha/
+
 = How do I customize the styles? =
 
 You can customize your petitions under Petitioner -> Settings. You can change the colors, conditionally display certain fields, and add custom CSS.
 
+= How can I ensure petition emails don’t go to spam? =
+
+Petitioner uses the WordPress `wp_mail()` function, so deliverability depends on your hosting. Install an SMTP plugin (e.g., WP SMTP) to route mail through a trusted sender. You can also disable the “Send this email to a representative?” option to avoid sending hundreds of identical letters and damaging your domain reputation.
+
 = How do I see and export the submissions? =
 
-Simply open the edit page for the petition in question and you will see a table with all of the submissions. There will also be a button to export.
+Simply open the edit page for the petition in question and you will see a table with all of the submissions. There will also be a button to export. You can also filter out unwanted submissions before exporting.
+
+= How can I display the submissions on the frontend? =
+
+Insert either the Gutenberg “Petitioner Submissions” block or the `[petitioner_submissions]` shortcode wherever you want the signatures to appear. Full walk-through: https://getpetitioner.com/docs/show-submissions-on-the-frontend/
+
+= Can I extend the plugin? =
+
+Yes. Petitioner exposes dozens of filters, actions, and JavaScript events plus helper shortcodes for rendering counts, goals, progress bars, popups, and more. See the full extension reference at https://getpetitioner.com/docs/filters-and-hooks/
 
 = Can I request features? =
 
@@ -82,7 +108,7 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 
 = What if I have more questions? = 
 
-You can find a more extensive FAQ [on the main website](https://getpetitioner.com/docs/). Additionally, yu can reach out to me via [this contact form](https://getpetitioner.com/contact/)
+You can find a more extensive FAQ [on the main website](https://getpetitioner.com/docs/faq/). Additionally, you can reach out via [this contact form](https://getpetitioner.com/contact/).
 
 == Screenshots ==
 
