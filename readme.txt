@@ -16,6 +16,18 @@ Create, target, and track high-impact petitions with Petitioner: automate delive
 [Plugin homepage & demo](https://getpetitioner.com).
 [Documentation](https://getpetitioner.com/docs/).
 Petitioner pairs unlimited, drag-and-drop petition forms with advanced targeting and export tools—everything you expect from premium petition builders, available free in the plugin directory.
+It’s built for advocacy teams, nonprofits, campaigns, and publishers who need high-volume petitions with reliable delivery, flexible layouts, and clear reporting without SaaS lock-in.
+
+### Quick start
+1. Install Petitioner and create your first petition under Petitioner -> Add New.
+2. Configure delivery (target email, confirmations, approval defaults) and design under the Settings tabs.
+3. Drop the Gutenberg block or shortcode into any page, collect signatures, and export or display submissions as needed.
+
+### Highlights
+- Unlimited petitions powered by a drag-and-drop builder with 10+ specialized fields.
+- Automated decision-maker delivery plus optional double opt-in and manual moderation.
+- Frontend submission showcases (grid, list, ticker) with privacy-friendly options.
+- CSV exports with advanced filtering for accurate reporting and CRM imports.
 
 ### Features:
 **Unlimited petitions** 
@@ -25,7 +37,7 @@ Create and manage an unlimited number of petitions.
 - Add/remove/reorder fields based on your needs
 - Supports over ten field types: text, email, phone, address, date of birth, newsletter opt-in, anonymous signature, terms acceptance, and more
 - Add rich text to the form for disclaimers and legal text
-- Edit field's label, placeholder, and required state
+- Edit each field’s label, placeholder, and required state
 
 **Control submission behaviour**
 - Show submissions on the frontend in a few different styles
@@ -43,13 +55,13 @@ Create and manage an unlimited number of petitions.
 - Color customizations & custom CSS options
 - WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
 - Gutenberg integration with a custom petition block!
-- Several shortcodes to take your petitions to the next level
-- - Form shortcode
-- - Petition goal #
-- - Progress bar
-- - Petition letter popup
-- - Current submission count
-- - Submissions in multiple styles and configurations
+- Several shortcodes to take your petitions to the next level:
+  - Form shortcode – embed the entire petition anywhere shortcodes are supported.
+  - Petition goal – surface your signature target dynamically.
+  - Progress bar – visualize progress toward the goal in real time.
+  - Petition letter popup – open the full letter in a modal.
+  - Submission count – show live signature totals.
+  - Submissions display – list, grid, and ticker layouts with privacy controls.
 
 **Spam protection features**
 - Captcha integrations: reCAPTCHA, hCaptcha, and Cloudflare Turnstile
