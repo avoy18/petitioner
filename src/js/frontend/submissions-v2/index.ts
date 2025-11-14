@@ -1,6 +1,5 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-// import { safelyParseJSON } from '@js/utilities';
 import type { SubmissionItem } from '../submissions/consts';
 import './simple-list/';
 import './table-list/';
@@ -33,6 +32,7 @@ export class PetitionerSubmissions extends LitElement {
 
 	async fetchSubmissions() {
 		const fetchURL = this.buildURL();
+		console.log(fetchURL);
 		const submissions = await fetch(fetchURL);
 
 		if (!submissions.ok) {
@@ -47,7 +47,12 @@ export class PetitionerSubmissions extends LitElement {
 
 		this.totalResults = Number(response.data.total) || 0;
 		this.submissions = response.data.submissions || [];
+
 		this.labels = response.data.labels || [];
+		console.log(this.totalResults);
+		console.log(this.submissions);
+		console.log(this.labels);
+		console.log(response);
 	}
 
 	private buildURL() {
@@ -64,8 +69,18 @@ export class PetitionerSubmissions extends LitElement {
 		return url.toString();
 	}
 
-	firstUpdated() {
-		this.fetchSubmissions();
+	// async firstUpdated() {
+	// 	await this.fetchSubmissions();
+	//     this.requestUpdate();
+	// }
+
+	async connectedCallback() {
+		super.connectedCallback();
+		try {
+			await this.fetchSubmissions();
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	getLabels() {
@@ -73,7 +88,7 @@ export class PetitionerSubmissions extends LitElement {
 	}
 
 	renderListComponent() {
-		if (this.formStyle === 'simple') {
+		if (this.formStyle === 'table') {
 			return html`<simple-list
 				.submissions=${this.submissions}
 				.labels=${this.labels}
@@ -87,7 +102,12 @@ export class PetitionerSubmissions extends LitElement {
 
 	render() {
 		return html`
+            ${JSON.stringify(this.submissions)}
 			<div class="submissions__list">${this.renderListComponent()}</div>
 		`;
+	}
+
+	createRenderRoot() {
+		return this; // render into light DOM, no shadow for backwards compatibility
 	}
 }

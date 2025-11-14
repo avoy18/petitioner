@@ -1175,7 +1175,10 @@ let SimpleList = class extends i {
     __publicField(this, "labels", {});
   }
   render() {
-    return x(_a2 || (_a2 = __template(["\n        assasa\n			<div>", "</div>\n		"])), JSON.stringify(this.submissions));
+    return x(_a2 || (_a2 = __template(["\n			assasa\n			<div>", "</div>\n		"])), JSON.stringify(this.submissions));
+  }
+  createRenderRoot() {
+    return this;
   }
 };
 __decorateClass$2([
@@ -1204,7 +1207,10 @@ let TableList = class extends i {
     __publicField(this, "labels", {});
   }
   render() {
-    return x(_b2 || (_b2 = __template(["\n        Table List\n			<div>", "</div>\n		"])), JSON.stringify(this.submissions));
+    return x(_b2 || (_b2 = __template(["\n			Table List\n			<div>", "</div>\n		"])), JSON.stringify(this.submissions));
+  }
+  createRenderRoot() {
+    return this;
   }
 };
 __decorateClass$1([
@@ -1248,6 +1254,7 @@ let PetitionerSubmissions2 = class extends i {
   }
   async fetchSubmissions() {
     const fetchURL = this.buildURL();
+    console.log(fetchURL);
     const submissions = await fetch(fetchURL);
     if (!submissions.ok) {
       throw new Error("Failed to fetch submissions");
@@ -1259,6 +1266,10 @@ let PetitionerSubmissions2 = class extends i {
     this.totalResults = Number(response.data.total) || 0;
     this.submissions = response.data.submissions || [];
     this.labels = response.data.labels || [];
+    console.log(this.totalResults);
+    console.log(this.submissions);
+    console.log(this.labels);
+    console.log(response);
   }
   buildURL() {
     const url = new URL(this.ajaxurl, window.location.origin);
@@ -1270,20 +1281,32 @@ let PetitionerSubmissions2 = class extends i {
     }
     return url.toString();
   }
-  firstUpdated() {
-    this.fetchSubmissions();
+  // async firstUpdated() {
+  // 	await this.fetchSubmissions();
+  //     this.requestUpdate();
+  // }
+  async connectedCallback() {
+    super.connectedCallback();
+    try {
+      await this.fetchSubmissions();
+    } catch (err) {
+      console.error(err);
+    }
   }
   getLabels() {
     return this.labels;
   }
   renderListComponent() {
-    if (this.formStyle === "simple") {
+    if (this.formStyle === "table") {
       return x(_c2 || (_c2 = __template(["<simple-list\n				.submissions=", "\n				.labels=", "\n			></simple-list>"])), this.submissions, this.labels);
     }
     return x(_d2 || (_d2 = __template(["<table-list\n			.submissions=", "\n			.labels=", "\n		></table-list>"])), this.submissions, this.labels);
   }
   render() {
-    return x(_e2 || (_e2 = __template(['\n			<div class="submissions__list">', "</div>\n		"])), this.renderListComponent());
+    return x(_e2 || (_e2 = __template(["\n            ", '\n			<div class="submissions__list">', "</div>\n		"])), JSON.stringify(this.submissions), this.renderListComponent());
+  }
+  createRenderRoot() {
+    return this;
   }
 };
 __decorateClass([

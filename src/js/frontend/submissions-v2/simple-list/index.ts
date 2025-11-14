@@ -4,13 +4,17 @@ import { customElement, property } from 'lit/decorators.js';
 
 @customElement('simple-list')
 export class SimpleList extends LitElement {
-    @property({ type: Array }) submissions: SubmissionItem[] = [];
-    @property({ type: Object }) labels: { [key: string]: string } = {};
+	@property({ type: Array }) submissions: SubmissionItem[] = [];
+	@property({ type: Object }) labels: { [key: string]: string } = {};
 
 	render() {
 		return html`
-        assasa
+			assasa
 			<div>${JSON.stringify(this.submissions)}</div>
 		`;
+	}
+
+	createRenderRoot() {
+		return this; // render into light DOM, no shadow for backwards compatibility
 	}
 }

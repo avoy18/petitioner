@@ -1259,9 +1259,12 @@
           labels = {};
           render() {
             return x`
-        assasa
+			assasa
 			<div>${JSON.stringify(this.submissions)}</div>
 		`;
+          }
+          createRenderRoot() {
+            return this;
           }
         };
         __decorateClass$2([n({
@@ -1284,9 +1287,12 @@
           labels = {};
           render() {
             return x`
-        Table List
+			Table List
 			<div>${JSON.stringify(this.submissions)}</div>
 		`;
+          }
+          createRenderRoot() {
+            return this;
           }
         };
         __decorateClass$1([n({
@@ -1323,6 +1329,7 @@
           currentPage = 1;
           async fetchSubmissions() {
             const fetchURL = this.buildURL();
+            console.log(fetchURL);
             const submissions = await fetch(fetchURL);
             if (!submissions.ok) {
               throw new Error("Failed to fetch submissions");
@@ -1334,6 +1341,10 @@
             this.totalResults = Number(response.data.total) || 0;
             this.submissions = response.data.submissions || [];
             this.labels = response.data.labels || [];
+            console.log(this.totalResults);
+            console.log(this.submissions);
+            console.log(this.labels);
+            console.log(response);
           }
           buildURL() {
             const url = new URL(this.ajaxurl, window.location.origin);
@@ -1345,14 +1356,23 @@
             }
             return url.toString();
           }
-          firstUpdated() {
-            this.fetchSubmissions();
+          // async firstUpdated() {
+          // 	await this.fetchSubmissions();
+          //     this.requestUpdate();
+          // }
+          async connectedCallback() {
+            super.connectedCallback();
+            try {
+              await this.fetchSubmissions();
+            } catch (err) {
+              console.error(err);
+            }
           }
           getLabels() {
             return this.labels;
           }
           renderListComponent() {
-            if (this.formStyle === "simple") {
+            if (this.formStyle === "table") {
               return x`<simple-list
 				.submissions=${this.submissions}
 				.labels=${this.labels}
@@ -1365,8 +1385,12 @@
           }
           render() {
             return x`
+            ${JSON.stringify(this.submissions)}
 			<div class="submissions__list">${this.renderListComponent()}</div>
 		`;
+          }
+          createRenderRoot() {
+            return this;
           }
         };
         __decorateClass([n({
