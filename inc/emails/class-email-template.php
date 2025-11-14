@@ -43,8 +43,16 @@ class AV_Petitioner_Email_Template
     }
 
     static public function get_default_from_name()
-    {        
-        return get_bloginfo('name');
+    {
+        $blog_name = get_bloginfo('name');
+
+        if (!empty($blog_name)) {
+            return $blog_name;
+        }
+
+        $fallback = wp_parse_url(home_url(), PHP_URL_HOST);
+
+        return !empty($fallback) ? $fallback : 'WordPress';
     }
 
     static public function get_styled_message($message)

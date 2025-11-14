@@ -4,6 +4,7 @@ import {
 	type FetchSettings,
 	type UpdateSettings,
 	type DeleteSettings,
+	type GetSubmissionCountSettings,
 	UPDATE_ACTION,
 	FETCH_ACTION,
 	DELETE_ACTION,
@@ -135,10 +136,45 @@ export const deleteSubmissions = async ({
 	}
 };
 
+export const getSubmissionCount = async ({
+	formID,
+	filters,
+	onSuccess = () => {},
+	onError = () => {},
+}: GetSubmissionCountSettings) => {
+	const finalQuery = new URLSearchParams();
+	finalQuery.set('action', 'petitioner_get_submission_count');
+
+	const finalData = new FormData();
+	finalData.append('form_id', String(formID));
+	finalData.append('petitioner_nonce', getAjaxNonce());
+
+	if (filters) {
+		finalData.append('conditional_logic', JSON.stringify(filters));
+	}
+
+	try {
+		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+			method: 'POST',
+			body: finalData,
+		});
+
+		const response = await request.json();
+
+		if (response.success) {
+			onSuccess(response.data.count);
+		} else {
+			onError(response.message);
+		}
+	} catch (error) {
+		onError('Error getting submission count: ' + (error as Error)?.message);
+	}
+};
+
 /**
  * Returns a mapping from fieldKey to label for all available form fields.
  */
-export const getFieldLabels = (): Partial<Record<FieldKey, string>> => {
+export const getFieldLabels = (): Record<string, string> => {
 	const fieldMap: Record<string, string> = {};
 
 	ALl_POSSIBLE_FIELDS.forEach((field) => {
@@ -150,8 +186,9 @@ export const getFieldLabels = (): Partial<Record<FieldKey, string>> => {
 	return {
 		...fieldMap,
 		name: __('First/Last name', 'petitioner'),
-		consent: __('Consent', 'petitioner'),
+		accept_tos: __('Consent', 'petitioner'),
 		submitted_at: __('Submitted at', 'petitioner'),
+		approval_status: __('Status', 'petitioner'),
 	};
 };
 
@@ -207,4 +244,14 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 	);
 
 	return correctItem?.type || 'text';
+};
+
+export const getExportURL = () => {
+	const urlString = String(window?.petitionerData?.export_url);
+
+	if (urlString.length === 0) {
+		console.warn('Petitioner warning: export url is not defined');
+	}
+
+	return urlString;
 };

@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.6.2
+ * Version:           0.7.0
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,13 +19,13 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_PLUGIN_VERSION', '0.6.2');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.7.0');
 
 if (!function_exists('av_ptr_error_log')) {
 
     function av_ptr_error_log($data)
     {
-        if (defined('WP_DEBUG') && WP_DEBUG === true && defined('PETITIONER_DEBUG') && PETITIONER_DEBUG === true) {
+        if (defined('WP_DEBUG') && WP_DEBUG === true) {
             $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] ?? 'global';
 
             error_log(wp_json_encode([
@@ -38,6 +38,7 @@ if (!function_exists('av_ptr_error_log')) {
 
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-csv-exporter.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';

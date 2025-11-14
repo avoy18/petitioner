@@ -1,0 +1,110 @@
+---
+description: Testing patterns and best practices using Vitest and Testing Library
+globs:
+  - "tests/**/*.{ts,tsx}"
+  - "**/*.test.{ts,tsx}"
+alwaysApply: false
+---
+
+# Testing Rules
+
+## Framework
+We use **Vitest** with **@testing-library/react**.
+
+## Test File Naming
+- Name test files: `ComponentName.test.tsx`
+- Place in `tests/` directory matching source structure
+
+## Basic Component Test
+```typescript
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import Component from '@admin/components/Component';
+
+describe('Component', () => {
+	it('renders correctly', () => {
+		render(<Component />);
+		expect(screen.getByText('Expected Text')).toBeInTheDocument();
+	});
+});
+```
+
+## User Interactions
+```typescript
+import userEvent from '@testing-library/user-event';
+
+it('handles click events', async () => {
+	const user = userEvent.setup();
+	const handleClick = vi.fn();
+	
+	render(<Component onClick={handleClick} />);
+	await user.click(screen.getByRole('button'));
+	
+	expect(handleClick).toHaveBeenCalledTimes(1);
+});
+```
+
+## Testing Custom Hooks
+```typescript
+import { renderHook, act } from '@testing-library/react';
+
+describe('useCustomHook', () => {
+	it('updates value', () => {
+		const { result } = renderHook(() => useCustomHook());
+		
+		act(() => {
+			result.current.setValue(5);
+		});
+		
+		expect(result.current.value).toBe(5);
+	});
+});
+```
+
+## WordPress Testing
+
+### Mock Globals
+```typescript
+global.ajaxurl = 'https://example.com/wp-admin/admin-ajax.php';
+global.petitionerData = { nonce: 'test-nonce' };
+```
+
+## Query Priority (most to least preferred)
+1. `getByRole`
+2. `getByLabelText`
+3. `getByPlaceholderText`
+4. `getByText`
+5. `getByTestId` (last resort)
+
+## Best Practices
+
+### ✅ DO
+- Test user-facing behavior, not implementation
+- Use `screen.getByRole` over `getByTestId`
+- Test accessibility
+- Mock external dependencies only
+- Use `waitFor` for async operations
+- Test error states and edge cases
+
+### ❌ DON'T
+- Test internal state directly
+- Over-mock
+- Test third-party library internals
+- Create brittle tests
+
+## Async Testing
+```typescript
+import { waitFor } from '@testing-library/react';
+
+it('displays data after loading', async () => {
+	render(<Component />);
+	
+	await waitFor(() => {
+		expect(screen.getByText('Loaded data')).toBeInTheDocument();
+	});
+});
+```
+
+## Coverage Goal
+- Aim for 80%+ code coverage
+- Focus on critical paths and user flows

@@ -39,18 +39,26 @@ class AV_Petitioner_Mailer
         $this->send_ty_email            = $settings['send_ty_email'] ?? true;
         $this->form_id                  = $settings['form_id'];
         $this->submission_id            = $settings['submission_id'];
-        $this->from_field               = $settings['from_field'];
-        $this->from_name               = $settings['from_name'];
+        $this->from_field               = $settings['from_field'] ?? '';
+        $this->from_name                = $settings['from_name'] ?? '';
 
-        if (empty($this->from_field)) {
-            $this->from_field = AV_Petitioner_Email_Template::get_default_from_field();
+        $sanitized_from_field = sanitize_email($this->from_field);
+
+        if (empty($sanitized_from_field) || !is_email($sanitized_from_field)) {
+            $sanitized_from_field = sanitize_email(AV_Petitioner_Email_Template::get_default_from_field());
         }
 
-        if (empty($this->from_name)) {
-            $this->from_name = AV_Petitioner_Email_Template::get_default_from_name();
+        $this->from_field = $sanitized_from_field;
+
+        $sanitized_from_name = sanitize_text_field($this->from_name);
+
+        if (empty($sanitized_from_name)) {
+            $sanitized_from_name = sanitize_text_field(AV_Petitioner_Email_Template::get_default_from_name());
         }
 
-        $this->final_from_field = $this->from_name . ' <' . $this->from_field . '>';
+        $this->from_name = $sanitized_from_name;
+
+        $this->final_from_field = sprintf('%s <%s>', $this->from_name, $this->from_field);
     }
 
     /**

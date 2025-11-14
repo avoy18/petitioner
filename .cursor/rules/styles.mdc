@@ -1,0 +1,132 @@
+---
+description: Styling rules for styled-components including theme constants, patterns, and accessibility guidelines
+globs:
+  - "src/js/**/styled.tsx"
+  - "src/js/**/*.tsx"
+alwaysApply: true
+---
+
+# Styling Rules
+
+## Always use centralized theme values
+```typescript
+import { COLORS, SPACINGS, FONT_SIZES, TRANSITIONS } from '@admin/theme';
+```
+
+**Never use magic numbers or hardcoded colors** - always reference theme constants.
+
+## Available Theme Values
+
+### Colors
+```typescript
+COLORS.primary     // --ptr-admin-color-primary
+COLORS.dark        // --ptr-admin-color-dark
+COLORS.grey        // --ptr-admin-color-grey
+COLORS.light       // --ptr-admin-color-light
+COLORS.darkGrey    // --ptr-admin-color-dark-grey
+```
+
+### Spacings
+```typescript
+SPACINGS.xs        // 4px
+SPACINGS.sm        // 8px
+SPACINGS.md        // 12px
+SPACINGS.lg        // 16px
+SPACINGS.xl        // 24px
+SPACINGS['2xl']    // 32px
+SPACINGS['3xl']    // 40px
+SPACINGS['4xl']    // 48px
+SPACINGS['5xl']    // 64px
+```
+
+### Transitions
+```typescript
+TRANSITIONS.sm     // 0.15s
+TRANSITIONS.md     // 0.3s
+```
+
+## Styled Component Patterns
+
+### Basic Wrapper
+```typescript
+export const ComponentWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: ${SPACINGS.md};
+`;
+```
+
+### Extending WordPress Components
+```typescript
+export const StyledButton = styled(Button)`
+	padding: ${SPACINGS.sm} ${SPACINGS.md};
+	background: ${COLORS.primary};
+	transition: all ${TRANSITIONS.sm};
+`;
+```
+
+## Forwarding className
+
+When creating components that will be wrapped with `styled()`, always accept and forward the `className` prop:
+
+```typescript
+interface Props {
+	className?: string;
+}
+
+export default function Component({ className, ...props }: Props) {
+	return <div className={className}>...</div>;
+}
+```
+
+## Reset WordPress Component Styles
+
+```typescript
+export const StyledWrapper = styled.div`
+	.components-base-control {
+		margin-bottom: 0;
+	}
+	
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+`;
+```
+
+## Common Patterns
+
+### Separated Sections
+```typescript
+export const ApplyButtonWrapper = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	padding-top: ${SPACINGS.md};
+	margin-top: ${SPACINGS.md};
+	border-top: 1px solid ${COLORS.grey};
+	
+	button {
+		min-width: 120px;
+	}
+`;
+```
+
+## Rules
+
+### ✅ DO
+- Use theme constants for all spacing, colors, and timing
+- Keep styled components in separate `styled.tsx` files
+- Name styled components descriptively (e.g., `FiltersWrapper`, not `Container`)
+- Reset WordPress component margins when needed
+- Add transitions for interactive elements
+
+### ❌ DON'T
+- Use inline styles (e.g., `style={{ marginTop: '16px' }}`)
+- Hardcode spacing values (e.g., `margin: 16px`)
+- Hardcode colors (e.g., `color: #333`)
+- Use generic names (e.g., `Wrapper`, `Container`)
+
+## Accessibility
+- Ensure color contrast meets WCAG AA (4.5:1 for normal text)
+- Don't rely on color alone to convey information
+- Make sure focus states are visible
