@@ -131,8 +131,12 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 5. Form builder
 6. Advanced settings
 7. Submissions
-8. Settings
-9. Integrations
+8. Submission details & edit screen
+9. Submission export with filters
+10. Settings
+11. Integrations
+12. Submissions Gutenberg block
+13. Submissions on the frontend
 
 == Changelog ==
 
