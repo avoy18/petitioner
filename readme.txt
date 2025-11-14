@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.6.2
+Stable Tag: 0.7.0
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -147,7 +147,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 * New fields
     * Keep me anonymous field + allow editing "Anonymous" under Settings -> Labels
     * Newsletter opt-in field
+    * BCC me field
 * Bug fixes and UI improvements
+    * Improved email headers security
+    * Fixed a division by zero error flagged by one of the users
+    * Cleaned up the styling in the admin
 
 = 0.6.2 =
 * Allow passing images to the petition letter
