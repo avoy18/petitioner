@@ -120,6 +120,19 @@ export const DRAGGABLE_FIELD_TYPES = [
 		),
 	},
 	{
+		fieldKey: 'bcc',
+		type: 'checkbox',
+		fieldName: __('BCC checkbox', 'petitioner'),
+		label: __('BCC me on the email', 'petitioner'),
+		defaultValue: false,
+		required: false,
+		removable: true,
+		description: __(
+			'Allows users to opt-in to send a copy of the petition to the email address entered in this form. Only works if you send emails to the representative.',
+			'petitioner'
+		),
+	},
+	{
 		fieldKey: 'legal',
 		type: 'wysiwyg',
 		fieldName: __('Legal text', 'petitioner'),
