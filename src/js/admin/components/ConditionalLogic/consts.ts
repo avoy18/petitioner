@@ -14,21 +14,30 @@ export type ConditionGroup = {
 	conditions: Array<Condition>;
 };
 
+export type FieldOption = {
+	value: string;
+	label: string;
+	inputType?: string;
+	options?: Array<{ label: string; value: string }>;
+};
+
+export type AvailableFields = FieldOption[] | null;
+
 export type ConditionalLogicProps = {
 	value: ConditionGroup;
 	onChange: (value: ConditionGroup) => void;
-	availableFields: Array<{ value: string; label: string }>;
+	availableFields: AvailableFields;
 };
 
 export type GroupComponentProps = {
 	group: ConditionGroup;
-	availableFields: Array<{ value: string; label: string }>;
+	availableFields: AvailableFields;
 	onChange: (group: ConditionGroup) => void;
 };
 
 export type ConditionComponentProps = {
 	condition: Condition;
-	availableFields: Array<{ value: string; label: string }>;
+	availableFields: AvailableFields;
 	onChange: (condition: Condition) => void;
 	onRemove: () => void;
 };

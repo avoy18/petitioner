@@ -37410,6 +37410,7 @@
             setShowFilters(false);
           };
           const availableFields = reactExports.useMemo(() => {
+            const defaultValues = normalizeDefaultValues(window.petitionerData.default_values);
             return Object.keys(submissionExample).map(key => {
               if (EXCLUDED_FIELDS.includes(key)) {
                 return null;
@@ -37418,10 +37419,20 @@
               if (!label) {
                 return null;
               }
-              return {
+              const field = {
                 value: key,
-                label
+                label,
+                inputType: "text"
               };
+              if (key === "country") {
+                const countries = defaultValues.country_list || [];
+                field.inputType = "select";
+                field.options = countries.map(country => ({
+                  label: country,
+                  value: country
+                }));
+              }
+              return field;
             }).filter(Boolean);
           }, [submissionExample, potentialLabels]);
           return /* @__PURE__ */jsxRuntimeExports.jsxs(FiltersWrapper, {

@@ -2,10 +2,11 @@ import { memo, useMemo, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import ConditionalLogic from '@admin/components/ConditionalLogic';
-import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
+import type { ConditionGroup, FieldOption, AvailableFields } from '@admin/components/ConditionalLogic/consts';
 import { getFieldLabels } from '../utilities';
 import { FiltersWrapper } from './styled';
 import { EXCLUDED_FIELDS, type FiltersProps } from './consts';
+import { normalizeDefaultValues } from '@admin/sections/EditFields/AdvancedSettings';
 
 const Filters = ({
 	validCount,
@@ -22,6 +23,10 @@ const Filters = ({
 	};
 
 	const availableFields = useMemo(() => {
+		const defaultValues = normalizeDefaultValues(
+			window.petitionerData.default_values
+		);
+
 		return Object.keys(submissionExample)
 			.map((key) => {
 				if (EXCLUDED_FIELDS.includes(key)) {
@@ -35,12 +40,24 @@ const Filters = ({
 					return null;
 				}
 
-				return {
+				const field: FieldOption = {
 					value: key,
 					label,
+					inputType: 'text',
 				};
+
+				if (key === 'country') {
+					const countries = defaultValues.country_list || [];
+					field.inputType = 'select';
+					field.options = countries.map((country) => ({
+						label: country,
+						value: country,
+					}));
+				}
+
+				return field;
 			})
-			.filter(Boolean) as Array<{ value: string; label: string }>;
+			.filter(Boolean) as AvailableFields;
 	}, [submissionExample, potentialLabels]);
 
 	return (
