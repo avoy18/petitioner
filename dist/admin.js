@@ -29483,41 +29483,93 @@ function AdvancedSettings() {
     )
   ] });
 }
-function SubmissionEditField({
-  label,
+function EditField({
   type,
   value,
-  onChange
+  onChange,
+  options: providedOptions,
+  placeholder,
+  id: id2,
+  fieldKey
 }) {
-  if (type === "checkbox") {
+  let finalType = type;
+  let finalOptions = providedOptions;
+  if (fieldKey === "country") {
+    const defaultValues = normalizeDefaultValues(
+      window.petitionerData.default_values
+    );
+    const countries = defaultValues.country_list || [];
+    finalType = "select";
+    finalOptions = countries.map((country) => ({
+      label: country,
+      value: country
+    }));
+  }
+  if (fieldKey === "approval_status") {
+    finalType = "select";
+    finalOptions = [
+      { label: __("Confirmed", "petitioner"), value: "Confirmed" },
+      { label: __("Declined", "petitioner"), value: "Declined" }
+    ];
+  }
+  if (finalType === "select" && finalOptions) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      SelectControl$1,
+      {
+        value,
+        onChange,
+        options: finalOptions
+      }
+    );
+  }
+  if (finalType === "checkbox") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxControl,
       {
         checked: value === "1",
-        onChange: (checked) => {
-          onChange(checked ? "1" : "0");
-        }
+        onChange: (checked) => onChange(checked ? "1" : "0")
       }
     );
   }
-  if (label === "country") {
-    const defaultValues = normalizeDefaultValues(
-      window.petitionerData.default_values
+  if (finalType === "textarea") {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TextareaControl,
+      {
+        value,
+        onChange,
+        placeholder
+      }
     );
-    const allCountries = defaultValues.country_list;
-    const countries = allCountries || [];
-    const countryOptions = countries.map((item) => ({ label: item, value: item }));
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectControl$1, { value, onChange, options: countryOptions });
   }
-  if (type === "textarea") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(TextareaControl, { value, onChange });
+  if (finalType === "wysiwyg" && id2) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      PTRichText,
+      {
+        id: id2,
+        label: "",
+        value,
+        onChange,
+        height: 200
+      }
+    );
+  }
+  if (finalType === "date") {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TextControl,
+      {
+        type: "date",
+        value,
+        onChange,
+        placeholder
+      }
+    );
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     TextControl,
     {
-      type,
       value,
-      onChange
+      onChange,
+      placeholder
     }
   );
 }
@@ -29576,9 +29628,8 @@ function SubmissionEditModal({
     };
     if (currentlyEditing) {
       ValueField = /* @__PURE__ */ jsxRuntimeExports.jsx(
-        SubmissionEditField,
+        EditField,
         {
-          label,
           type,
           value: valueString,
           onChange: (val) => {
@@ -29739,18 +29790,27 @@ const ConditionComponent = reactExports.memo(
     onRemove
   }) => {
     const showValueInput = condition.operator !== "is_empty" && condition.operator !== "is_not_empty";
+    const currentFieldData = availableFields == null ? void 0 : availableFields.find(
+      (field) => field.value === condition.field
+    );
+    const fieldOptions = (currentFieldData == null ? void 0 : currentFieldData.options) ? [
+      { label: __("Select value...", "petitioner"), value: "" },
+      ...currentFieldData.options
+    ] : [];
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(ConditionRow, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         SelectControl$1,
         {
           value: condition.field,
-          onChange: (field) => onChange({ ...condition, field }),
+          onChange: (field) => {
+            onChange({ ...condition, field, value: "" });
+          },
           options: [
             {
               value: "",
               label: __("Select field...", "petitioner")
             },
-            ...availableFields
+            ...availableFields || []
           ]
         }
       ),
@@ -29763,11 +29823,14 @@ const ConditionComponent = reactExports.memo(
         }
       ),
       showValueInput && /* @__PURE__ */ jsxRuntimeExports.jsx(
-        TextControl,
+        EditField,
         {
+          type: currentFieldData == null ? void 0 : currentFieldData.inputType,
           value: condition.value,
           onChange: (value) => onChange({ ...condition, value }),
-          placeholder: __("Enter value...", "petitioner")
+          options: fieldOptions,
+          placeholder: __("Enter value...", "petitioner"),
+          fieldKey: condition.field
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -29966,31 +30029,20 @@ const Filters = ({
     setShowFilters(false);
   };
   const availableFields = reactExports.useMemo(() => {
-    const defaultValues = normalizeDefaultValues(
-      window.petitionerData.default_values
-    );
     return Object.keys(submissionExample).map((key) => {
       if (EXCLUDED_FIELDS.includes(key)) {
         return null;
       }
+      const type = getSubmissionValType(key) || "text";
       const label = potentialLabels == null ? void 0 : potentialLabels[key];
       if (!label) {
         return null;
       }
-      const field = {
+      return {
         value: key,
         label,
-        inputType: "text"
+        inputType: type
       };
-      if (key === "country") {
-        const countries = defaultValues.country_list || [];
-        field.inputType = "select";
-        field.options = countries.map((country) => ({
-          label: country,
-          value: country
-        }));
-      }
-      return field;
     }).filter(Boolean);
   }, [submissionExample, potentialLabels]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(FiltersWrapper, { children: [

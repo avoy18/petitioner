@@ -12,9 +12,9 @@ import {
 import { getHumanValue, getSubmissionValType } from '../utilities';
 import { getFieldLabels } from './../utilities';
 import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
-import SubmissionEditField from './SubmissionEditField';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
+import EditField from '@admin/components/EditField';
 
 const SUBMISSION_LABELS = Object.fromEntries(
 	Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
@@ -95,8 +95,7 @@ export default function SubmissionEditModal({
 
 		if (currentlyEditing) {
 			ValueField = (
-				<SubmissionEditField
-					label={label}
+				<EditField
 					type={type}
 					value={valueString}
 					onChange={(val) => {
