@@ -18,7 +18,6 @@ export default function EditField({
 	id,
 	fieldKey,
 }: EditFieldProps) {
-	// Smart field detection: auto-configure type/options for special fields
 	let finalType = type;
 	let finalOptions = providedOptions;
 
@@ -42,7 +41,6 @@ export default function EditField({
 		];
 	}
 
-	// Handle select fields
 	if (finalType === 'select' && finalOptions) {
 		return (
 			<SelectControl
@@ -53,7 +51,6 @@ export default function EditField({
 		);
 	}
 
-	// Handle checkbox fields (expects '1' or '0' as string)
 	if (finalType === 'checkbox') {
 		return (
 			<CheckboxControl
@@ -63,7 +60,6 @@ export default function EditField({
 		);
 	}
 
-	// Handle textarea fields
 	if (finalType === 'textarea') {
 		return (
 			<TextareaControl
@@ -86,24 +82,14 @@ export default function EditField({
 		);
 	}
 
-	// Handle date fields
-	if (finalType === 'date') {
-		return (
-			<TextControl
-				type="date"
-				value={value}
-				onChange={onChange}
-				placeholder={placeholder}
-			/>
-		);
-	}
-
+	// Default: TextControl handles text, email, tel, number, date, etc.
 	return (
 		<TextControl
+			// @ts-ignore: finalType can be any valid HTML input type
+			type={finalType}
 			value={value}
 			onChange={onChange}
 			placeholder={placeholder}
 		/>
 	);
 }
-
