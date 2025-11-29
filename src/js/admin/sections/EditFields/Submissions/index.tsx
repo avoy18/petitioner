@@ -37,6 +37,7 @@ import Table, {
 } from '@admin/components/Table';
 import type { OnSortArgs } from '@admin/components/Table/consts';
 import SubmissionEditModal from './SubmissionEditModal';
+import ExportModal from './ExportModal';
 import NoticeSystem, { useNoticeSystem } from '@admin/components/NoticeSystem';
 
 const SUBMISSION_LABELS = getFieldLabels();
@@ -72,6 +73,7 @@ export default function Submissions() {
 			return approvalState === 'Email' ? 'Declined' : approvalState;
 		});
 	const [activeModal, setActiveModal] = useState<SubmissionID>();
+	const [showExportModal, setShowExportModal] = useState<boolean>(false);
 
 	const { showNotice, noticeStatus, noticeText, hideNotice } =
 		useNoticeSystem();
@@ -167,11 +169,32 @@ export default function Submissions() {
 				condition: showApproval,
 				heading: {
 					id: 'status',
-					label: __('Status', 'petitioner'),
+					label: SUBMISSION_LABELS.approval_status,
 				},
 			},
 		]
 	);
+
+	const ExportComponent = () => {
+		return (
+			<ExportButtonWrapper>
+				<ShortcodeElement
+					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
+					label={__('Shortcode', 'petitioner')}
+					help={__(
+						'Use this shortcode to display submissions on any page or post.',
+						'petitioner'
+					)}
+					fieldName="petitioner_shortcode"
+					width="250px"
+				/>
+				{/* @ts-ignore */}
+				<Button variant="primary" onClick={() => setShowExportModal(true)}>
+					{__('Export entries as CSV', 'petitioner')}
+				</Button>
+			</ExportButtonWrapper>
+		);
+	};
 
 	const tableRows = submissions.map((item) => {
 		const cells: React.ReactNode[] = [
@@ -256,26 +279,9 @@ export default function Submissions() {
 		});
 	}, []);
 
-	const ExportComponent = () => {
-		return (
-			<ExportButtonWrapper>
-				<ShortcodeElement
-					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
-					label={__('Shortcode', 'petitioner')}
-					help={__(
-						'Use this shortcode to display submissions on any page or post.',
-						'petitioner'
-					)}
-					fieldName="petitioner_shortcode"
-					width="250px"
-				/>
-
-				<Button variant="primary" href={String(export_url)}>
-					{__('Export entries as CSV', 'petitioner')}
-				</Button>
-			</ExportButtonWrapper>
-		);
-	};
+	const handleExportClose = useCallback(() => {
+		setShowExportModal(false);
+	}, []);
 
 	return (
 		<SubmissionTabWrapper id="AV_Petitioner_Submissions">
@@ -316,6 +322,8 @@ export default function Submissions() {
 					onDelete={onModalDelete}
 				/>
 			) : null}
+
+			{showExportModal && <ExportModal total={total} onClose={handleExportClose} submissionExample={submissions[0]} />}
 		</SubmissionTabWrapper>
 	);
 }

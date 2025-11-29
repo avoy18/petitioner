@@ -120,19 +120,20 @@ class AV_Petitioner_Submissions_Model
      * @example
      * // Get confirmed submissions only
      * $result = AV_Petitioner_Submissions_Model::get_form_submissions(123, [
-     *     'query' => ['approval_status' => 'Confirmed']
+     *     'query' => [['field' => 'approval_status', 'operator' => 'equals', 'value' => 'Confirmed']]
      * ]);
      */
     public static function get_form_submissions($form_id, $settings)
     {
         global $wpdb;
 
-        $per_page = isset($settings['per_page']) ? absint($settings['per_page']) : 10;
-        $offset   = isset($settings['offset']) ? absint($settings['offset']) : 0;
-        $fields   = isset($settings['fields']) ? $settings['fields'] : '*';
-        $query    = isset($settings['query']) ? $settings['query'] : [];
-        $order    = isset($settings['order']) ? $settings['order'] : 'DESC';
-        $orderby  = isset($settings['orderby']) ? $settings['orderby'] : 'submitted_at';
+        $per_page   = isset($settings['per_page']) ? absint($settings['per_page']) : 10;
+        $offset     = isset($settings['offset']) ? absint($settings['offset']) : 0;
+        $fields     = isset($settings['fields']) ? $settings['fields'] : '*';
+        $query      = isset($settings['query']) ? $settings['query'] : [];
+        $relation   = isset($settings['relation']) ? $settings['relation'] : 'AND';
+        $order      = isset($settings['order']) ? $settings['order'] : 'DESC';
+        $orderby    = isset($settings['orderby']) ? $settings['orderby'] : 'submitted_at';
 
         // Validate fields
         $allowed_fields = self::$ALLOWED_FIELDS;
@@ -145,19 +146,10 @@ class AV_Petitioner_Submissions_Model
             }
         }
 
-        $where = ['form_id = %d'];
-        $params = [$form_id];
+        $where_clause = self::build_where_clause($form_id, $query, $allowed_fields, $relation);
+        $params = $where_clause['params'];
 
-        if (!empty($query)) {
-            foreach ($query as $k => $v) {
-                if (preg_match('/^[a-zA-Z0-9_]+$/', $k) && in_array($k, $allowed_fields)) {
-                    $where[] = "`$k` = %s";
-                    $params[] = $v;
-                }
-            }
-        }
-
-        $where_sql = implode(' AND ', $where);
+        $where_sql = $where_clause['where'];
 
         $orderby = in_array($orderby, $allowed_fields, true) ? $orderby : 'submitted_at';
         $order   = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
@@ -170,14 +162,19 @@ class AV_Petitioner_Submissions_Model
                 LIMIT %d OFFSET %d";
 
         $params_with_limit = array_merge($params, [$per_page, $offset]);
-        $submissions = $wpdb->get_results($wpdb->prepare($sql, ...$params_with_limit));
+        $submissions = $wpdb->get_results(
+            call_user_func_array([$wpdb, 'prepare'], array_merge([$sql], $params_with_limit))
+        );
 
         // Get total count (do NOT include limit/offset)
         $count_sql = "SELECT COUNT(*) 
                       FROM {$wpdb->prefix}av_petitioner_submissions 
                       WHERE $where_sql";
 
-        $total_submissions = (int) $wpdb->get_var($wpdb->prepare($count_sql, ...$params));
+        $prepared_count = !empty($params)
+            ? call_user_func_array([$wpdb, 'prepare'], array_merge([$count_sql], $params))
+            : $count_sql;
+        $total_submissions = (int) $wpdb->get_var($prepared_count);
 
         if ($total_submissions === null) {
             $total_submissions = 0; // Ensure we return 0 if no submissions found
@@ -187,6 +184,56 @@ class AV_Petitioner_Submissions_Model
             'submissions'   => $submissions,
             'total'         => $total_submissions,
         ];
+    }
+
+    /**
+     * Build WHERE clause with parameters for submissions query
+     * 
+     * @param int $form_id Form ID
+     * @param array $query Query conditions (can be simple key-value or operator arrays)
+     * @param array $allowed_fields List of allowed field names
+     * @return array ['where' => string, 'params' => array]
+     * 
+     * @since 0.7.0
+     */
+    public static function build_where_clause($form_id, $query, $allowed_fields, $relation = 'AND')
+    {
+        $relation = strtoupper($relation) === 'OR' ? 'OR' : 'AND';
+        $where = ['form_id = %d'];
+        $params = [$form_id];
+
+        $conditions = [];
+
+        foreach ($query as $condition) {
+            $field = $condition['field'];
+            $operator = $condition['operator'];
+            $value = $condition['value'];
+
+            if (!in_array($field, $allowed_fields)) continue;
+
+            switch ($operator) {
+                case 'equals':
+                    $conditions[] = "`$field` = %s";
+                    $params[] = $value;
+                    break;
+                case 'not_equals':
+                    $conditions[] = "`$field` != %s";
+                    $params[] = $value;
+                    break;
+                case 'is_empty':
+                    $conditions[] = "(`$field` = '' OR `$field` IS NULL)";
+                    break;
+                case 'is_not_empty':
+                    $conditions[] = "(`$field` != '' AND `$field` IS NOT NULL)";
+                    break;
+            }
+        }
+
+        if (!empty($conditions)) {
+            $where[] = '(' . implode(' ' . $relation . ' ', $conditions) . ')';
+        }
+
+        return ['where' => implode(' AND ', $where), 'params' => $params];
     }
 
     public static function get_unconfirmed_submissions($form_id)
@@ -319,21 +366,46 @@ class AV_Petitioner_Submissions_Model
      * adjusts the count based on whether approval is required and the default approval
      * status of the form.
      *
+     * @param int $form_id Form ID
+     * @param array $settings Optional settings for filtering and pagination. Supported keys:
+     *   - 'query' (array, default: []) - Filter criteria as key-value pairs (field => value)
+     *   - 'relation' (string, default: 'AND') - Logical relation between conditions (AND or OR)
+     *   - 'per_page' (int, default: 10) - Number of submissions per page
+     *   - 'offset' (int, default: 0) - Number of submissions to skip
+     *   - 'fields' (string|array, default: '*') - Fields to select. Can be '*' for all fields or array of specific field names
+     *   - 'order' (string, default: 'DESC') - Sort order (ASC or DESC)
+     *   - 'orderby' (string, default: 'submitted_at') - Field to sort by
+     * 
+     * @param bool $skip_unconfirmed Whether to skip unconfirmed submissions (default: true)
      * @return int The total count of submissions matching the criteria.
      */
-    public static function get_submission_count($form_id)
+    public static function get_submission_count($form_id, $settings = [], $skip_unconfirmed = true)
     {
         global $wpdb;
 
         $table_name = self::table_name();
+        $query = isset($settings['query']) ? $settings['query'] : [];
+        $relation = isset($settings['relation']) ? $settings['relation'] : 'AND';
 
-        // Get the total count of submissions for the form
-        return $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM {$table_name} WHERE form_id = %d AND approval_status = 'Confirmed'",
-                $form_id,
-            )
-        );
+        // Default: only count confirmed submissions if no query is provided
+        if (empty($query) && $skip_unconfirmed === true) {
+            $query = [
+                ['field' => 'approval_status', 'operator' => 'equals', 'value' => 'Confirmed']
+            ];
+        }
+
+        // Build WHERE clause
+        $where_data = self::build_where_clause($form_id, $query, self::$ALLOWED_FIELDS, $relation);
+
+        // Get the count
+        $sql = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_data['where']}";
+
+        // Prepare query with params if any exist
+        $prepared_sql = !empty($where_data['params'])
+            ? call_user_func_array([$wpdb, 'prepare'], array_merge([$sql], $where_data['params']))
+            : $sql;
+
+        return (int) $wpdb->get_var($prepared_sql);
     }
 
     /**

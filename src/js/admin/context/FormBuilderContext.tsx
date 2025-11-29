@@ -94,6 +94,45 @@ export const DRAGGABLE_FIELD_TYPES = [
 		removable: true,
 	},
 	{
+		fieldKey: 'hide_name',
+		type: 'checkbox',
+		fieldName: __('Keep me anonymous checkbox', 'petitioner'),
+		label: __('Keep my name anonymous', 'petitioner'),
+		defaultValue: false,
+		required: false,
+		removable: true,
+		description: __(
+			'Allows users to opt-in to keep their name anonymous in public signature lists.',
+			'petitioner'
+		),
+	},
+	{
+		fieldKey: 'newsletter',
+		type: 'checkbox',
+		fieldName: __('Newsletter opt-in checkbox', 'petitioner'),
+		label: __('Subscribe to newsletter', 'petitioner'),
+		defaultValue: false,
+		required: false,
+		removable: true,
+		description: __(
+			'Allows users to opt-in to receive newsletter updates.',
+			'petitioner'
+		),
+	},
+	{
+		fieldKey: 'bcc',
+		type: 'checkbox',
+		fieldName: __('BCC checkbox', 'petitioner'),
+		label: __('BCC me on the email', 'petitioner'),
+		defaultValue: false,
+		required: false,
+		removable: true,
+		description: __(
+			'Allows users to opt-in to send a copy of the petition to the email address entered in this form. Only works if you send emails to the representative.',
+			'petitioner'
+		),
+	},
+	{
 		fieldKey: 'legal',
 		type: 'wysiwyg',
 		fieldName: __('Legal text', 'petitioner'),

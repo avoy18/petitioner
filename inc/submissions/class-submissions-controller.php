@@ -41,6 +41,8 @@ class AV_Petitioner_Submissions_Controller
         $postal_code                = isset($_POST['petitioner_postal_code']) ? sanitize_text_field(wp_unslash($_POST['petitioner_postal_code'])) : '';
         $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
+        $hide_name                  = !empty($_POST['petitioner_hide_name']) && sanitize_text_field(wp_unslash($_POST['petitioner_hide_name'])) === 'on';
+        $newsletter                 = !empty($_POST['petitioner_newsletter']) && sanitize_text_field(wp_unslash($_POST['petitioner_newsletter'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
         $approval_status            = 'Confirmed';
         $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
@@ -73,10 +75,6 @@ class AV_Petitioner_Submissions_Controller
             ]);
         }
 
-        // todo: add these
-        $hide_name          = false;
-        $newsletter_opt_in  = false;
-
         // Insert into the custom table
 
         $email_exists = AV_Petitioner_Submissions_Model::check_duplicate_email($email, $form_id);
@@ -106,7 +104,7 @@ class AV_Petitioner_Submissions_Controller
             'postal_code'       => $postal_code,
             'comments'          => $comments,
             'bcc_yourself'      => $bcc ? 1 : 0,
-            'newsletter'        => $newsletter_opt_in ? 1 : 0,
+            'newsletter'        => $newsletter ? 1 : 0,
             'hide_name'         => $hide_name ? 1 : 0,
             'accept_tos'        => $accept_tos ? 1 : 0,
             'submitted_at'      => current_time('mysql'),
@@ -288,7 +286,11 @@ class AV_Petitioner_Submissions_Controller
             'offset'            => $offset,
             'fields'            => $fields,
             'query'             => [
-                'approval_status' => 'Confirmed',
+                [
+                    'field'     => 'approval_status',
+                    'operator'  => 'equals',
+                    'value'     => 'Confirmed',
+                ]
             ],
         ];
 
@@ -316,7 +318,7 @@ class AV_Petitioner_Submissions_Controller
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
             if ($submission->hide_name) {
-                $submission->fname = __('Anonymous', 'petitioner');
+                $submission->fname = AV_Petitioner_Labels::get('anonymous');
                 $submission->lname = '';
             }
 
@@ -434,6 +436,39 @@ class AV_Petitioner_Submissions_Controller
     }
 
     /**
+     * Get the count of submissions for a specific form
+     * 
+     * @since 0.7.0
+     */
+    public static function api_get_submission_count()
+    {
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
+
+        $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
+        $settings = [];
+
+        if (!$form_id) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('invalid_form_id')]);
+        }
+
+        $conditional_logic_raw = isset($_POST['conditional_logic']) ? wp_unslash($_POST['conditional_logic']) : null;
+
+        if ($conditional_logic_raw) {
+            $conditional_logic = av_petitioner_parse_conditional_logic($conditional_logic_raw);
+            $settings['query'] = av_petitioner_build_model_query($conditional_logic);
+        }
+
+        // $skip_unconfirmed is false because we want user to control this
+        $count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, false);
+
+        if ($count === false) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        wp_send_json_success(['count' => $count]);
+    }
+
+    /**
      * Update submission status via backend
      */
     public static function api_change_submission_status()
@@ -544,82 +579,21 @@ class AV_Petitioner_Submissions_Controller
 
     /**
      * Export submissions to CSV
+     * 
+     * @deprecated 0.7.0 Use AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv() instead
+     * @see AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv()
+     * 
+     * @return void
      */
     public static function admin_petitioner_export_csv()
     {
-        global $wpdb;
-
-        $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
-
-        $results = $wpdb->get_results(
-            $wpdb->prepare(
-                'SELECT * FROM ' . $wpdb->prefix . 'av_petitioner_submissions' . ' WHERE form_id = %d',
-                $form_id,
-            )
+        _deprecated_function(
+            __METHOD__,
+            '0.7.0',
+            'AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv'
         );
 
-        if (empty($results)) {
-            wp_die('No submissions available.');
-        }
-
-        // Set the headers to force download
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=petition_submissions.csv');
-
-        // Open output stream for writing
-        $output = fopen('php://output', 'w');
-
-        // Output the column headings (matches DB schema)
-        fputcsv($output, array(
-            'ID',
-            'Form ID',
-            'First Name',
-            'Last Name',
-            'Email',
-            'Country',
-            'Salutation',
-            'Phone',
-            'Street Address',
-            'City',
-            'Postal Code',
-            'BCC Yourself',
-            'Newsletter',
-            'Hide Name',
-            'Accept TOS',
-            'Approval Status',
-            'Submitted At',
-            'Confirmation Token'
-        ));
-
-        // Loop over the rows and output them as CSV
-        foreach ($results as $row) {
-            fputcsv($output, array(
-                $row->id,
-                $row->form_id,
-                $row->fname,
-                $row->lname,
-                $row->email,
-                $row->country,
-                $row->salutation,
-                $row->phone,
-                $row->street_address,
-                $row->city,
-                $row->postal_code,
-                $row->bcc_yourself,
-                $row->newsletter,
-                $row->hide_name,
-                $row->accept_tos,
-                $row->approval_status,
-                $row->submitted_at,
-                $row->confirmation_token
-            ));
-        }
-
-        // Close the output stream
-        fclose($output);
-
-        // Prevent any further output (like HTML or errors)
-        exit;
+        AV_Petitioner_CSV_Exporter::api_admin_petitioner_export_csv();
     }
 
     /**

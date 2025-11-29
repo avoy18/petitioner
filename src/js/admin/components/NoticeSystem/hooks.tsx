@@ -25,7 +25,7 @@ import type { NoticeStatus } from '@admin/sections/EditFields/Submissions/consts
  *   </div>
  * );
  */
-export const useNoticeSystem = () => {
+export const useNoticeSystem = ({ timeoutDuration = 3000 }: { timeoutDuration?: number } = {}) => {
 	const [noticeStatus, setNoticeStatus] = useState<NoticeStatus>(undefined);
 	const [noticeText, setNoticeText] = useState<string | undefined>(undefined);
 
@@ -41,7 +41,7 @@ export const useNoticeSystem = () => {
 
 	useEffect(() => {
 		if (noticeText) {
-			const timeout = setTimeout(hideNotice, 3000);
+			const timeout = setTimeout(hideNotice, timeoutDuration);
 			return () => clearTimeout(timeout);
 		}
 	}, [noticeText, hideNotice]);

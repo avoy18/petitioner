@@ -4,18 +4,30 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.8
-Stable Tag: 0.6.2
+Stable Tag: 0.7.0
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create and manage petitions with Petitioner, send them to the target email, and export submissions to CSV.
+Create, target, and track high-impact petitions with Petitioner: automate delivery to decision-makers, manage approvals, and export rich submission data to CSV.
 
 == Description ==
 
 [Plugin homepage & demo](https://getpetitioner.com).
 [Documentation](https://getpetitioner.com/docs/).
-Petitioner is a WordPress plugin that allows you to create petitions and send them to the target email.
+Petitioner pairs unlimited, drag-and-drop petition forms with advanced targeting and export tools—everything you expect from premium petition builders, available free in the plugin directory.
+It’s built for advocacy teams, nonprofits, campaigns, and publishers who need high-volume petitions with reliable delivery, flexible layouts, and clear reporting without SaaS lock-in.
+
+### Quick start
+1. Install Petitioner and create your first petition under Petitioner -> Add New.
+2. Configure delivery (target email, confirmations, approval defaults) and design under the Settings tabs.
+3. Drop the Gutenberg block or shortcode into any page, collect signatures, and export or display submissions as needed.
+
+### Highlights
+- Unlimited petitions powered by a drag-and-drop builder with 10+ specialized fields.
+- Automated decision-maker delivery plus optional double opt-in and manual moderation.
+- Frontend submission showcases (grid, list, ticker) with privacy-friendly options.
+- CSV exports with advanced filtering for accurate reporting and CRM imports.
 
 ### Features:
 **Unlimited petitions** 
@@ -23,8 +35,9 @@ Create and manage an unlimited number of petitions.
 
 **Drag and drop form builder**
 - Add/remove/reorder fields based on your needs
+- Supports over ten field types: text, email, phone, address, date of birth, newsletter opt-in, anonymous signature, terms acceptance, and more
 - Add rich text to the form for disclaimers and legal text
-- Edit field's label, placeholder, and required state
+- Edit each field’s label, placeholder, and required state
 
 **Control submission behaviour**
 - Show submissions on the frontend in a few different styles
@@ -35,19 +48,20 @@ Create and manage an unlimited number of petitions.
 - Customize email confirmations, petition letters, and thank you emails
 - Option to edit and delete submissions
 - Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
+- Filter out unwanted submissions before exporting by targeting any form field
 
 **Design & layout features**
 - The plugin features a modern, mobile-friendly design for a seamless user experience.
 - Color customizations & custom CSS options
 - WYSIWYG editor: Easily edit petition letters and confirmation emails using a modern WYSIWYG editor.
 - Gutenberg integration with a custom petition block!
-- Several shortcodes to take your petitions to the next level
-- - Form shortcode
-- - Petition goal #
-- - Progress bar
-- - Petition letter popup
-- - Current submission count
-- - Submissions in multiple styles and configurations
+- Several shortcodes to take your petitions to the next level:
+  - Form shortcode – embed the entire petition anywhere shortcodes are supported.
+  - Petition goal – surface your signature target dynamically.
+  - Progress bar – visualize progress toward the goal in real time.
+  - Petition letter popup – open the full letter in a modal.
+  - Submission count – show live signature totals.
+  - Submissions display – list, grid, and ticker layouts with privacy controls.
 
 **Spam protection features**
 - Captcha integrations: reCAPTCHA, hCaptcha, and Cloudflare Turnstile
@@ -56,6 +70,10 @@ Create and manage an unlimited number of petitions.
 - Email confirmations
 - Compatible with all of the popular SMTP plugins (uses wp_mail behind the scenes)
 
+**Extremely lightweight and modern**
+- Vanilla JavaScript bundle weighs in at ~4KB gzipped
+- Theme-friendly CSS variables let you match any brand quickly
+- Rich hooks and filters make third-party integrations effortless
 
 == Development and Source Code ==
 
@@ -68,13 +86,33 @@ The source code for this plugin is publicly available on GitHub:
 
 Create your first petition under Petitioner -> Add new. Once you do that, you can either use a shortcode provided on the creation page or a Gutenberg block.
 
+= Can I collect petitions without sending emails? =
+
+Absolutely. Sending a petition letter to a representative is optional—just disable the rep email inside the petition’s Email tab and submissions will still be stored, displayed, and exportable.
+
+= How can I prevent unwanted submissions or spam? =
+
+Enable one (or more) of the built‑in defenses: reCAPTCHA / hCaptcha / Turnstile, Akismet integration, honeypot field under Advanced Settings, double opt-in email confirmations, manual approve/deny, and the ability to edit or delete entries directly from the Submissions tab. More guidance: https://getpetitioner.com/docs/captcha/
+
 = How do I customize the styles? =
 
 You can customize your petitions under Petitioner -> Settings. You can change the colors, conditionally display certain fields, and add custom CSS.
 
+= How can I ensure petition emails don’t go to spam? =
+
+Petitioner uses the WordPress `wp_mail()` function, so deliverability depends on your hosting. Install an SMTP plugin (e.g., WP SMTP) to route mail through a trusted sender. You can also disable the “Send this email to a representative?” option to avoid sending hundreds of identical letters and damaging your domain reputation.
+
 = How do I see and export the submissions? =
 
-Simply open the edit page for the petition in question and you will see a table with all of the submissions. There will also be a button to export.
+Simply open the edit page for the petition in question and you will see a table with all of the submissions. There will also be a button to export. You can also filter out unwanted submissions before exporting.
+
+= How can I display the submissions on the frontend? =
+
+Insert either the Gutenberg “Petitioner Submissions” block or the `[petitioner_submissions]` shortcode wherever you want the signatures to appear. Full walk-through: https://getpetitioner.com/docs/show-submissions-on-the-frontend/
+
+= Can I extend the plugin? =
+
+Yes. Petitioner exposes dozens of filters, actions, and JavaScript events plus helper shortcodes for rendering counts, goals, progress bars, popups, and more. See the full extension reference at https://getpetitioner.com/docs/filters-and-hooks/
 
 = Can I request features? =
 
@@ -82,7 +120,7 @@ Absolutely! Feel free to reach out through [this contact form](https://getpetiti
 
 = What if I have more questions? = 
 
-You can find a more extensive FAQ [on the main website](https://getpetitioner.com/docs/). Additionally, yu can reach out to me via [this contact form](https://getpetitioner.com/contact/)
+You can find a more extensive FAQ [on the main website](https://getpetitioner.com/docs/faq/). Additionally, you can reach out via [this contact form](https://getpetitioner.com/contact/).
 
 == Screenshots ==
 
@@ -93,10 +131,27 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 5. Form builder
 6. Advanced settings
 7. Submissions
-8. Settings
-9. Integrations
+8. Submission details & edit screen
+9. Submission export with filters
+10. Settings
+11. Integrations
+12. Submissions Gutenberg block
+13. Submissions on the frontend
 
 == Changelog ==
+
+= 0.7.0 =
+* Improved export for submissions
+    * Allow filtering out unwanted items
+    * Handle large lists in steps to avoid timeouts
+* New fields
+    * Keep me anonymous field + allow editing "Anonymous" under Settings -> Labels
+    * Newsletter opt-in field
+    * BCC me field
+* Bug fixes and UI improvements
+    * Improved email headers security
+    * Fixed a division by zero error flagged by one of the users
+    * Cleaned up the styling in the admin
 
 = 0.6.2 =
 * Allow passing images to the petition letter
