@@ -2,10 +2,11 @@ import { memo, useMemo, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import ConditionalLogic from '@admin/components/ConditionalLogic';
-import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
-import { getFieldLabels } from '../utilities';
+import type { ConditionGroup, AvailableFields } from '@admin/components/ConditionalLogic/consts';
+import { getFieldLabels, getSubmissionValType } from '../utilities';
 import { FiltersWrapper } from './styled';
 import { EXCLUDED_FIELDS, type FiltersProps } from './consts';
+import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 
 const Filters = ({
 	validCount,
@@ -28,8 +29,8 @@ const Filters = ({
 					return null;
 				}
 
-				const label =
-					potentialLabels?.[key as keyof typeof potentialLabels];
+				const type = getSubmissionValType(key as FieldKey) || 'text';
+				const label = potentialLabels?.[key as keyof typeof potentialLabels];
 
 				if (!label) {
 					return null;
@@ -38,9 +39,10 @@ const Filters = ({
 				return {
 					value: key,
 					label,
+					inputType: type,
 				};
 			})
-			.filter(Boolean) as Array<{ value: string; label: string }>;
+			.filter(Boolean) as AvailableFields;
 	}, [submissionExample, potentialLabels]);
 
 	return (

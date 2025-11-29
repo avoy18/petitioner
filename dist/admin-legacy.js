@@ -36824,44 +36824,77 @@
             })]
           });
         }
-        function SubmissionEditField({
-          label,
+        function EditField({
           type,
           value,
-          onChange
+          onChange,
+          options: providedOptions,
+          placeholder,
+          id,
+          fieldKey
         }) {
-          if (type === "checkbox") {
-            return /* @__PURE__ */jsxRuntimeExports.jsx(CheckboxControl, {
-              checked: value === "1",
-              onChange: checked => {
-                onChange(checked ? "1" : "0");
-              }
-            });
-          }
-          if (label === "country") {
+          let finalType = type;
+          let finalOptions = providedOptions;
+          if (fieldKey === "country") {
             const defaultValues = normalizeDefaultValues(window.petitionerData.default_values);
-            const allCountries = defaultValues.country_list;
-            const countries = allCountries || [];
-            const countryOptions = countries.map(item => ({
-              label: item,
-              value: item
+            const countries = defaultValues.country_list || [];
+            finalType = "select";
+            finalOptions = countries.map(country => ({
+              label: country,
+              value: country
             }));
+          }
+          if (fieldKey === "approval_status") {
+            finalType = "select";
+            finalOptions = [{
+              label: __("Confirmed", "petitioner"),
+              value: "Confirmed"
+            }, {
+              label: __("Declined", "petitioner"),
+              value: "Declined"
+            }];
+          }
+          if (finalType === "select" && finalOptions) {
             return /* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
               value,
               onChange,
-              options: countryOptions
+              options: finalOptions
             });
           }
-          if (type === "textarea") {
+          if (finalType === "checkbox") {
+            return /* @__PURE__ */jsxRuntimeExports.jsx(CheckboxControl, {
+              checked: value === "1",
+              onChange: checked => onChange(checked ? "1" : "0")
+            });
+          }
+          if (finalType === "textarea") {
             return /* @__PURE__ */jsxRuntimeExports.jsx(TextareaControl, {
               value,
-              onChange
+              onChange,
+              placeholder
+            });
+          }
+          if (finalType === "wysiwyg" && id) {
+            return /* @__PURE__ */jsxRuntimeExports.jsx(PTRichText, {
+              id,
+              label: "",
+              value,
+              onChange,
+              height: 200
+            });
+          }
+          if (finalType === "date") {
+            return /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
+              type: "date",
+              value,
+              onChange,
+              placeholder
             });
           }
           return /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
-            type,
             value,
-            onChange
+            onChange,
+            placeholder
           });
         }
         const SUBMISSION_LABELS$1 = Object.fromEntries(Object.entries(getFieldLabels()).filter(([key]) => key !== "submitted_at"));
@@ -36915,8 +36948,7 @@
               })
             };
             if (currentlyEditing) {
-              ValueField = /* @__PURE__ */jsxRuntimeExports.jsx(SubmissionEditField, {
-                label,
+              ValueField = /* @__PURE__ */jsxRuntimeExports.jsx(EditField, {
                 type,
                 value: valueString,
                 onChange: val => {
@@ -37159,17 +37191,25 @@
           onRemove
         }) => {
           const showValueInput = condition.operator !== "is_empty" && condition.operator !== "is_not_empty";
+          const currentFieldData = availableFields?.find(field => field.value === condition.field);
+          const fieldOptions = currentFieldData?.options ? [{
+            label: __("Select value...", "petitioner"),
+            value: ""
+          }, ...currentFieldData.options] : [];
           return /* @__PURE__ */jsxRuntimeExports.jsxs(ConditionRow, {
             children: [/* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
               value: condition.field,
-              onChange: field => onChange({
-                ...condition,
-                field
-              }),
+              onChange: field => {
+                onChange({
+                  ...condition,
+                  field,
+                  value: ""
+                });
+              },
               options: [{
                 value: "",
                 label: __("Select field...", "petitioner")
-              }, ...availableFields]
+              }, ...(availableFields || [])]
             }), /* @__PURE__ */jsxRuntimeExports.jsx(SelectControl$1, {
               value: condition.operator,
               onChange: operator => onChange({
@@ -37177,13 +37217,16 @@
                 operator
               }),
               options: OPERATORS
-            }), showValueInput && /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
+            }), showValueInput && /* @__PURE__ */jsxRuntimeExports.jsx(EditField, {
+              type: currentFieldData?.inputType,
               value: condition.value,
               onChange: value => onChange({
                 ...condition,
                 value
               }),
-              placeholder: __("Enter value...", "petitioner")
+              options: fieldOptions,
+              placeholder: __("Enter value...", "petitioner"),
+              fieldKey: condition.field
             }), /* @__PURE__ */jsxRuntimeExports.jsx(Button, {
               icon: "trash",
               isDestructive: true,
@@ -37414,13 +37457,15 @@
               if (EXCLUDED_FIELDS.includes(key)) {
                 return null;
               }
+              const type = getSubmissionValType(key) || "text";
               const label = potentialLabels?.[key];
               if (!label) {
                 return null;
               }
               return {
                 value: key,
-                label
+                label,
+                inputType: type
               };
             }).filter(Boolean);
           }, [submissionExample, potentialLabels]);
