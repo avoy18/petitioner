@@ -3,7 +3,7 @@ import EditFields from '@admin/sections/EditFields';
 import SettingsFields from '@admin/sections/SettingsFields';
 import ShortcodeArea from '@admin/sections/ShortcodeArea';
 
-import '../scss/admin.scss';
+import '../css/admin/index.css';
 import { safelyParseJSON } from '@js/utilities';
 
 declare global {
