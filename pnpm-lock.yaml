@@ -100,6 +100,9 @@ importers:
       '@wordpress/scripts':
         specifier: ^29.0.0
         version: 29.0.0(@playwright/test@1.53.2)(@types/eslint@9.6.1)(@types/node@22.16.0)(@types/webpack@4.41.40)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(type-fest@4.41.0)(typescript@5.8.3)
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.21(postcss@8.5.6)
       concurrently:
         specifier: ^9.0.1
         version: 9.2.0
@@ -109,9 +112,9 @@ importers:
       happy-dom:
         specifier: ^17.6.3
         version: 17.6.3
-      sass:
-        specifier: ^1.77.8
-        version: 1.89.2
+      postcss-nested:
+        specifier: ^6.0.1
+        version: 6.2.0(postcss@8.5.6)
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
@@ -6096,6 +6099,12 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
 
+  postcss-nested@6.2.0:
+    resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
+    engines: {node: '>=12.0'}
+    peerDependencies:
+      postcss: ^8.2.14
+
   postcss-normalize-charset@6.0.2:
     resolution: {integrity: sha512-a8N9czmdnrjPHa3DeFlwqst5eaL5W8jYu3EBbTTkI5FHkfMhFZh1EGbku6jhHhIzTA6tquI2P42NtZ59M/H/kQ==}
     engines: {node: ^14 || ^16 || >=18.0}
@@ -7130,6 +7139,9 @@ packages:
 
   third-party-web@0.27.0:
     resolution: {integrity: sha512-h0JYX+dO2Zr3abCQpS6/uFjujaOjA1DyDzGQ41+oFn9VW/ARiq9g5ln7qEP9+BTzDpOMyIfsfj4OvfgXAsMUSA==}
+
+  third-party-web@0.29.0:
+    resolution: {integrity: sha512-nBDSJw5B7Sl1YfsATG2XkW5qgUPODbJhXw++BKygi9w6O/NKS98/uY/nR/DxDq2axEjL6halHW1v+jhm/j1DBQ==}
 
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
@@ -10115,7 +10127,7 @@ snapshots:
   '@paulirish/trace_engine@0.0.56':
     dependencies:
       legacy-javascript: 0.0.1
-      third-party-web: 0.27.0
+      third-party-web: 0.29.0
 
   '@pkgr/core@0.2.7': {}
 
@@ -15938,6 +15950,11 @@ snapshots:
       icss-utils: 5.1.0(postcss@8.5.6)
       postcss: 8.5.6
 
+  postcss-nested@6.2.0(postcss@8.5.6):
+    dependencies:
+      postcss: 8.5.6
+      postcss-selector-parser: 6.1.2
+
   postcss-normalize-charset@6.0.2(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
@@ -17160,6 +17177,8 @@ snapshots:
   text-table@0.2.0: {}
 
   third-party-web@0.27.0: {}
+
+  third-party-web@0.29.0: {}
 
   through@2.3.8: {}
 

@@ -1,7 +1,7 @@
-@use "./admin/variables" as *;
-@use "./admin/tabs" as *;
-@use "./admin/base" as *;
-@use "./admin/form-builder" as *;
+@import './theme/index.css';
+@import './partials/base.css';
+@import './partials/tabs.css';
+@import './partials/form-builder.css';
 
 .wp-admin.post-type-petitioner-petition {
 	@include ptr-variables;

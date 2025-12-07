@@ -1,7 +1,14 @@
+import type { ConfigEnv } from 'vite';
+
+type OutputChunk = { name: string };
+type RollupWarning = { code?: string };
+type WarningHandlerWithDefault = (warning: RollupWarning) => void;
 const { defineConfig } = require('vite');
 const legacy = require('@vitejs/plugin-legacy');
 const path = require('path');
 const fs = require('fs-extra');
+const postcssNested = require('postcss-nested');
+const autoprefixer = require('autoprefixer');
 
 const deploy = () => {
 	const targetDir = path.resolve(__dirname, '../petitioner-deployment');
@@ -15,7 +22,7 @@ const deploy = () => {
 
 	// Copy files and folders, excluding unwanted ones
 	fs.copySync(path.resolve(__dirname), targetDir, {
-		filter: (src) => {
+		filter: (src: string) => {
 			// Excludes
 			return (
 				!src.includes('.git') &&
@@ -37,7 +44,7 @@ const deploy = () => {
 	);
 };
 
-module.exports = defineConfig(({ mode }) => {
+module.exports = defineConfig(({ mode }: ConfigEnv) => {
 	return {
 		optimizeDeps: {
 			include: ['@ariakit/react-core', '@ariakit/core'],
@@ -50,7 +57,7 @@ module.exports = defineConfig(({ mode }) => {
 		build: {
 			minify: mode !== 'development',
 			rollupOptions: {
-				onwarn(warning, warn) {
+				onwarn(warning: RollupWarning, warn: WarningHandlerWithDefault) {
 					// Suppress "Module level directives cause errors when bundled" warnings
 					if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
 						return;
@@ -67,7 +74,7 @@ module.exports = defineConfig(({ mode }) => {
 						'@wordpress/element': 'wp.element',
 						'@wordpress/i18n': 'wp.i18n',
 					},
-					entryFileNames: (chunk) => {
+					entryFileNames: (chunk: OutputChunk) => {
 						return chunk.name.includes('style') ||
 							chunk.name.includes('adminStyle')
 							? '[name].css'
@@ -79,8 +86,8 @@ module.exports = defineConfig(({ mode }) => {
 			},
 		},
 		css: {
-			preprocessorOptions: {
-				scss: {},
+			postcss: {
+				plugins: [postcssNested(), autoprefixer()],
 			},
 		},
 		deploy,

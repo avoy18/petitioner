@@ -97,7 +97,9 @@
     font-size: var(--ptr-label-font-size);
     background-color: var(--ptr-wrapper-bg);
     color: var(--ptr-color-dark);
-    appearance: none;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right var(--ptr-input-spacing-x) center;
@@ -114,6 +116,9 @@
 }
 .petitioner__input select:hover {
     background-color: var(--ptr-color-grey);
+}
+.petitioner__input select::-moz-placeholder {
+    color: #aaa;
 }
 .petitioner__input select::placeholder {
     color: #aaa;
@@ -136,7 +141,8 @@
 }
 .petitioner__input--checkbox input[type="checkbox"] {
     -webkit-appearance: none;
-    appearance: none;
+    -moz-appearance: none;
+         appearance: none;
     width: var(--ptr-fs-md);
     height: var(--ptr-fs-md);
     border: var(--ptr-input-border-width) solid var(--ptr-input-border-color);
