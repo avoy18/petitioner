@@ -86,9 +86,6 @@ module.exports = defineConfig(({ mode }: ConfigEnv) => {
 			},
 		},
 		css: {
-			preprocessorOptions: {
-				scss: {},
-			},
 			postcss: {
 				plugins: [postcssNested(), autoprefixer()],
 			},
