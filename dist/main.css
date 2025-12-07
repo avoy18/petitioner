@@ -15,19 +15,26 @@
     /* Font sizes */
     --ptr-fs-sm: 14px;
     --ptr-fs-md: 18px;
+
+    /* Border radius */
+    --ptr-border-radius-xs: 2px;
+    --ptr-border-radius-sm: 4px;
+    --ptr-border-radius-md: 8px;
+    --ptr-border-radius-lg: 16px;
+
 }
 .petitioner {
     /* wrapper */
     --ptr-spacing-x: var(--ptr-spacer-md);
     --ptr-spacing-y: var(--ptr-spacer-md);
     --ptr-wrapper-bg: white;
-    --ptr-wrapper-radius: var(--ptr-spacer-md);
+    --ptr-wrapper-radius: var(--ptr-border-radius-lg);
 
     /* input related */
     --ptr-input-border-width: 1px;
     --ptr-input-border-color: #a1a1a1;
     --ptr-input-border-color-active: #00000;
-    --ptr-input-border-radius: var(--ptr-spacer-sm);
+    --ptr-input-border-radius: var(--ptr-border-radius-md);
     --ptr-input-spacing-y: 0.7rem;
     --ptr-input-spacing-x: var(--ptr-spacer-md);
     --ptr-input-line-height: 40px;
@@ -42,7 +49,7 @@
     --ptr-button-border-width: var(--ptr-input-border-width);
     --ptr-button-border-color: transparent;
     --ptr-button-border-color-active: var(--ptr-color-dark);
-    --ptr-button-border-radius: var(--ptr-spacer-sm);
+    --ptr-button-border-radius: var(--ptr-border-radius-md);
 
     /* progress bar */
     --ptr-progress-height: var(--ptr-spacer-sm);
@@ -133,7 +140,7 @@
     width: var(--ptr-fs-md);
     height: var(--ptr-fs-md);
     border: var(--ptr-input-border-width) solid var(--ptr-input-border-color);
-    border-radius: 4px;
+    border-radius: var(--ptr-border-radius-xs);
     background-color: var(--ptr-wrapper-bg);
     display: inline-block;
     cursor: pointer;
