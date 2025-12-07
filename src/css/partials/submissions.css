@@ -1,0 +1,129 @@
+.petitioner-submissions .submissions__item {
+	display: inline;
+}
+
+.petitioner-submissions .ptr-pagination {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-top: var(--ptr-spacer-lg);
+	gap: var(--ptr-spacer-xs);
+	flex-wrap: wrap;
+}
+
+.petitioner-submissions .ptr-pagination button {
+	background-color: var(--ptr-color-grey);
+	border: none;
+	border-radius: var(--ptr-input-border-radius);
+	padding: var(--ptr-input-spacing-y) var(--ptr-input-spacing-x);
+	cursor: pointer;
+	font-size: var(--ptr-fs-sm);
+	color: var(--ptr-color-dark);
+	transition: background-color var(--ptr-transition-duration);
+}
+
+.petitioner-submissions .ptr-pagination button.active {
+	background-color: var(--ptr-color-primary);
+	color: white;
+}
+
+.petitioner-submissions .ptr-pagination button:hover {
+	background-color: var(--ptr-color-dark);
+	color: white;
+}
+
+.petitioner-submissions .ptr-pagination button[disabled] {
+	background-color: var(--ptr-color-grey);
+	color: var(--ptr-color-dark);
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.petitioner-submissions--simple {
+	border: 1px solid var(--ptr-color-grey);
+}
+
+.petitioner-submissions--table {
+	--ptr-submission-columns: 4;
+	padding-inline: 0;
+}
+
+.petitioner-submissions--table .submissions__list {
+	display: grid;
+	grid-auto-rows: minmax(40px, auto);
+	grid-template-columns: repeat(var(--ptr-submission-columns), 1fr);
+	/* adjust row height as needed */
+}
+
+.petitioner-submissions--table .submissions__item {
+	display: contents;
+}
+
+.petitioner-submissions--table .submissions__item--heading div {
+	font-weight: bold;
+}
+
+.petitioner-submissions--table .submissions__item>div {
+	display: block;
+	padding: var(--ptr-spacer-xs) var(--ptr-spacer-sm);
+	border-bottom: 1px solid var(--ptr-color-grey);
+	font-size: var(--ptr-fs-sm);
+	word-break: break-word;
+}
+
+.petitioner-submissions--table .submissions__item__inner strong {
+	display: none;
+}
+
+@media (max-width: 768px) {
+	.petitioner-submissions--table .submissions__item {
+		position: relative;
+	}
+
+	.petitioner-submissions--table .submissions__item__inner {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--ptr-spacer-xs);
+	}
+
+	.petitioner-submissions--table .submissions__item::after {
+		content: '';
+		display: block;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 100%;
+		width: 100%;
+		height: 1px;
+		background-color: var(--ptr-color-grey);
+		margin-top: var(--ptr-spacer-sm);
+	}
+
+	.petitioner-submissions--table .submissions__item:last-of-type::after {
+		display: none;
+	}
+
+	.petitioner-submissions--table .submissions__item__inner strong {
+		display: inline;
+	}
+
+	.petitioner-submissions--table .submissions__item.submissions__item--heading {
+		display: none;
+	}
+
+	.petitioner-submissions--table .submissions__list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--ptr-spacer-lg);
+	}
+
+	.petitioner-submissions--table .submissions__item {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.petitioner-submissions--table .submissions__item>div {
+		border-bottom: none;
+		padding: var(--ptr-spacer-xs) 0;
+	}
+}
