@@ -4,8 +4,9 @@ import {
 	useState,
 	useCallback,
 } from '@wordpress/element';
-import { isNonEmptyObject } from '@admin/utilities';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
+import { isNonEmptyObject } from '@admin/utilities';
 
 import type {
 	BuilderFieldMap,
@@ -19,7 +20,7 @@ export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 	null
 );
 
-export const DRAGGABLE_FIELD_TYPES = [
+const BASE_DRAGGABLE_FIELD_TYPES = [
 	{
 		fieldKey: 'phone',
 		type: 'tel',
@@ -150,9 +151,14 @@ export const DRAGGABLE_FIELD_TYPES = [
 		required: false,
 		removable: true,
 	},
-] as BuilderField[];
+];
 
-export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
+export const DRAGGABLE_FIELD_TYPES = applyFilters(
+	'petitioner.formBuilder.draggableFields',
+	BASE_DRAGGABLE_FIELD_TYPES
+) as BuilderField[];
+
+const BASE_DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	fname: {
 		fieldKey: 'fname',
 		type: 'text',
@@ -189,6 +195,11 @@ export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 		removable: false,
 	},
 };
+
+export const DEFAULT_BUILDER_FIELDS = applyFilters(
+	'petitioner.formBuilder.defaultFields',
+	BASE_DEFAULT_BUILDER_FIELDS
+) as BuilderFieldMap;
 
 export const ALl_POSSIBLE_FIELDS = [
 	...DRAGGABLE_FIELD_TYPES,

@@ -62,6 +62,7 @@
 		"@wordpress/components": "^28.7.0",
 		"@wordpress/data": "^10.7.0",
 		"@wordpress/editor": "^14.7.0",
+		"@wordpress/hooks": "^4.8.0",
 		"@wordpress/element": "^6.7.0",
 		"@wordpress/i18n": "^5.23.0",
 		"@wordpress/prettier-config": "^4.17.0",
