@@ -15,7 +15,22 @@ class AV_Petitioner_Setup
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
 
         add_filter('wp_script_attributes', function ($attributes) {
-            if ('petitioner-script-js' === $attributes['id'] || 'petitioner-admin-script-js' === $attributes['id'] || 'petitioner-form-block-js' === $attributes['id']) {
+            $included_ids = [
+                'petitioner-script-js',
+                'petitioner-admin-script-js',
+                'petitioner-form-block-js',
+            ];
+
+            /**
+             * Filter the included ids to add the module attribute to.
+             *
+             * @param array $included_ids The included ids.
+             * @param string $id The id of the script.
+             * @return array The included ids.
+             */
+            $included_ids = apply_filters('petitioner_scripts_with_module', $included_ids, $attributes['id']);
+
+            if (in_array($attributes['id'], $included_ids)) {
                 $attributes['type'] = 'module';
             }
 
