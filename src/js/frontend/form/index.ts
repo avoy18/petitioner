@@ -1,16 +1,7 @@
 import ReCaptcha from './recaptcha';
 import HCaptcha from './hcaptcha';
 import Turnstile from './turnstile';
-import type { PetitionerWrapperElement } from './consts';
-
-type ApiResponse = {
-	success: boolean;
-	data: {
-		title: string;
-		message: string;
-	};
-};
-
+import type { PetitionerWrapperElement, ApiResponse } from './consts';
 
 /**
  * @class PetitionerForm
@@ -216,38 +207,34 @@ export default class PetitionerForm {
 
 		const formData = new FormData(this.formEl as HTMLFormElement);
 		const freshNonce = await this.getFreshNonce();
+		formData.append('petitioner_nonce', freshNonce);
 
-		if (freshNonce) {
-			formData.append('petitioner_nonce', freshNonce);
-		} else {
-			console.error('Failed to fetch nonce');
-		}
-
-		fetch(this.actionPath, {
-			method: 'POST',
-			body: formData,
-			credentials: 'same-origin',
-			headers: { 'X-Requested-With': 'XMLHttpRequest' },
-		})
-			.then((response: Response) => {
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
-				return response.json() as Promise<ApiResponse>;
-			})
-			.then((res: ApiResponse) => {
-				if (res.success) {
-					this.showResponseMSG(res.data, true);
-				} else {
-					this.showResponseMSG(res.data, false);
-				}
-				this.handleSubmissionComplete(formData);
-			})
-			.catch((error: Error) => {
-				console.error('Error:', error);
-				alert('An unexpected error occurred. Please try again later.');
-				this.handleSubmissionComplete();
+		try {
+			const response = await fetch(this.actionPath, {
+				method: 'POST',
+				body: formData,
+				credentials: 'same-origin',
+				headers: { 'X-Requested-With': 'XMLHttpRequest' },
 			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const res = (await response.json()) as ApiResponse;
+
+			if (res.success) {
+				this.showResponseMSG(res.data, true);
+			} else {
+				this.showResponseMSG(res.data, false);
+			}
+
+			this.handleSubmissionComplete(formData);
+		} catch (error) {
+			console.error('Error:', error);
+			alert('An unexpected error occurred. Please try again later.');
+			this.handleSubmissionComplete();
+		}
 	}
 
 	private handleSubmissionComplete(formData?: FormData): void {

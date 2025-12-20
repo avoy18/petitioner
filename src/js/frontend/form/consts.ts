@@ -28,3 +28,11 @@ export type CaptchaProvider = {
 export type CustomEventDetail = {
 	formData: FormData;
 }
+
+export type ApiResponse = {
+	success: boolean;
+	data: {
+		title: string;
+		message: string;
+	};
+};

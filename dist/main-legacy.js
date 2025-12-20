@@ -257,35 +257,31 @@
             this.wrapper?.classList.add("petitioner--loading");
             const formData = new FormData(this.formEl);
             const freshNonce = await this.getFreshNonce();
-            if (freshNonce) {
-              formData.append("petitioner_nonce", freshNonce);
-            } else {
-              console.error("Failed to fetch nonce");
-            }
-            fetch(this.actionPath, {
-              method: "POST",
-              body: formData,
-              credentials: "same-origin",
-              headers: {
-                "X-Requested-With": "XMLHttpRequest"
-              }
-            }).then(response => {
+            formData.append("petitioner_nonce", freshNonce);
+            try {
+              const response = await fetch(this.actionPath, {
+                method: "POST",
+                body: formData,
+                credentials: "same-origin",
+                headers: {
+                  "X-Requested-With": "XMLHttpRequest"
+                }
+              });
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
               }
-              return response.json();
-            }).then(res => {
+              const res = await response.json();
               if (res.success) {
                 this.showResponseMSG(res.data, true);
               } else {
                 this.showResponseMSG(res.data, false);
               }
               this.handleSubmissionComplete(formData);
-            }).catch(error => {
+            } catch (error) {
               console.error("Error:", error);
               alert("An unexpected error occurred. Please try again later.");
               this.handleSubmissionComplete();
-            });
+            }
           }
           handleSubmissionComplete(formData) {
             this.wrapper?.classList.remove("petitioner--loading");
