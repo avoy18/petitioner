@@ -6,28 +6,28 @@ export type PetitionerFormSettings = {
 	actionPath?: string;
 	nonceEndpoint?: string;
 	nonce?: string;
-}
+};
 
 export type PetitionerCaptcha = {
-	enableRecaptcha?: boolean;
-	enableHcaptcha?: boolean;
-	enableTurnstile?: boolean;
+	enableRecaptcha?: '1' | '0';
+	enableHcaptcha?: '1' | '0';
+	enableTurnstile?: '1' | '0';
 	recaptchaSiteKey?: string;
 	hcaptchaSiteKey?: string;
 	turnstileSiteKey?: string;
-}
+};
 
 export type CaptchaValidationCallback = {
 	(): void;
-}
+};
 
 export type CaptchaProvider = {
 	validate(callback: CaptchaValidationCallback): void;
-}
+};
 
 export type CustomEventDetail = {
 	formData: FormData;
-}
+};
 
 export type ApiResponse = {
 	success: boolean;

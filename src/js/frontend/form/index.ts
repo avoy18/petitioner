@@ -92,15 +92,15 @@ export default class PetitionerForm {
 	private initializeCaptcha(): void {
 		if (typeof window.petitionerCaptcha === 'undefined') return;
 
-		if (window.petitionerCaptcha.enableRecaptcha && this.formEl) {
+		if (window.petitionerCaptcha.enableRecaptcha === '1' && this.formEl) {
 			new ReCaptcha(this.formEl);
 		}
 
-		if (window.petitionerCaptcha.enableHcaptcha && this.formEl) {
+		if (window.petitionerCaptcha.enableHcaptcha === '1' && this.formEl) {
 			this.hcaptcha = new HCaptcha(this.formEl);
 		}
 
-		if (window.petitionerCaptcha.enableTurnstile && this.formEl) {
+		if (window.petitionerCaptcha.enableTurnstile === '1' && this.formEl) {
 			this.turnstile = new Turnstile(this.formEl);
 		}
 	}
