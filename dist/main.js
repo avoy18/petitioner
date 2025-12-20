@@ -286,10 +286,10 @@ class PetitionerForm {
     var _a;
     if (!this.formEl) return;
     (_a = this.wrapper) == null ? void 0 : _a.classList.add("petitioner--loading");
-    const formData = new FormData(this.formEl);
-    const freshNonce = await this.getFreshNonce();
-    formData.append("petitioner_nonce", freshNonce);
     try {
+      const formData = new FormData(this.formEl);
+      const freshNonce = await this.getFreshNonce();
+      formData.append("petitioner_nonce", freshNonce);
       const response = await fetch(this.actionPath, {
         method: "POST",
         body: formData,

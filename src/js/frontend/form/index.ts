@@ -205,11 +205,10 @@ export default class PetitionerForm {
 
 		this.wrapper?.classList.add('petitioner--loading');
 
-		const formData = new FormData(this.formEl as HTMLFormElement);
-		const freshNonce = await this.getFreshNonce();
-		formData.append('petitioner_nonce', freshNonce);
-
 		try {
+			const formData = new FormData(this.formEl as HTMLFormElement);
+			const freshNonce = await this.getFreshNonce();
+			formData.append('petitioner_nonce', freshNonce);
 			const response = await fetch(this.actionPath, {
 				method: 'POST',
 				body: formData,
