@@ -189,6 +189,7 @@ class AV_Petitioner_Setup
         wp_localize_script('petitioner-script', 'petitionerFormSettings', [
             'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
             'nonce'         => wp_create_nonce('petitioner_form_nonce'),
+            'nonceEndpoint' => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
         ]);
 
         wp_localize_script('petitioner-script', 'petitionerSubmissionSettings', [
