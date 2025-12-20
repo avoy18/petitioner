@@ -313,9 +313,9 @@ class PetitionerForm {
     }
   }
   handleSubmissionComplete(formData) {
-    var _a;
+    var _a, _b;
     (_a = this.wrapper) == null ? void 0 : _a.classList.remove("petitioner--loading");
-    this.formEl.reset();
+    (_b = this.formEl) == null ? void 0 : _b.reset();
     this.captchaValidated = false;
     if (formData) {
       const event = new CustomEvent("petitionerFormSubmit", {

@@ -26,7 +26,7 @@ export default class PetitionerForm {
 	private wrapper: PetitionerWrapperElement;
 	private responseTitle: HTMLHeadingElement | null;
 	private responseText: HTMLParagraphElement | null;
-	private formEl: HTMLElement | null;
+	private formEl: HTMLFormElement | null;
 	private viewLetterBTN: HTMLButtonElement | null;
 	private petitionerModal: HTMLDivElement | null;
 	private modalClose: HTMLButtonElement | null;
@@ -238,7 +238,7 @@ export default class PetitionerForm {
 
 	private handleSubmissionComplete(formData?: FormData): void {
 		this.wrapper?.classList.remove('petitioner--loading');
-		(this.formEl as HTMLFormElement).reset();
+		this.formEl?.reset();
 		this.captchaValidated = false; // ✅ Reset for next submission
 
 		if (formData) {

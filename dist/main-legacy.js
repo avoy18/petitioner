@@ -285,7 +285,7 @@
           }
           handleSubmissionComplete(formData) {
             this.wrapper?.classList.remove("petitioner--loading");
-            this.formEl.reset();
+            this.formEl?.reset();
             this.captchaValidated = false;
             if (formData) {
               const event = new CustomEvent("petitionerFormSubmit", {
