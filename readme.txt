@@ -140,6 +140,10 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.7.1 =
+* Improved nonce handling on the frontend
+* Fix captcha console errors
+* Tested the plugin up to the latest WP version (6.9)
 = 0.7.0 =
 * Improved export for submissions
     * Allow filtering out unwanted items
