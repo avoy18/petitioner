@@ -8,7 +8,7 @@ class AV_Petitioner_Submissions_Controller
 {
 
     /**
-     * Static function used for the API
+     * Static function used for the API on the frontend
      * @return void
      */
     public static function api_handle_form_submit()
