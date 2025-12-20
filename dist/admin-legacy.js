@@ -36883,15 +36883,8 @@
               height: 200
             });
           }
-          if (finalType === "date") {
-            return /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
-              type: "date",
-              value,
-              onChange,
-              placeholder
-            });
-          }
           return /* @__PURE__ */jsxRuntimeExports.jsx(TextControl, {
+            type: finalType,
             value,
             onChange,
             placeholder

@@ -171,9 +171,10 @@ class PetitionerForm {
     this.modalClose = null;
     this.backdrop = null;
     const settings = (window == null ? void 0 : window.petitionerFormSettings) || {};
-    const { actionPath = "", nonce = "" } = settings;
+    const { actionPath = "", nonce = "", nonceEndpoint = "" } = settings;
     this.actionPath = actionPath || "";
-    this.nonce = nonce;
+    this.nonceEndpoint = nonceEndpoint || "";
+    this.nonce = nonce || "";
     if (!this.wrapper) return;
     this.responseTitle = this.wrapper.querySelector(
       ".petitioner__response > h3"
@@ -234,7 +235,8 @@ class PetitionerForm {
     }
   }
   showResponseMSG(messaging, isSuccess = false) {
-    this.wrapper.classList.add("petitioner--submitted");
+    var _a;
+    (_a = this.wrapper) == null ? void 0 : _a.classList.add("petitioner--submitted");
     const { title, message } = messaging || { title: "", message: "" };
     if (this.responseTitle) this.responseTitle.innerText = title;
     if (this.responseText) this.responseText.innerHTML = message;
@@ -273,16 +275,24 @@ class PetitionerForm {
     this.submitForm();
   }
   shouldValidateHCaptcha() {
-    return !!((petitionerCaptcha == null ? void 0 : petitionerCaptcha.enableHcaptcha) && this.hcaptcha && !this.captchaValidated);
+    var _a;
+    return !!(((_a = window.petitionerCaptcha) == null ? void 0 : _a.enableHcaptcha) && this.hcaptcha && !this.captchaValidated);
   }
   shouldValidateTurnstile() {
-    return !!((petitionerCaptcha == null ? void 0 : petitionerCaptcha.enableTurnstile) && this.turnstile && !this.captchaValidated);
+    var _a;
+    return !!(((_a = window.petitionerCaptcha) == null ? void 0 : _a.enableTurnstile) && this.turnstile && !this.captchaValidated);
   }
-  submitForm() {
+  async submitForm() {
+    var _a;
     if (!this.formEl) return;
-    this.wrapper.classList.add("petitioner--loading");
+    (_a = this.wrapper) == null ? void 0 : _a.classList.add("petitioner--loading");
     const formData = new FormData(this.formEl);
-    formData.append("petitioner_nonce", this.nonce);
+    const freshNonce = await this.getFreshNonce();
+    if (freshNonce) {
+      formData.append("petitioner_nonce", freshNonce);
+    } else {
+      console.error("Failed to fetch nonce");
+    }
     fetch(this.actionPath, {
       method: "POST",
       body: formData,
@@ -308,17 +318,42 @@ class PetitionerForm {
   }
   handleSubmissionComplete(formData) {
     var _a;
-    this.wrapper.classList.remove("petitioner--loading");
-    (_a = this.formEl) == null ? void 0 : _a.reset();
+    (_a = this.wrapper) == null ? void 0 : _a.classList.remove("petitioner--loading");
+    this.formEl.reset();
     this.captchaValidated = false;
     if (formData) {
-      const event = new CustomEvent(
-        "petitionerFormSubmit",
-        {
-          detail: { formData }
-        }
-      );
+      const event = new CustomEvent("petitionerFormSubmit", {
+        detail: { formData }
+      });
       document.dispatchEvent(event);
+    }
+  }
+  /**
+   * Fetches a fresh nonce from the server to avoid stale cached nonces.
+   * Falls back to the inline nonce if the endpoint is unavailable.
+   */
+  async getFreshNonce() {
+    var _a;
+    try {
+      const response = await fetch(this.nonceEndpoint, {
+        method: "GET",
+        credentials: "same-origin"
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch nonce");
+      }
+      const data = await response.json();
+      if (data.success && ((_a = data.data) == null ? void 0 : _a.nonce)) {
+        this.nonce = data.data.nonce;
+        return data.data.nonce;
+      }
+      throw new Error("Invalid nonce response");
+    } catch (error) {
+      console.warn("Could not fetch fresh nonce:", error);
+      if (this.nonce) {
+        return this.nonce;
+      }
+      throw new Error("No nonce available");
     }
   }
 }
