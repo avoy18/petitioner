@@ -20,7 +20,7 @@ export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 	null
 );
 
-const BASE_DRAGGABLE_FIELD_TYPES = [
+const DRAGGABLE_FIELD_TYPES = [
 	{
 		fieldKey: 'phone',
 		type: 'tel',
@@ -153,12 +153,14 @@ const BASE_DRAGGABLE_FIELD_TYPES = [
 	},
 ];
 
-export const DRAGGABLE_FIELD_TYPES = applyFilters(
-	'petitioner.formBuilder.draggableFields',
-	BASE_DRAGGABLE_FIELD_TYPES
-) as BuilderField[];
+export const getDraggableFields = () => {
+	return applyFilters(
+		'petitioner.formBuilder.draggableFields',
+		DRAGGABLE_FIELD_TYPES
+	) as BuilderField[];
+};
 
-const BASE_DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
+const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	fname: {
 		fieldKey: 'fname',
 		type: 'text',
@@ -196,15 +198,19 @@ const BASE_DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	},
 };
 
-export const DEFAULT_BUILDER_FIELDS = applyFilters(
-	'petitioner.formBuilder.defaultFields',
-	BASE_DEFAULT_BUILDER_FIELDS
-) as BuilderFieldMap;
+export const getDefaultBuilderFields = () => {
+	return applyFilters(
+		'petitioner.formBuilder.defaultFields',
+		DEFAULT_BUILDER_FIELDS
+	) as BuilderFieldMap;
+};
 
-export const ALl_POSSIBLE_FIELDS = [
-	...DRAGGABLE_FIELD_TYPES,
-	...Object.values(DEFAULT_BUILDER_FIELDS),
-];
+export const getAllPossibleFields = () => {
+	return [
+		...getDraggableFields(),
+		...Object.values(getDefaultBuilderFields()),
+	];
+};
 
 export function FormBuilderContextProvider({
 	children,

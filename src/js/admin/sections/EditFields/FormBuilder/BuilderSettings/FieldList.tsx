@@ -1,12 +1,11 @@
 // FieldList.tsx
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { DRAGGABLE_FIELD_TYPES } from '@admin/context/FormBuilderContext';
+import { getDraggableFields } from '@admin/context/FormBuilderContext';
 import styled from 'styled-components';
 import DragHandle from '@admin/components/DragHandle';
 import { __ } from '@wordpress/i18n';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import { ref } from 'process';
 
 const FieldPaletteWrapper = styled.div`
 	display: flex;
@@ -26,6 +25,8 @@ const FieldPaletteItem = styled.div`
 `;
 
 const D_PREFIX = 'ptr_insert_'
+
+const draggableFields = getDraggableFields();
 
 export const getIDNoPrefix = (id: string) => id.replace(D_PREFIX, '');
 
@@ -81,7 +82,7 @@ export default function FieldList() {
 					'petitioner'
 				)}
 			</p>
-			{DRAGGABLE_FIELD_TYPES.map((field) => (
+			{draggableFields.map((field) => (
 				<PaletteDraggable
 					key={field.fieldKey}
 					id={D_PREFIX + field.fieldKey as string}

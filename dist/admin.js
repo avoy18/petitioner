@@ -9,6 +9,7 @@ function __vite_legacy_guard() {
   })().next();
 }
 ;
+import { defaultHooks, doAction, applyFilters } from "@wordpress/hooks";
 import { s as safelyParseJSON } from "./assets/utilities-BF7HqmGn.js";
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
@@ -8005,265 +8006,6 @@ const createI18n = (initialData, initialDomain, hooks) => {
     hasTranslation
   };
 };
-function validateNamespace(namespace) {
-  if ("string" !== typeof namespace || "" === namespace) {
-    console.error("The namespace must be a non-empty string.");
-    return false;
-  }
-  if (!/^[a-zA-Z][a-zA-Z0-9_.\-\/]*$/.test(namespace)) {
-    console.error("The namespace can only contain numbers, letters, dashes, periods, underscores and slashes.");
-    return false;
-  }
-  return true;
-}
-function validateHookName(hookName) {
-  if ("string" !== typeof hookName || "" === hookName) {
-    console.error("The hook name must be a non-empty string.");
-    return false;
-  }
-  if (/^__/.test(hookName)) {
-    console.error("The hook name cannot begin with `__`.");
-    return false;
-  }
-  if (!/^[a-zA-Z][a-zA-Z0-9_.-]*$/.test(hookName)) {
-    console.error("The hook name can only contain numbers, letters, dashes, periods and underscores.");
-    return false;
-  }
-  return true;
-}
-function createAddHook(hooks, storeKey) {
-  return function addHook(hookName, namespace, callback, priority = 10) {
-    const hooksStore = hooks[storeKey];
-    if (!validateHookName(hookName)) {
-      return;
-    }
-    if (!validateNamespace(namespace)) {
-      return;
-    }
-    if ("function" !== typeof callback) {
-      console.error("The hook callback must be a function.");
-      return;
-    }
-    if ("number" !== typeof priority) {
-      console.error("If specified, the hook priority must be a number.");
-      return;
-    }
-    const handler = {
-      callback,
-      priority,
-      namespace
-    };
-    if (hooksStore[hookName]) {
-      const handlers = hooksStore[hookName].handlers;
-      let i2;
-      for (i2 = handlers.length; i2 > 0; i2--) {
-        if (priority >= handlers[i2 - 1].priority) {
-          break;
-        }
-      }
-      if (i2 === handlers.length) {
-        handlers[i2] = handler;
-      } else {
-        handlers.splice(i2, 0, handler);
-      }
-      hooksStore.__current.forEach((hookInfo) => {
-        if (hookInfo.name === hookName && hookInfo.currentIndex >= i2) {
-          hookInfo.currentIndex++;
-        }
-      });
-    } else {
-      hooksStore[hookName] = {
-        handlers: [handler],
-        runs: 0
-      };
-    }
-    if (hookName !== "hookAdded") {
-      hooks.doAction("hookAdded", hookName, namespace, callback, priority);
-    }
-  };
-}
-function createRemoveHook(hooks, storeKey, removeAll = false) {
-  return function removeHook(hookName, namespace) {
-    const hooksStore = hooks[storeKey];
-    if (!validateHookName(hookName)) {
-      return;
-    }
-    if (!removeAll && !validateNamespace(namespace)) {
-      return;
-    }
-    if (!hooksStore[hookName]) {
-      return 0;
-    }
-    let handlersRemoved = 0;
-    if (removeAll) {
-      handlersRemoved = hooksStore[hookName].handlers.length;
-      hooksStore[hookName] = {
-        runs: hooksStore[hookName].runs,
-        handlers: []
-      };
-    } else {
-      const handlers = hooksStore[hookName].handlers;
-      for (let i2 = handlers.length - 1; i2 >= 0; i2--) {
-        if (handlers[i2].namespace === namespace) {
-          handlers.splice(i2, 1);
-          handlersRemoved++;
-          hooksStore.__current.forEach((hookInfo) => {
-            if (hookInfo.name === hookName && hookInfo.currentIndex >= i2) {
-              hookInfo.currentIndex--;
-            }
-          });
-        }
-      }
-    }
-    if (hookName !== "hookRemoved") {
-      hooks.doAction("hookRemoved", hookName, namespace);
-    }
-    return handlersRemoved;
-  };
-}
-function createHasHook(hooks, storeKey) {
-  return function hasHook(hookName, namespace) {
-    const hooksStore = hooks[storeKey];
-    if ("undefined" !== typeof namespace) {
-      return hookName in hooksStore && hooksStore[hookName].handlers.some((hook) => hook.namespace === namespace);
-    }
-    return hookName in hooksStore;
-  };
-}
-function createRunHook(hooks, storeKey, returnFirstArg, async) {
-  return function runHook(hookName, ...args) {
-    const hooksStore = hooks[storeKey];
-    if (!hooksStore[hookName]) {
-      hooksStore[hookName] = {
-        handlers: [],
-        runs: 0
-      };
-    }
-    hooksStore[hookName].runs++;
-    const handlers = hooksStore[hookName].handlers;
-    if (!handlers || !handlers.length) {
-      return returnFirstArg ? args[0] : void 0;
-    }
-    const hookInfo = {
-      name: hookName,
-      currentIndex: 0
-    };
-    async function asyncRunner() {
-      try {
-        hooksStore.__current.add(hookInfo);
-        let result = returnFirstArg ? args[0] : void 0;
-        while (hookInfo.currentIndex < handlers.length) {
-          const handler = handlers[hookInfo.currentIndex];
-          result = await handler.callback.apply(null, args);
-          if (returnFirstArg) {
-            args[0] = result;
-          }
-          hookInfo.currentIndex++;
-        }
-        return returnFirstArg ? result : void 0;
-      } finally {
-        hooksStore.__current.delete(hookInfo);
-      }
-    }
-    function syncRunner() {
-      try {
-        hooksStore.__current.add(hookInfo);
-        let result = returnFirstArg ? args[0] : void 0;
-        while (hookInfo.currentIndex < handlers.length) {
-          const handler = handlers[hookInfo.currentIndex];
-          result = handler.callback.apply(null, args);
-          if (returnFirstArg) {
-            args[0] = result;
-          }
-          hookInfo.currentIndex++;
-        }
-        return returnFirstArg ? result : void 0;
-      } finally {
-        hooksStore.__current.delete(hookInfo);
-      }
-    }
-    return (async ? asyncRunner : syncRunner)();
-  };
-}
-function createCurrentHook(hooks, storeKey) {
-  return function currentHook() {
-    var _a2;
-    var _currentArray$at$name;
-    const hooksStore = hooks[storeKey];
-    const currentArray = Array.from(hooksStore.__current);
-    return (_currentArray$at$name = (_a2 = currentArray.at(-1)) == null ? void 0 : _a2.name) !== null && _currentArray$at$name !== void 0 ? _currentArray$at$name : null;
-  };
-}
-function createDoingHook(hooks, storeKey) {
-  return function doingHook(hookName) {
-    const hooksStore = hooks[storeKey];
-    if ("undefined" === typeof hookName) {
-      return hooksStore.__current.size > 0;
-    }
-    return Array.from(hooksStore.__current).some((hook) => hook.name === hookName);
-  };
-}
-function createDidHook(hooks, storeKey) {
-  return function didHook(hookName) {
-    const hooksStore = hooks[storeKey];
-    if (!validateHookName(hookName)) {
-      return;
-    }
-    return hooksStore[hookName] && hooksStore[hookName].runs ? hooksStore[hookName].runs : 0;
-  };
-}
-class _Hooks {
-  constructor() {
-    this.actions = /* @__PURE__ */ Object.create(null);
-    this.actions.__current = /* @__PURE__ */ new Set();
-    this.filters = /* @__PURE__ */ Object.create(null);
-    this.filters.__current = /* @__PURE__ */ new Set();
-    this.addAction = createAddHook(this, "actions");
-    this.addFilter = createAddHook(this, "filters");
-    this.removeAction = createRemoveHook(this, "actions");
-    this.removeFilter = createRemoveHook(this, "filters");
-    this.hasAction = createHasHook(this, "actions");
-    this.hasFilter = createHasHook(this, "filters");
-    this.removeAllActions = createRemoveHook(this, "actions", true);
-    this.removeAllFilters = createRemoveHook(this, "filters", true);
-    this.doAction = createRunHook(this, "actions", false, false);
-    this.doActionAsync = createRunHook(this, "actions", false, true);
-    this.applyFilters = createRunHook(this, "filters", true, false);
-    this.applyFiltersAsync = createRunHook(this, "filters", true, true);
-    this.currentAction = createCurrentHook(this, "actions");
-    this.currentFilter = createCurrentHook(this, "filters");
-    this.doingAction = createDoingHook(this, "actions");
-    this.doingFilter = createDoingHook(this, "filters");
-    this.didAction = createDidHook(this, "actions");
-    this.didFilter = createDidHook(this, "filters");
-  }
-}
-function createHooks() {
-  return new _Hooks();
-}
-const defaultHooks = createHooks();
-const {
-  addAction,
-  addFilter,
-  removeAction,
-  removeFilter,
-  hasAction,
-  hasFilter,
-  removeAllActions,
-  removeAllFilters,
-  doAction,
-  doActionAsync,
-  applyFilters,
-  applyFiltersAsync,
-  currentAction,
-  currentFilter,
-  doingAction,
-  doingFilter,
-  didAction,
-  didFilter,
-  actions,
-  filters
-} = defaultHooks;
 const i18n = createI18n(void 0, void 0, defaultHooks);
 i18n.getLocaleData.bind(i18n);
 i18n.setLocaleData.bind(i18n);
@@ -8961,9 +8703,9 @@ var clipboard = { exports: {} };
                   key: "isSupported",
                   value: function isSupported() {
                     var action = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : ["copy", "cut"];
-                    var actions2 = typeof action === "string" ? [action] : action;
+                    var actions = typeof action === "string" ? [action] : action;
                     var support = !!document.queryCommandSupported;
-                    actions2.forEach(function(action2) {
+                    actions.forEach(function(action2) {
                       support = support && !!document.queryCommandSupported(action2);
                     });
                     return support;
@@ -25772,7 +25514,7 @@ function Notice({
   spokenMessage = children,
   onRemove = noop$2,
   isDismissible = true,
-  actions: actions2 = [],
+  actions = [],
   politeness = getDefaultPoliteness(status),
   __unstableHTML,
   // onDismiss is a callback executed when the notice is dismissed.
@@ -25801,7 +25543,7 @@ function Notice({
       className: "components-notice__content",
       children: [children, /* @__PURE__ */ jsxRuntimeExports.jsx("div", {
         className: "components-notice__actions",
-        children: actions2.map(({
+        children: actions.map(({
           className: buttonCustomClasses,
           label,
           isPrimary,
@@ -28606,6 +28348,12 @@ const DRAGGABLE_FIELD_TYPES = [
     removable: true
   }
 ];
+const getDraggableFields = () => {
+  return applyFilters(
+    "petitioner.formBuilder.draggableFields",
+    DRAGGABLE_FIELD_TYPES
+  );
+};
 const DEFAULT_BUILDER_FIELDS = {
   fname: {
     fieldKey: "fname",
@@ -28643,10 +28391,18 @@ const DEFAULT_BUILDER_FIELDS = {
     removable: false
   }
 };
-const ALl_POSSIBLE_FIELDS = [
-  ...DRAGGABLE_FIELD_TYPES,
-  ...Object.values(DEFAULT_BUILDER_FIELDS)
-];
+const getDefaultBuilderFields = () => {
+  return applyFilters(
+    "petitioner.formBuilder.defaultFields",
+    DEFAULT_BUILDER_FIELDS
+  );
+};
+const getAllPossibleFields = () => {
+  return [
+    ...getDraggableFields(),
+    ...Object.values(getDefaultBuilderFields())
+  ];
+};
 function FormBuilderContextProvider({
   children
 }) {
@@ -28811,7 +28567,7 @@ const deleteSubmissions = async ({
 };
 const getSubmissionCount = async ({
   formID,
-  filters: filters2,
+  filters,
   onSuccess = () => {
   },
   onError = () => {
@@ -28822,8 +28578,8 @@ const getSubmissionCount = async ({
   const finalData = new FormData();
   finalData.append("form_id", String(formID));
   finalData.append("petitioner_nonce", getAjaxNonce());
-  if (filters2) {
-    finalData.append("conditional_logic", JSON.stringify(filters2));
+  if (filters) {
+    finalData.append("conditional_logic", JSON.stringify(filters));
   }
   try {
     const request = await fetch("".concat(ajaxurl, "?").concat(finalQuery.toString()), {
@@ -28842,7 +28598,7 @@ const getSubmissionCount = async ({
 };
 const getFieldLabels = () => {
   const fieldMap = {};
-  ALl_POSSIBLE_FIELDS.forEach((field) => {
+  getAllPossibleFields().forEach((field) => {
     if (field == null ? void 0 : field.fieldKey) {
       fieldMap[field.fieldKey] = field.label;
     }
@@ -28878,7 +28634,7 @@ const getSubmissionValType = (label) => {
   if (label === "submitted_at") {
     return "date";
   }
-  const correctItem = ALl_POSSIBLE_FIELDS.find(
+  const correctItem = getAllPossibleFields().find(
     (item) => item.fieldKey === label
   );
   return (correctItem == null ? void 0 : correctItem.type) || "text";
@@ -34427,6 +34183,7 @@ const DragHandle = dt.div.attrs(() => ({
 const FieldPaletteWrapper = dt.div(_H || (_H = __template(["\n	display: flex;\n	flex-direction: column;\n	gap: 8px;\n"])));
 const FieldPaletteItem = dt.div(_I || (_I = __template(["\n	padding: 4px 8px;\n	border-radius: 4px;\n	background: rgba(00, 00, 00, 0.01);\n	border: 1px solid rgba(00, 00, 00, 0.1);\n	cursor: grab;\n	display: flex;\n	align-items: center;\n	gap: 4px;\n"])));
 const D_PREFIX = "ptr_insert_";
+const draggableFields$1 = getDraggableFields();
 const getIDNoPrefix = (id2) => id2.replace(D_PREFIX, "");
 function PaletteDraggable({ id: id2, label }) {
   const { fieldOrder } = useFormBuilderContext();
@@ -34467,7 +34224,7 @@ function FieldList() {
       "Below is a list of additional fields you can add to your form.",
       "petitioner"
     ) }),
-    DRAGGABLE_FIELD_TYPES.map((field) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+    draggableFields$1.map((field) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       PaletteDraggable,
       {
         id: D_PREFIX + field.fieldKey,
@@ -34704,6 +34461,7 @@ function SortableField({ id: id2 }) {
     }
   );
 }
+const draggableFields = getDraggableFields();
 const StyledPanel = dt(Panel)(_O || (_O = __template(["\n	margin-top: var(--ptr-admin-spacing-md, 16px);\n\n	.components-panel__body {\n		padding: 0px;\n	}\n\n	.ptr-form-builder__form {\n		margin-left: var(--ptr-admin-spacing-md);\n	}\n"])));
 function FormBuilderComponent() {
   const {
@@ -34714,7 +34472,7 @@ function FormBuilderComponent() {
   } = useFormBuilderContext();
   const handleFieldInsert = (rawID, position2) => {
     const id2 = getIDNoPrefix(rawID);
-    const newField = DRAGGABLE_FIELD_TYPES.find(
+    const newField = draggableFields.find(
       (field) => field.fieldKey === id2
     );
     const newFieldID = newField == null ? void 0 : newField.fieldKey;

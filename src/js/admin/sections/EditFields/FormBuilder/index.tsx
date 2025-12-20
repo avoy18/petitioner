@@ -3,7 +3,7 @@ import DndSortableProvider from '@admin/context/DndSortableProvider';
 import BuilderSettings from './BuilderSettings';
 import {
 	FormBuilderContextProvider,
-	DRAGGABLE_FIELD_TYPES,
+	getDraggableFields,
 	useFormBuilderContext,
 } from '@admin/context/FormBuilderContext';
 import { getIDNoPrefix } from './BuilderSettings/FieldList';
@@ -11,6 +11,8 @@ import SortableField from './SortableField';
 import styled from 'styled-components';
 import { __ } from '@wordpress/i18n';
 import type { FieldOrderItems } from '@admin/sections/EditFields/FormBuilder/consts';
+
+const draggableFields = getDraggableFields();
 
 const StyledPanel = styled(Panel)`
 	margin-top: var(--ptr-admin-spacing-md, 16px);
@@ -36,7 +38,7 @@ function FormBuilderComponent() {
 		const id = getIDNoPrefix(rawID);
 
 		// get the field type from the draggable options
-		const newField = DRAGGABLE_FIELD_TYPES.find(
+		const newField = draggableFields.find(
 			(field) => field.fieldKey === id
 		);
 

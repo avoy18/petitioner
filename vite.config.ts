@@ -57,6 +57,7 @@ module.exports = defineConfig(({ mode }: ConfigEnv) => {
 		build: {
 			minify: mode !== 'development',
 			rollupOptions: {
+				external: ['@wordpress/hooks'],
 				onwarn(warning: RollupWarning, warn: WarningHandlerWithDefault) {
 					// Suppress "Module level directives cause errors when bundled" warnings
 					if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
@@ -70,6 +71,7 @@ module.exports = defineConfig(({ mode }: ConfigEnv) => {
 				},
 				output: {
 					globals: {
+						'@wordpress/hooks': 'wp.hooks',
 						'@wordpress/blocks': 'wp.blocks',
 						'@wordpress/element': 'wp.element',
 						'@wordpress/i18n': 'wp.i18n',

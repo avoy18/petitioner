@@ -65,6 +65,11 @@ export default class PetitionerForm {
 		this.actionPath = actionPath || '';
 		this.nonce = nonce;
 
+		// Validate that we have required settings
+		if (!this.actionPath || !this.nonce) {
+			console.error('Petitioner: Missing required settings (actionPath or nonce)');
+		}
+
 		if (!this.wrapper) return;
 
 		// Initialize DOM elements with proper type casting
@@ -209,6 +214,13 @@ export default class PetitionerForm {
 
 	private submitForm(): void {
 		if (!this.formEl) return;
+
+		// Validate nonce exists before submitting
+		if (!this.nonce) {
+			console.error('Petitioner: Cannot submit form - nonce is missing');
+			alert('Security token is missing. Please refresh the page and try again.');
+			return;
+		}
 
 		this.wrapper.classList.add('petitioner--loading');
 

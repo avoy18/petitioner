@@ -1,16 +1,20 @@
 ;
 (function () {
-  System.register(['./assets/utilities-legacy-Dzd-Bk5k.js'], function (exports, module) {
+  System.register(['@wordpress/hooks', './assets/utilities-legacy-Dzd-Bk5k.js'], function (exports, module) {
     'use strict';
 
-    var safelyParseJSON;
+    var defaultHooks, doAction, applyFilters, safelyParseJSON;
     return {
       setters: [module => {
+        defaultHooks = module.defaultHooks;
+        doAction = module.doAction;
+        applyFilters = module.applyFilters;
+      }, module => {
         safelyParseJSON = module.s;
       }],
       execute: function () {
         var __vite_style__ = document.createElement('style');
-        __vite_style__.textContent = ":root {\n    --ptr-admin-spacing-xs: 4px;\n    --ptr-admin-spacing-sm: 8px;\n    --ptr-admin-spacing-md: 12px;\n    --ptr-admin-spacing-lg: 16px;\n    --ptr-admin-spacing-xl: 24px;\n    --ptr-admin-spacing-2xl: 32px;\n    --ptr-admin-spacing-3xl: 40px;\n    --ptr-admin-spacing-4xl: 48px;\n    --ptr-admin-spacing-5xl: 64px;\n}\n:root {\n    --ptr-admin-color-primary: #e01a2b;\n    --ptr-admin-color-dark: #000000;\n    --ptr-admin-color-grey: #efefef;\n    --ptr-admin-color-light: #f7f7f7;\n    --ptr-admin-color-dark-grey: #777777;\n}\n:root {\n    /* general */\n    --ptr-admin-fs-sm: 14px;\n    --ptr-admin-fs-md: 18px;\n\n    /* wrapper */\n    --ptr-admin-spacing-x: var(--ptr-admin-spacing-md);\n    --ptr-admin-spacing-y: var(--ptr-admin-spacing-md);\n    --ptr-admin-wrapper-bg: white;\n    --ptr-admin-wrapper-radius: var(--ptr-admin-spacing-md);\n\n    /* input related */\n    --ptr-admin-input-border-width: 1px;\n    --ptr-admin-input-border-color: #a1a1a1;\n    --ptr-admin-input-border-color-active: #00000;\n    --ptr-admin-input-border-radius: var(--ptr-admin-spacing-sm);\n    --ptr-admin-input-spacing-y: 0.7rem;\n    --ptr-admin-input-spacing-x: var(--ptr-admin-spacing-md);\n\n    /* label related */\n    --ptr-admin-label-font-size: var(--ptr-admin-fs-sm);\n    /* button */\n    --ptr-admin-btn-font-size: var(--ptr-admin-fs-md);\n    --ptr-admin-btn-bg: var(--ptr-admin-color-primary);\n    --ptr-admin-btn-bg-hover: var(--ptr-admin-color-dark);\n    --ptr-admin-button-border-width: var(--ptr-admin-input-border-width);\n    --ptr-admin-button-border-color: transparent;\n    --ptr-admin-button-border-color-active: var(--ptr-admin-color-dark);\n    --ptr-admin-button-border-radius: var(--ptr-admin-spacing-sm);\n\n    /* progress bar */\n    --ptr-admin-progress-height: var(--ptr-admin-spacing-sm);\n    --ptr-admin-progress-bg: var(--ptr-admin-color-grey);\n    --ptr-admin-progress-radius: var(--ptr-admin-spacing-xs);\n    --ptr-admin-progress-inner-bg: var(--ptr-admin-color-primary);\n}\n.wp-admin.post-type-petitioner-petition .petition-tablink.components-tab-panel__tabs-item {\n        display: flex;\n        gap: 4px;\n    }\n.wp-admin.post-type-petitioner-petition .petitioner-tab {\n        display: none;\n    }\n.wp-admin.post-type-petitioner-petition .petitioner-tab.active {\n        display: block;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field {\n        position: relative;\n        padding: var(--ptr-admin-spacing-md, 8px);\n        border-radius: 4px;\n        border: 1px dashed transparent;\n        transition: 0.15s;\n        transition-delay: 0;\n        background: white;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--input,\n        .wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox,\n        .wp-admin.post-type-petitioner-petition .ptr-fake-field--content {\n            border: 1px solid transparent;\n            border-radius: 4px;\n            background-color: #fff;\n            font-size: 14px;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox {\n            display: flex;\n            align-items: center;\n            gap: 4px;\n            cursor: pointer;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox input[type=\"checkbox\"] {\n                width: 16px;\n                height: 16px;\n                pointer-events: none;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox label {\n                font-size: 14px;\n                margin-bottom: 0px;\n                pointer-events: none;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--submit >button {\n                border-radius: var(--ptr-admin-input-border-radius, 4px);\n                background-color: var(--ptr-admin-color-primary, #000);\n                border-color: var(--ptr-admin-color-primary, #000);\n                color: white;\n                width: 100%;\n                min-height: 37px;\n                pointer-events: none;\n                outline: none;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover {\n            cursor: pointer;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover .ptr-actions, .wp-admin.post-type-petitioner-petition .ptr-fake-field--active .ptr-actions {\n                display: flex;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder .components-button {\n        width: 100%;\n        text-align: center;\n        justify-content: center;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form {\n            width: 70%;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position {\n                width: 100%;\n                opacity: 0 !important;\n                height: 5px;\n                display: block;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position.active {\n                    background: var(--ptr-admin-color-primary, #000);\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging {\n                cursor: grabbing;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-fake-field:hover {\n                    border: 0px solid transparent;\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-actions {\n                    display: none;\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-visual-position {\n                    opacity: 1;\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header {\n            padding: 16px;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header h3,\n            .wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header p {\n                margin-top: 0;\n                margin-bottom: 0;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-actions {\n        position: absolute;\n        right: 4px;\n        display: none;\n        gap: 4px;\n        top: 2px;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-draggable {\n        opacity: 1;\n        position: relative;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-draggable:after {\n            position: absolute;\n            content: \"\";\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 100%;\n            background: var(--ptr-admin-color-primary, #000);\n            border: 1px dashed var(--ptr-admin-color-primary, #000);\n            border-radius: var(--ptr-admin-input-border-radius, 4px);\n            opacity: 0;\n            transition: opacity 0.15s ease-in-out;\n            pointer-events: none;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected {\n            overflow: hidden;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected:after {\n                opacity: 0.05;\n            }\n.wp-admin.post-type-petitioner-petition {\n\t@include ptr-variables;\n\t@include base;\n\t@include tabs;\n\t@include form-builder;\n}\n.ptr-color-picker__overlay {\n\tposition: fixed;\n\twidth: 100%;\n\theight: 100%;\n\tleft: 0;\n\ttop: 0;\n\tz-index: 1;\n}\n.ptr-hidden-fields {\n\tdisplay: none;\n}\n/*$vite$:1*/";
+        __vite_style__.textContent = ":root {\n    --ptr-admin-spacing-xs: 4px;\n    --ptr-admin-spacing-sm: 8px;\n    --ptr-admin-spacing-md: 12px;\n    --ptr-admin-spacing-lg: 16px;\n    --ptr-admin-spacing-xl: 24px;\n    --ptr-admin-spacing-2xl: 32px;\n    --ptr-admin-spacing-3xl: 40px;\n    --ptr-admin-spacing-4xl: 48px;\n    --ptr-admin-spacing-5xl: 64px;\n}\n:root {\n    --ptr-admin-color-primary: #e01a2b;\n    --ptr-admin-color-dark: #000000;\n    --ptr-admin-color-grey: #efefef;\n    --ptr-admin-color-light: #f7f7f7;\n    --ptr-admin-color-dark-grey: #777777;\n}\n:root {\n    /* general */\n    --ptr-admin-fs-sm: 14px;\n    --ptr-admin-fs-md: 18px;\n\n    /* wrapper */\n    --ptr-admin-spacing-x: var(--ptr-admin-spacing-md);\n    --ptr-admin-spacing-y: var(--ptr-admin-spacing-md);\n    --ptr-admin-wrapper-bg: white;\n    --ptr-admin-wrapper-radius: var(--ptr-admin-spacing-md);\n\n    /* input related */\n    --ptr-admin-input-border-width: 1px;\n    --ptr-admin-input-border-color: #a1a1a1;\n    --ptr-admin-input-border-color-active: #00000;\n    --ptr-admin-input-border-radius: var(--ptr-admin-spacing-sm);\n    --ptr-admin-input-spacing-y: 0.7rem;\n    --ptr-admin-input-spacing-x: var(--ptr-admin-spacing-md);\n\n    /* label related */\n    --ptr-admin-label-font-size: var(--ptr-admin-fs-sm);\n    /* button */\n    --ptr-admin-btn-font-size: var(--ptr-admin-fs-md);\n    --ptr-admin-btn-bg: var(--ptr-admin-color-primary);\n    --ptr-admin-btn-bg-hover: var(--ptr-admin-color-dark);\n    --ptr-admin-button-border-width: var(--ptr-admin-input-border-width);\n    --ptr-admin-button-border-color: transparent;\n    --ptr-admin-button-border-color-active: var(--ptr-admin-color-dark);\n    --ptr-admin-button-border-radius: var(--ptr-admin-spacing-sm);\n\n    /* progress bar */\n    --ptr-admin-progress-height: var(--ptr-admin-spacing-sm);\n    --ptr-admin-progress-bg: var(--ptr-admin-color-grey);\n    --ptr-admin-progress-radius: var(--ptr-admin-spacing-xs);\n    --ptr-admin-progress-inner-bg: var(--ptr-admin-color-primary);\n}\n.wp-admin.post-type-petitioner-petition .petition-tablink.components-tab-panel__tabs-item {\n        display: flex;\n        gap: 4px;\n    }\n.wp-admin.post-type-petitioner-petition .petitioner-tab {\n        display: none;\n    }\n.wp-admin.post-type-petitioner-petition .petitioner-tab.active {\n        display: block;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field {\n        position: relative;\n        padding: var(--ptr-admin-spacing-md, 8px);\n        border-radius: 4px;\n        border: 1px dashed transparent;\n        transition: 0.15s;\n        transition-delay: 0;\n        background: white;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--input,\n        .wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox,\n        .wp-admin.post-type-petitioner-petition .ptr-fake-field--content {\n            border: 1px solid transparent;\n            border-radius: 4px;\n            background-color: #fff;\n            font-size: 14px;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox {\n            display: flex;\n            align-items: center;\n            gap: 4px;\n            cursor: pointer;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox input[type=\"checkbox\"] {\n                width: 16px;\n                height: 16px;\n                pointer-events: none;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--checkbox label {\n                font-size: 14px;\n                margin-bottom: 0px;\n                pointer-events: none;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field--submit >button {\n                border-radius: var(--ptr-admin-input-border-radius, 4px);\n                background-color: var(--ptr-admin-color-primary, #000);\n                border-color: var(--ptr-admin-color-primary, #000);\n                color: white;\n                width: 100%;\n                min-height: 37px;\n                pointer-events: none;\n                outline: none;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover {\n            cursor: pointer;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-fake-field:hover .ptr-actions, .wp-admin.post-type-petitioner-petition .ptr-fake-field--active .ptr-actions {\n                display: flex;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder .components-button {\n        width: 100%;\n        text-align: center;\n        justify-content: center;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form {\n            width: 70%;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position {\n                width: 100%;\n                opacity: 0 !important;\n                height: 5px;\n                display: block;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form .ptr-visual-position.active {\n                    background: var(--ptr-admin-color-primary, #000);\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging {\n                cursor: grabbing;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-fake-field:hover {\n                    border: 0px solid transparent;\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-actions {\n                    display: none;\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form.is-dragging .ptr-visual-position {\n                    opacity: 1;\n                }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header {\n            padding: 16px;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header h3,\n            .wp-admin.post-type-petitioner-petition .ptr-form-builder__form-header p {\n                margin-top: 0;\n                margin-bottom: 0;\n            }\n.wp-admin.post-type-petitioner-petition .ptr-actions {\n        position: absolute;\n        right: 4px;\n        display: none;\n        gap: 4px;\n        top: 2px;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-draggable {\n        opacity: 1;\n        position: relative;\n    }\n.wp-admin.post-type-petitioner-petition .ptr-draggable:after {\n            position: absolute;\n            content: \"\";\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 100%;\n            background: var(--ptr-admin-color-primary, #000);\n            border: 1px dashed var(--ptr-admin-color-primary, #000);\n            border-radius: var(--ptr-admin-input-border-radius, 4px);\n            opacity: 0;\n            transition: opacity 0.15s ease-in-out;\n            pointer-events: none;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected {\n            overflow: hidden;\n        }\n.wp-admin.post-type-petitioner-petition .ptr-draggable--selected:after {\n                opacity: 0.05;\n            }\n.ptr-color-picker__overlay {\n    position: fixed;\n    width: 100%;\n    height: 100%;\n    left: 0;\n    top: 0;\n    z-index: 1;\n}\n.ptr-hidden-fields {\n    display: none;\n}/*$vite$:1*/";
         document.head.appendChild(__vite_style__);
         function _mergeNamespaces(n, m) {
           for (var i = 0; i < m.length; i++) {
@@ -9936,509 +9940,6 @@
             hasTranslation
           };
         };
-
-        /**
-         * Validate a namespace string.
-         *
-         * @param {string} namespace The namespace to validate - should take the form
-         *                           `vendor/plugin/function`.
-         *
-         * @return {boolean} Whether the namespace is valid.
-         */
-        function validateNamespace(namespace) {
-          if ('string' !== typeof namespace || '' === namespace) {
-            // eslint-disable-next-line no-console
-            console.error('The namespace must be a non-empty string.');
-            return false;
-          }
-          if (!/^[a-zA-Z][a-zA-Z0-9_.\-\/]*$/.test(namespace)) {
-            // eslint-disable-next-line no-console
-            console.error('The namespace can only contain numbers, letters, dashes, periods, underscores and slashes.');
-            return false;
-          }
-          return true;
-        }
-
-        /**
-         * Validate a hookName string.
-         *
-         * @param {string} hookName The hook name to validate. Should be a non empty string containing
-         *                          only numbers, letters, dashes, periods and underscores. Also,
-         *                          the hook name cannot begin with `__`.
-         *
-         * @return {boolean} Whether the hook name is valid.
-         */
-        function validateHookName(hookName) {
-          if ('string' !== typeof hookName || '' === hookName) {
-            // eslint-disable-next-line no-console
-            console.error('The hook name must be a non-empty string.');
-            return false;
-          }
-          if (/^__/.test(hookName)) {
-            // eslint-disable-next-line no-console
-            console.error('The hook name cannot begin with `__`.');
-            return false;
-          }
-          if (!/^[a-zA-Z][a-zA-Z0-9_.-]*$/.test(hookName)) {
-            // eslint-disable-next-line no-console
-            console.error('The hook name can only contain numbers, letters, dashes, periods and underscores.');
-            return false;
-          }
-          return true;
-        }
-
-        /**
-         * Internal dependencies
-         */
-
-        /**
-         * @callback AddHook
-         *
-         * Adds the hook to the appropriate hooks container.
-         *
-         * @param {string}               hookName      Name of hook to add
-         * @param {string}               namespace     The unique namespace identifying the callback in the form `vendor/plugin/function`.
-         * @param {import('.').Callback} callback      Function to call when the hook is run
-         * @param {number}               [priority=10] Priority of this hook
-         */
-
-        /**
-         * Returns a function which, when invoked, will add a hook.
-         *
-         * @param {import('.').Hooks}    hooks    Hooks instance.
-         * @param {import('.').StoreKey} storeKey
-         *
-         * @return {AddHook} Function that adds a new hook.
-         */
-        function createAddHook(hooks, storeKey) {
-          return function addHook(hookName, namespace, callback, priority = 10) {
-            const hooksStore = hooks[storeKey];
-            if (!validateHookName(hookName)) {
-              return;
-            }
-            if (!validateNamespace(namespace)) {
-              return;
-            }
-            if ('function' !== typeof callback) {
-              // eslint-disable-next-line no-console
-              console.error('The hook callback must be a function.');
-              return;
-            }
-
-            // Validate numeric priority
-            if ('number' !== typeof priority) {
-              // eslint-disable-next-line no-console
-              console.error('If specified, the hook priority must be a number.');
-              return;
-            }
-            const handler = {
-              callback,
-              priority,
-              namespace
-            };
-            if (hooksStore[hookName]) {
-              // Find the correct insert index of the new hook.
-              const handlers = hooksStore[hookName].handlers;
-
-              /** @type {number} */
-              let i;
-              for (i = handlers.length; i > 0; i--) {
-                if (priority >= handlers[i - 1].priority) {
-                  break;
-                }
-              }
-              if (i === handlers.length) {
-                // If append, operate via direct assignment.
-                handlers[i] = handler;
-              } else {
-                // Otherwise, insert before index via splice.
-                handlers.splice(i, 0, handler);
-              }
-
-              // We may also be currently executing this hook.  If the callback
-              // we're adding would come after the current callback, there's no
-              // problem; otherwise we need to increase the execution index of
-              // any other runs by 1 to account for the added element.
-              hooksStore.__current.forEach(hookInfo => {
-                if (hookInfo.name === hookName && hookInfo.currentIndex >= i) {
-                  hookInfo.currentIndex++;
-                }
-              });
-            } else {
-              // This is the first hook of its type.
-              hooksStore[hookName] = {
-                handlers: [handler],
-                runs: 0
-              };
-            }
-            if (hookName !== 'hookAdded') {
-              hooks.doAction('hookAdded', hookName, namespace, callback, priority);
-            }
-          };
-        }
-
-        /**
-         * Internal dependencies
-         */
-
-        /**
-         * @callback RemoveHook
-         * Removes the specified callback (or all callbacks) from the hook with a given hookName
-         * and namespace.
-         *
-         * @param {string} hookName  The name of the hook to modify.
-         * @param {string} namespace The unique namespace identifying the callback in the
-         *                           form `vendor/plugin/function`.
-         *
-         * @return {number | undefined} The number of callbacks removed.
-         */
-
-        /**
-         * Returns a function which, when invoked, will remove a specified hook or all
-         * hooks by the given name.
-         *
-         * @param {import('.').Hooks}    hooks             Hooks instance.
-         * @param {import('.').StoreKey} storeKey
-         * @param {boolean}              [removeAll=false] Whether to remove all callbacks for a hookName,
-         *                                                 without regard to namespace. Used to create
-         *                                                 `removeAll*` functions.
-         *
-         * @return {RemoveHook} Function that removes hooks.
-         */
-        function createRemoveHook(hooks, storeKey, removeAll = false) {
-          return function removeHook(hookName, namespace) {
-            const hooksStore = hooks[storeKey];
-            if (!validateHookName(hookName)) {
-              return;
-            }
-            if (!removeAll && !validateNamespace(namespace)) {
-              return;
-            }
-
-            // Bail if no hooks exist by this name.
-            if (!hooksStore[hookName]) {
-              return 0;
-            }
-            let handlersRemoved = 0;
-            if (removeAll) {
-              handlersRemoved = hooksStore[hookName].handlers.length;
-              hooksStore[hookName] = {
-                runs: hooksStore[hookName].runs,
-                handlers: []
-              };
-            } else {
-              // Try to find the specified callback to remove.
-              const handlers = hooksStore[hookName].handlers;
-              for (let i = handlers.length - 1; i >= 0; i--) {
-                if (handlers[i].namespace === namespace) {
-                  handlers.splice(i, 1);
-                  handlersRemoved++;
-                  // This callback may also be part of a hook that is
-                  // currently executing.  If the callback we're removing
-                  // comes after the current callback, there's no problem;
-                  // otherwise we need to decrease the execution index of any
-                  // other runs by 1 to account for the removed element.
-                  hooksStore.__current.forEach(hookInfo => {
-                    if (hookInfo.name === hookName && hookInfo.currentIndex >= i) {
-                      hookInfo.currentIndex--;
-                    }
-                  });
-                }
-              }
-            }
-            if (hookName !== 'hookRemoved') {
-              hooks.doAction('hookRemoved', hookName, namespace);
-            }
-            return handlersRemoved;
-          };
-        }
-
-        /**
-         * @callback HasHook
-         *
-         * Returns whether any handlers are attached for the given hookName and optional namespace.
-         *
-         * @param {string} hookName    The name of the hook to check for.
-         * @param {string} [namespace] Optional. The unique namespace identifying the callback
-         *                             in the form `vendor/plugin/function`.
-         *
-         * @return {boolean} Whether there are handlers that are attached to the given hook.
-         */
-        /**
-         * Returns a function which, when invoked, will return whether any handlers are
-         * attached to a particular hook.
-         *
-         * @param {import('.').Hooks}    hooks    Hooks instance.
-         * @param {import('.').StoreKey} storeKey
-         *
-         * @return {HasHook} Function that returns whether any handlers are
-         *                   attached to a particular hook and optional namespace.
-         */
-        function createHasHook(hooks, storeKey) {
-          return function hasHook(hookName, namespace) {
-            const hooksStore = hooks[storeKey];
-
-            // Use the namespace if provided.
-            if ('undefined' !== typeof namespace) {
-              return hookName in hooksStore && hooksStore[hookName].handlers.some(hook => hook.namespace === namespace);
-            }
-            return hookName in hooksStore;
-          };
-        }
-        function createRunHook(hooks, storeKey, returnFirstArg, async) {
-          return function runHook(hookName, ...args) {
-            const hooksStore = hooks[storeKey];
-            if (!hooksStore[hookName]) {
-              hooksStore[hookName] = {
-                handlers: [],
-                runs: 0
-              };
-            }
-            hooksStore[hookName].runs++;
-            const handlers = hooksStore[hookName].handlers;
-            if (!handlers || !handlers.length) {
-              return returnFirstArg ? args[0] : void 0;
-            }
-            const hookInfo = {
-              name: hookName,
-              currentIndex: 0
-            };
-            async function asyncRunner() {
-              try {
-                hooksStore.__current.add(hookInfo);
-                let result = returnFirstArg ? args[0] : void 0;
-                while (hookInfo.currentIndex < handlers.length) {
-                  const handler = handlers[hookInfo.currentIndex];
-                  result = await handler.callback.apply(null, args);
-                  if (returnFirstArg) {
-                    args[0] = result;
-                  }
-                  hookInfo.currentIndex++;
-                }
-                return returnFirstArg ? result : void 0;
-              } finally {
-                hooksStore.__current.delete(hookInfo);
-              }
-            }
-            function syncRunner() {
-              try {
-                hooksStore.__current.add(hookInfo);
-                let result = returnFirstArg ? args[0] : void 0;
-                while (hookInfo.currentIndex < handlers.length) {
-                  const handler = handlers[hookInfo.currentIndex];
-                  result = handler.callback.apply(null, args);
-                  if (returnFirstArg) {
-                    args[0] = result;
-                  }
-                  hookInfo.currentIndex++;
-                }
-                return returnFirstArg ? result : void 0;
-              } finally {
-                hooksStore.__current.delete(hookInfo);
-              }
-            }
-            return (async ? asyncRunner : syncRunner)();
-          };
-        }
-
-        /**
-         * Returns a function which, when invoked, will return the name of the
-         * currently running hook, or `null` if no hook of the given type is currently
-         * running.
-         *
-         * @param {import('.').Hooks}    hooks    Hooks instance.
-         * @param {import('.').StoreKey} storeKey
-         *
-         * @return {() => string | null} Function that returns the current hook name or null.
-         */
-        function createCurrentHook(hooks, storeKey) {
-          return function currentHook() {
-            var _currentArray$at$name;
-            const hooksStore = hooks[storeKey];
-            const currentArray = Array.from(hooksStore.__current);
-            return (_currentArray$at$name = currentArray.at(-1)?.name) !== null && _currentArray$at$name !== void 0 ? _currentArray$at$name : null;
-          };
-        }
-
-        /**
-         * @callback DoingHook
-         * Returns whether a hook is currently being executed.
-         *
-         * @param {string} [hookName] The name of the hook to check for.  If
-         *                            omitted, will check for any hook being executed.
-         *
-         * @return {boolean} Whether the hook is being executed.
-         */
-
-        /**
-         * Returns a function which, when invoked, will return whether a hook is
-         * currently being executed.
-         *
-         * @param {import('.').Hooks}    hooks    Hooks instance.
-         * @param {import('.').StoreKey} storeKey
-         *
-         * @return {DoingHook} Function that returns whether a hook is currently
-         *                     being executed.
-         */
-        function createDoingHook(hooks, storeKey) {
-          return function doingHook(hookName) {
-            const hooksStore = hooks[storeKey];
-
-            // If the hookName was not passed, check for any current hook.
-            if ('undefined' === typeof hookName) {
-              return hooksStore.__current.size > 0;
-            }
-
-            // Find if the `hookName` hook is in `__current`.
-            return Array.from(hooksStore.__current).some(hook => hook.name === hookName);
-          };
-        }
-
-        /**
-         * Internal dependencies
-         */
-
-        /**
-         * @callback DidHook
-         *
-         * Returns the number of times an action has been fired.
-         *
-         * @param {string} hookName The hook name to check.
-         *
-         * @return {number | undefined} The number of times the hook has run.
-         */
-
-        /**
-         * Returns a function which, when invoked, will return the number of times a
-         * hook has been called.
-         *
-         * @param {import('.').Hooks}    hooks    Hooks instance.
-         * @param {import('.').StoreKey} storeKey
-         *
-         * @return {DidHook} Function that returns a hook's call count.
-         */
-        function createDidHook(hooks, storeKey) {
-          return function didHook(hookName) {
-            const hooksStore = hooks[storeKey];
-            if (!validateHookName(hookName)) {
-              return;
-            }
-            return hooksStore[hookName] && hooksStore[hookName].runs ? hooksStore[hookName].runs : 0;
-          };
-        }
-
-        /**
-         * Internal dependencies
-         */
-
-        /**
-         * Internal class for constructing hooks. Use `createHooks()` function
-         *
-         * Note, it is necessary to expose this class to make its type public.
-         *
-         * @private
-         */
-        class _Hooks {
-          constructor() {
-            /** @type {import('.').Store} actions */
-            this.actions = Object.create(null);
-            this.actions.__current = new Set();
-
-            /** @type {import('.').Store} filters */
-            this.filters = Object.create(null);
-            this.filters.__current = new Set();
-            this.addAction = createAddHook(this, 'actions');
-            this.addFilter = createAddHook(this, 'filters');
-            this.removeAction = createRemoveHook(this, 'actions');
-            this.removeFilter = createRemoveHook(this, 'filters');
-            this.hasAction = createHasHook(this, 'actions');
-            this.hasFilter = createHasHook(this, 'filters');
-            this.removeAllActions = createRemoveHook(this, 'actions', true);
-            this.removeAllFilters = createRemoveHook(this, 'filters', true);
-            this.doAction = createRunHook(this, 'actions', false, false);
-            this.doActionAsync = createRunHook(this, 'actions', false, true);
-            this.applyFilters = createRunHook(this, 'filters', true, false);
-            this.applyFiltersAsync = createRunHook(this, 'filters', true, true);
-            this.currentAction = createCurrentHook(this, 'actions');
-            this.currentFilter = createCurrentHook(this, 'filters');
-            this.doingAction = createDoingHook(this, 'actions');
-            this.doingFilter = createDoingHook(this, 'filters');
-            this.didAction = createDidHook(this, 'actions');
-            this.didFilter = createDidHook(this, 'filters');
-          }
-        }
-
-        /** @typedef {_Hooks} Hooks */
-
-        /**
-         * Returns an instance of the hooks object.
-         *
-         * @return {Hooks} A Hooks instance.
-         */
-        function createHooks() {
-          return new _Hooks();
-        }
-
-        /**
-         * Internal dependencies
-         */
-
-        /** @typedef {(...args: any[])=>any} Callback */
-
-        /**
-         * @typedef Handler
-         * @property {Callback} callback  The callback
-         * @property {string}   namespace The namespace
-         * @property {number}   priority  The namespace
-         */
-
-        /**
-         * @typedef Hook
-         * @property {Handler[]} handlers Array of handlers
-         * @property {number}    runs     Run counter
-         */
-
-        /**
-         * @typedef Current
-         * @property {string} name         Hook name
-         * @property {number} currentIndex The index
-         */
-
-        /**
-         * @typedef {Record<string, Hook> & {__current: Set<Current>}} Store
-         */
-
-        /**
-         * @typedef {'actions' | 'filters'} StoreKey
-         */
-
-        /**
-         * @typedef {import('./createHooks').Hooks} Hooks
-         */
-
-        const defaultHooks = createHooks();
-        const {
-          addAction,
-          addFilter,
-          removeAction,
-          removeFilter,
-          hasAction,
-          hasFilter,
-          removeAllActions,
-          removeAllFilters,
-          doAction,
-          doActionAsync,
-          applyFilters,
-          applyFiltersAsync,
-          currentAction,
-          currentFilter,
-          doingAction,
-          doingFilter,
-          didAction,
-          didFilter,
-          actions,
-          filters
-        } = defaultHooks;
 
         /**
          * Internal dependencies
@@ -35988,6 +35489,9 @@
           required: false,
           removable: true
         }];
+        const getDraggableFields = () => {
+          return applyFilters("petitioner.formBuilder.draggableFields", DRAGGABLE_FIELD_TYPES);
+        };
         const DEFAULT_BUILDER_FIELDS = {
           fname: {
             fieldKey: "fname",
@@ -36025,7 +35529,12 @@
             removable: false
           }
         };
-        const ALl_POSSIBLE_FIELDS = [...DRAGGABLE_FIELD_TYPES, ...Object.values(DEFAULT_BUILDER_FIELDS)];
+        const getDefaultBuilderFields = () => {
+          return applyFilters("petitioner.formBuilder.defaultFields", DEFAULT_BUILDER_FIELDS);
+        };
+        const getAllPossibleFields = () => {
+          return [...getDraggableFields(), ...Object.values(getDefaultBuilderFields())];
+        };
         function FormBuilderContextProvider({
           children
         }) {
@@ -36215,7 +35724,7 @@
         };
         const getFieldLabels = () => {
           const fieldMap = {};
-          ALl_POSSIBLE_FIELDS.forEach(field => {
+          getAllPossibleFields().forEach(field => {
             if (field?.fieldKey) {
               fieldMap[field.fieldKey] = field.label;
             }
@@ -36251,7 +35760,7 @@
           if (label === "submitted_at") {
             return "date";
           }
-          const correctItem = ALl_POSSIBLE_FIELDS.find(item => item.fieldKey === label);
+          const correctItem = getAllPossibleFields().find(item => item.fieldKey === label);
           return correctItem?.type || "text";
         };
         const getExportURL = () => {
@@ -41882,6 +41391,7 @@
 	gap: 4px;
 `;
         const D_PREFIX = "ptr_insert_";
+        const draggableFields$1 = getDraggableFields();
         const getIDNoPrefix = id => id.replace(D_PREFIX, "");
         function PaletteDraggable({
           id,
@@ -41932,7 +41442,7 @@
               children: __("Available fields", "petitioner")
             }), /* @__PURE__ */jsxRuntimeExports.jsx("p", {
               children: __("Below is a list of additional fields you can add to your form.", "petitioner")
-            }), DRAGGABLE_FIELD_TYPES.map(field => /* @__PURE__ */jsxRuntimeExports.jsx(PaletteDraggable, {
+            }), draggableFields$1.map(field => /* @__PURE__ */jsxRuntimeExports.jsx(PaletteDraggable, {
               id: D_PREFIX + field.fieldKey,
               label: field.fieldName
             }, field.fieldKey))]
@@ -42211,6 +41721,7 @@
             })]
           });
         }
+        const draggableFields = getDraggableFields();
         const StyledPanel = dt(Panel)`
 	margin-top: var(--ptr-admin-spacing-md, 16px);
 
@@ -42231,7 +41742,7 @@
           } = useFormBuilderContext();
           const handleFieldInsert = (rawID, position) => {
             const id = getIDNoPrefix(rawID);
-            const newField = DRAGGABLE_FIELD_TYPES.find(field => field.fieldKey === id);
+            const newField = draggableFields.find(field => field.fieldKey === id);
             const newFieldID = newField?.fieldKey;
             if (!newField || typeof newFieldID !== "string") {
               console.error("Field type not found:", id);
