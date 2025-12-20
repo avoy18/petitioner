@@ -70,6 +70,8 @@ class AV_Petitioner_Setup
         add_action('wp_ajax_petitioner_update_submission', ['AV_Petitioner_Submissions_Controller', 'api_update_form_submission']);
         add_action('wp_ajax_petitioner_delete_submission', ['AV_Petitioner_Submissions_Controller', 'api_delete_form_submission']);
         add_action('wp_ajax_petitioner_get_submission_count', ['AV_Petitioner_Submissions_Controller', 'api_get_submission_count']);
+        add_action('wp_ajax_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
+        add_action('wp_ajax_nopriv_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
 
         add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_export_csv'));
     }
@@ -247,5 +249,16 @@ class AV_Petitioner_Setup
 
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', array('wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components'), AV_PETITIONER_PLUGIN_VERSION, true);
+    }
+
+    /**
+     * Get the frontend nonce.
+     *
+     */
+    public function api_get_frontend_nonce()
+    {
+        wp_send_json_success([
+            'nonce' => wp_create_nonce('petitioner_form_nonce'),
+        ]);
     }
 }
