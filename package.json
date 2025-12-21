@@ -44,7 +44,6 @@
 		"@wordpress/blocks": "^13.7.0",
 		"@wordpress/components": "^28.7.0",
 		"@wordpress/data": "^10.7.0",
-		"@wordpress/editor": "^14.7.0",
 		"@wordpress/element": "^6.7.0",
 		"@wordpress/i18n": "^5.23.0",
 		"@wordpress/prettier-config": "^4.17.0",
@@ -56,8 +55,8 @@
 		"happy-dom": "^17.6.3",
 		"postcss-nested": "^6.0.1",
 		"prettier": "^3.4.2",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
+		"react": "18.3.1",
+		"react-dom": "18.3.1",
 		"tsconfig-paths": "^4.2.0",
 		"typescript": "^5.8.3",
 		"vite": "^5.4.2",
@@ -73,8 +72,16 @@
 		"styled-components": "^6.1.18"
 	},
 	"resolutions": {
-		"@types/react": "19.1.5",
-		"@types/react-dom": "19.1.5"
+		"@types/react": "^18.3.0",
+		"@types/react-dom": "^18.3.0"
+	},
+	"pnpm": {
+		"peerDependencyRules": {
+			"allowedVersions": {
+				"react": "18",
+				"react-dom": "18"
+			}
+		}
 	},
 	"packageManager": "pnpm@10.0.0"
 }
