@@ -1,16 +1,7 @@
 import ReCaptcha from './recaptcha';
 import HCaptcha from './hcaptcha';
 import Turnstile from './turnstile';
-import type { PetitionerWrapperElement } from './consts';
-
-type ApiResponse = {
-	success: boolean;
-	data: {
-		title: string;
-		message: string;
-	};
-};
-
+import type { PetitionerWrapperElement, ApiResponse } from './consts';
 
 /**
  * @class PetitionerForm
@@ -35,12 +26,13 @@ export default class PetitionerForm {
 	private wrapper: PetitionerWrapperElement;
 	private responseTitle: HTMLHeadingElement | null;
 	private responseText: HTMLParagraphElement | null;
-	private formEl: HTMLElement | null;
+	private formEl: HTMLFormElement | null;
 	private viewLetterBTN: HTMLButtonElement | null;
 	private petitionerModal: HTMLDivElement | null;
 	private modalClose: HTMLButtonElement | null;
 	private backdrop: HTMLDivElement | null;
 	private actionPath: string;
+	private nonceEndpoint: string;
 	private nonce: string;
 	private captchaValidated: boolean = false;
 	private hcaptcha: object | null = null;
@@ -59,11 +51,12 @@ export default class PetitionerForm {
 
 		// Get settings with proper fallbacks
 		const settings = window?.petitionerFormSettings || {};
-		const { actionPath = '', nonce = '' } = settings;
+		const { actionPath = '', nonce = '', nonceEndpoint = '' } = settings;
 
 		// AJAX action path
 		this.actionPath = actionPath || '';
-		this.nonce = nonce;
+		this.nonceEndpoint = nonceEndpoint || '';
+		this.nonce = nonce || '';
 
 		if (!this.wrapper) return;
 
@@ -99,15 +92,15 @@ export default class PetitionerForm {
 	private initializeCaptcha(): void {
 		if (typeof window.petitionerCaptcha === 'undefined') return;
 
-		if (window.petitionerCaptcha.enableRecaptcha && this.formEl) {
+		if (window.petitionerCaptcha.enableRecaptcha === '1' && this.formEl) {
 			new ReCaptcha(this.formEl);
 		}
 
-		if (window.petitionerCaptcha.enableHcaptcha && this.formEl) {
+		if (window.petitionerCaptcha.enableHcaptcha === '1' && this.formEl) {
 			this.hcaptcha = new HCaptcha(this.formEl);
 		}
 
-		if (window.petitionerCaptcha.enableTurnstile && this.formEl) {
+		if (window.petitionerCaptcha.enableTurnstile === '1' && this.formEl) {
 			this.turnstile = new Turnstile(this.formEl);
 		}
 	}
@@ -143,7 +136,7 @@ export default class PetitionerForm {
 		messaging: { title: string; message: string },
 		isSuccess: boolean = false
 	): void {
-		this.wrapper.classList.add('petitioner--submitted');
+		this.wrapper?.classList.add('petitioner--submitted');
 		const { title, message } = messaging || { title: '', message: '' };
 		if (this.responseTitle) this.responseTitle.innerText = title;
 		if (this.responseText) this.responseText.innerHTML = message;
@@ -172,7 +165,7 @@ export default class PetitionerForm {
 
 		// Validate hCaptcha if enabled
 		if (this.shouldValidateHCaptcha()) {
-			this.hcaptcha!.validate(() => {
+			(this.hcaptcha as HCaptcha).validate(() => {
 				this.captchaValidated = true;
 				this.submitForm();
 			});
@@ -181,7 +174,7 @@ export default class PetitionerForm {
 
 		// Validate Turnstile if enabled
 		if (this.shouldValidateTurnstile()) {
-			this.turnstile!.validate(() => {
+			(this.turnstile as Turnstile).validate(() => {
 				this.captchaValidated = true;
 				this.submitForm();
 			});
@@ -193,7 +186,7 @@ export default class PetitionerForm {
 
 	private shouldValidateHCaptcha(): boolean {
 		return !!(
-			petitionerCaptcha?.enableHcaptcha &&
+			window.petitionerCaptcha?.enableHcaptcha &&
 			this.hcaptcha &&
 			!this.captchaValidated
 		);
@@ -201,60 +194,93 @@ export default class PetitionerForm {
 
 	private shouldValidateTurnstile(): boolean {
 		return !!(
-			petitionerCaptcha?.enableTurnstile &&
+			window.petitionerCaptcha?.enableTurnstile &&
 			this.turnstile &&
 			!this.captchaValidated
 		);
 	}
 
-	private submitForm(): void {
+	private async submitForm(): Promise<void> {
 		if (!this.formEl) return;
 
-		this.wrapper.classList.add('petitioner--loading');
+		this.wrapper?.classList.add('petitioner--loading');
 
-		const formData = new FormData(this.formEl);
-		formData.append('petitioner_nonce', this.nonce);
-
-		fetch(this.actionPath, {
-			method: 'POST',
-			body: formData,
-			credentials: 'same-origin',
-			headers: { 'X-Requested-With': 'XMLHttpRequest' },
-		})
-			.then((response: Response) => {
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
-				return response.json() as Promise<ApiResponse>;
-			})
-			.then((res: ApiResponse) => {
-				if (res.success) {
-					this.showResponseMSG(res.data, true);
-				} else {
-					this.showResponseMSG(res.data, false);
-				}
-				this.handleSubmissionComplete(formData);
-			})
-			.catch((error: Error) => {
-				console.error('Error:', error);
-				alert('An unexpected error occurred. Please try again later.');
-				this.handleSubmissionComplete();
+		try {
+			const formData = new FormData(this.formEl as HTMLFormElement);
+			const freshNonce = await this.getFreshNonce();
+			formData.append('petitioner_nonce', freshNonce);
+			const response = await fetch(this.actionPath, {
+				method: 'POST',
+				body: formData,
+				credentials: 'same-origin',
+				headers: { 'X-Requested-With': 'XMLHttpRequest' },
 			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const res = (await response.json()) as ApiResponse;
+
+			if (res.success) {
+				this.showResponseMSG(res.data, true);
+			} else {
+				this.showResponseMSG(res.data, false);
+			}
+
+			this.handleSubmissionComplete(formData);
+		} catch (error) {
+			console.error('Error:', error);
+			alert('An unexpected error occurred. Please try again later.');
+			this.handleSubmissionComplete();
+		}
 	}
 
 	private handleSubmissionComplete(formData?: FormData): void {
-		this.wrapper.classList.remove('petitioner--loading');
+		this.wrapper?.classList.remove('petitioner--loading');
 		this.formEl?.reset();
 		this.captchaValidated = false; // ✅ Reset for next submission
 
 		if (formData) {
-			const event = new CustomEvent<CustomEventDetail>(
-				'petitionerFormSubmit',
-				{
-					detail: { formData },
-				}
-			);
+			const event = new CustomEvent('petitionerFormSubmit', {
+				detail: { formData },
+			});
 			document.dispatchEvent(event);
+		}
+	}
+
+	/**
+	 * Fetches a fresh nonce from the server to avoid stale cached nonces.
+	 * Falls back to the inline nonce if the endpoint is unavailable.
+	 */
+	private async getFreshNonce(): Promise<string> {
+		try {
+			const response = await fetch(this.nonceEndpoint, {
+				method: 'GET',
+				credentials: 'same-origin',
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to fetch nonce');
+			}
+
+			const data = await response.json();
+
+			if (data.success && data.data?.nonce) {
+				this.nonce = data.data.nonce;
+				return data.data.nonce;
+			}
+
+			throw new Error('Invalid nonce response');
+		} catch (error) {
+			console.warn('Could not fetch fresh nonce:', error);
+
+			// Fallback to cached nonce, or bubble up if none exists
+			if (this.nonce) {
+				return this.nonce;
+			}
+
+			throw new Error('No nonce available');
 		}
 	}
 }

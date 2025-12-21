@@ -11,13 +11,14 @@ import {
 } from '@wordpress/components';
 
 import { useState } from '@wordpress/element';
+import type { IntegrationBoxProps } from './consts';
 
 export default function IntegrationBox({
 	title = 'reCAPTCHA',
 	description = 'Google reCAPTCHA integration',
 	enabled = false,
 	integrationFields = null,
-}) {
+}: IntegrationBoxProps) {
 	const [isOpen, setOpen] = useState(false);
 	const openModal = () => setOpen(true);
 	const closeModal = () => setOpen(false);
@@ -28,7 +29,7 @@ export default function IntegrationBox({
 				<CardHeader>
 					<Heading level={4}>{title}</Heading>
 				</CardHeader>
-				{/* @ts-ignore */}
+				{/* @ts-ignore react/no-unknown-property: min-height is a valid CSS property */}
 				<CardBody style={{ 'min-height': '80px' }}>
 					<Text>{description}</Text>
 				</CardBody>
