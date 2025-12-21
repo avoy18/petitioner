@@ -41,3 +41,10 @@ export type SettingsFormContextValue = {
 	) => void;
 	windowPetitionerData: WindowSettingsData;
 };
+
+export type IntegrationBoxProps = {
+	title: string;
+	description: string;
+	enabled: boolean;
+	integrationFields: React.ReactNode | null;
+};
