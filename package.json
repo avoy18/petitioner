@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"clean": "rm -rf dist dist-gutenberg",
-		"dev": "pnpm clean && concurrently \"pnpm dev:admin\" \"pnpm dev:frontend\"",
+		"dev": "concurrently -c blue,green -n admin,frontend \"pnpm dev:admin\" \"pnpm dev:frontend\"",
 		"dev:admin": "vite build --mode development --watch --config vite.admin.config.ts",
 		"dev:frontend": "vite build --mode development --watch --config vite.frontend.config.ts",
 		"dev:gutenberg": "wp-scripts start --output-path=dist-gutenberg",
