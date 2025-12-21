@@ -15,7 +15,7 @@ Create, target, and track high-impact petitions with Petitioner: automate delive
 
 [Plugin homepage & demo](https://getpetitioner.com).
 [Documentation](https://getpetitioner.com/docs/).
-Petitioner pairs unlimited, drag-and-drop petition forms with advanced targeting and export tools—everything you expect from premium petition builders, available free in the plugin directory.
+Petitioner pairs unlimited, drag-and-drop petition forms with advanced targeting and export tools, everything you expect from premium petition builders, available free in the plugin directory.
 It’s built for advocacy teams, nonprofits, campaigns, and publishers who need high-volume petitions with reliable delivery, flexible layouts, and clear reporting without SaaS lock-in.
 
 ### Quick start
@@ -88,7 +88,7 @@ Create your first petition under Petitioner -> Add new. Once you do that, you ca
 
 = Can I collect petitions without sending emails? =
 
-Absolutely. Sending a petition letter to a representative is optional—just disable the rep email inside the petition’s Email tab and submissions will still be stored, displayed, and exportable.
+Absolutely. Sending a petition letter to a representative is optional. Just disable the rep email inside the petition’s Email tab and submissions will still be stored, displayed, and exportable.
 
 = How can I prevent unwanted submissions or spam? =
 
@@ -141,9 +141,12 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 == Changelog ==
 
 = 0.7.1 =
-* Improved nonce handling on the frontend
-* Fix captcha console errors
-* Tested the plugin up to the latest WP version (6.9)
+* Bugfixes
+    * Fixed nonce validation issues caused by page caching
+    * Fixed captcha-related console errors when captcha is disabled
+* Tested with WordPress 6.9
+* Minor code improvements
+
 = 0.7.0 =
 * Improved export for submissions
     * Allow filtering out unwanted items
