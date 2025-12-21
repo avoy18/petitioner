@@ -1,0 +1,6 @@
+[github_app]
+pr_commands = []
+
+[pr_description]
+enable_pr_diagram = false
+

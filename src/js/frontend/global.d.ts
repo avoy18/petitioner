@@ -4,6 +4,10 @@ declare global {
     interface Window {
         petitionerFormSettings?: PetitionerFormSettings;
         petitionerCaptcha?: PetitionerCaptcha;
+        grecaptcha?: {
+            ready: (callback: () => void) => void;
+            execute: (siteKey: string, options?: { action?: string }) => Promise<string>;
+        };
     }
 }
 

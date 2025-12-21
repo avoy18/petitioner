@@ -4,25 +4,24 @@ export default class ReCaptcha {
 			typeof window.petitionerCaptcha !== 'undefined' &&
 			window.petitionerCaptcha.recaptchaSiteKey
 		) {
-			const recaptchaField = petitionForm.querySelector(
+			const recaptchaField = petitionForm.querySelector<HTMLInputElement>(
 				'[name="petitioner-g-recaptcha-response"]'
 			);
 
 			petitionForm.addEventListener(
 				'focusin',
 				function () {
-					if (recaptchaField && recaptchaField.value) {
+					if (recaptchaField && recaptchaField?.value) {
 						return;
 					}
 
-					if (typeof grecaptcha === 'undefined' || typeof grecaptcha?.ready === 'undefined') {
+					if (typeof window.grecaptcha === 'undefined' || typeof window.grecaptcha?.ready === 'undefined') {
 						return;
 					}
 
-					grecaptcha.ready(function () {
-						grecaptcha
-							.execute(window.petitionerCaptcha.recaptchaSiteKey, {
-								// action: 'submit',
+					window.grecaptcha.ready(function () {
+						window.grecaptcha
+							?.execute(window.petitionerCaptcha?.recaptchaSiteKey || '', {
 							})
 							.then((token) => {
 								if (recaptchaField) {
