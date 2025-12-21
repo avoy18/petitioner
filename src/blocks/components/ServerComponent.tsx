@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error WordPress block types are provided at runtime (bundled as externals)
 import ServerSideRender from '@wordpress/server-side-render';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
