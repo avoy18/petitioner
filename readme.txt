@@ -2,7 +2,7 @@
 Contributors: avoytenko
 Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
-Requires at least: 5.9
+Requires at least: 6.3
 Tested up to: 6.9
 Stable Tag: 0.8.0
 Requires PHP: 8.0
