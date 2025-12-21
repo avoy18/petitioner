@@ -13,7 +13,7 @@ const deploy = () => {
 	const sourceDir = path.resolve(__dirname, '..');
 
 	fs.copySync(sourceDir, targetDir, {
-		filter: (src: string) => {
+		filter: (src) => {
 			return (
 				!src.includes('.git') &&
 				!src.includes('.DS_Store') &&

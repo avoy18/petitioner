@@ -13,7 +13,7 @@
 		"build:admin": "vite build --mode production --config vite.admin.config.ts",
 		"build:frontend": "vite build --mode production --config vite.frontend.config.ts",
 		"build:gutenberg": "wp-scripts build --output-path=dist-gutenberg",
-		"deploy": "pnpm build && npx vite-node scripts/deploy.ts",
+		"deploy": "pnpm build && node scripts/deploy.js",
 		"test": "vitest run"
 	},
 	"repository": {
