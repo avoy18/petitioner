@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error WordPress block types are provided at runtime (bundled as externals)
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,

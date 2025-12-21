@@ -1,6 +1,6 @@
-// @ts-ignore
+// @ts-expect-error WordPress block types are provided at runtime (bundled as externals)
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-// @ts-ignore
+// @ts-expect-error WordPress block types are provided at runtime (bundled as externals)
 import ServerSideRender from '@wordpress/server-side-render';
 import { useSelect } from '@wordpress/data';
 import { Button, SelectControl, PanelBody } from '@wordpress/components';
