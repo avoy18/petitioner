@@ -1,4 +1,4 @@
-import { createRoot } from 'react-dom/client';
+import { createRoot } from '@wordpress/element';
 import EditFields from '@admin/sections/EditFields';
 import SettingsFields from '@admin/sections/SettingsFields';
 import ShortcodeArea from '@admin/sections/ShortcodeArea';

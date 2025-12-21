@@ -1,5 +1,5 @@
 import { TabPanel } from '@wordpress/components';
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from '@wordpress/element';
 import type { TabPanelProps, Tab } from './consts';
 import { updateActiveTabURL } from '@admin/utilities';
 

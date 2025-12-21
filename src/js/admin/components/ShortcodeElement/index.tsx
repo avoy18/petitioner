@@ -3,7 +3,7 @@ import {
 	BaseControl,
 	TextControl,
 } from '@wordpress/components';
-import { useState } from 'react';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import type { ShortcodeProps } from './consts';
 import InputWrapper from '@admin/components/InputWrapper';
