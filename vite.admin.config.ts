@@ -37,6 +37,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 				},
 				output: {
 					format: 'iife',
+					name: 'petitionerAdmin',
 					globals: wpGlobals,
 					entryFileNames: '[name].js',
 					assetFileNames: '[name][extname]',
