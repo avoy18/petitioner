@@ -5,5 +5,5 @@
 *.log
 node_modules
 .DS_Store
-dist/
-dist-gutenberg/
+dist
+dist-gutenberg
