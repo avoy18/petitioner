@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Button, CardBody } from '@wordpress/components';
-import { SPACINGS } from '@admin/theme';
+import { COLORS, COLORS, SPACINGS } from '@admin/theme';
 import NoticeSystem from '@admin/components/NoticeSystem';
 
 export const StyledCardBody = styled(CardBody)`
@@ -35,5 +35,21 @@ export const NoticeSystemWrapper = styled(NoticeSystem)`
 
     .components-notice {
         padding: ${SPACINGS.xs};
+    }
+`;
+
+export const SubmissionExportPreviewWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: ${SPACINGS.sm};
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid ${COLORS.grey};
+        th, td {
+            border: 1px solid ${COLORS.grey};
+            padding: ${SPACINGS.xs};
+        }
     }
 `;

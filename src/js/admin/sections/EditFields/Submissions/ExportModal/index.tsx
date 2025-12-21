@@ -8,6 +8,7 @@ import {
 	SummaryItem,
 	NoticeSystemWrapper,
 	StyledCardBody,
+	SubmissionExportPreviewWrapper,
 } from './styled';
 import { getExportURL, getSubmissionCount } from '../utilities';
 import {
@@ -16,8 +17,48 @@ import {
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
 import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
-import {type SubmissionItem, DEFAULT_EXPORT_LOGIC } from '../consts';
+import { type SubmissionItem, DEFAULT_EXPORT_LOGIC } from '../consts';
 import Filters from '../Filters';
+
+const SubmissionExportPreview = ({
+	submissionExample,
+}: {
+	submissionExample: SubmissionItem;
+}) => {
+	const {
+		fname,
+		lname,
+		email,
+		country,
+		accept_tos,
+		submitted_at,
+	} = submissionExample;
+	return (
+		<SubmissionExportPreviewWrapper>
+			<h2>{__('Preview', 'petitioner')}</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>{__('First Name', 'petitioner')}</th>
+						<th>{__('Last Name', 'petitioner')}</th>
+						<th>{__('Email', 'petitioner')}</th>
+						<th>{__('Country', 'petitioner')}</th>
+						<th>{__('Submitted At', 'petitioner')}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{fname}</td>
+						<td>{lname}</td>
+						<td>{email}</td>
+						<td>{country}</td>
+						<td>{submitted_at}</td>
+					</tr>
+				</tbody>
+			</table>
+		</SubmissionExportPreviewWrapper>
+	);
+};
 
 export default function ExportModal({
 	onClose = () => {},
@@ -80,17 +121,23 @@ export default function ExportModal({
 						</SummaryItem>
 						<SummaryItem>
 							{__('Filters:', 'petitioner')}{' '}
-							<strong><FormattedLogic logic={logic} /></strong>
+							<strong>
+								<FormattedLogic logic={logic} />
+							</strong>
 						</SummaryItem>
 						<CardDivider />
 					</SummaryWrapper>
 
-				<Filters
-					validCount={validCount}
-					logic={logic}
-					onLogicChange={handleLogicChange}
-					submissionExample={submissionExample}
-				/>
+					<Filters
+						validCount={validCount}
+						logic={logic}
+						onLogicChange={handleLogicChange}
+						submissionExample={submissionExample}
+					/>
+
+					<SubmissionExportPreview
+						submissionExample={submissionExample}
+					/>
 				</StyledCardBody>
 			</Card>
 			<form action={exportURL} method="POST" target="_blank">

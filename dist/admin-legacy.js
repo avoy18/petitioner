@@ -37094,6 +37094,21 @@
         padding: ${SPACINGS.xs};
     }
 `;
+        const SubmissionExportPreviewWrapper = dt.div`
+	display: flex;
+	flex-direction: column;
+	gap: ${SPACINGS.sm};
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid ${COLORS.grey};
+        th, td {
+            border: 1px solid ${COLORS.grey};
+            padding: ${SPACINGS.xs};
+        }
+    }
+`;
         const OPERATORS = [{
           value: "equals",
           label: __("equals", "petitioner")
@@ -37478,6 +37493,53 @@
           });
         };
         const Filters$1 = reactExports.memo(Filters);
+        const SubmissionExportPreview = ({
+          submissionExample
+        }) => {
+          const {
+            fname,
+            lname,
+            email,
+            country,
+            accept_tos,
+            submitted_at
+          } = submissionExample;
+          return /* @__PURE__ */jsxRuntimeExports.jsxs(SubmissionExportPreviewWrapper, {
+            children: [/* @__PURE__ */jsxRuntimeExports.jsx("h2", {
+              children: __("Preview", "petitioner")
+            }), /* @__PURE__ */jsxRuntimeExports.jsxs("table", {
+              children: [/* @__PURE__ */jsxRuntimeExports.jsx("thead", {
+                children: /* @__PURE__ */jsxRuntimeExports.jsxs("tr", {
+                  children: [/* @__PURE__ */jsxRuntimeExports.jsx("th", {
+                    children: __("First Name", "petitioner")
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("th", {
+                    children: __("Last Name", "petitioner")
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("th", {
+                    children: __("Email", "petitioner")
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("th", {
+                    children: __("Country", "petitioner")
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("th", {
+                    children: __("Submitted At", "petitioner")
+                  })]
+                })
+              }), /* @__PURE__ */jsxRuntimeExports.jsx("tbody", {
+                children: /* @__PURE__ */jsxRuntimeExports.jsxs("tr", {
+                  children: [/* @__PURE__ */jsxRuntimeExports.jsx("td", {
+                    children: fname
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("td", {
+                    children: lname
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("td", {
+                    children: email
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("td", {
+                    children: country
+                  }), /* @__PURE__ */jsxRuntimeExports.jsx("td", {
+                    children: submitted_at
+                  })]
+                })
+              })]
+            })]
+          });
+        };
         function ExportModal({
           onClose = () => {},
           total = 0,
@@ -37543,6 +37605,8 @@
                   validCount,
                   logic,
                   onLogicChange: handleLogicChange,
+                  submissionExample
+                }), /* @__PURE__ */jsxRuntimeExports.jsx(SubmissionExportPreview, {
                   submissionExample
                 })]
               })
