@@ -10,6 +10,7 @@ const fieldTypeToGroup = {
 	wysiwyg: 'wysiwyg',
 	submit: 'submit',
 	comments: 'textarea',
+	textarea: 'textarea',
 	date: 'date',
 };
 
