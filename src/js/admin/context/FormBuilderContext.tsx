@@ -3,7 +3,9 @@ import {
 	useContext,
 	useState,
 	useCallback,
+	useMemo,
 } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 import { isNonEmptyObject } from '@admin/utilities';
 import { __ } from '@wordpress/i18n';
 
@@ -190,6 +192,24 @@ export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	},
 };
 
+export function useDraggableFields() {
+	return useMemo(() => {
+		return applyFilters(
+			'petitioner.formBuilder.draggableFields',
+			DRAGGABLE_FIELD_TYPES
+		) as BuilderField[];
+	}, []);
+}
+
+export function useDefaultBuilderFields() {
+	return useMemo(() => {
+		return applyFilters(
+			'petitioner.formBuilder.defaultFields',
+			DEFAULT_BUILDER_FIELDS
+		) as BuilderFieldMap;
+	}, []);
+}
+
 export const ALl_POSSIBLE_FIELDS = [
 	...DRAGGABLE_FIELD_TYPES,
 	...Object.values(DEFAULT_BUILDER_FIELDS),
@@ -199,10 +219,11 @@ export function FormBuilderContextProvider({
 	children,
 }: FormBuilderContextProviderProps) {
 	const { form_fields = {}, field_order = [] } = window.petitionerData;
+	const filteredDefaultFields = useDefaultBuilderFields();
 
 	const startingFormFields = isNonEmptyObject(form_fields)
 		? (form_fields as BuilderFieldMap)
-		: DEFAULT_BUILDER_FIELDS;
+		: filteredDefaultFields;
 
 	const [formBuilderFields, setFormBuilderFields] =
 		useState(startingFormFields);
