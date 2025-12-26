@@ -192,24 +192,30 @@ export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 };
 
 export function getDraggableFields(): BuilderField[] {
-	return applyFilters(
+	const draggableFields = applyFilters(
 		'petitioner.formBuilder.draggableFields',
 		DRAGGABLE_FIELD_TYPES
 	) as BuilderField[];
+
+	return Array.isArray(draggableFields)
+		? draggableFields
+		: DRAGGABLE_FIELD_TYPES;
 }
 
 export function getDefaultBuilderFields(): BuilderFieldMap {
-	return applyFilters(
+	const result = applyFilters(
 		'petitioner.formBuilder.defaultFields',
 		DEFAULT_BUILDER_FIELDS
 	) as BuilderFieldMap;
+
+	return result || DEFAULT_BUILDER_FIELDS;
 }
 
 export function getAllPossibleFields(): BuilderField[] {
-	return [
-		...getDraggableFields(),
-		...Object.values(getDefaultBuilderFields()),
-	];
+	const draggableFields = getDraggableFields();
+	const defaultFields = getDefaultBuilderFields();
+
+	return [...draggableFields, ...Object.values(defaultFields)];
 }
 
 export function FormBuilderContextProvider({
