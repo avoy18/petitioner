@@ -192,22 +192,18 @@ export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	},
 };
 
-export function useDraggableFields() {
-	return useMemo(() => {
-		return applyFilters(
-			'petitioner.formBuilder.draggableFields',
-			DRAGGABLE_FIELD_TYPES
-		) as BuilderField[];
-	}, []);
+export function getDraggableFields(): BuilderField[] {
+	return applyFilters(
+		'petitioner.formBuilder.draggableFields',
+		DRAGGABLE_FIELD_TYPES
+	) as BuilderField[];
 }
 
-export function useDefaultBuilderFields() {
-	return useMemo(() => {
-		return applyFilters(
-			'petitioner.formBuilder.defaultFields',
-			DEFAULT_BUILDER_FIELDS
-		) as BuilderFieldMap;
-	}, []);
+export function getDefaultBuilderFields(): BuilderFieldMap {
+	return applyFilters(
+		'petitioner.formBuilder.defaultFields',
+		DEFAULT_BUILDER_FIELDS
+	) as BuilderFieldMap;
 }
 
 export const ALl_POSSIBLE_FIELDS = [
@@ -219,7 +215,7 @@ export function FormBuilderContextProvider({
 	children,
 }: FormBuilderContextProviderProps) {
 	const { form_fields = {}, field_order = [] } = window.petitionerData;
-	const filteredDefaultFields = useDefaultBuilderFields();
+	const filteredDefaultFields = getDefaultBuilderFields();
 
 	const startingFormFields = isNonEmptyObject(form_fields)
 		? (form_fields as BuilderFieldMap)
