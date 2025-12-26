@@ -27,6 +27,7 @@ class AV_Petitioner_Submissions_Model
         'approval_status',
         'submitted_at',
         'confirmation_token',
+        'custom_properties'
     ];
 
     public static function table_name()
@@ -61,6 +62,7 @@ class AV_Petitioner_Submissions_Model
             approval_status varchar(255) DEFAULT 'Confirmed',
             submitted_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             confirmation_token varchar(64) DEFAULT NULL,
+            custom_properties LONGTEXT DEFAULT NULL,
             PRIMARY KEY  (id),
             KEY form_id (form_id)
         )";
