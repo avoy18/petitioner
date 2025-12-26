@@ -3,7 +3,6 @@ import {
 	useContext,
 	useState,
 	useCallback,
-	useMemo,
 } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { isNonEmptyObject } from '@admin/utilities';
