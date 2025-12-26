@@ -24,8 +24,6 @@ const StyledPanel = styled(Panel)`
 	}
 `;
 
-const draggableFields = getDraggableFields();
-
 function FormBuilderComponent() {
 	const {
 		fieldOrder,
@@ -33,6 +31,8 @@ function FormBuilderComponent() {
 		formBuilderFields,
 		addFormBuilderField,
 	} = useFormBuilderContext();
+
+	const draggableFields = getDraggableFields();
 
 	const handleFieldInsert = (rawID: string, position: number) => {
 		const id = getIDNoPrefix(rawID);
