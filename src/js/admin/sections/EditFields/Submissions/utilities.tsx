@@ -15,8 +15,6 @@ import type {
 } from '@admin/sections/EditFields/FormBuilder/consts';
 import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 
-const allPossibleFields = getAllPossibleFields();
-
 export const fetchSubmissions = async ({
 	currentPage = 1,
 	formID,
@@ -179,6 +177,8 @@ export const getSubmissionCount = async ({
 export const getFieldLabels = (): Record<string, string> => {
 	const fieldMap: Record<string, string> = {};
 
+	const allPossibleFields = getAllPossibleFields();
+
 	allPossibleFields.forEach((field) => {
 		if (field?.fieldKey) {
 			fieldMap[field.fieldKey] = field.label;
@@ -240,6 +240,8 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 	if (label === 'submitted_at') {
 		return 'date';
 	}
+
+	const allPossibleFields = getAllPossibleFields();
 
 	const correctItem = allPossibleFields.find(
 		(item) => item.fieldKey === label
