@@ -206,10 +206,12 @@ export function getDefaultBuilderFields(): BuilderFieldMap {
 	) as BuilderFieldMap;
 }
 
-export const ALl_POSSIBLE_FIELDS = [
-	...DRAGGABLE_FIELD_TYPES,
-	...Object.values(DEFAULT_BUILDER_FIELDS),
-];
+export function getAllPossibleFields(): BuilderField[] {
+	return [
+		...getDraggableFields(),
+		...Object.values(getDefaultBuilderFields()),
+	];
+}
 
 export function FormBuilderContextProvider({
 	children,

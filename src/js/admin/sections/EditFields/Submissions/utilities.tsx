@@ -13,7 +13,9 @@ import type {
 	FieldKey,
 	FieldType,
 } from '@admin/sections/EditFields/FormBuilder/consts';
-import { ALl_POSSIBLE_FIELDS } from '@admin/context/FormBuilderContext';
+import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
+
+const allPossibleFields = getAllPossibleFields();
 
 export const fetchSubmissions = async ({
 	currentPage = 1,
@@ -177,7 +179,7 @@ export const getSubmissionCount = async ({
 export const getFieldLabels = (): Record<string, string> => {
 	const fieldMap: Record<string, string> = {};
 
-	ALl_POSSIBLE_FIELDS.forEach((field) => {
+	allPossibleFields.forEach((field) => {
 		if (field?.fieldKey) {
 			fieldMap[field.fieldKey] = field.label;
 		}
@@ -231,7 +233,7 @@ export const getHumanValue = (val: string, type: string): string => {
 /**
  * Returns the FieldType for a given FieldKey.
  * If the key is 'submitted_at', returns 'date'.
- * Otherwise, looks up the type from the ALl_POSSIBLE_FIELDS list.
+ * Otherwise, looks up the type from the allPossibleFields list.
  * Falls back to 'text' if the field or type is not found.
  */
 export const getSubmissionValType = (label: FieldKey): FieldType => {
@@ -239,7 +241,7 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 		return 'date';
 	}
 
-	const correctItem = ALl_POSSIBLE_FIELDS.find(
+	const correctItem = allPossibleFields.find(
 		(item) => item.fieldKey === label
 	);
 
