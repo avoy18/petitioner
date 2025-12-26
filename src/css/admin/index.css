@@ -1,5 +1,6 @@
 @import './theme/index.css';
 @import './partials/base.css';
+@import './partials/general.css';
 @import './partials/tabs.css';
 @import './partials/form-builder.css';
 @import './partials/color-picker.css';

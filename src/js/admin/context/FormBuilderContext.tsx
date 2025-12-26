@@ -4,6 +4,7 @@ import {
 	useState,
 	useCallback,
 } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 import { isNonEmptyObject } from '@admin/utilities';
 import { __ } from '@wordpress/i18n';
 
@@ -190,19 +191,42 @@ export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 	},
 };
 
-export const ALl_POSSIBLE_FIELDS = [
-	...DRAGGABLE_FIELD_TYPES,
-	...Object.values(DEFAULT_BUILDER_FIELDS),
-];
+export function getDraggableFields(): BuilderField[] {
+	const draggableFields = applyFilters(
+		'petitioner.formBuilder.draggableFields',
+		DRAGGABLE_FIELD_TYPES
+	) as BuilderField[];
+
+	return Array.isArray(draggableFields)
+		? draggableFields
+		: DRAGGABLE_FIELD_TYPES;
+}
+
+export function getDefaultBuilderFields(): BuilderFieldMap {
+	const result = applyFilters(
+		'petitioner.formBuilder.defaultFields',
+		DEFAULT_BUILDER_FIELDS
+	) as BuilderFieldMap;
+
+	return result || DEFAULT_BUILDER_FIELDS;
+}
+
+export function getAllPossibleFields(): BuilderField[] {
+	const draggableFields = getDraggableFields();
+	const defaultFields = getDefaultBuilderFields();
+
+	return [...draggableFields, ...Object.values(defaultFields)];
+}
 
 export function FormBuilderContextProvider({
 	children,
 }: FormBuilderContextProviderProps) {
 	const { form_fields = {}, field_order = [] } = window.petitionerData;
+	const filteredDefaultFields = getDefaultBuilderFields();
 
 	const startingFormFields = isNonEmptyObject(form_fields)
 		? (form_fields as BuilderFieldMap)
-		: DEFAULT_BUILDER_FIELDS;
+		: filteredDefaultFields;
 
 	const [formBuilderFields, setFormBuilderFields] =
 		useState(startingFormFields);
