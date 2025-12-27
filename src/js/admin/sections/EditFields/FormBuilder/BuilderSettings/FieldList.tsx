@@ -25,9 +25,7 @@ const FieldPaletteItem = styled.div`
 	gap: 4px;
 `;
 
-const D_PREFIX = 'ptr_insert_'
-
-const draggableFields = getDraggableFields();
+const D_PREFIX = 'ptr_insert_';
 
 export const getIDNoPrefix = (id: string) => id.replace(D_PREFIX, '');
 
@@ -41,7 +39,6 @@ function PaletteDraggable({ id, label }: { id: string; label: string }) {
 				type: id,
 			},
 		});
-
 	const alreadyExists = fieldOrder.includes(getIDNoPrefix(id));
 
 	const style = {
@@ -74,6 +71,8 @@ function PaletteDraggable({ id, label }: { id: string; label: string }) {
 }
 
 export default function FieldList() {
+	const draggableFields = getDraggableFields();
+
 	return (
 		<FieldPaletteWrapper>
 			<h3>{__('Available fields', 'petitioner')}</h3>
@@ -86,7 +85,7 @@ export default function FieldList() {
 			{draggableFields.map((field) => (
 				<PaletteDraggable
 					key={field.fieldKey}
-					id={D_PREFIX + field.fieldKey as string}
+					id={(D_PREFIX + field.fieldKey) as string}
 					label={field.fieldName}
 				/>
 			))}

@@ -3,7 +3,6 @@ import {
 	useContext,
 	useState,
 	useCallback,
-	useMemo,
 } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { isNonEmptyObject } from '@admin/utilities';
@@ -193,23 +192,31 @@ export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
 };
 
 export function getDraggableFields(): BuilderField[] {
-	return applyFilters(
+	const draggableFields = applyFilters(
 		'petitioner.formBuilder.draggableFields',
 		DRAGGABLE_FIELD_TYPES
 	) as BuilderField[];
+
+	return Array.isArray(draggableFields)
+		? draggableFields
+		: DRAGGABLE_FIELD_TYPES;
 }
 
 export function getDefaultBuilderFields(): BuilderFieldMap {
-	return applyFilters(
+	const result = applyFilters(
 		'petitioner.formBuilder.defaultFields',
 		DEFAULT_BUILDER_FIELDS
 	) as BuilderFieldMap;
+
+	return result || DEFAULT_BUILDER_FIELDS;
 }
 
-export const ALl_POSSIBLE_FIELDS = [
-	...DRAGGABLE_FIELD_TYPES,
-	...Object.values(DEFAULT_BUILDER_FIELDS),
-];
+export function getAllPossibleFields(): BuilderField[] {
+	const draggableFields = getDraggableFields();
+	const defaultFields = getDefaultBuilderFields();
+
+	return [...draggableFields, ...Object.values(defaultFields)];
+}
 
 export function FormBuilderContextProvider({
 	children,
