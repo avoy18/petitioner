@@ -5,14 +5,46 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Handles custom properties for submissions
+ * Handles custom properties for submissions.
+ * 
+ * Extracts, sanitizes, and stores custom field data from form submissions.
+ * Provides utilities to encode/decode JSON storage and hydrate submission objects.
  * 
  * @package AV_Petitioner
  * @subpackage Submissions
  * @since 0.8.0
+ * 
+ * @example
+ * // When saving a submission
+ * $custom_properties = AV_Petitioner_Custom_Properties::get_custom_properties($_POST);
+ * $encoded = AV_Petitioner_Custom_Properties::encode($custom_properties);
+ * // Store $encoded in 'custom_properties' column
+ * 
+ * @example
+ * // When fetching submissions for display
+ * $submissions = AV_Petitioner_Submissions_Model::get_form_submissions($form_id);
+ * $submissions['submissions'] = AV_Petitioner_Custom_Properties::hydrate_submissions($submissions['submissions']);
+ * // Now $submission->custom_text works like any other field
  */
 class AV_Petitioner_Custom_Properties
 {
+    public function __construct()
+    {
+        add_filter('av_petitioner_submission_data_pre_save', [self::class, 'append_to_submission_data'], 10, 1);
+        add_filter('av_petitioner_submissions_after_fetch', [self::class, 'hydrate_submissions'], 10, 1);
+    }
+
+    public static function append_to_submission_data($submission_data = [])
+    {
+        if (empty($submission_data)) {
+            return $submission_data;
+        }
+
+        $custom_properties = self::get_custom_properties($submission_data);
+        $submission_data['custom_properties'] = self::encode($custom_properties);
+        return $submission_data;
+    }
+    
     /**
      * Get all registered custom property types
      *
@@ -20,6 +52,12 @@ class AV_Petitioner_Custom_Properties
      */
     public static function get_property_types()
     {
+        /**
+         * Filter to register custom property types
+         *
+         * @param array $property_types Array of custom property types
+         * @return array Array of custom property types
+         */
         return apply_filters('petitioner_get_custom_property_types', []);
     }
 
