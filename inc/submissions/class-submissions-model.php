@@ -349,6 +349,7 @@ class AV_Petitioner_Submissions_Model
             'approval_status'   => '%s',
             'submitted_at'      => '%s',
             'confirmation_token' => '%s',
+            'custom_properties' => '%s',
         ];
 
         $formats = [];

@@ -48,6 +48,10 @@ class AV_Petitioner_Submissions_Controller
         $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
         $accept_tos                 = !empty($_POST['petitioner_accept_tos']) && sanitize_text_field(wp_unslash($_POST['petitioner_accept_tos'])) === 'on';
 
+        $custom_properties_encoded = AV_Petitioner_Custom_Properties::encode(
+            AV_Petitioner_Custom_Properties::get_custom_properties($_POST)
+        );
+
         if ($require_approval) {
             if ($default_approval_status === 'Email') {
                 $approval_status = 'Declined';
@@ -109,6 +113,7 @@ class AV_Petitioner_Submissions_Controller
             'accept_tos'        => $accept_tos ? 1 : 0,
             'submitted_at'      => current_time('mysql'),
             'approval_status'   => $approval_status,
+            'custom_properties' => $custom_properties_encoded,
         );
 
         // Add date_of_birth if it's provided

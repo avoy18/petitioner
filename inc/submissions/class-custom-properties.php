@@ -40,7 +40,7 @@ class AV_Petitioner_Custom_Properties
      * @param array $post_data
      * @return array
      */
-    public static function extract_from_post($post_data)
+    public static function get_custom_properties($post_data)
     {
         $custom_data = [];
         $property_types = self::get_property_types();
@@ -49,7 +49,7 @@ class AV_Petitioner_Custom_Properties
             $post_key = 'petitioner_' . $key;
 
             if (isset($post_data[$post_key])) {
-                $sanitize = $config['sanitize'] ?? 'sanitize_text_field';
+                $sanitize = $config['sanitize_callback'] ?? 'sanitize_text_field';
                 $custom_data[$key] = call_user_func($sanitize, wp_unslash($post_data[$post_key]));
             }
         }
@@ -83,7 +83,7 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Merge custom properties into submission object
+     * Convert custom properties from JSON to array
      *
      * @param object $submission
      * @return object
