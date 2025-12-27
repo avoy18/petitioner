@@ -39,6 +39,7 @@ if (!function_exists('av_ptr_error_log')) {
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-csv-exporter.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-custom-properties.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';
@@ -57,7 +58,6 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/utilities.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-labels.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-label-overrides.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-custom-properties.php';
 
 $petitioner_setup = new AV_Petitioner_Setup();
 
