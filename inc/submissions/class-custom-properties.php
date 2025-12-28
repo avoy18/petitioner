@@ -13,18 +13,6 @@ if (!defined('ABSPATH')) {
  * @package AV_Petitioner
  * @subpackage Submissions
  * @since 0.8.0
- * 
- * @example
- * // When saving a submission
- * $custom_properties = AV_Petitioner_Custom_Properties::get_custom_properties($_POST);
- * $encoded = AV_Petitioner_Custom_Properties::encode($custom_properties);
- * // Store $encoded in 'custom_properties' column
- * 
- * @example
- * // When fetching submissions for display
- * $submissions = AV_Petitioner_Submissions_Model::get_form_submissions($form_id);
- * $submissions['submissions'] = AV_Petitioner_Custom_Properties::hydrate_submissions($submissions['submissions']);
- * // Now $submission->custom_text works like any other field
  */
 class AV_Petitioner_Custom_Properties
 {
