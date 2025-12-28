@@ -133,9 +133,19 @@ class AV_Petitioner_Custom_Properties
     {
         if (!empty($submission->custom_properties)) {
             $custom = self::decode($submission->custom_properties);
+
             foreach ($custom as $key => $value) {
+                if (isset($submission->{$key})) {
+                    av_ptr_error_log(sprintf(
+                        'Petitioner: Custom property key "%s" conflicts with existing submission field. Skipping to prevent data loss.',
+                        $key
+                    ));
+                    continue;
+                }
+
                 $submission->{$key} = $value;
             }
+
             unset($submission->custom_properties);
         }
         return $submission;
