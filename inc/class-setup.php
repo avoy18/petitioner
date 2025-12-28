@@ -55,6 +55,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_Label_Overrides')) {
                 new AV_Petitioner_Label_Overrides();
             }
+
+            // custom properties
+            if (class_exists('AV_Petitioner_Custom_Properties')) {
+                new AV_Petitioner_Custom_Properties();
+            }
         });
 
         // api endpoints

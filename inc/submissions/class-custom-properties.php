@@ -30,21 +30,36 @@ class AV_Petitioner_Custom_Properties
 {
     public function __construct()
     {
-        add_filter('av_petitioner_submission_data_pre_save', [self::class, 'append_to_submission_data'], 10, 1);
-        add_filter('av_petitioner_submissions_after_fetch', [self::class, 'hydrate_submissions'], 10, 1);
+        add_filter('av_petitioner_submission_data_pre_save', [self::class, 'append_to_submission_data'], 10, 2);
+        add_filter('av_petitioner_get_form_submissions_result', [self::class, 'hydrate_submissions_in_result'], 10, 1);
     }
 
-    public static function append_to_submission_data($submission_data = [])
+    public static function append_to_submission_data($submission_data = [], $post_data = [])
     {
-        if (empty($submission_data)) {
+        if (empty($submission_data) || empty($post_data)) {
+            av_ptr_error_log('Petitioner Custom Properties: Empty submission data or post data');
             return $submission_data;
         }
 
-        $custom_properties = self::get_custom_properties($submission_data);
-        $submission_data['custom_properties'] = self::encode($custom_properties);
+        $custom_properties = self::get_custom_properties($post_data);
+
+        if (!empty($custom_properties)) {
+            $submission_data['custom_properties'] = self::encode($custom_properties);
+        }
+
         return $submission_data;
     }
-    
+
+    public static function hydrate_submissions_in_result($result = [])
+    {
+        if (empty($result)) {
+            return $result;
+        }
+
+        $result['submissions'] = self::hydrate_submissions($result['submissions']);
+        return $result;
+    }
+
     /**
      * Get all registered custom property types
      *

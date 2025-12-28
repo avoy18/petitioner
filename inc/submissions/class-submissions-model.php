@@ -182,10 +182,20 @@ class AV_Petitioner_Submissions_Model
             $total_submissions = 0; // Ensure we return 0 if no submissions found
         }
 
-        return [
+        $result = [
             'submissions'   => $submissions,
             'total'         => $total_submissions,
         ];
+
+        /**
+         * Filter to modify the result of the get_form_submissions method
+         *
+         * @param array $result The result array
+         * @param int $form_id The form ID
+         * @param array $settings The settings array
+         * @return array The result array
+         */
+        return apply_filters('av_petitioner_get_form_submissions_result', $result, $form_id, $settings);
     }
 
     /**
