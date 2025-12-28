@@ -22,7 +22,7 @@ class AV_Petitioner_Custom_Properties
         add_filter('av_petitioner_get_form_submissions_result', [$this, 'hydrate_submissions_in_result'], 10, 1);
     }
 
-    private function append_to_submission_data($submission_data = [], $post_data = [])
+    public function append_to_submission_data($submission_data = [], $post_data = [])
     {
         if (empty($submission_data) || empty($post_data)) {
             av_ptr_error_log('Petitioner Custom Properties: Empty submission data or post data');
@@ -38,7 +38,7 @@ class AV_Petitioner_Custom_Properties
         return $submission_data;
     }
 
-    private function hydrate_submissions_in_result($result = [])
+    public function hydrate_submissions_in_result($result = [])
     {
         if (empty($result)) {
             return $result;
@@ -136,6 +136,7 @@ class AV_Petitioner_Custom_Properties
             foreach ($custom as $key => $value) {
                 $submission->{$key} = $value;
             }
+            unset($submission->custom_properties);
         }
         return $submission;
     }
