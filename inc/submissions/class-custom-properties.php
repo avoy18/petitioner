@@ -30,11 +30,11 @@ class AV_Petitioner_Custom_Properties
 {
     public function __construct()
     {
-        add_filter('av_petitioner_submission_data_pre_save', [self::class, 'append_to_submission_data'], 10, 2);
-        add_filter('av_petitioner_get_form_submissions_result', [self::class, 'hydrate_submissions_in_result'], 10, 1);
+        add_filter('av_petitioner_submission_data_pre_save', [$this, 'append_to_submission_data'], 10, 2);
+        add_filter('av_petitioner_get_form_submissions_result', [$this, 'hydrate_submissions_in_result'], 10, 1);
     }
 
-    public static function append_to_submission_data($submission_data = [], $post_data = [])
+    private function append_to_submission_data($submission_data = [], $post_data = [])
     {
         if (empty($submission_data) || empty($post_data)) {
             av_ptr_error_log('Petitioner Custom Properties: Empty submission data or post data');
@@ -50,7 +50,7 @@ class AV_Petitioner_Custom_Properties
         return $submission_data;
     }
 
-    public static function hydrate_submissions_in_result($result = [])
+    private function hydrate_submissions_in_result($result = [])
     {
         if (empty($result)) {
             return $result;
