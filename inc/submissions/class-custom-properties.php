@@ -19,7 +19,7 @@ class AV_Petitioner_Custom_Properties
     public function __construct()
     {
         add_filter('av_petitioner_submission_data_pre_save', [$this, 'append_to_submission_data'], 10, 2);
-        add_filter('av_petitioner_get_form_submissions_result', [$this, 'hydrate_submissions_in_result'], 10, 1);
+        add_filter('av_petitioner_get_form_submissions_result', [$this, 'hydrate_submissions_in_result'], 10, 3);
     }
 
     public function append_to_submission_data($submission_data = [], $post_data = [])
