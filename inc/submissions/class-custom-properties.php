@@ -22,6 +22,13 @@ class AV_Petitioner_Custom_Properties
         add_filter('av_petitioner_get_form_submissions_result', [$this, 'hydrate_submissions_in_result'], 10, 3);
     }
 
+    /**
+     * Append custom properties to submission data
+     *
+     * @param array $submission_data - the submission data array that is being saved
+     * @param array $post_data - the $_POST data passed to the form submission
+     * @return array - the modified submission data array with custom properties appended
+     */
     public function append_to_submission_data($submission_data = [], $post_data = [])
     {
         if (empty($submission_data) || empty($post_data)) {
@@ -40,6 +47,12 @@ class AV_Petitioner_Custom_Properties
         return $submission_data;
     }
 
+    /**
+     * Hydrate submissions in result
+     *
+     * @param array $result - the result array that is being returned from the get_form_submissions method
+     * @return array - the modified result array with submissions hydrated
+     */
     public function hydrate_submissions_in_result($result = [])
     {
         if (empty($result) || !isset($result['submissions']) || !is_array($result['submissions'])) {
