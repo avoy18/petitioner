@@ -40,7 +40,7 @@ class AV_Petitioner_Custom_Properties
 
         if (!empty($custom_properties)) {
             $submission_data['custom_properties'] = self::encode($custom_properties);
-        }else{
+        } else {
             av_ptr_error_log('Petitioner custom properties: no custom properties found. Skipping appending.');
         }
 
@@ -113,16 +113,28 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Encode custom properties for storage
+     * Encode custom properties for storage in JSON format.
+     * Validate the data to be in the right format and log an error if it fails.
      *
-     * @param array $data
-     * @return string
+     * @param array $data - the custom properties array to encode
+     * @return string - the encoded custom properties in JSON format
      */
-    public static function encode($data)
+    private static function encode($data)
     {
-        return wp_json_encode($data);
-    }
+        if (!is_array($data)) {
+            av_ptr_error_log('Petitioner custom properties: data is not an array. Returning empty string.');
+            return '';
+        }
 
+        $encoded = wp_json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        if ($encoded === false) {
+            av_ptr_error_log('Petitioner custom properties: failed to encode custom properties. Returning empty string.');
+            return '';
+        }
+
+        return $encoded;
+    }
     /**
      * Decode custom properties from storage
      *
