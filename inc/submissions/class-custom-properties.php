@@ -33,6 +33,8 @@ class AV_Petitioner_Custom_Properties
 
         if (!empty($custom_properties)) {
             $submission_data['custom_properties'] = self::encode($custom_properties);
+        }else{
+            av_ptr_error_log('Petitioner custom properties: no custom properties found. Skipping appending.');
         }
 
         return $submission_data;
