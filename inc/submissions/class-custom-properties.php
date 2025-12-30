@@ -40,7 +40,8 @@ class AV_Petitioner_Custom_Properties
 
     public function hydrate_submissions_in_result($result = [])
     {
-        if (empty($result)) {
+        if (empty($result) || !isset($result['submissions']) || !is_array($result['submissions'])) {
+            av_ptr_error_log('Petitioner Custom Properties: Empty result or submissions not an array. Skipping hydration.');
             return $result;
         }
 
