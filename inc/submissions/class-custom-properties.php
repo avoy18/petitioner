@@ -92,6 +92,15 @@ class AV_Petitioner_Custom_Properties
 
             if (isset($post_data[$post_key])) {
                 $sanitize = $config['sanitize_callback'] ?? 'sanitize_text_field';
+
+                if (!is_callable($sanitize)) {
+                    $sanitize = 'sanitize_text_field';
+                    av_ptr_error_log(sprintf(
+                        'Petitioner: Custom property key "%s" has an invalid sanitization callback. Using default sanitization.',
+                        $key
+                    ));
+                }
+
                 $custom_data[$key] = call_user_func($sanitize, wp_unslash($post_data[$post_key]));
             }
         }
