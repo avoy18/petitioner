@@ -18,8 +18,15 @@ class AV_Petitioner_Custom_Properties
 {
     public function __construct()
     {
-        add_filter('av_petitioner_submission_data_pre_save', [$this, 'append_to_submission_data'], 10, 2);
-        add_filter('av_petitioner_get_form_submissions_result', [$this, 'hydrate_submissions_in_result'], 10, 3);
+        /**
+         * Filter the submission data before it is saved
+         */
+        add_filter('av_petitioner_submission_data_pre_save', [$this, 'filter_pre_save'], 10, 2);
+
+        /**
+         * Filter the submissions result before it is returned
+         */
+        add_filter('av_petitioner_get_form_submissions_result', [$this, 'filter_result_hydration'], 10, 3);
     }
 
     /**
@@ -29,7 +36,7 @@ class AV_Petitioner_Custom_Properties
      * @param array $post_data - the $_POST data passed to the form submission
      * @return array - the modified submission data array with custom properties appended
      */
-    public function append_to_submission_data($submission_data = [], $post_data = [])
+    public function filter_pre_save($submission_data = [], $post_data = [])
     {
         if (empty($submission_data) || empty($post_data)) {
             av_ptr_error_log('Petitioner custom properties: empty submission data or post data. Skipping appending.');
@@ -53,7 +60,7 @@ class AV_Petitioner_Custom_Properties
      * @param array $result - the result array that is being returned from the get_form_submissions method
      * @return array - the modified result array with submissions hydrated
      */
-    public function hydrate_submissions_in_result($result = [])
+    public function filter_result_hydration($result = [])
     {
         if (empty($result) || !isset($result['submissions']) || !is_array($result['submissions'])) {
             av_ptr_error_log('Petitioner custom properties: empty result or submissions not an array. Skipping hydration.');
