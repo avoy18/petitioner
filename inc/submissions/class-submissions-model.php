@@ -278,15 +278,6 @@ class AV_Petitioner_Submissions_Model
             return false;
         }
 
-        /**
-         * Filter the submission data before it is updated
-         *
-         * @param array $fields - the submission data array that is being updated
-         * @param int $id - the submission ID
-         * @return array - the modified submission data array
-         */
-        $fields = apply_filters('av_petitioner_submission_data_pre_update', $id, $fields);
-
         $table = $wpdb->prefix . 'av_petitioner_submissions';
 
         return $wpdb->update(

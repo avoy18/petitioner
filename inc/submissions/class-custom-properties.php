@@ -27,6 +27,11 @@ class AV_Petitioner_Custom_Properties
          * Filter the submissions result before it is returned
          */
         add_filter('av_petitioner_get_form_submissions_result', [$this, 'filter_result_hydration'], 10, 3);
+
+        /**
+         * Handle editing a submission
+         */
+        add_filter('av_petitioner_submission_data_pre_update', [$this, 'filter_pre_update'], 10, 2);
     }
 
     /**
@@ -72,6 +77,37 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
+     * Filter the submission data before it is updated
+     * 
+     * Remove the custom properties from the submission data and store them in the custom_properties field.
+     *
+     * @param array $submission_data - the submission data array that is being updated
+     * @param array $post_data - the $_POST data passed to the form submission
+     * @return array - the modified submission data array without the custom properties on the top level
+     */
+    public function filter_pre_update($submission_data = [], $post_data = [])
+    {
+        if (empty($submission_data) || empty($post_data)) {
+            av_ptr_error_log('Petitioner custom properties: empty submission data or post data. Skipping appending.');
+            return $submission_data;
+        }
+
+        $custom_properties = self::get_custom_properties($post_data, false);
+
+        if (!empty($custom_properties)) {
+
+            // Cleaning up data here from the unwanted custom properties
+            foreach (array_keys($custom_properties) as $key) {
+                unset($submission_data[$key]);
+            }
+
+            $submission_data['custom_properties'] = self::encode($custom_properties);
+        }
+
+        return $submission_data;
+    }
+
+    /**
      * Get all registered custom property types
      *
      * @return array
@@ -93,13 +129,14 @@ class AV_Petitioner_Custom_Properties
      * @param array $post_data
      * @return array
      */
-    public static function get_custom_properties($post_data)
+    public static function get_custom_properties($post_data, $use_prefix = true)
     {
         $custom_data = [];
         $property_types = self::get_property_types();
 
         foreach ($property_types as $key => $config) {
-            $post_key = 'petitioner_' . $key;
+            // POST data comes in either with (frontend) or without (admin) the 'petitioner_' prefix, so need this to be flexible.
+            $post_key = $use_prefix ? 'petitioner_' . $key : $key;
 
             if (isset($post_data[$post_key])) {
                 $sanitize = $config['sanitize_callback'] ?? 'sanitize_text_field';
