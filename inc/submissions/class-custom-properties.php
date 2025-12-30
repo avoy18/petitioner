@@ -77,7 +77,7 @@ class AV_Petitioner_Custom_Properties
          * @param array $property_types Array of custom property types
          * @return array Array of custom property types
          */
-        return apply_filters('petitioner_get_custom_property_types', []);
+        return apply_filters('av_petitioner_get_custom_property_types', []);
     }
 
     /**
