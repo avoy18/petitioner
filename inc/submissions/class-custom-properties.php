@@ -81,17 +81,6 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Check if a key is a registered custom property
-     *
-     * @param string $key
-     * @return bool
-     */
-    public static function is_custom_property($key)
-    {
-        return isset(self::get_property_types()[$key]);
-    }
-
-    /**
      * Extract and sanitize custom properties from POST data
      *
      * @param array $post_data
