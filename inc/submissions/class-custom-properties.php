@@ -25,7 +25,7 @@ class AV_Petitioner_Custom_Properties
     public function append_to_submission_data($submission_data = [], $post_data = [])
     {
         if (empty($submission_data) || empty($post_data)) {
-            av_ptr_error_log('Petitioner Custom Properties: Empty submission data or post data');
+            av_ptr_error_log('Petitioner custom properties: empty submission data or post data. Skipping appending.');
             return $submission_data;
         }
 
@@ -43,7 +43,7 @@ class AV_Petitioner_Custom_Properties
     public function hydrate_submissions_in_result($result = [])
     {
         if (empty($result) || !isset($result['submissions']) || !is_array($result['submissions'])) {
-            av_ptr_error_log('Petitioner Custom Properties: Empty result or submissions not an array. Skipping hydration.');
+            av_ptr_error_log('Petitioner custom properties: empty result or submissions not an array. Skipping hydration.');
             return $result;
         }
 
@@ -98,7 +98,7 @@ class AV_Petitioner_Custom_Properties
                 if (!is_callable($sanitize)) {
                     $sanitize = 'sanitize_text_field';
                     av_ptr_error_log(sprintf(
-                        'Petitioner: Custom property key "%s" has an invalid sanitization callback. Using default sanitization.',
+                        'Petitioner custom properties: custom property key "%s" has an invalid sanitization callback. Using default sanitization.',
                         $key
                     ));
                 }
@@ -149,7 +149,7 @@ class AV_Petitioner_Custom_Properties
             foreach ($custom as $key => $value) {
                 if (isset($submission->{$key})) {
                     av_ptr_error_log(sprintf(
-                        'Petitioner: Custom property key "%s" conflicts with existing submission field. Skipping to prevent data loss.',
+                        'Petitioner: custom property key "%s" conflicts with existing submission field. Skipping to prevent data loss.',
                         $key
                     ));
                     continue;
