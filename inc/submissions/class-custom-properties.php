@@ -42,7 +42,8 @@ class AV_Petitioner_Custom_Properties
          * Filter the CSV column headers and rows
          */
         add_filter('av_petitioner_get_csv_column_headers', [$this, 'filter_csv_column_headers'], 10, 2);
-        // add_filter('av_petitioner_get_csv_row', [$this, 'filter_csv_row'], 10, 2);
+        
+        add_filter('av_petitioner_get_csv_row', [$this, 'filter_csv_row'], 10, 2);
     }
 
     /**
@@ -179,6 +180,32 @@ class AV_Petitioner_Custom_Properties
         }
 
         return $headers;
+    }
+
+    /**
+     * Filter the CSV row to add custom property values
+     *
+     * @param array $row - the row array that is being returned from the get_csv_row method
+     * @param object $submission - the submission object
+     * @return array - the modified row array with custom property values appended
+     */
+    public function filter_csv_row($row = [], $submission = null)
+    {
+        if (empty($row) || $submission === null) {
+            av_ptr_error_log('Petitioner custom properties: empty row or submission. Skipping filtering CSV row.');
+            return $row;
+        }
+
+        $property_types = self::get_property_types();
+        $property_keys = array_keys($property_types);
+
+        foreach ($property_keys as $key) {
+            if (isset($submission->{$key}) && !empty($submission->{$key})) {
+                $row[] = $submission->{$key};
+            }
+        }
+
+        return $row;
     }
 
     /**
