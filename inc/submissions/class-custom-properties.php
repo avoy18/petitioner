@@ -201,9 +201,7 @@ class AV_Petitioner_Custom_Properties
         $property_keys = array_keys($property_types);
 
         foreach ($property_keys as $key) {
-            if (isset($submission->{$key}) && !empty($submission->{$key})) {
-                $row[] = $submission->{$key};
-            }
+            $row[] = isset($submission->{$key}) ? $submission->{$key} : '';
         }
 
         return $row;
