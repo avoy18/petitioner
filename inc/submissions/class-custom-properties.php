@@ -97,7 +97,7 @@ class AV_Petitioner_Custom_Properties
     public function filter_pre_update($submission_data, $post_data)
     {
         if (empty($submission_data) || empty($post_data)) {
-            av_ptr_error_log('Petitioner custom properties: empty submission data or post data. Skipping appending.');
+            av_ptr_error_log('Petitioner custom properties: empty submission data or post data. Skipping appending for update.');
             return $submission_data;
         }
 
@@ -127,9 +127,9 @@ class AV_Petitioner_Custom_Properties
      * @param array $fields_parsed - the fields parsed
      * @return array - the modified labels array with custom property labels appended
      */
-    public function filter_form_labels($labels, $form_id, $label_ids, $fields_parsed)
+    public function filter_form_labels($labels, $_form_id, $_label_ids, $fields_parsed)
     {
-        if (empty($fields_parsed) || $form_id === 0) {
+        if (empty($fields_parsed)) {
             av_ptr_error_log('Petitioner custom properties: required properties are missing. Skipping filtering form labels.');
             return $labels;
         }
@@ -173,7 +173,7 @@ class AV_Petitioner_Custom_Properties
                 $headers[] = $property_labels[$key];
             } else {
                 av_ptr_error_log(sprintf(
-                    'Petitioner custom properties: custom property key "%s" has no label. Skipping.',
+                    'Petitioner custom properties: custom property key "%s" has no label. Adding a fallback label.',
                     $key
                 ));
                 $headers[] = $key;
