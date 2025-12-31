@@ -201,7 +201,8 @@ class AV_Petitioner_Custom_Properties
         $property_keys = array_keys($property_types);
 
         foreach ($property_keys as $key) {
-            $row[] = isset($submission->{$key}) ? $submission->{$key} : '';
+            $value = isset($submission->{$key}) ? $submission->{$key} : '';
+            $row[] = AV_Petitioner_CSV_Exporter::sanitize_csv_value($value);
         }
 
         return $row;
