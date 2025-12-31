@@ -265,7 +265,7 @@ class AV_Petitioner_CSV_Exporter
      * @param string $value Raw value
      * @return string Sanitized value
      */
-    private static function sanitize_csv_value($value)
+    public static function sanitize_csv_value($value)
     {
         // Convert to string and trim leading whitespace
         // (attackers may use spaces to hide dangerous characters)
