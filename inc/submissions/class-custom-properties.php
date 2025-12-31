@@ -118,6 +118,8 @@ class AV_Petitioner_Custom_Properties
 
     /**
      * Filter the form labels to add custom property labels
+     * 
+     * These will show up when calling av_petitioner_get_form_labels()
      *
      * @param array $labels - the labels array that is being returned from the get_form_labels method
      * @param int $form_id - the form id
@@ -208,7 +210,7 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Get all registered custom property types
+     * A utility to get all registered custom property types
      *
      * @return array
      */
@@ -224,7 +226,7 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Extract and sanitize custom properties from POST data
+     * A utility to extract and sanitize custom properties from POST data
      *
      * @param array $post_data
      * @return array
@@ -257,8 +259,7 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Encode custom properties for storage in JSON format.
-     * Validate the data to be in the right format and log an error if it fails.
+     * A utility to encode custom properties for storage in JSON format
      *
      * @param array $data - the custom properties array to encode
      * @return string - the encoded custom properties in JSON format
@@ -279,8 +280,9 @@ class AV_Petitioner_Custom_Properties
 
         return $encoded;
     }
+
     /**
-     * Decode custom properties from storage
+     * A utility to decode custom properties from storage
      *
      * @param string $json
      * @return array
@@ -294,7 +296,7 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Convert custom properties from JSON to array
+     * A utility to convert custom properties from JSON to array
      *
      * @param object $submission
      * @return object
@@ -322,7 +324,7 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
-     * Hydrate an array of submissions
+     * A utility to hydrate an array of submissions
      *
      * @param array $submissions
      * @return array
