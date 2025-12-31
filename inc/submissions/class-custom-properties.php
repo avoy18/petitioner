@@ -32,6 +32,17 @@ class AV_Petitioner_Custom_Properties
          * Handle editing a submission
          */
         add_filter('av_petitioner_submission_data_pre_update', [$this, 'filter_pre_update'], 10, 2);
+
+        /**
+         * Filter the form labels to add custom property labels
+         */
+        add_filter('av_petitioner_get_form_labels', [$this, 'filter_form_labels'], 10, 4);
+
+        /**
+         * Filter the CSV column headers and rows
+         */
+        add_filter('av_petitioner_get_csv_column_headers', [$this, 'filter_csv_column_headers'], 10, 2);
+        // add_filter('av_petitioner_get_csv_row', [$this, 'filter_csv_row'], 10, 2);
     }
 
     /**
@@ -103,6 +114,51 @@ class AV_Petitioner_Custom_Properties
         }
 
         return $submission_data;
+    }
+
+    /**
+     * Filter the form labels to add custom property labels
+     *
+     * @param array $labels - the labels array that is being returned from the get_form_labels method
+     * @param int $form_id - the form id
+     * @param array $label_ids - the label ids
+     * @param array $fields_parsed - the fields parsed
+     * @return array - the modified labels array with custom property labels appended
+     */
+    public function filter_form_labels($labels = [], $form_id = 0, $label_ids = [], $fields_parsed = [])
+    {
+        if (empty($fields_parsed) || $form_id === 0) {
+            av_ptr_error_log('Petitioner custom properties: required properties are missing. Skipping filtering form labels.');
+            return $labels;
+        }
+
+        $property_types = self::get_property_types();
+        $property_keys = array_keys($property_types);
+
+        foreach ($property_keys as $key) {
+            if (isset($fields_parsed[$key]) && !empty($fields_parsed[$key]['label'])) {
+                $labels[$key] = $fields_parsed[$key]['label'];
+            }
+        }
+
+        return $labels;
+    }
+
+    public function filter_csv_column_headers($headers = [], $form_id = 0)
+    {
+        return $headers;
+        if (empty($headers) || $form_id === 0) {
+            av_ptr_error_log('Petitioner custom properties: empty headers or form id. Skipping filtering column headers.');
+            return $headers;
+        }
+
+        $property_types = self::get_property_types();
+
+        foreach (array_keys($property_types) as $key) {
+            $headers[] = $key;
+        }
+
+        return $headers;
     }
 
     /**
