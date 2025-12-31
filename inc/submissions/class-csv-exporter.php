@@ -131,15 +131,20 @@ class AV_Petitioner_CSV_Exporter
         $used_headers = []; // Track used headers to prevent duplicates
 
         foreach ($allowed_fields as $field) {
+            // Skip custom_properties - handled separately via filter
+            if ($field === 'custom_properties') {
+                continue;
+            }
+
             // Get label with fallback to field name
             $label = $all_labels[$field] ?? ucwords(str_replace('_', ' ', $field));
-            
+
             // Ensure label is not empty
             $label = trim($label);
             if (empty($label)) {
                 $label = ucwords(str_replace('_', ' ', $field));
             }
-            
+
             // Make label unique if duplicate exists
             $original_label = $label;
             $counter = 1;
@@ -147,10 +152,19 @@ class AV_Petitioner_CSV_Exporter
                 $label = $original_label . ' (' . $counter . ')';
                 $counter++;
             }
-            
+
             $used_headers[] = $label;
             $headers[] = $label;
         }
+
+        /**
+         * Filter the CSV column headers
+         * 
+         * @param array $headers Array of column header names
+         * @param int $form_id Form ID
+         * @return array Array of column header names
+         */
+        $headers = apply_filters('av_petitioner_get_csv_column_headers', $headers, $form_id);
 
         return $headers;
     }
@@ -168,11 +182,24 @@ class AV_Petitioner_CSV_Exporter
         $row = [];
 
         foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
+            // Skip custom_properties - handled separately via filter
+            if ($field === 'custom_properties') {
+                continue;
+            }
+
             $value = isset($submission->$field) ? $submission->$field : '';
 
             // Sanitize to prevent CSV injection
             $row[] = self::sanitize_csv_value($value);
         }
+
+        /**
+         * Filter the CSV row data
+         * @param array $row Array of values for CSV row
+         * @param object $submission Submission database row object
+         * @return array Array of values for CSV row
+         */
+        $row = apply_filters('av_petitioner_get_csv_row', $row, $submission);
 
         return $row;
     }
@@ -238,7 +265,7 @@ class AV_Petitioner_CSV_Exporter
      * @param string $value Raw value
      * @return string Sanitized value
      */
-    private static function sanitize_csv_value($value)
+    public static function sanitize_csv_value($value)
     {
         // Convert to string and trim leading whitespace
         // (attackers may use spaces to hide dangerous characters)

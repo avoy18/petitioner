@@ -127,9 +127,10 @@ class AV_Petitioner_Submissions_Controller
          * before the submission is created and stored.
          *
          * @param array $data Associative array of submission data (field values and metadata).
+         * @param array $post_data Associative array of post data. Added in 0.8.0.
          * @return array Modified submission data.
          */
-        $data = apply_filters('av_petitioner_submission_data_pre_save', $data);
+        $data = apply_filters('av_petitioner_submission_data_pre_save', $data, $_POST);
 
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
 
@@ -400,6 +401,15 @@ class AV_Petitioner_Submissions_Controller
                 }
             }
         }
+
+        /**
+         * Filter the submission data before it is updated
+         *
+         * @param array $fields - the submission data array that is being updated
+         * @param array $_POST - the $_POST data passed to the form submission
+         * @return array - the modified submission data array
+         */
+        $submission = apply_filters('av_petitioner_submission_data_pre_update', $submission, $_POST);
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 

@@ -236,6 +236,17 @@ function av_petitioner_get_form_labels($form_id = '', $label_ids = []): array
 
     $final_labels['submitted_at'] = AV_Petitioner_Labels::get('created_at');
 
+    /**
+     * Filter the form labels to add custom property labels
+     *
+     * @param array $labels - the labels array that is being returned from the get_form_labels method
+     * @param int $form_id - the form id
+     * @param array $label_ids - the label ids
+     * @param array $fields_parsed - the JSON encoded fields parsed
+     * @return array - the modified labels array with custom property labels appended
+     */
+    $final_labels = apply_filters('av_petitioner_get_form_labels', $final_labels, $form_id, $label_ids, $fields_parsed);
+
     return $final_labels;
 }
 
