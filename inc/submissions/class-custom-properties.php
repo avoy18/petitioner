@@ -144,18 +144,38 @@ class AV_Petitioner_Custom_Properties
         return $labels;
     }
 
+    /**
+     * Filter the CSV column headers to add custom property labels
+     *
+     * @param array $headers - the headers array that is being returned from the get_csv_column_headers method
+     * @param int $form_id - the form id
+     * @return array - the modified headers array with custom property labels appended
+     */
     public function filter_csv_column_headers($headers = [], $form_id = 0)
     {
-        return $headers;
         if (empty($headers) || $form_id === 0) {
             av_ptr_error_log('Petitioner custom properties: empty headers or form id. Skipping filtering column headers.');
             return $headers;
         }
 
         $property_types = self::get_property_types();
+        $property_keys = array_keys($property_types);
 
-        foreach (array_keys($property_types) as $key) {
-            $headers[] = $key;
+        $property_labels = av_petitioner_get_form_labels(
+            $form_id,
+            $property_keys
+        );
+
+        foreach ($property_keys as $key) {
+            if (isset($property_labels[$key]) && !empty($property_labels[$key])) {
+                $headers[] = $property_labels[$key];
+            } else {
+                av_ptr_error_log(sprintf(
+                    'Petitioner custom properties: custom property key "%s" has no label. Skipping.',
+                    $key
+                ));
+                $headers[] = $key;
+            }
         }
 
         return $headers;
