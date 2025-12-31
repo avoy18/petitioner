@@ -26,7 +26,7 @@ class AV_Petitioner_Custom_Properties
         /**
          * Filter the submissions result before it is returned
          */
-        add_filter('av_petitioner_get_form_submissions_result', [$this, 'filter_result_hydration'], 10, 3);
+        add_filter('av_petitioner_get_form_submissions_result', [$this, 'filter_result_hydration'], 10, 1);
 
         /**
          * Handle editing a submission
