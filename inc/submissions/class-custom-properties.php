@@ -155,7 +155,7 @@ class AV_Petitioner_Custom_Properties
      */
     public function filter_csv_column_headers($headers, $form_id)
     {
-        if (empty($headers) || $form_id === 0) {
+        if (empty($headers) || empty($form_id)) {
             av_ptr_error_log('Petitioner custom properties: empty headers or form id. Skipping filtering column headers.');
             return $headers;
         }
