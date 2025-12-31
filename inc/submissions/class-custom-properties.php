@@ -42,7 +42,6 @@ class AV_Petitioner_Custom_Properties
          * Filter the CSV column headers and rows
          */
         add_filter('av_petitioner_get_csv_column_headers', [$this, 'filter_csv_column_headers'], 10, 2);
-        
         add_filter('av_petitioner_get_csv_row', [$this, 'filter_csv_row'], 10, 2);
     }
 
