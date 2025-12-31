@@ -52,7 +52,7 @@ class AV_Petitioner_Custom_Properties
      * @param array $post_data - the $_POST data passed to the form submission
      * @return array - the modified submission data array with custom properties appended
      */
-    public function filter_pre_save($submission_data = [], $post_data = [])
+    public function filter_pre_save($submission_data, $post_data)
     {
         if (empty($submission_data) || empty($post_data)) {
             av_ptr_error_log('Petitioner custom properties: empty submission data or post data. Skipping appending.');
@@ -74,7 +74,7 @@ class AV_Petitioner_Custom_Properties
      * @param array $result - the result array that is being returned from the get_form_submissions method
      * @return array - the modified result array with submissions hydrated
      */
-    public function filter_result_hydration($result = [])
+    public function filter_result_hydration($result)
     {
         if (empty($result) || !isset($result['submissions']) || !is_array($result['submissions'])) {
             av_ptr_error_log('Petitioner custom properties: empty result or submissions not an array. Skipping hydration.');
@@ -94,7 +94,7 @@ class AV_Petitioner_Custom_Properties
      * @param array $post_data - the $_POST data passed to the form submission
      * @return array - the modified submission data array without the custom properties on the top level
      */
-    public function filter_pre_update($submission_data = [], $post_data = [])
+    public function filter_pre_update($submission_data, $post_data)
     {
         if (empty($submission_data) || empty($post_data)) {
             av_ptr_error_log('Petitioner custom properties: empty submission data or post data. Skipping appending.');
@@ -127,7 +127,7 @@ class AV_Petitioner_Custom_Properties
      * @param array $fields_parsed - the fields parsed
      * @return array - the modified labels array with custom property labels appended
      */
-    public function filter_form_labels($labels = [], $form_id = 0, $label_ids = [], $fields_parsed = [])
+    public function filter_form_labels($labels, $form_id, $label_ids, $fields_parsed)
     {
         if (empty($fields_parsed) || $form_id === 0) {
             av_ptr_error_log('Petitioner custom properties: required properties are missing. Skipping filtering form labels.');
@@ -153,7 +153,7 @@ class AV_Petitioner_Custom_Properties
      * @param int $form_id - the form id
      * @return array - the modified headers array with custom property labels appended
      */
-    public function filter_csv_column_headers($headers = [], $form_id = 0)
+    public function filter_csv_column_headers($headers, $form_id)
     {
         if (empty($headers) || $form_id === 0) {
             av_ptr_error_log('Petitioner custom properties: empty headers or form id. Skipping filtering column headers.');
@@ -190,7 +190,7 @@ class AV_Petitioner_Custom_Properties
      * @param object $submission - the submission object
      * @return array - the modified row array with custom property values appended
      */
-    public function filter_csv_row($row = [], $submission = null)
+    public function filter_csv_row($row, $submission)
     {
         if (empty($row) || $submission === null) {
             av_ptr_error_log('Petitioner custom properties: empty row or submission. Skipping filtering CSV row.');
