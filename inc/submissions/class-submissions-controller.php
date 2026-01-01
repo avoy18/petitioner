@@ -327,7 +327,13 @@ class AV_Petitioner_Submissions_Controller
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);
 
-        $labels = av_petitioner_get_form_labels($form_id, array_merge(['name'], $public_fields));
+        // Merge the required UI fields with the public fields and remove duplicates
+        $label_fields = array_values(array_unique(array_merge(
+            ['name', 'submitted_at'],
+            $public_fields
+        )));
+
+        $labels = av_petitioner_get_form_labels($form_id, $label_fields);
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
             if ($submission->hide_name) {
