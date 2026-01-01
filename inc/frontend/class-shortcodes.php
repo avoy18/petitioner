@@ -168,6 +168,15 @@ class AV_Petitioner_Shortcodes
 
     static public function get_available_fields()
     {
-        return ['name', 'country', 'date_of_birth', 'salutation', 'city', 'street_address', 'postal_code', 'comments', 'submitted_at'];
+        $available_fields = AV_Petitioner_Submissions_Model::get_public_fields();
+        array_unshift($available_fields, 'name'); // Add name to the beginning of the array
+
+        /**
+         * Filter the available fields that are displayed in the submissions list
+         * 
+         * @param array $available_fields The available fields that are displayed in the submissions list
+         * @return array The available fields that are displayed in the submissions list
+         */
+        return apply_filters('av_petitioner_available_fields_shortcode', $available_fields);
     }
 }

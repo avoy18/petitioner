@@ -280,7 +280,25 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'date_of_birth', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
+        $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
+
+        /**
+         * Filter the public fields that are displayed in the submissions list
+         * 
+         * @param array $public_fields The public fields that are displayed in the submissions list
+         * @param int $form_id The ID of the form
+         * @return array The public fields that are displayed in the submissions list
+         */
+        $public_fields = apply_filters('av_petitioner_public_fields', $public_fields, $form_id);
+        $public_fields = array_values(array_unique($public_fields));
+
+        // Block sensitive fields from public display
+        $public_fields = array_values(array_unique(array_diff(
+            $public_fields,
+            AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS
+        )));
+
+        $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name']);
 
         $fetch_settings = [
             'per_page'          => $per_page,
@@ -308,14 +326,13 @@ class AV_Petitioner_Submissions_Controller
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);
 
-        $labels = av_petitioner_get_form_labels($form_id, [
-            'name',
-            'country',
-            'city',
-            'postal_code',
-            'comments',
-            'submitted_at',
-        ]);
+        // Merge the required UI fields with the public fields and remove duplicates
+        $label_fields = array_values(array_unique(array_merge(
+            ['name', 'submitted_at'],
+            $public_fields
+        )));
+
+        $labels = av_petitioner_get_form_labels($form_id, $label_fields);
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
             if ($submission->hide_name) {
