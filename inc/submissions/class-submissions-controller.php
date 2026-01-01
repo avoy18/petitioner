@@ -285,7 +285,6 @@ class AV_Petitioner_Submissions_Controller
             'postal_code',
             'comments',
             'submitted_at',
-            'street_address',
             'date_of_birth'
         ];
 
