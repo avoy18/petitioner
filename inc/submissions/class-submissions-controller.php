@@ -279,14 +279,7 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $public_fields = [
-            'country',
-            'city',
-            'postal_code',
-            'comments',
-            'submitted_at',
-            'date_of_birth'
-        ];
+        $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
 
         /**
          * Filter the public fields that are displayed in the submissions list

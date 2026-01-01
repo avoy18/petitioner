@@ -168,7 +168,9 @@ class AV_Petitioner_Shortcodes
 
     static public function get_available_fields()
     {
-        $available_fields = ['name', 'country', 'date_of_birth', 'salutation', 'city', 'postal_code', 'comments', 'submitted_at'];
+        $available_fields = AV_Petitioner_Submissions_Model::get_public_fields();
+        array_unshift($available_fields, 'name'); // Add name to the beginning of the array
+
         /**
          * Filter the available fields that are displayed in the submissions list
          * 
