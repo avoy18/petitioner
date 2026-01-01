@@ -142,7 +142,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 = 0.8.0 =
 * Architecture enhancements
-    * Moving away from SCSS in favour of styled components & regular CSS 
+    * Moving away from SCSS in favour of styled components & regular CSS
+    * Add an option to extend the plugin with custom fields via JS and PHP hooks
+    * Submissions on the frontend: connect all of the fields to be managed in 1 place, also ensure that none of the sensitive data is sent to the frontend
 
 = 0.7.1 =
 * Bugfixes
