@@ -29,6 +29,19 @@ class AV_Petitioner_Submissions_Model
         'confirmation_token',
     ];
 
+    public static $SENSITIVE_FIELDS = [
+        'email',
+        'phone',
+        'street_address',
+        'date_of_birth',
+        'confirmation_token',
+        'bcc_yourself',
+        'newsletter',
+        'accept_tos',
+        'approval_status',
+        'form_id',
+    ];
+
     public static function table_name()
     {
         global $wpdb;

@@ -299,6 +299,12 @@ class AV_Petitioner_Submissions_Controller
         $public_fields = apply_filters('av_petitioner_public_fields', $public_fields, $form_id);
         $public_fields = array_values(array_unique($public_fields));
 
+        // Block sensitive fields from public display
+        $public_fields = array_values(array_unique(array_diff(
+            $public_fields,
+            AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS
+        )));
+
         $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name']);
 
         $fetch_settings = [
