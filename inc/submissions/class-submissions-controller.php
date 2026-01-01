@@ -297,6 +297,7 @@ class AV_Petitioner_Submissions_Controller
          * @return array The public fields that are displayed in the submissions list
          */
         $public_fields = apply_filters('av_petitioner_public_fields', $public_fields, $form_id);
+        $public_fields = array_values(array_unique($public_fields));
 
         $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name']);
 
