@@ -279,7 +279,26 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'date_of_birth', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
+        $public_fields = [
+            'country',
+            'city',
+            'postal_code',
+            'comments',
+            'submitted_at',
+            'street_address',
+            'date_of_birth'
+        ];
+
+        /**
+         * Filter the public fields that are displayed in the submissions list
+         * 
+         * @param array $public_fields The public fields that are displayed in the submissions list
+         * @param int $form_id The ID of the form
+         * @return array The public fields that are displayed in the submissions list
+         */
+        $public_fields = apply_filters('av_petitioner_public_fields', $public_fields, $form_id);
+
+        $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name']);
 
         $fetch_settings = [
             'per_page'          => $per_page,
@@ -307,14 +326,7 @@ class AV_Petitioner_Submissions_Controller
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);
 
-        $labels = av_petitioner_get_form_labels($form_id, [
-            'name',
-            'country',
-            'city',
-            'postal_code',
-            'comments',
-            'submitted_at',
-        ]);
+        $labels = av_petitioner_get_form_labels($form_id, array_merge(['name'], $public_fields));
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
             if ($submission->hide_name) {
