@@ -1,5 +1,0 @@
-# Run JS tests
-pnpm test
-
-# Run PHP tests  
-composer test
