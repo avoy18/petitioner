@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+set -e
+
+echo "🧪 Running JS tests before push..."
+pnpm test
+
+if [ $? -ne 0 ]; then
+    echo "❌ JS tests failed! Push aborted."
+    exit 1
+fi
+
+echo "🧪 Running PHP tests before push..."
+composer test
+
+if [ $? -ne 0 ]; then
+    echo "❌ PHP tests failed! Push aborted."
+    exit 1
+fi
+
+echo "✅ All tests passed! Pushing..."

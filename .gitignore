@@ -9,3 +9,9 @@ node_modules
 # Build directories
 dist
 dist-gutenberg
+/vendor/
+
+# Test directories & unwanted files
+/wordpress/
+/coverage-php/
+.phpunit.result.cache
