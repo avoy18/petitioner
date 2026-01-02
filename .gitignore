@@ -9,3 +9,8 @@ node_modules
 # Build directories
 dist
 dist-gutenberg
+/vendor/
+
+# Test directories
+/wordpress/
+/coverage-php/

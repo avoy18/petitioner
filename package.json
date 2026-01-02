@@ -14,7 +14,8 @@
 		"build:frontend": "vite build --mode production --config vite.frontend.config.ts",
 		"build:gutenberg": "wp-scripts build --output-path=dist-gutenberg",
 		"deploy": "pnpm build && node scripts/deploy.js",
-		"test": "vitest run"
+		"test": "vitest run",
+		"prepare": "husky"
 	},
 	"repository": {
 		"type": "git",
@@ -56,6 +57,7 @@
 		"concurrently": "^9.0.1",
 		"fs-extra": "^11.2.0",
 		"happy-dom": "^17.6.3",
+		"husky": "^9.1.7",
 		"postcss-nested": "^6.0.1",
 		"prettier": "^3.4.2",
 		"react": "18.3.1",
