@@ -485,24 +485,4 @@ class AV_Petitioner_Submissions_Model
 
         return $email_findings > 0;
     }
-
-    /**
-     * Get fields that are safe to display publicly
-     * 
-     * @return array Array of field names safe for public display
-     */
-    public static function get_public_fields()
-    {
-        // Calculate public fields: allowed minus sensitive
-        $public_fields = array_diff(
-            self::$ALLOWED_FIELDS,
-            self::$SENSITIVE_FIELDS
-        );
-
-        // Remove internal fields that shouldn't be displayed
-        $excluded_from_display = ['id', 'fname', 'lname', 'hide_name'];
-        $public_fields = array_diff($public_fields, $excluded_from_display);
-
-        return array_values($public_fields);
-    }
 }

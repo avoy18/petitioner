@@ -280,23 +280,9 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
+        $public_fields = self::get_public_fields();
 
-        /**
-         * Filter the public fields that are displayed in the submissions list
-         * 
-         * @param array $public_fields The public fields that are displayed in the submissions list
-         * @param int $form_id The ID of the form
-         * @return array The public fields that are displayed in the submissions list
-         */
-        $public_fields = apply_filters('av_petitioner_public_fields', $public_fields, $form_id);
         $public_fields = array_values(array_unique($public_fields));
-
-        // Block sensitive fields from public display
-        $public_fields = array_values(array_unique(array_diff(
-            $public_fields,
-            AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS
-        )));
 
         $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name']);
 
@@ -727,5 +713,36 @@ class AV_Petitioner_Submissions_Controller
             ]);
             wp_die();
         }
+    }
+
+    /**
+     * Get fields that are safe to display publicly.
+     * 
+     * Note: these are not the same as the actual columns in the database. 
+     * 
+     * @return array Array of field names safe for public display
+     * @since 0.8.0
+     */
+    public static function get_public_fields()
+    {
+        // Calculate public fields: allowed minus sensitive
+        $public_fields = array_diff(
+            AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS,
+            AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS
+        );
+
+        // Remove internal fields that shouldn't be displayed
+        $excluded_from_display = ['id', 'fname', 'lname', 'hide_name'];
+        $public_fields = array_diff($public_fields, $excluded_from_display);
+
+        /**
+         * Filter the public fields that are displayed in the submissions list
+         * 
+         * @param array $public_fields The public fields that are displayed in the submissions list
+         * @return array The public fields that are displayed in the submissions list
+         */
+        $public_fields = apply_filters('av_petitioner_public_fields', $public_fields);
+
+        return array_values($public_fields);
     }
 }

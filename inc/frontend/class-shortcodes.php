@@ -168,7 +168,7 @@ class AV_Petitioner_Shortcodes
 
     static public function get_available_fields()
     {
-        $available_fields = AV_Petitioner_Submissions_Model::get_public_fields();
+        $available_fields = AV_Petitioner_Submissions_Controller::get_public_fields();
         array_unshift($available_fields, 'name'); // Add name to the beginning of the array
 
         /**
