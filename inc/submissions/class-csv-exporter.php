@@ -112,7 +112,7 @@ class AV_Petitioner_CSV_Exporter
      * 
      * @return array Array of column header names
      */
-    private static function get_csv_headers($form_id)
+    public static function get_csv_headers($form_id)
     {
         $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
 
@@ -177,7 +177,7 @@ class AV_Petitioner_CSV_Exporter
      * @param object $submission Submission database row object
      * @return array Array of values for CSV row
      */
-    private static function get_csv_row($submission)
+    public static function get_csv_row($submission)
     {
         $row = [];
 
