@@ -11,6 +11,7 @@ dist
 dist-gutenberg
 /vendor/
 
-# Test directories
+# Test directories & unwanted files
 /wordpress/
 /coverage-php/
+.phpunit.result.cache
