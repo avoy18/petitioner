@@ -2,31 +2,29 @@ name: PR Checks
 
 # Controls when the workflow will run
 on:
-    # Triggers the workflow on push or pull request events but only for the "main" branch
     pull_request:
         types: [opened, synchronize, reopened]
         branches:
             - main
+            - 'release/**'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-    # This workflow contains a single job called "build-and-test"
-    build-and-test:
+    js-tests:
         # The type of runner that the job will run on
         runs-on: ubuntu-latest
 
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
-            # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - name: Checkout code
               uses: actions/checkout@v4
 
-            # 2. This action installs the pnpm package manager and makes the `pnpm` command available.
+            # This action installs the pnpm package manager and makes the `pnpm` command available.
             # This MUST come before setting up Node.js caching.
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
 
-            # 3. Sets up a Node.js environment and configures caching for pnpm.
+            # Sets up a Node.js environment and configures caching for pnpm.
             # This will dramatically speed up dependency installation on subsequent runs.
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -34,15 +32,59 @@ jobs:
                   node-version: '22.x' # Use a major version to avoid frequent updates
                   cache: 'pnpm'
 
-            # 4. Install dependencies using the lockfile for reproducibility.
+            # Install dependencies using the lockfile for reproducibility.
             # This step will be very fast if the cache from the previous step is hit.
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            # 5. Run the build command as defined in your package.json
+            # Run the build command as defined in your package.json
             - name: Build project
               run: pnpm run build
 
-            # 6. Run the test command as defined in your package.json
+            # Run the test command as defined in your package.json
             - name: Run tests
               run: pnpm run test
+    php-tests:
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # This action installs the PHP environment and makes the `php` command available.
+            # Also comes with Composer installed.
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  extensions: mbstring, xml, json
+                  coverage: none
+
+            # Get Composer cache directory
+            # This is used to cache the Composer dependencies and speed up the build process.
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: |
+                  echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            # Cache Composer dependencies
+            # Speeds up composer install on subsequent runs.
+            - name: Cache Composer dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-composer-
+
+            # Install dependencies using the lockfile.
+            # This step will be very fast if the cache from the previous step is hit.
+            - name: Install PHP dependencies
+              run: composer install --no-interaction --prefer-dist --no-progress
+
+            # Run the test command
+            - name: Run tests
+              run: composer test
