@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 echo "🧪 Running JS tests before push..."
 pnpm test
 
