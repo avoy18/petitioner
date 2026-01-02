@@ -18,6 +18,10 @@ class Test_Submissions_Model extends BaseTestCase
         parent::tear_down();
     }
 
+    // ============================================
+    // GET_PUBLIC_FIELDS TESTS
+    // ============================================
+
     public function test_get_public_fields_returns_expected_fields()
     {
         $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
@@ -57,6 +61,10 @@ class Test_Submissions_Model extends BaseTestCase
         $keys = array_keys($public_fields);
         $this->assertEquals(range(0, count($public_fields) - 1), $keys, 'Should have numeric keys (array_values)');
     }
+
+    // ============================================
+    // BUILD_WHERE_CLAUSE TESTS
+    // ============================================
 
     public function test_build_where_clause_includes_form_id()
     {
