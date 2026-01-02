@@ -43,6 +43,11 @@ class AV_Petitioner_Custom_Properties
          */
         add_filter('av_petitioner_get_csv_column_headers', [$this, 'filter_csv_column_headers'], 10, 2);
         add_filter('av_petitioner_get_csv_row', [$this, 'filter_csv_row'], 10, 2);
+
+        /**
+         * Filter the available fields that are displayed in the shortcode
+         */
+        add_filter('av_petitioner_available_fields_shortcode', [$this, 'filter_available_fields_shortcode'], 10, 1);
     }
 
     /**
@@ -206,6 +211,17 @@ class AV_Petitioner_Custom_Properties
         }
 
         return $row;
+    }
+
+    public function filter_available_fields_shortcode($available_fields)
+    {
+        $property_keys = array_keys(self::get_property_types());
+        av_ptr_error_log('Petitioner custom properties: property keys: ' . print_r($property_keys, true));
+        if (empty($property_keys)) {
+            return $available_fields;
+        }
+
+        return array_values(array_unique(array_merge($available_fields, $property_keys)));
     }
 
     /**
