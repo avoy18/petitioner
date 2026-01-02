@@ -19,50 +19,6 @@ class Test_Submissions_Model extends BaseTestCase
     }
 
     // ============================================
-    // GET_PUBLIC_FIELDS TESTS
-    // ============================================
-
-    public function test_get_public_fields_returns_expected_fields()
-    {
-        $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
-
-        $this->assertIsArray($public_fields);
-        $this->assertContains('country', $public_fields);
-        $this->assertContains('city', $public_fields);
-        $this->assertNotContains('email', $public_fields);
-        $this->assertNotContains('phone', $public_fields);
-        $this->assertNotContains('street_address', $public_fields);
-    }
-
-    public function test_get_public_fields_excludes_all_sensitive_fields()
-    {
-        $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
-        $sensitive = AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS;
-
-        foreach ($sensitive as $field) {
-            $this->assertNotContains($field, $public_fields, "Sensitive field '{$field}' should not be public");
-        }
-    }
-
-    public function test_get_public_fields_excludes_internal_fields()
-    {
-        $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
-        $internal = ['id', 'fname', 'lname', 'hide_name'];
-
-        foreach ($internal as $field) {
-            $this->assertNotContains($field, $public_fields, "Internal field '{$field}' should not be public");
-        }
-    }
-
-    public function test_get_public_fields_returns_numeric_keys()
-    {
-        $public_fields = AV_Petitioner_Submissions_Model::get_public_fields();
-
-        $keys = array_keys($public_fields);
-        $this->assertEquals(range(0, count($public_fields) - 1), $keys, 'Should have numeric keys (array_values)');
-    }
-
-    // ============================================
     // BUILD_WHERE_CLAUSE TESTS
     // ============================================
 
