@@ -284,6 +284,8 @@ class AV_Petitioner_Submissions_Controller
 
         $public_fields = array_values(array_unique($public_fields));
 
+        // even though you cant query some of these fields, we still need to include them in the fetch settings
+        // we later clean up the submission object to remove everything unwanted and merge lname with fname
         $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name', 'custom_properties']);
 
         $fetch_settings = [
