@@ -284,7 +284,7 @@ class AV_Petitioner_Submissions_Controller
 
         $public_fields = array_values(array_unique($public_fields));
 
-        $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name']);
+        $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name', 'custom_properties']);
 
         $fetch_settings = [
             'per_page'          => $per_page,
