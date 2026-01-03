@@ -338,7 +338,7 @@ class AV_Petitioner_Custom_Properties
                     continue;
                 }
 
-                $submission->{$key} = $value || '';
+                $submission->{$key} = $value !== null ? $value : '';
             }
 
         }
