@@ -732,7 +732,7 @@ class AV_Petitioner_Submissions_Controller
         );
 
         // Remove internal fields that shouldn't be displayed
-        $excluded_from_display = ['id', 'fname', 'lname', 'hide_name'];
+        $excluded_from_display = ['id', 'fname', 'lname', 'hide_name', 'custom_properties'];
         $public_fields = array_diff($public_fields, $excluded_from_display);
 
         /**
