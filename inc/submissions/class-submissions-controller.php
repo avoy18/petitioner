@@ -339,7 +339,7 @@ class AV_Petitioner_Submissions_Controller
                     continue;
                 }
 
-                $modified_submission[$k] = $submission->{$k};
+                $modified_submission[$k] = property_exists($submission, $k) ? $submission->{$k} : '';
             }
 
             return $modified_submission;
