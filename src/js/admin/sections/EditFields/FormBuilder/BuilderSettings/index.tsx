@@ -1,9 +1,9 @@
 // import { useEditFormContext } from '@admin/context/EditFormContext';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import { Button, TextControl } from '@wordpress/components';
-import { getFieldTypeGroup } from '@admin/utilities';
+import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import styled from 'styled-components';
+import { applyFilters } from '@wordpress/hooks';
 
 import EditInput from './EditInput';
 import EditDropdown from './EditDropdown';
@@ -64,9 +64,33 @@ export default function BuilderSettings() {
 		default: () => <FieldList />,
 	};
 
-	const ScreenComponent = screenKeys.includes(currentType as ScreenType)
-		? screens[currentType as ScreenType]
-		: screens.default;
+	const ScreenComponent = () => {
+		const DefaultComponent = screenKeys.includes(currentType as ScreenType)
+			? screens[currentType as ScreenType]
+			: screens.default;
+
+		/**
+		 * Apply any additional edit screen components for the current field
+		 * This allows custom components to be used for specific field types or field keys
+		 * 
+		 * @param component The default component to be overridden
+		 * @param currentField The current field being edited
+		 * @param builderEditScreen The screen key of the current field
+		 * @returns The final component to be rendered
+		 */
+		const FinalScreenComponent = applyFilters(
+			'petitioner.formBuilder.editScreenComponent',
+			DefaultComponent,
+			currentField,
+			builderEditScreen
+		) as () => React.ReactNode;
+
+		if (typeof FinalScreenComponent !== 'function') {
+			return <DefaultComponent />;
+		}
+
+		return <FinalScreenComponent />;
+	};
 
 	return (
 		<BuilderSettingsWrapper data-testid="ptr-builder-settings">
