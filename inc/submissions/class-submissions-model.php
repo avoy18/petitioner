@@ -6,6 +6,9 @@ if (!defined('ABSPATH')) {
 
 class AV_Petitioner_Submissions_Model
 {
+    /**
+     * All of the possible fields allowed to be requested in the model
+     */
     public static $ALLOWED_FIELDS = [
         'id',
         'form_id',
@@ -30,6 +33,10 @@ class AV_Petitioner_Submissions_Model
         'custom_properties'
     ];
 
+    /**
+     * Fields containing personally identifiable information (PII) 
+     * that should not be displayed on the frontend
+     */
     public static $SENSITIVE_FIELDS = [
         'email',
         'phone',
@@ -40,7 +47,19 @@ class AV_Petitioner_Submissions_Model
         'newsletter',
         'accept_tos',
         'approval_status',
+    ];
+
+    /**
+     * Fields used internally (IDs, computed fields, storage) 
+     * that should not be displayed on the frontend, but technically allowed
+     */
+    public static $INTERNAL_FIELDS = [
+        'id',
         'form_id',
+        'fname',
+        'lname',
+        'hide_name',
+        'custom_properties'
     ];
 
     public static function table_name()

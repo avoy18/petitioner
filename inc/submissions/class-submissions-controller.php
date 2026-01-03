@@ -286,7 +286,7 @@ class AV_Petitioner_Submissions_Controller
 
         // even though you cant query some of these fields, we still need to include them in the fetch settings
         // we later clean up the submission object to remove everything unwanted and merge lname with fname
-        $fields = array_merge($public_fields, ['id', 'fname', 'lname', 'salutation', 'hide_name', 'custom_properties']);
+        $fields = array_merge($public_fields, AV_Petitioner_Submissions_Model::$INTERNAL_FIELDS);
 
         $fetch_settings = [
             'per_page'          => $per_page,
@@ -741,9 +741,8 @@ class AV_Petitioner_Submissions_Controller
          */
         $public_fields = apply_filters('av_petitioner_public_fields', $public_fields);
 
-        // Remove internal fields and re-validate sensitive fields (one-time validation)
-        $excluded_from_display = ['id', 'fname', 'lname', 'hide_name', 'custom_properties'];
-        $public_fields = array_diff($public_fields, AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS);
+        // Remove internal fields and re-validate sensitive fields
+        $excluded_from_display = array_merge(AV_Petitioner_Submissions_Model::$INTERNAL_FIELDS, AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS);
         $public_fields = array_diff($public_fields, $excluded_from_display);
 
         return array_values($public_fields);
