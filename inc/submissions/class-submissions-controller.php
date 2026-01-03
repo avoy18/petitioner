@@ -733,10 +733,6 @@ class AV_Petitioner_Submissions_Controller
             AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS
         );
 
-        // Remove internal fields that shouldn't be displayed
-        $excluded_from_display = ['id', 'fname', 'lname', 'hide_name', 'custom_properties'];
-        $public_fields = array_diff($public_fields, $excluded_from_display);
-
         /**
          * Filter the public fields that are displayed in the submissions list
          * 
@@ -744,6 +740,11 @@ class AV_Petitioner_Submissions_Controller
          * @return array The public fields that are displayed in the submissions list
          */
         $public_fields = apply_filters('av_petitioner_public_fields', $public_fields);
+
+        // Remove internal fields and re-validate sensitive fields (one-time validation)
+        $excluded_from_display = ['id', 'fname', 'lname', 'hide_name', 'custom_properties'];
+        $public_fields = array_diff($public_fields, AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS);
+        $public_fields = array_diff($public_fields, $excluded_from_display);
 
         return array_values($public_fields);
     }
