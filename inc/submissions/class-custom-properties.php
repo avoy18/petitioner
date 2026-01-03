@@ -330,11 +330,13 @@ class AV_Petitioner_Custom_Properties
                     continue;
                 }
 
-                $submission->{$key} = $value;
+                $submission->{$key} = $value || '';
             }
 
-            unset($submission->custom_properties);
         }
+
+        unset($submission->custom_properties);
+
         return $submission;
     }
 
