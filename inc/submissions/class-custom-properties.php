@@ -221,7 +221,14 @@ class AV_Petitioner_Custom_Properties
      */
     public function filter_available_fields_shortcode($available_fields)
     {
-        $property_keys = array_keys(self::get_property_types());
+        $property_keys = array_filter(
+            array_keys(
+                self::get_property_types()
+            ),
+            function ($key) {
+                return is_string($key) && !empty($key);
+            }
+        );
 
         if (empty($property_keys)) {
             return $available_fields;
@@ -340,7 +347,6 @@ class AV_Petitioner_Custom_Properties
 
                 $submission->{$key} = $value !== null ? $value : '';
             }
-
         }
 
         unset($submission->custom_properties);
