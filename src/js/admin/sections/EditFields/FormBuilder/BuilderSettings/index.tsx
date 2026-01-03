@@ -51,7 +51,7 @@ export default function BuilderSettings() {
 	const currentField = formBuilderFields[builderEditScreen];
 	const currentType = currentField?.type;
 
-	const screens: Record<ScreenType | 'default', () => any> = {
+	const screens: Record<ScreenType | 'default', () => React.ReactNode> = {
 		email: () => <EditInput />,
 		tel: () => <EditInput />,
 		text: () => <EditInput />,
