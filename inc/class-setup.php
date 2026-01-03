@@ -46,11 +46,6 @@ class AV_Petitioner_Setup
                 new AV_Petitioner_Admin_Shared();
             }
 
-            // register blocks
-            if (class_exists('AV_Petitioner_Gutenberg')) {
-                new AV_Petitioner_Gutenberg();
-            }
-
             // add label overrides
             if (class_exists('AV_Petitioner_Label_Overrides')) {
                 new AV_Petitioner_Label_Overrides();
@@ -59,6 +54,11 @@ class AV_Petitioner_Setup
             // custom properties
             if (class_exists('AV_Petitioner_Custom_Properties')) {
                 new AV_Petitioner_Custom_Properties();
+            }
+
+            // register blocks
+            if (class_exists('AV_Petitioner_Gutenberg')) {
+                new AV_Petitioner_Gutenberg();
             }
         });
 
