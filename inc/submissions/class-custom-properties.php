@@ -213,15 +213,23 @@ class AV_Petitioner_Custom_Properties
         return $row;
     }
 
+    /**
+     * Filter the available fields that are displayed in the shortcode & add custom properties
+     *
+     * @param array $available_fields - the available fields array that is being returned from the get_available_fields method
+     * @return array - the modified available fields array with custom property fields appended
+     */
     public function filter_available_fields_shortcode($available_fields)
     {
         $property_keys = array_keys(self::get_property_types());
-        av_ptr_error_log('Petitioner custom properties: property keys: ' . print_r($property_keys, true));
+
         if (empty($property_keys)) {
             return $available_fields;
         }
 
-        return array_values(array_unique(array_merge($available_fields, $property_keys)));
+        $final_fields = array_values(array_unique(array_merge($available_fields, $property_keys)));
+
+        return $final_fields;
     }
 
     /**
