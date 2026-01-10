@@ -8,9 +8,9 @@ class AV_Petitioner_Captcha
 {
     public function __construct()
     {
-        add_action('wp_enqueue_scripts',  [$this, 'enqueue_scripts']);
+        add_action('wp_enqueue_scripts',  [self::class, 'enqueue_scripts']);
 
-        add_filter('av_petitioner_labels_defaults', [$this, 'register_captcha_labels']);
+        add_filter('av_petitioner_labels_defaults', [self::class, 'register_captcha_labels']);
     }
 
     /**
