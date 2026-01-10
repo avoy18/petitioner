@@ -8,6 +8,10 @@ export default class ReCaptcha {
 				'[name="petitioner-g-recaptcha-response"]'
 			);
 
+			if (recaptchaField) {
+				recaptchaField.value = '';
+			}
+
 			petitionForm.addEventListener(
 				'focusin',
 				function () {
@@ -15,18 +19,30 @@ export default class ReCaptcha {
 						return;
 					}
 
-					if (typeof window.grecaptcha === 'undefined' || typeof window.grecaptcha?.ready === 'undefined') {
+					if (
+						typeof window.grecaptcha === 'undefined' ||
+						typeof window.grecaptcha?.ready === 'undefined'
+					) {
 						return;
 					}
 
 					window.grecaptcha.ready(function () {
 						window.grecaptcha
-							?.execute(window.petitionerCaptcha?.recaptchaSiteKey || '', {
-							})
+							?.execute(
+								window.petitionerCaptcha?.recaptchaSiteKey ||
+									'',
+								{}
+							)
 							.then((token) => {
 								if (recaptchaField) {
 									recaptchaField.value = token;
 								}
+							})
+							.catch((error) => {
+								console.error(
+									'petitioner - reCAPTCHA execution failed:',
+									error
+								);
 							});
 					});
 				},
