@@ -104,6 +104,7 @@ class AV_Petitioner_Labels
             'missing_permissions'            => __('Missing permissions', 'petitioner'),
             'missing_fields'                 => __('Missing required fields', 'petitioner'),
             'already_confirmed'              => __('Submission already confirmed or not found.', 'petitioner'),
+            'confirm_email'                  => __('Confirm your email.', 'petitioner'),
             'missing_confirmation_token'     => __('Missing confirmation token', 'petitioner'),
             'no_submissions_to_export'       => __('No submissions available to export.', 'petitioner'),
 
