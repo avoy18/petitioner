@@ -23,9 +23,12 @@ class AV_Petitioner_Captcha
     {
         $labels['captcha_verification_failed_title'] = __('CAPTCHA verification failed.', 'petitioner');
         $labels['captcha_verification_failed_message'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
-        $labels['captcha_verification_failed_message_turnstile'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
-        $labels['captcha_verification_failed_message_hcaptcha'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
-        $labels['captcha_verification_failed_message_recaptcha'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
+        $labels['captcha_invalid_type'] = __('Invalid CAPTCHA type.', 'petitioner');
+        $labels['captcha_missing_response'] = __('CAPTCHA response is missing.', 'petitioner');
+        $labels['captcha_connection_failed'] = __('CAPTCHA verification failed: Unable to connect.', 'petitioner');
+        $labels['captcha_verification_failed'] = __('CAPTCHA verification failed.', 'petitioner');
+        $labels['captcha_score_too_low'] = __('reCAPTCHA score too low. Please try again.', 'petitioner');
+        $labels['captcha_verification_completed'] = __('CAPTCHA verification completed.', 'petitioner');
 
         return $labels;
     }
@@ -121,7 +124,7 @@ class AV_Petitioner_Captcha
 
         $recaptcha_enabled  = get_option('petitioner_enable_recaptcha', false);
         $hcaptcha_enabled   = get_option('petitioner_enable_hcaptcha', false);
-        $turnstile_enabled   = get_option('petitioner_enable_turnstile', false);
+        $turnstile_enabled  = get_option('petitioner_enable_turnstile', false);
 
         if ($recaptcha_enabled) {
             $recaptcha_response = isset($_POST['petitioner-g-recaptcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-g-recaptcha-response'])) : '';
@@ -198,7 +201,7 @@ class AV_Petitioner_Captcha
         if (! isset($providers[$captcha_type])) {
             return [
                 'success' => false,
-                'message' => __('Invalid CAPTCHA type.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_invalid_type'),
             ];
         }
 
@@ -209,12 +212,12 @@ class AV_Petitioner_Captcha
         if (empty($captcha_response)) {
             return [
                 'success' => false,
-                'message' => __('CAPTCHA response is missing.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_missing_response'),
             ];
         }
 
         // Send request to verification API
-        $api_response = wp_remote_post($provider['verify_url'], [
+        $api_response = wp_remote_post($provider['verify_url'] . 'a1221', [
             'body' => [
                 'secret'   => $captcha_secret,
                 'response' => $captcha_response,
@@ -226,7 +229,7 @@ class AV_Petitioner_Captcha
         if (is_wp_error($api_response)) {
             return [
                 'success' => false,
-                'message' => __('CAPTCHA verification failed: Unable to connect.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_connection_failed'),
             ];
         }
 
@@ -237,7 +240,7 @@ class AV_Petitioner_Captcha
         if (! isset($body['success']) || ! $body['success']) {
             return [
                 'success' => false,
-                'message' => __('CAPTCHA verification failed.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_verification_failed'),
             ];
         }
 
@@ -245,13 +248,13 @@ class AV_Petitioner_Captcha
         if ($captcha_type === 'recaptcha' && isset($body['score']) && $body['score'] < 0.5) {
             return [
                 'success' => false,
-                'message' => __('reCAPTCHA score too low. Please try again.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_score_too_low'),
             ];
         }
 
         return [
             'success' => true,
-            'message' => __('CAPTCHA verification completed.', 'petitioner'),
+            'message' => AV_Petitioner_Labels::get('captcha_verification_completed'),
         ];
     }
 }

@@ -69,7 +69,7 @@ class AV_Petitioner_Labels
      * 
      * @return array All labels including field labels
      */
-    private static function get_all_with_fields()
+    public static function get_all_with_fields()
     {
         if (self::$field_labels_cache !== null) {
             return self::$field_labels_cache;
