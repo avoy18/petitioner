@@ -6,6 +6,36 @@ if (!defined('ABSPATH')) {
 
 class AV_Petitioner_Captcha
 {
+    public function __construct()
+    {
+        add_action('wp_enqueue_scripts',  [self::class, 'enqueue_scripts']);
+
+        add_filter('av_petitioner_labels_defaults', [self::class, 'register_captcha_labels']);
+    }
+
+    /**
+     * Register the captcha labels
+     *
+     * @param array $labels The labels array.
+     * @return array The labels array.
+     */
+    public static function register_captcha_labels($labels)
+    {
+        $labels['captcha_verification_failed_title'] = __('CAPTCHA verification failed.', 'petitioner');
+        $labels['captcha_verification_failed_message'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
+        $labels['captcha_invalid_type'] = __('Invalid CAPTCHA type.', 'petitioner');
+        $labels['captcha_missing_response'] = __('CAPTCHA response is missing.', 'petitioner');
+        $labels['captcha_connection_failed'] = __('CAPTCHA verification failed: Unable to connect.', 'petitioner');
+        $labels['captcha_verification_failed'] = __('CAPTCHA verification failed.', 'petitioner');
+        $labels['captcha_score_too_low'] = __('reCAPTCHA score too low. Please try again.', 'petitioner');
+        $labels['captcha_verification_completed'] = __('CAPTCHA verification completed.', 'petitioner');
+
+        return $labels;
+    }
+
+    /**
+     * Enqueue the captcha-related scripts
+     */
     public static function enqueue_scripts()
     {
         // Captcha
@@ -94,7 +124,7 @@ class AV_Petitioner_Captcha
 
         $recaptcha_enabled  = get_option('petitioner_enable_recaptcha', false);
         $hcaptcha_enabled   = get_option('petitioner_enable_hcaptcha', false);
-        $turnstile_enabled   = get_option('petitioner_enable_turnstile', false);
+        $turnstile_enabled  = get_option('petitioner_enable_turnstile', false);
 
         if ($recaptcha_enabled) {
             $recaptcha_response = isset($_POST['petitioner-g-recaptcha-response']) ? sanitize_text_field(wp_unslash($_POST['petitioner-g-recaptcha-response'])) : '';
@@ -102,7 +132,10 @@ class AV_Petitioner_Captcha
             $recaptcha_result = self::verify_captcha($recaptcha_response, 'recaptcha');
 
             if (!$recaptcha_result['success']) {
-                wp_send_json_error($recaptcha_result['message']);
+                wp_send_json_error([
+                    'title'     => AV_Petitioner_Labels::get('captcha_verification_failed_title'),
+                    'message'   => $recaptcha_result['message'],
+                ]);
                 wp_die();
             }
         }
@@ -113,7 +146,10 @@ class AV_Petitioner_Captcha
             $hcaptcha_result = self::verify_captcha($hcaptcha_response, 'hcaptcha');
 
             if (!$hcaptcha_result['success']) {
-                wp_send_json_error($hcaptcha_result['message']);
+                wp_send_json_error([
+                    'title'     => AV_Petitioner_Labels::get('captcha_verification_failed_title'),
+                    'message'   => $hcaptcha_result['message'],
+                ]);
                 wp_die();
             }
         }
@@ -124,7 +160,10 @@ class AV_Petitioner_Captcha
             $turnstile_result = self::verify_captcha($turnstile_response, 'turnstile');
 
             if (!$turnstile_result['success']) {
-                wp_send_json_error($turnstile_result['message']);
+                wp_send_json_error([
+                    'title'     => AV_Petitioner_Labels::get('captcha_verification_failed_title'),
+                    'message'   => $turnstile_result['message'],
+                ]);
                 wp_die();
             }
         }
@@ -162,7 +201,7 @@ class AV_Petitioner_Captcha
         if (! isset($providers[$captcha_type])) {
             return [
                 'success' => false,
-                'message' => __('Invalid CAPTCHA type.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_invalid_type'),
             ];
         }
 
@@ -173,7 +212,7 @@ class AV_Petitioner_Captcha
         if (empty($captcha_response)) {
             return [
                 'success' => false,
-                'message' => __('CAPTCHA response is missing.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_missing_response'),
             ];
         }
 
@@ -182,7 +221,7 @@ class AV_Petitioner_Captcha
             'body' => [
                 'secret'   => $captcha_secret,
                 'response' => $captcha_response,
-                'remoteip' => $_SERVER['REMOTE_ADDR'],
+                'remoteip' => av_petitioner_get_remote_ip(),
             ],
         ]);
 
@@ -190,7 +229,7 @@ class AV_Petitioner_Captcha
         if (is_wp_error($api_response)) {
             return [
                 'success' => false,
-                'message' => __('CAPTCHA verification failed: Unable to connect.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_connection_failed'),
             ];
         }
 
@@ -201,7 +240,7 @@ class AV_Petitioner_Captcha
         if (! isset($body['success']) || ! $body['success']) {
             return [
                 'success' => false,
-                'message' => __('CAPTCHA verification failed.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_verification_failed'),
             ];
         }
 
@@ -209,13 +248,13 @@ class AV_Petitioner_Captcha
         if ($captcha_type === 'recaptcha' && isset($body['score']) && $body['score'] < 0.5) {
             return [
                 'success' => false,
-                'message' => __('reCAPTCHA score too low. Please try again.', 'petitioner'),
+                'message' => AV_Petitioner_Labels::get('captcha_score_too_low'),
             ];
         }
 
         return [
             'success' => true,
-            'message' => __('CAPTCHA verification completed.', 'petitioner'),
+            'message' => AV_Petitioner_Labels::get('captcha_verification_completed'),
         ];
     }
 }
