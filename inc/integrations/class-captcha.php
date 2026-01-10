@@ -6,6 +6,33 @@ if (!defined('ABSPATH')) {
 
 class AV_Petitioner_Captcha
 {
+    public function __construct()
+    {
+        add_action('wp_enqueue_scripts',  [$this, 'enqueue_scripts']);
+
+        add_filter('av_petitioner_labels_defaults', [$this, 'register_captcha_labels']);
+    }
+
+    /**
+     * Register the captcha labels
+     *
+     * @param array $labels The labels array.
+     * @return array The labels array.
+     */
+    public static function register_captcha_labels($labels)
+    {
+        $labels['captcha_verification_failed_title'] = __('CAPTCHA verification failed.', 'petitioner');
+        $labels['captcha_verification_failed_message'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
+        $labels['captcha_verification_failed_message_turnstile'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
+        $labels['captcha_verification_failed_message_hcaptcha'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
+        $labels['captcha_verification_failed_message_recaptcha'] = __('CAPTCHA verification failed. Please try again.', 'petitioner');
+
+        return $labels;
+    }
+
+    /**
+     * Enqueue the captcha-related scripts
+     */
     public static function enqueue_scripts()
     {
         // Captcha
