@@ -8,6 +8,7 @@ class Test_Captcha extends BaseTestCase
     public function set_up()
     {
         parent::set_up();
+        do_action('init');
 
         // Set REMOTE_ADDR to prevent undefined index errors
         if (!isset($_SERVER['REMOTE_ADDR'])) {
