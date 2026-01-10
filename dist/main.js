@@ -34,6 +34,11 @@ class ReCaptcha {
               if (recaptchaField) {
                 recaptchaField.value = token;
               }
+            }).catch((error) => {
+              console.error(
+                "petitioner - reCAPTCHA execution failed:",
+                error
+              );
             });
           });
         },
