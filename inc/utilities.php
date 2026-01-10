@@ -322,7 +322,8 @@ function av_petitioner_build_model_query($conditional_logic)
 }
 
 /**
- * Returns the remote IP address of the client
+ * Returns the remote IP address of the client safely
+ * @since 0.7.2
  * @return string
  */
 function av_petitioner_get_remote_ip()
