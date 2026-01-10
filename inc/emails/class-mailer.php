@@ -204,7 +204,7 @@ class AV_Petitioner_Mailer
                 get_site_url()
             );
 
-            $confirmation_link = '<a href="' . esc_url($confirmation_link) . '">' . esc_html__('Confirm your email.', 'petitioner') . '</a>';
+            $confirmation_link = '<a href="' . esc_url($confirmation_link) . '">' . esc_html(AV_Petitioner_Labels::get('confirm_email')) . '</a>';
         }
 
         $variables = [

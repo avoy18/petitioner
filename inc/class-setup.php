@@ -60,6 +60,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_Gutenberg')) {
                 new AV_Petitioner_Gutenberg();
             }
+
+            // add captcha
+            if (class_exists('AV_Petitioner_Captcha')) {
+                new AV_Petitioner_Captcha();
+            }
         });
 
         // api endpoints
@@ -188,8 +193,6 @@ class AV_Petitioner_Setup
         wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', ['wp-i18n'], AV_PETITIONER_PLUGIN_VERSION, true);
 
         wp_enqueue_script('petitioner-script');
-
-        AV_Petitioner_Captcha::enqueue_scripts();
 
         wp_localize_script('petitioner-script', 'petitionerFormSettings', [
             'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
