@@ -102,7 +102,10 @@ class AV_Petitioner_Captcha
             $recaptcha_result = self::verify_captcha($recaptcha_response, 'recaptcha');
 
             if (!$recaptcha_result['success']) {
-                wp_send_json_error($recaptcha_result['message']);
+                wp_send_json_error([
+                    'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                    'message'   => $recaptcha_result['message'],
+                ]);
                 wp_die();
             }
         }
@@ -113,7 +116,10 @@ class AV_Petitioner_Captcha
             $hcaptcha_result = self::verify_captcha($hcaptcha_response, 'hcaptcha');
 
             if (!$hcaptcha_result['success']) {
-                wp_send_json_error($hcaptcha_result['message']);
+                wp_send_json_error([
+                    'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                    'message'   => $hcaptcha_result['message'],
+                ]);
                 wp_die();
             }
         }
@@ -124,7 +130,10 @@ class AV_Petitioner_Captcha
             $turnstile_result = self::verify_captcha($turnstile_response, 'turnstile');
 
             if (!$turnstile_result['success']) {
-                wp_send_json_error($turnstile_result['message']);
+                wp_send_json_error([
+                    'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                    'message'   => $turnstile_result['message'],
+                ]);
                 wp_die();
             }
         }
