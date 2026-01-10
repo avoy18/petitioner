@@ -217,7 +217,7 @@ class AV_Petitioner_Captcha
         }
 
         // Send request to verification API
-        $api_response = wp_remote_post($provider['verify_url'] . 'a1221', [
+        $api_response = wp_remote_post($provider['verify_url'], [
             'body' => [
                 'secret'   => $captcha_secret,
                 'response' => $captcha_response,
