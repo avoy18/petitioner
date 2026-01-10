@@ -221,7 +221,7 @@ class AV_Petitioner_Captcha
             'body' => [
                 'secret'   => $captcha_secret,
                 'response' => $captcha_response,
-                'remoteip' => $_SERVER['REMOTE_ADDR'],
+                'remoteip' => av_petitioner_get_remote_ip(),
             ],
         ]);
 

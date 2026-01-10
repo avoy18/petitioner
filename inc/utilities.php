@@ -320,3 +320,14 @@ function av_petitioner_build_model_query($conditional_logic)
 
     return $query;
 }
+
+/**
+ * Returns the remote IP address of the client
+ * @return string
+ */
+function av_petitioner_get_remote_ip()
+{
+    return isset($_SERVER['REMOTE_ADDR'])
+        ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']))
+        : '';
+}
