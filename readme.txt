@@ -145,6 +145,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Fix a bug with captcha-related form errors showing as "undefined" vs saying what actually happened
     * Better handling of captcha-related methods - initiate the class vs add static methods all over
 * Improved label editing: the settings page now lets you edit a lot more labels than before!
+* Improved Google ReCaptcha logic when dealing with aggressive caching (clearing stale values before executing)
 
 = 0.7.1 =
 * Bugfixes
