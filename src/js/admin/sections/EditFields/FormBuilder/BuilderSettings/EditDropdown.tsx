@@ -4,12 +4,11 @@ import type { BuilderField } from '../consts';
 import {
 	TextControl,
 	CheckboxControl,
-	SelectControl,
-	ToggleControl,
+	Modal,
+	Button,
 } from '@wordpress/components';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 import { __ } from '@wordpress/i18n';
-import { FormTokenField } from '@wordpress/components';
 import OptionList from '@admin/components/OptionList';
 
 const CountrySettings = () => {
@@ -21,19 +20,26 @@ const CountrySettings = () => {
 
 	return (
 		<>
-			<ToggleControl
-				label={__('Customize country list', 'petitioner')}
-				checked={editCountryList}
-				onChange={setEditCountryList}
-				help={__('Customize the country list to show in the dropdown.', 'petitioner')}
-			/>
+			<Button
+				onClick={() => setEditCountryList(true)}
+				variant="tertiary"
+				icon="edit"
+			>
+				{__('Customize country list', 'petitioner')}
+			</Button>
 			{editCountryList && (
-				<OptionList
-					maxHeight={250}
-					options={countryList}
-					onOptionsChange={() => {}}
-					label={__('Field options', 'petitioner')}
-				/>
+				<Modal
+					title={__('Customize country list', 'petitioner')}
+					onRequestClose={() => setEditCountryList(false)}
+					size="large"
+				>
+					<OptionList
+						options={countryList}
+						onOptionsChange={(newValues) => {
+							console.log('onOptionsChange', newValues);
+						}}
+					/>
+				</Modal>
 			)}
 		</>
 	);
