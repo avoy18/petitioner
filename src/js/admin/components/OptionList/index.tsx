@@ -5,7 +5,12 @@ import { CSS } from '@dnd-kit/utilities';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
 import DragHandle from '@admin/components/DragHandle';
 import type { OptionListProps } from './const';
-import { RowWrapper, StyledOptionsList, OptionListLabel, StyledPanel } from './styled';
+import {
+	RowWrapper,
+	StyledOptionsList,
+	OptionListLabel,
+	StyledPanel,
+} from './styled';
 
 function OptionRow({ value }: { value: string }) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -43,19 +48,21 @@ export default function OptionList({
 	}
 
 	return (
-		<DndSortableProvider items={options} onReorder={handleReorder}>
-			<StyledPanel>
-				<PanelHeader>
-					{label && <OptionListLabel>{label}</OptionListLabel>}
-				</PanelHeader>
-				<PanelBody>
-					<StyledOptionsList $maxHeight={maxHeight}>
-						{options.map((value) => (
-							<OptionRow key={value} value={value} />
-						))}
-					</StyledOptionsList>
-				</PanelBody>
-			</StyledPanel>
-		</DndSortableProvider>
+		<div data-testid="option-list">
+			<DndSortableProvider items={options} onReorder={handleReorder}>
+				<StyledPanel>
+					<PanelHeader>
+						{label && <OptionListLabel>{label}</OptionListLabel>}
+					</PanelHeader>
+					<PanelBody>
+						<StyledOptionsList $maxHeight={maxHeight}>
+							{options.map((value) => (
+								<OptionRow key={value} value={value} />
+							))}
+						</StyledOptionsList>
+					</PanelBody>
+				</StyledPanel>
+			</DndSortableProvider>
+		</div>
 	);
 }
