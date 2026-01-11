@@ -1,27 +1,27 @@
 import styled from 'styled-components';
-import { COLORS, SPACINGS, TRANSITIONS } from '@admin/theme';
+import { COLORS, FONT_SIZES, SPACINGS, TRANSITIONS } from '@admin/theme';
 
-export const RowWrapper = styled.div`
-	display: flex;
-	align-items: center;
-	gap: ${SPACINGS.xs};
-	border-bottom: 1px solid ${COLORS.grey};
-	border-radius: ${SPACINGS.xs};
-	transition: ${TRANSITIONS.sm};
-	padding-inline: ${SPACINGS.xs};
+export const Row = styled.tr<{ $isDragging?: boolean }>`
+	opacity: ${({ $isDragging }) => ($isDragging ? 0.5 : 1)};
 
-	&:hover {
-		background-color: ${COLORS.grey};
-		cursor: grab;
+	&:hover .ptr-drag-handle {
+		opacity: 1;
 	}
 `;
 
-export const ToggleControlWrapper = styled.div`
-	flex-shrink: 0;
-	margin-left: auto;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
+export const DragCell = styled.td`
+	width: 32px;
+	padding: ${SPACINGS.sm};
+
+	.ptr-drag-handle {
+		opacity: 0;
+		transition: opacity ${TRANSITIONS.sm};
+	}
+`;
+
+export const ToggleCell = styled.td`
+	width: 48px;
+	padding: ${SPACINGS.sm};
 
 	.components-toggle-control {
 		margin-bottom: 0;
@@ -30,4 +30,9 @@ export const ToggleControlWrapper = styled.div`
 	.components-toggle-control__label {
 		display: none;
 	}
+`;
+
+export const ValueCell = styled.td`
+	padding: ${SPACINGS.xs};
+	font-size: ${FONT_SIZES.sm};
 `;

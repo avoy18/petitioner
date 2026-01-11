@@ -1,14 +1,14 @@
 import { useCallback } from '@wordpress/element';
-import { PanelBody, PanelHeader } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
 import type { OptionListProps } from './const';
 import OptionRow from './OptionRow';
-import { StyledOptionsList, OptionListLabel, StyledPanel } from './styled';
+import { OptionsTable, TableBody, OptionListLabel, StyledTh } from './styled';
+import { SPACINGS } from '@admin/theme';
 
 export default function OptionList({
 	label,
 	options,
-	maxHeight = 500,
 	onOptionsChange,
 }: OptionListProps) {
 	const handleReorder = useCallback(
@@ -23,21 +23,26 @@ export default function OptionList({
 	}
 
 	return (
-		<DndSortableProvider items={options} onReorder={handleReorder}>
-			<div data-testid="option-list">
-				<StyledPanel>
-					<PanelHeader>
-						{label && <OptionListLabel>{label}</OptionListLabel>}
-					</PanelHeader>
-					<PanelBody>
-						<StyledOptionsList $maxHeight={maxHeight}>
-							{options.map((value) => (
-								<OptionRow key={value} value={value} />
-							))}
-						</StyledOptionsList>
-					</PanelBody>
-				</StyledPanel>
-			</div>
-		</DndSortableProvider>
+		<div data-testid="option-list">
+			{label && <OptionListLabel>{label}</OptionListLabel>}
+			<DndSortableProvider items={options} onReorder={handleReorder}>
+				<OptionsTable>
+					<thead>
+						<tr>
+							<StyledTh $width={'32px'}></StyledTh>
+							<StyledTh>{__('Value', 'petitioner')}</StyledTh>
+							<StyledTh $width={'150px'}>
+								{__('Show in forms', 'petitioner')}
+							</StyledTh>
+						</tr>
+					</thead>
+					<TableBody>
+						{options.map((value) => (
+							<OptionRow key={value} value={value} />
+						))}
+					</TableBody>
+				</OptionsTable>
+			</DndSortableProvider>
+		</div>
 	);
 }

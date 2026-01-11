@@ -1,33 +1,37 @@
 import { useSortable } from '@dnd-kit/sortable';
-import DragHandle from '@admin/components/DragHandle';
-import { CSS } from '@dnd-kit/utilities';
 import { __ } from '@wordpress/i18n';
+import { CSS } from '@dnd-kit/utilities';
 import { ToggleControl } from '@wordpress/components';
-import { RowWrapper, ToggleControlWrapper } from './styled';
+import DragHandle from '@admin/components/DragHandle';
+import { Row, DragCell, ToggleCell, ValueCell } from './styled';
+import type { OptionRowProps } from './consts';
 
-export default function OptionRow({ value }: { value: string }) {
+export default function OptionRow({
+	value,
+	isActive = false,
+	onToggle,
+}: OptionRowProps) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
 		useSortable({ id: value });
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition: '0s',
-		opacity: isDragging ? 0.5 : 1,
 	};
 
 	return (
-		<RowWrapper ref={setNodeRef} style={style}>
-			<DragHandle {...attributes} {...listeners} />
-			<div>{value}</div>
-			<ToggleControlWrapper>
+		<Row ref={setNodeRef} style={style} $isDragging={isDragging}>
+			<DragCell>
+				<DragHandle {...attributes} {...listeners} />
+			</DragCell>
+			<ValueCell>{value}</ValueCell>
+			<ToggleCell>
 				<ToggleControl
-					checked={false}
-					onChange={(checked) => {
-						console.log(checked);
-					}}
+					checked={isActive}
+					onChange={(checked) => onToggle?.(value, checked)}
 					label={__('Active', 'petitioner')}
 				/>
-			</ToggleControlWrapper>
-		</RowWrapper>
+			</ToggleCell>
+		</Row>
 	);
 }
