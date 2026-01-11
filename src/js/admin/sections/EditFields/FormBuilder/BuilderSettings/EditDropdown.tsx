@@ -1,3 +1,4 @@
+import { useState } from '@wordpress/element';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
 import type { BuilderField } from '../consts';
 import {
@@ -6,30 +7,34 @@ import {
 	SelectControl,
 	ToggleControl,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 import { __ } from '@wordpress/i18n';
 import { FormTokenField } from '@wordpress/components';
+import OptionList from '@admin/components/OptionList';
 
 const CountrySettings = () => {
 	const { formState } = useEditFormContext();
 	const { formBuilderFields, updateFormBuilderFields, builderEditScreen } =
 		useFormBuilderContext();
 	const countryList = formState.default_values?.country_list || [];
+	const [editCountryList, setEditCountryList] = useState(false);
 
 	return (
 		<>
-			<FormTokenField
-				label={__('Manually select countries to show', 'petitioner')}
-				value={formBuilderFields[builderEditScreen].country_list || []}
-				suggestions={countryList}
-				onChange={(tokens) =>
-					updateFormBuilderFields(builderEditScreen, {
-						...formBuilderFields[builderEditScreen],
-						country_list: tokens,
-					})
-				}
+			<ToggleControl
+				label={__('Customize country list', 'petitioner')}
+				checked={editCountryList}
+				onChange={setEditCountryList}
+				help={__('Customize the country list to show in the dropdown.', 'petitioner')}
 			/>
+			{editCountryList && (
+				<OptionList
+					maxHeight={250}
+					options={countryList}
+					onOptionsChange={() => {}}
+					label={__('Field options', 'petitioner')}
+				/>
+			)}
 		</>
 	);
 };

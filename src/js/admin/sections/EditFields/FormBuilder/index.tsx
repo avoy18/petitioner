@@ -38,9 +38,7 @@ function FormBuilderComponent() {
 		const id = getIDNoPrefix(rawID);
 
 		// get the field type from the draggable options
-		const newField = draggableFields.find(
-			(field) => field.fieldKey === id
-		);
+		const newField = draggableFields.find((field) => field.fieldKey === id);
 
 		const newFieldID = newField?.fieldKey;
 
