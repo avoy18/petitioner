@@ -1,6 +1,6 @@
-import { useState } from '@wordpress/element';
+import { useState, useCallback } from '@wordpress/element';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import type { BuilderField } from '../consts';
+import type { BuilderField, SelectField } from '../consts';
 import {
 	TextControl,
 	CheckboxControl,
@@ -13,10 +13,36 @@ import OptionList from '@admin/components/OptionList';
 
 const CountrySettings = () => {
 	const { formState } = useEditFormContext();
-	const { formBuilderFields, updateFormBuilderFields, builderEditScreen } =
+	const { formBuilderFields, updateFormBuilderFields } =
 		useFormBuilderContext();
-	const countryList = formState.default_values?.country_list || [];
+
+	const defaultCountryList = formState.default_values?.country_list || [];
+
 	const [editCountryList, setEditCountryList] = useState(false);
+
+	const [countryList, setCountryList] = useState<string[]>(() => {
+		return (
+			(formBuilderFields['country'] as SelectField)?.options ||
+			defaultCountryList
+		);
+	});
+
+	const onSave = useCallback(() => {
+		updateFormBuilderFields('country', {
+			...formBuilderFields['country'],
+			options: countryList,
+		} as SelectField); /* Country is always a select field */
+
+		console.log('new state', {
+			...formBuilderFields['country'],
+			options: countryList,
+		});
+		setEditCountryList(false);
+	}, [countryList]);
+
+	const onCancel = useCallback(() => {
+		setEditCountryList(false);
+	}, []);
 
 	return (
 		<>
@@ -30,14 +56,17 @@ const CountrySettings = () => {
 			{editCountryList && (
 				<Modal
 					title={__('Customize country list', 'petitioner')}
-					onRequestClose={() => setEditCountryList(false)}
+					onRequestClose={onCancel}
 					size="large"
+					headerActions={
+						<Button onClick={onSave} variant="primary">
+							{__('Save', 'petitioner')}
+						</Button>
+					}
 				>
 					<OptionList
 						options={countryList}
-						onOptionsChange={(newValues) => {
-							console.log('onOptionsChange', newValues);
-						}}
+						onOptionsChange={setCountryList}
 					/>
 				</Modal>
 			)}
