@@ -1,7 +1,9 @@
 import { useSortable } from '@dnd-kit/sortable';
 import DragHandle from '@admin/components/DragHandle';
 import { CSS } from '@dnd-kit/utilities';
-import { RowWrapper } from './styled';
+import { __ } from '@wordpress/i18n';
+import { ToggleControl } from '@wordpress/components';
+import { RowWrapper, ToggleControlWrapper } from './styled';
 
 export default function OptionRow({ value }: { value: string }) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -17,6 +19,15 @@ export default function OptionRow({ value }: { value: string }) {
 		<RowWrapper ref={setNodeRef} style={style}>
 			<DragHandle {...attributes} {...listeners} />
 			<div>{value}</div>
+			<ToggleControlWrapper>
+				<ToggleControl
+					checked={false}
+					onChange={(checked) => {
+						console.log(checked);
+					}}
+					label={__('Active', 'petitioner')}
+				/>
+			</ToggleControlWrapper>
 		</RowWrapper>
 	);
 }
