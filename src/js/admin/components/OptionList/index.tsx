@@ -1,34 +1,9 @@
 import { useCallback } from '@wordpress/element';
-import { Panel, PanelBody, PanelHeader } from '@wordpress/components';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { PanelBody, PanelHeader } from '@wordpress/components';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
-import DragHandle from '@admin/components/DragHandle';
 import type { OptionListProps } from './const';
-import {
-	RowWrapper,
-	StyledOptionsList,
-	OptionListLabel,
-	StyledPanel,
-} from './styled';
-
-function OptionRow({ value }: { value: string }) {
-	const { attributes, listeners, setNodeRef, transform, isDragging } =
-		useSortable({ id: value });
-
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition: '0s',
-		opacity: isDragging ? 0.5 : 1,
-	};
-
-	return (
-		<RowWrapper ref={setNodeRef} style={style}>
-			<DragHandle {...attributes} {...listeners} />
-			<div>{value}</div>
-		</RowWrapper>
-	);
-}
+import OptionRow from './OptionRow';
+import { StyledOptionsList, OptionListLabel, StyledPanel } from './styled';
 
 export default function OptionList({
 	label,
@@ -48,8 +23,8 @@ export default function OptionList({
 	}
 
 	return (
-		<div data-testid="option-list">
-			<DndSortableProvider items={options} onReorder={handleReorder}>
+		<DndSortableProvider items={options} onReorder={handleReorder}>
+			<div data-testid="option-list">
 				<StyledPanel>
 					<PanelHeader>
 						{label && <OptionListLabel>{label}</OptionListLabel>}
@@ -62,7 +37,7 @@ export default function OptionList({
 						</StyledOptionsList>
 					</PanelBody>
 				</StyledPanel>
-			</DndSortableProvider>
-		</div>
+			</div>
+		</DndSortableProvider>
 	);
 }
