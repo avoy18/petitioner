@@ -175,11 +175,18 @@ class AV_Petitioner_Form_UI
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
 
+        /**
+         * Starting from version 0.8.0, the options for the country field are also stored in the field['options'] array.
+         * 
+         * This is a fallback for older versions.
+         */
         if ($name === 'country') {
             $options = $this->country_list;
-        } else {
-            $options = !empty($field['options']) ? esc_html($field['options']) : [];
         }
+
+        $options = (!empty($field['options']) && is_array($field['options']))
+            ? map_deep($field['options'], 'sanitize_text_field')
+            : [];
     ?>
         <div class="petitioner__input">
             <label for="<?php echo $field_name; ?>">
