@@ -1,5 +1,5 @@
-export type OptionRowProps = {
-	value: string;
-	isActive?: boolean;
-	onToggle?: (value: string, checked: boolean) => void;
+import { OptionItem } from '@admin/sections/EditFields/FormBuilder/consts';
+
+export type OptionRowProps = OptionItem & {
+	onToggle?: (value: OptionItem['value'], checked: boolean) => void;
 };

@@ -9,7 +9,7 @@ import type { OptionRowProps } from './consts';
 export default function OptionRow({
 	value,
 	isActive = false,
-	onToggle,
+	onToggle = () => {},
 }: OptionRowProps) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
 		useSortable({ id: value });
@@ -28,7 +28,7 @@ export default function OptionRow({
 			<ToggleCell>
 				<ToggleControl
 					checked={isActive}
-					onChange={(checked) => onToggle?.(value, checked)}
+					onChange={(checked) => onToggle(value, checked)}
 					label={__('Active', 'petitioner')}
 				/>
 			</ToggleCell>

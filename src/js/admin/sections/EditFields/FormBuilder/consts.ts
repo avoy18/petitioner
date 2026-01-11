@@ -24,9 +24,14 @@ export interface TextField extends BaseField {
 	placeholder: string;
 }
 
+export type OptionItem = {
+	value: string;
+	isActive?: boolean;
+}
+
 export interface SelectField extends BaseField {
 	type: 'select';
-	options: string[];
+	options: OptionItem[] | [];
 }
 
 export interface CheckboxField extends BaseField {

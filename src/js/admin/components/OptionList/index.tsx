@@ -34,7 +34,7 @@ export default function OptionList({
 						</tr>
 					</thead>
 					<TableBody>
-						{options.map((value) => (
+						{options.length > 0 && options.map((value) => (
 							<OptionRow key={value} value={value} />
 						))}
 					</TableBody>
