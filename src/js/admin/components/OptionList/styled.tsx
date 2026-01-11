@@ -29,10 +29,6 @@ export const TableBody = styled.tbody`
 	}
 `;
 
-export const OptionListLabel = styled.h4`
-	margin: 0 0 ${SPACINGS.sm} 0;
-`;
-
 export const StyledTh = styled.th<{ $width?: string }>`
 	padding: ${SPACINGS.xs};
 	font-size: ${FONT_SIZES.sm};

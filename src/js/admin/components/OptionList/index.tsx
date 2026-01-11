@@ -3,11 +3,9 @@ import { __ } from '@wordpress/i18n';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
 import type { OptionListProps } from './const';
 import OptionRow from './OptionRow';
-import { OptionsTable, TableBody, OptionListLabel, StyledTh } from './styled';
-import { SPACINGS } from '@admin/theme';
+import { OptionsTable, TableBody, StyledTh } from './styled';
 
 export default function OptionList({
-	label,
 	options,
 	onOptionsChange,
 }: OptionListProps) {
@@ -24,7 +22,6 @@ export default function OptionList({
 
 	return (
 		<div data-testid="option-list">
-			{label && <OptionListLabel>{label}</OptionListLabel>}
 			<DndSortableProvider items={options} onReorder={handleReorder}>
 				<OptionsTable>
 					<thead>
