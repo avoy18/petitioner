@@ -19,13 +19,11 @@ export default function PTRichText({
 	toolbar?: string;
 	onChange: (value: string) => void;
 }) {
-	const editorRef = useRef(null);
+	const editorRef = useRef<typeof tinymce.Editor | null>(null);
 	const lastSavedValue = useRef(value);
 
 	useEffect(() => {
-		// @ts-ignore
 		if (typeof window !== 'undefined' && typeof tinymce !== 'undefined') {
-			// @ts-ignore
 			tinymce.init({
 				selector: `#${id}`,
 				menubar: false,
@@ -38,7 +36,6 @@ export default function PTRichText({
 				setup: (editor: any) => {
 					editorRef.current = editor;
 
-					// ✅ Set initial content only once
 					editor.on('init', () => {
 						if (value) {
 							editor.setContent(value);
@@ -48,21 +45,31 @@ export default function PTRichText({
 
 					editor.on('blur', () => {
 						const content = editor.getContent();
+						lastSavedValue.current = content;
 						onChange(content);
 					});
 				},
 			});
 		}
 
-		// ✅ Cleanup TinyMCE instance when unmounting
 		return () => {
 			if (editorRef.current) {
-				// @ts-ignore
-				editorRef.current.remove();
+				try {
+					editorRef.current.remove();
+				} catch (e) {
+					console.warn('TinyMCE cleanup error:', e);
+				}
 				editorRef.current = null;
 			}
 		};
-	}, [id, value]);
+	}, [id, height, plugins, toolbar]);
+
+	useEffect(() => {
+		if (editorRef.current && value !== lastSavedValue.current) {
+			editorRef.current.setContent(value || '');
+			lastSavedValue.current = value;
+		}
+	}, [value]);
 
 	return (
 		<div className="petitioner-rich-text">
