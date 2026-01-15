@@ -140,7 +140,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
-= 0.7.2 =
+= 0.7.3 =
 * Bugfix: ensure tinymce doesn't re-initialize on value change
 
 = 0.7.2 =
