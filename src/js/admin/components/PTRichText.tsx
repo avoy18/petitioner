@@ -25,6 +25,10 @@ export default function PTRichText({
 	useEffect(() => {
 		// @ts-ignore
 		if (typeof window !== 'undefined' && typeof tinymce !== 'undefined') {
+			if (editorRef.current) {
+				return;
+			}
+
 			// @ts-ignore
 			tinymce.init({
 				selector: `#${id}`,
