@@ -19,14 +19,27 @@ export default function PTRichText({
 	toolbar?: string;
 	onChange: (value: string) => void;
 }) {
-	const editorRef = useRef<typeof tinymce.Editor | null>(null);
+	const editorRef = useRef<tinymce.Editor | null>(null);
 	const lastSavedValue = useRef(value);
+	const initializedIdRef = useRef<string | null>(null);
 
 	useEffect(() => {
 		if (typeof window !== 'undefined' && typeof tinymce !== 'undefined') {
-			if (editorRef.current) {
+			if (editorRef.current && initializedIdRef.current === id) {
 				return;
 			}
+
+			// If the `id` changed, tear down the old instance before re-init.
+			if (editorRef.current && initializedIdRef.current !== id) {
+				try {
+					editorRef.current.remove();
+				} catch (e) {
+					console.warn('TinyMCE cleanup error:', e);
+				}
+				editorRef.current = null;
+			}
+
+			initializedIdRef.current = id;
 
 			tinymce.init({
 				selector: `#${id}`,
@@ -37,7 +50,7 @@ export default function PTRichText({
 				block_formats:
 					'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3',
 				height,
-				setup: (editor: any) => {
+				setup: (editor: tinymce.Editor) => {
 					editorRef.current = editor;
 
 					editor.on('init', () => {
@@ -64,6 +77,7 @@ export default function PTRichText({
 					console.warn('TinyMCE cleanup error:', e);
 				}
 				editorRef.current = null;
+				initializedIdRef.current = null;
 			}
 		};
 	}, [id, height, plugins, toolbar]);
