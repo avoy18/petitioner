@@ -1,5 +1,7 @@
+import type { OptionItem } from '@admin/sections/EditFields/FormBuilder/consts';
+
 export type OptionListProps = {
-	options: string[];
-	onOptionsChange: (options: string[]) => void;
+	options: OptionItem[];
+	onOptionsChange: (options: OptionItem[]) => void;
 	label?: string;
 };

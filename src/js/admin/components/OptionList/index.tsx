@@ -4,13 +4,14 @@ import DndSortableProvider from '@admin/context/DndSortableProvider';
 import type { OptionListProps } from './const';
 import OptionRow from './OptionRow';
 import { OptionsTable, TableBody, StyledTh } from './styled';
+import type { OptionItem } from '@admin/sections/EditFields/FormBuilder/consts';
 
 export default function OptionList({
 	options,
 	onOptionsChange,
 }: OptionListProps) {
 	const handleReorder = useCallback(
-		(newOrder: string[]) => {
+		(newOrder: OptionItem[]) => {
 			onOptionsChange(newOrder);
 		},
 		[onOptionsChange]
@@ -34,9 +35,15 @@ export default function OptionList({
 						</tr>
 					</thead>
 					<TableBody>
-						{options.length > 0 && options.map((value) => (
-							<OptionRow key={value} value={value} />
-						))}
+						{options.length > 0 &&
+							options.map((value) => (
+								<OptionRow
+									onOptionsChange={onOptionsChange}
+									options={options}
+									key={value}
+									value={value}
+								/>
+							))}
 					</TableBody>
 				</OptionsTable>
 			</DndSortableProvider>

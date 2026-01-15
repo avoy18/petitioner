@@ -1,6 +1,6 @@
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, useMemo } from '@wordpress/element';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import type { BuilderField, SelectField } from '../consts';
+import type { BuilderField, OptionItem, SelectField } from '../consts';
 import {
 	TextControl,
 	CheckboxControl,
@@ -20,12 +20,21 @@ const CountrySettings = () => {
 
 	const [editCountryList, setEditCountryList] = useState(false);
 
-	const [countryList, setCountryList] = useState<string[]>(() => {
-		return (
-			(formBuilderFields['country'] as SelectField)?.options ||
-			defaultCountryList
-		);
-	});
+	const initialCountryList = useMemo(() => {
+		if (
+			(formBuilderFields['country'] as SelectField)?.options?.length > 0
+		) {
+			return (formBuilderFields['country'] as SelectField)?.options;
+		}
+
+		return defaultCountryList.map((country) => ({
+			value: country,
+			isActive: true,
+		}));
+	}, [formBuilderFields['country']]);
+
+	const [countryList, setCountryList] =
+		useState<OptionItem[]>(initialCountryList);
 
 	const onSave = useCallback(() => {
 		updateFormBuilderFields('country', {

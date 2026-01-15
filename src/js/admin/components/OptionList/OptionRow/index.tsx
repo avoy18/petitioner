@@ -7,6 +7,8 @@ import { Row, DragCell, ToggleCell, ValueCell } from './styled';
 import type { OptionRowProps } from './consts';
 
 export default function OptionRow({
+	onOptionsChange,
+	options,
 	value,
 	isActive = false,
 	onToggle = () => {},
