@@ -174,6 +174,7 @@ class AV_Petitioner_Form_UI
         $field_label        = !empty($field['label']) ? wp_kses_post($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
+        $options            = [];
 
         /**
          * Starting from version 0.8.0, the options for the country field are also stored in the field['options'] array.
@@ -186,7 +187,7 @@ class AV_Petitioner_Form_UI
 
         $options = (!empty($field['options']) && is_array($field['options']))
             ? map_deep($field['options'], 'sanitize_text_field')
-            : [];
+            : $options;
     ?>
         <div class="petitioner__input">
             <label for="<?php echo $field_name; ?>">
