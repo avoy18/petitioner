@@ -1,4 +1,4 @@
-import { useCallback } from '@wordpress/element';
+import { useCallback, useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import DndSortableProvider from '@admin/context/DndSortableProvider';
 import type { OptionListProps } from './const';
@@ -10,6 +10,10 @@ export default function OptionList({
 	options,
 	onOptionsChange,
 }: OptionListProps) {
+	const uniqueOptions = useMemo(() => {
+		return [...new Set(options)];
+	}, [options]);
+
 	const handleReorder = useCallback(
 		(newOrder: OptionItem[]) => {
 			onOptionsChange(newOrder);
@@ -19,21 +23,21 @@ export default function OptionList({
 
 	const handleRemoveOption = useCallback(
 		(optionToRemove: OptionItem) => {
-			const updatedOptions = options.filter(
+			const updatedOptions = uniqueOptions.filter(
 				(option) => option !== optionToRemove
 			);
 			onOptionsChange(updatedOptions);
 		},
-		[options, onOptionsChange]
+		[uniqueOptions, onOptionsChange]
 	);
 
-	if (options.length === 0) {
+	if (uniqueOptions.length === 0) {
 		return null;
 	}
 
 	return (
 		<div data-testid="option-list">
-			<DndSortableProvider items={options} onReorder={handleReorder}>
+			<DndSortableProvider items={uniqueOptions} onReorder={handleReorder}>
 				<OptionsTable>
 					<thead>
 						<tr>
@@ -45,14 +49,13 @@ export default function OptionList({
 						</tr>
 					</thead>
 					<TableBody>
-						{options.length > 0 &&
-							options.map((option) => (
-								<OptionRow
-									key={option}
-									value={option}
-									onRemove={handleRemoveOption}
-								/>
-							))}
+						{uniqueOptions.map((option) => (
+							<OptionRow
+								key={option}
+								value={option}
+								onRemove={handleRemoveOption}
+							/>
+						))}
 					</TableBody>
 				</OptionsTable>
 			</DndSortableProvider>
