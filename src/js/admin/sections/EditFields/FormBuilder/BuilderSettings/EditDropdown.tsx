@@ -1,84 +1,9 @@
-import { useState, useCallback, useMemo } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import type { BuilderField, OptionItem, SelectField } from '../consts';
-import {
-	TextControl,
-	CheckboxControl,
-	Modal,
-	Button,
-} from '@wordpress/components';
-import { useEditFormContext } from '@admin/context/EditFormContext';
+import type { BuilderField } from '../consts';
+import { TextControl, CheckboxControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import OptionList from '@admin/components/OptionList';
-
-const CountrySettings = () => {
-	const { formState } = useEditFormContext();
-	const { formBuilderFields, updateFormBuilderFields } =
-		useFormBuilderContext();
-
-	const defaultCountryList = formState.default_values?.country_list || [];
-
-	const [editCountryList, setEditCountryList] = useState(false);
-
-	const initialCountryList = useMemo(() => {
-		if (
-			(formBuilderFields['country'] as SelectField)?.options?.length > 0
-		) {
-			return (formBuilderFields['country'] as SelectField)?.options;
-		}
-
-		return defaultCountryList;
-	}, [formBuilderFields['country']]);
-
-	const [countryList, setCountryList] =
-		useState<OptionItem[]>(initialCountryList);
-
-	const onSave = useCallback(() => {
-		updateFormBuilderFields('country', {
-			...formBuilderFields['country'],
-			options: countryList,
-		} as SelectField); /* Country is always a select field */
-
-		console.log('new state', {
-			...formBuilderFields['country'],
-			options: countryList,
-		});
-		setEditCountryList(false);
-	}, [countryList]);
-
-	const onCancel = useCallback(() => {
-		setEditCountryList(false);
-	}, []);
-
-	return (
-		<>
-			<Button
-				onClick={() => setEditCountryList(true)}
-				variant="tertiary"
-				icon="edit"
-			>
-				{__('Customize country list', 'petitioner')}
-			</Button>
-			{editCountryList && (
-				<Modal
-					title={__('Customize country list', 'petitioner')}
-					onRequestClose={onCancel}
-					size="large"
-					headerActions={
-						<Button onClick={onSave} variant="primary">
-							{__('Save', 'petitioner')}
-						</Button>
-					}
-				>
-					<OptionList
-						options={countryList}
-						onOptionsChange={(newOrder) => setCountryList(newOrder)}
-					/>
-				</Modal>
-			)}
-		</>
-	);
-};
+import CountrySettings from './CountrySettings';
 
 const AdditionalSettings = ({
 	builderEditScreen,
@@ -139,12 +64,10 @@ export default function EditDropdown() {
 				/>
 			</p>
 
-			{AdditionalSettings && (
-				<AdditionalSettings
-					builderEditScreen={builderEditScreen}
-					draftLabelValue={draftLabelValue}
-				/>
-			)}
+			<AdditionalSettings
+				builderEditScreen={builderEditScreen}
+				draftLabelValue={draftLabelValue}
+			/>
 		</div>
 	);
 }
