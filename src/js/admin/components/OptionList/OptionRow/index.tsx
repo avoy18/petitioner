@@ -31,7 +31,7 @@ export default function OptionRow({ value, onRemove }: OptionRowProps) {
 					variant="secondary"
 					size="small"
 					label={__('Remove option', 'petitioner')}
-					onClick={() => onRemove && onRemove(value)}
+					onClick={() => onRemove(value)}
 				/>
 			</ValueCell>
 		</Row>
