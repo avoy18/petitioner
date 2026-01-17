@@ -1,5 +1,6 @@
 import { useState } from '@wordpress/element';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
+import { useEditFormContext } from '@admin/context/EditFormContext';
 import type { BuilderField } from '../consts';
 import { TextControl, CheckboxControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
@@ -13,7 +14,10 @@ const AdditionalSettings = ({
 	draftLabelValue: BuilderField['label'];
 }) => {
 	if (builderEditScreen === 'country') {
-		return <CountrySettings />;
+		const { formState } = useEditFormContext();
+		const defaultCountryList = formState.default_values?.country_list || [];
+
+		return <CountrySettings defaultCountries={defaultCountryList} />;
 	}
 
 	return null;

@@ -2,17 +2,17 @@ import { __ } from '@wordpress/i18n';
 import { Button, Modal } from '@wordpress/components';
 import { useCallback, useMemo, useState } from '@wordpress/element';
 import { useFormBuilderContext } from '@admin/context/FormBuilderContext';
-import { useEditFormContext } from '@admin/context/EditFormContext';
 import OptionList from '@admin/components/OptionList';
 
 import type { SelectField, OptionItem } from '../consts';
 
-const CountrySettings = () => {
-	const { formState } = useEditFormContext();
+const CountrySettings = ({
+	defaultCountries = [],
+}: {
+	defaultCountries?: OptionItem[];
+}) => {
 	const { formBuilderFields, updateFormBuilderFields } =
 		useFormBuilderContext();
-
-	const defaultCountryList = formState.default_values?.country_list || [];
 
 	const [editCountryList, setEditCountryList] = useState(false);
 
@@ -23,7 +23,7 @@ const CountrySettings = () => {
 			return (formBuilderFields['country'] as SelectField)?.options;
 		}
 
-		return defaultCountryList;
+		return defaultCountries;
 	}, [formBuilderFields['country']]);
 
 	const [countryList, setCountryList] =
@@ -35,10 +35,6 @@ const CountrySettings = () => {
 			options: countryList,
 		} as SelectField); /* Country is always a select field */
 
-		console.log('new state', {
-			...formBuilderFields['country'],
-			options: countryList,
-		});
 		setEditCountryList(false);
 	}, [countryList]);
 
@@ -47,8 +43,8 @@ const CountrySettings = () => {
 	}, []);
 
 	const onResetToDefault = useCallback(() => {
-		setCountryList(defaultCountryList);
-	}, [defaultCountryList]);
+		setCountryList(defaultCountries);
+	}, [defaultCountries]);
 
 	return (
 		<>
