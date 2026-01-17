@@ -60,11 +60,7 @@ function EditFieldsComponent() {
 
 	return (
 		<>
-			<Tabs
-				tabs={tabs}
-				defaultTab={active_tab}
-				updateURL={true}
-			/>
+			<Tabs tabs={tabs} defaultTab={active_tab} updateURL={true} />
 			<BottomCallout />
 		</>
 	);

@@ -54,6 +54,7 @@ export const DRAGGABLE_FIELD_TYPES = [
 		label: __('Country', 'petitioner'),
 		required: false,
 		removable: true,
+		options: [],
 	},
 	{
 		fieldKey: 'street_address',
