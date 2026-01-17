@@ -24,7 +24,7 @@ const CountrySettings = ({
 		}
 
 		return defaultCountries;
-	}, [formBuilderFields['country']]);
+	}, [formBuilderFields['country'], defaultCountries]);
 
 	const [countryList, setCountryList] =
 		useState<OptionItem[]>(initialCountryList);
@@ -36,11 +36,12 @@ const CountrySettings = ({
 		} as SelectField); /* Country is always a select field */
 
 		setEditCountryList(false);
-	}, [countryList, formBuilderFields, updateFormBuilderFields]);
+	}, [countryList, formBuilderFields['country'], updateFormBuilderFields]);
 
 	const onCancel = useCallback(() => {
+		setCountryList(initialCountryList);
 		setEditCountryList(false);
-	}, []);
+	}, [initialCountryList]);
 
 	const onResetToDefault = useCallback(() => {
 		setCountryList(defaultCountries);
