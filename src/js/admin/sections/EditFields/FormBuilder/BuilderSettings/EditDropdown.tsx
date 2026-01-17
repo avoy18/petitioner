@@ -75,7 +75,7 @@ const CountrySettings = () => {
 				>
 					<OptionList
 						options={countryList}
-						onOptionsChange={setCountryList}
+						onOptionsChange={(newOrder) => setCountryList(newOrder.map((option) => ({ value: option.value, isActive: true })))}
 					/>
 				</Modal>
 			)}

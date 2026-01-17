@@ -11,11 +11,13 @@ export default function OptionList({
 	onOptionsChange,
 }: OptionListProps) {
 	const handleReorder = useCallback(
-		(newOrder: OptionItem[]) => {
-			onOptionsChange(newOrder);
+		(newOrder: string[]) => {
+			onOptionsChange(newOrder.map((value) => ({ value })));
 		},
 		[onOptionsChange]
 	);
+
+	const optionArray = options.map((option) => option.value);
 
 	if (options.length === 0) {
 		return null;
@@ -23,7 +25,7 @@ export default function OptionList({
 
 	return (
 		<div data-testid="option-list">
-			<DndSortableProvider items={options} onReorder={handleReorder}>
+			<DndSortableProvider items={optionArray} onReorder={handleReorder}>
 				<OptionsTable>
 					<thead>
 						<tr>
@@ -35,11 +37,9 @@ export default function OptionList({
 						</tr>
 					</thead>
 					<TableBody>
-						{options.length > 0 &&
-							options.map((value) => (
+						{optionArray.length > 0 &&
+							optionArray.map((value) => (
 								<OptionRow
-									onOptionsChange={onOptionsChange}
-									options={options}
 									key={value}
 									value={value}
 								/>
