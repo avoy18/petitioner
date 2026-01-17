@@ -19,13 +19,28 @@ export default function PTRichText({
 	toolbar?: string;
 	onChange: (value: string) => void;
 }) {
-	const editorRef = useRef(null);
+	const editorRef = useRef<tinymce.Editor | null>(null);
 	const lastSavedValue = useRef(value);
+	const initializedIdRef = useRef<string | null>(null);
 
 	useEffect(() => {
-		// @ts-ignore
 		if (typeof window !== 'undefined' && typeof tinymce !== 'undefined') {
-			// @ts-ignore
+			if (editorRef.current && initializedIdRef.current === id) {
+				return;
+			}
+
+			// If the `id` changed, tear down the old instance before re-init.
+			if (editorRef.current && initializedIdRef.current !== id) {
+				try {
+					editorRef.current.remove();
+				} catch (e) {
+					console.warn('TinyMCE cleanup error:', e);
+				}
+				editorRef.current = null;
+			}
+
+			initializedIdRef.current = id;
+
 			tinymce.init({
 				selector: `#${id}`,
 				menubar: false,
@@ -35,10 +50,9 @@ export default function PTRichText({
 				block_formats:
 					'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3',
 				height,
-				setup: (editor: any) => {
+				setup: (editor: tinymce.Editor) => {
 					editorRef.current = editor;
 
-					// ✅ Set initial content only once
 					editor.on('init', () => {
 						if (value) {
 							editor.setContent(value);
@@ -48,21 +62,32 @@ export default function PTRichText({
 
 					editor.on('blur', () => {
 						const content = editor.getContent();
+						lastSavedValue.current = content;
 						onChange(content);
 					});
 				},
 			});
 		}
 
-		// ✅ Cleanup TinyMCE instance when unmounting
 		return () => {
 			if (editorRef.current) {
-				// @ts-ignore
-				editorRef.current.remove();
+				try {
+					editorRef.current.remove();
+				} catch (e) {
+					console.warn('TinyMCE cleanup error:', e);
+				}
 				editorRef.current = null;
+				initializedIdRef.current = null;
 			}
 		};
-	}, [id, value]);
+	}, [id, height, plugins, toolbar]);
+
+	useEffect(() => {
+		if (editorRef.current && value !== lastSavedValue.current) {
+			editorRef.current.setContent(value || '');
+			lastSavedValue.current = value;
+		}
+	}, [value]);
 
 	return (
 		<div className="petitioner-rich-text">
