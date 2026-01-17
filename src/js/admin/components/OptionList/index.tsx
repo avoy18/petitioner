@@ -17,6 +17,16 @@ export default function OptionList({
 		[onOptionsChange]
 	);
 
+	const handleRemoveOption = useCallback(
+		(optionToRemove: OptionItem) => {
+			const updatedOptions = options.filter(
+				(option) => option !== optionToRemove
+			);
+			onOptionsChange(updatedOptions);
+		},
+		[options, onOptionsChange]
+	);
+
 	if (options.length === 0) {
 		return null;
 	}
@@ -29,7 +39,7 @@ export default function OptionList({
 						<tr>
 							<StyledTh $width={'32px'}></StyledTh>
 							<StyledTh>{__('Value', 'petitioner')}</StyledTh>
-							<StyledTh $width={'150px'}>
+							<StyledTh $width={'150px'} $align="right">
 								{__('Actions', 'petitioner')}
 							</StyledTh>
 						</tr>
@@ -40,6 +50,7 @@ export default function OptionList({
 								<OptionRow
 									key={option}
 									value={option}
+									onRemove={handleRemoveOption}
 								/>
 							))}
 					</TableBody>

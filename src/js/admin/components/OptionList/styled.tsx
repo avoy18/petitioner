@@ -29,8 +29,9 @@ export const TableBody = styled.tbody`
 	}
 `;
 
-export const StyledTh = styled.th<{ $width?: string }>`
+export const StyledTh = styled.th<{ $width?: string; $align?: 'left' | 'right' | 'center' }>`
 	padding: ${SPACINGS.xs};
 	font-size: ${FONT_SIZES.sm};
 	width: ${({ $width }) => $width || 'auto'};
+	text-align: ${({ $align }) => $align || 'left'};
 `;

@@ -1,3 +1,4 @@
+import { useCallback } from '@wordpress/element';
 import { useSortable } from '@dnd-kit/sortable';
 import { __ } from '@wordpress/i18n';
 import { CSS } from '@dnd-kit/utilities';
@@ -7,7 +8,7 @@ import { Button } from '@wordpress/components';
 
 import type { OptionRowProps } from './consts';
 
-export default function OptionRow({ value }: OptionRowProps) {
+export default function OptionRow({ value, onRemove }: OptionRowProps) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
 		useSortable({ id: value });
 
@@ -22,7 +23,7 @@ export default function OptionRow({ value }: OptionRowProps) {
 				<DragHandle {...attributes} {...listeners} />
 			</DragCell>
 			<ValueCell>{value}</ValueCell>
-			<ValueCell>
+			<ValueCell align="right">
 				<Button
 					showTooltip={true}
 					icon="trash"
@@ -30,7 +31,7 @@ export default function OptionRow({ value }: OptionRowProps) {
 					variant="secondary"
 					size="small"
 					label={__('Remove option', 'petitioner')}
-					onClick={() => {}}
+					onClick={() => onRemove && onRemove(value)}
 				/>
 			</ValueCell>
 		</Row>
