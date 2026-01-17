@@ -13,8 +13,9 @@ const AdditionalSettings = ({
 	builderEditScreen: string;
 	draftLabelValue: BuilderField['label'];
 }) => {
+	const { formState } = useEditFormContext();
+
 	if (builderEditScreen === 'country') {
-		const { formState } = useEditFormContext();
 		const defaultCountryList = formState.default_values?.country_list || [];
 
 		return <CountrySettings defaultCountries={defaultCountryList} />;
