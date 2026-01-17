@@ -27,10 +27,7 @@ const CountrySettings = () => {
 			return (formBuilderFields['country'] as SelectField)?.options;
 		}
 
-		return defaultCountryList.map((country) => ({
-			value: country,
-			isActive: true,
-		}));
+		return defaultCountryList;
 	}, [formBuilderFields['country']]);
 
 	const [countryList, setCountryList] =
@@ -75,7 +72,7 @@ const CountrySettings = () => {
 				>
 					<OptionList
 						options={countryList}
-						onOptionsChange={(newOrder) => setCountryList(newOrder.map((option) => ({ value: option.value, isActive: true })))}
+						onOptionsChange={(newOrder) => setCountryList(newOrder)}
 					/>
 				</Modal>
 			)}

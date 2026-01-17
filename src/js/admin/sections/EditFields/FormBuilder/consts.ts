@@ -24,10 +24,7 @@ export interface TextField extends BaseField {
 	placeholder: string;
 }
 
-export type OptionItem = {
-	value: string;
-	isActive?: boolean;
-}
+export type OptionItem = string;
 
 export interface SelectField extends BaseField {
 	type: 'select';

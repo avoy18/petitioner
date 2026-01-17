@@ -1,16 +1,13 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { __ } from '@wordpress/i18n';
 import { CSS } from '@dnd-kit/utilities';
-import { ToggleControl } from '@wordpress/components';
 import DragHandle from '@admin/components/DragHandle';
-import { Row, DragCell, ToggleCell, ValueCell } from './styled';
+import { Row, DragCell, ValueCell } from './styled';
+import { Button } from '@wordpress/components';
+
 import type { OptionRowProps } from './consts';
 
-export default function OptionRow({
-	value,
-	isActive = false,
-	onToggle = () => {},
-}: OptionRowProps) {
+export default function OptionRow({ value }: OptionRowProps) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
 		useSortable({ id: value });
 
@@ -25,13 +22,17 @@ export default function OptionRow({
 				<DragHandle {...attributes} {...listeners} />
 			</DragCell>
 			<ValueCell>{value}</ValueCell>
-			<ToggleCell>
-				<ToggleControl
-					checked={isActive}
-					onChange={(checked) => onToggle(value, checked)}
-					label={__('Active', 'petitioner')}
+			<ValueCell>
+				<Button
+					showTooltip={true}
+					icon="trash"
+					isDestructive={true}
+					variant="secondary"
+					size="small"
+					label={__('Remove option', 'petitioner')}
+					onClick={() => {}}
 				/>
-			</ToggleCell>
+			</ValueCell>
 		</Row>
 	);
 }
