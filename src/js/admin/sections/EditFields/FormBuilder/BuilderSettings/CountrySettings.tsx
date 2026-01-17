@@ -36,7 +36,7 @@ const CountrySettings = ({
 		} as SelectField); /* Country is always a select field */
 
 		setEditCountryList(false);
-	}, [countryList]);
+	}, [countryList, formBuilderFields, updateFormBuilderFields]);
 
 	const onCancel = useCallback(() => {
 		setEditCountryList(false);
