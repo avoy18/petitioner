@@ -171,6 +171,42 @@ export const getSubmissionCount = async ({
 	}
 };
 
+export const getCSVExample = async ({
+	formID,
+	filters,
+	onSuccess = () => {},
+	onError = () => {},
+}: GetSubmissionCountSettings) => {
+	const finalQuery = new URLSearchParams();
+	finalQuery.set('action', 'petitioner_get_csv_example');
+
+	const finalData = new FormData();
+	finalData.append('form_id', String(formID));
+	finalData.append('petitioner_nonce', getAjaxNonce());
+
+	if (filters) {
+		finalData.append('conditional_logic', JSON.stringify(filters));
+	}
+
+	try {
+		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+			method: 'POST',
+			body: finalData,
+		});
+
+		const response = await request.json();
+
+		if (response.success) {
+			onSuccess(response.data.count);
+		} else {
+			onError(response.message);
+		}
+	} catch (error) {
+		onError('Error getting submission count: ' + (error as Error)?.message);
+	}
+};
+
+
 /**
  * Returns a mapping from fieldKey to label for all available form fields.
  */

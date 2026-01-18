@@ -13,7 +13,7 @@ import {
 	DetailsWrapper,
 	PreviewWrapper,
 } from './styled';
-import { getExportURL, getSubmissionCount } from '../utilities';
+import { getExportURL, getSubmissionCount, getCSVExample } from '../utilities';
 import {
 	useConditionalLogic,
 	FormattedLogic,
@@ -35,6 +35,7 @@ export default function ExportModal({
 	submissionExample: SubmissionItem;
 }) {
 	const [totalCount, setTotalCount] = useState(total);
+	const [csvExample, setCSVExample] = useState<any>(null);
 	const { logic, setLogic, validCount } = useConditionalLogic({
 		initialValue: DEFAULT_EXPORT_LOGIC,
 	});
@@ -59,7 +60,20 @@ export default function ExportModal({
 				);
 			},
 		});
+
+		getCSVExample({
+			formID,
+			filters: logic,
+			onSuccess: (data: any) => {
+				setCSVExample(data);
+			},
+			onError: () => {
+				showNotice('error', __('Error getting CSV example', 'petitioner'));
+			},
+		});
 	}, [logic]);
+
+	console.log(csvExample);
 
 	// todo: get headings and rows from submissions
 	const headings = Object.keys(submissionExample).map((key) => key);
