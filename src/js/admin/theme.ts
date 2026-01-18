@@ -27,3 +27,14 @@ export const TRANSITIONS = {
 	sm: '0.15s',
 	md: '0.3s',
 };
+
+export const BREAKPOINTS = {
+	sm: 370,
+	md: 768,
+	lg: 992,
+	xl: 1024,
+	'2xl': 1200,
+	'3xl': 1440,
+	'4xl': 1600,
+	'5xl': 1920,
+};

@@ -9,6 +9,9 @@ import {
 	NoticeSystemWrapper,
 	StyledCardBody,
 	SampleOfSubmissionsWrapper,
+	ExportWrapper,
+	DetailsWrapper,
+	PreviewWrapper,
 } from './styled';
 import { getExportURL, getSubmissionCount } from '../utilities';
 import {
@@ -60,7 +63,18 @@ export default function ExportModal({
 
 	// todo: get headings and rows from submissions
 	const headings = Object.keys(submissionExample).map((key) => key);
-	const rows = [Object.values(submissionExample), Object.values(submissionExample)];
+	const rows = [
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+		Object.values(submissionExample),
+	];
 
 	const exportURL = useMemo(() => getExportURL(), []);
 
@@ -73,59 +87,64 @@ export default function ExportModal({
 			title={__('Export submissions', 'petitioner-theme')}
 			onRequestClose={onClose}
 		>
-			<Card>
-				<StyledCardBody>
-					<NoticeSystemWrapper
-						noticeStatus={noticeStatus}
-						noticeText={noticeText}
-						hideNotice={hideNotice}
-					/>
-					<SummaryWrapper>
-						<SummaryItem>
-							{__('Total:', 'petitioner')}{' '}
-							<strong>{totalCount}</strong>
-						</SummaryItem>
-						<SummaryItem>
-							{__('Filters:', 'petitioner')}{' '}
-							<strong><FormattedLogic logic={logic} /></strong>
-						</SummaryItem>
-						<CardDivider />
-					</SummaryWrapper>
+			<ExportWrapper>
+				<NoticeSystemWrapper
+					noticeStatus={noticeStatus}
+					noticeText={noticeText}
+					hideNotice={hideNotice}
+				/>
+				<DetailsWrapper>
+					<Card>
+						<StyledCardBody>
+							<SummaryWrapper>
+								<SummaryItem>
+									{__('Total:', 'petitioner')}{' '}
+									<strong>{totalCount}</strong>
+								</SummaryItem>
+								<SummaryItem>
+									{__('Filters:', 'petitioner')}{' '}
+									<strong><FormattedLogic logic={logic} /></strong>
+								</SummaryItem>
+								<CardDivider />
+							</SummaryWrapper>
 
-					<Filters
-						validCount={validCount}
-						logic={logic}
-						onLogicChange={handleLogicChange}
-						submissionExample={submissionExample}
-					/>
+							<Filters
+								validCount={validCount}
+								logic={logic}
+								onLogicChange={handleLogicChange}
+								submissionExample={submissionExample}
+							/>
 
+						</StyledCardBody>
+					</Card>
+					<form action={exportURL} method="POST" target="_blank">
+						<input
+							type="hidden"
+							name="conditional_logic"
+							value={JSON.stringify(logic)}
+						/>
+						<input
+							type="hidden"
+							name="petitioner_nonce"
+							value={getAjaxNonce()}
+						/>
+						<StyledExportButton
+							icon="download"
+							type="submit"
+							variant="primary"
+						>
+							{__('Export as CSV', 'petitioner')} ({totalCount})
+						</StyledExportButton>
+					</form>
+				</DetailsWrapper>
+				<PreviewWrapper>
 					<SampleOfSubmissionsWrapper>
 						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
 						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
 						<SpreadsheetSample headings={headings} rows={rows} />
 					</SampleOfSubmissionsWrapper>
-
-				</StyledCardBody>
-			</Card>
-			<form action={exportURL} method="POST" target="_blank">
-				<input
-					type="hidden"
-					name="conditional_logic"
-					value={JSON.stringify(logic)}
-				/>
-				<input
-					type="hidden"
-					name="petitioner_nonce"
-					value={getAjaxNonce()}
-				/>
-				<StyledExportButton
-					icon="download"
-					type="submit"
-					variant="primary"
-				>
-					{__('Export as CSV', 'petitioner')} ({totalCount})
-				</StyledExportButton>
-			</form>
+				</PreviewWrapper>
+			</ExportWrapper>
 		</Modal>
 	);
 }

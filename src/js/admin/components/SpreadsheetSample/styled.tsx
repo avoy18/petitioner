@@ -13,18 +13,16 @@ export const Table = styled.table`
     border: 1px solid ${COLORS.darkGrey};
     overflow: hidden;
 
-    --cell-padding: ${SPACINGS.xs};
+    --cell-padding: ${SPACINGS.sm};
     --cell-border: 1px solid ${COLORS.darkGrey};
-    --ptr-admin-spreadsheet-green: #69a87c;
 `;
 
 export const TableHead = styled.thead`
-    background-color: var(--ptr-admin-spreadsheet-green);
-    color: ${COLORS.light};
+    background-color: ${COLORS.grey};
 `;
 
 export const TableBody = styled.tbody`
-    background-color: ${COLORS.light};
+     background-color: ${COLORS.light};
 `;
 
 export const TableRow = styled.tr`
