@@ -83,18 +83,18 @@ export default function ExportModal({
 
 	return (
 		<Modal
-			size="fill"
+			size="large"
 			title={__('Export submissions', 'petitioner-theme')}
 			onRequestClose={onClose}
 		>
 			<ExportWrapper>
-				<NoticeSystemWrapper
-					noticeStatus={noticeStatus}
-					noticeText={noticeText}
-					hideNotice={hideNotice}
-				/>
 				<DetailsWrapper>
 					<Card>
+						<NoticeSystemWrapper
+							noticeStatus={noticeStatus}
+							noticeText={noticeText}
+							hideNotice={hideNotice}
+						/>
 						<StyledCardBody>
 							<SummaryWrapper>
 								<SummaryItem>

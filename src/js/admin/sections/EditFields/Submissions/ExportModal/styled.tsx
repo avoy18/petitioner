@@ -3,30 +3,18 @@ import { Button, CardBody } from '@wordpress/components';
 import { SPACINGS, BREAKPOINTS } from '@admin/theme';
 import NoticeSystem from '@admin/components/NoticeSystem';
 
-const MOBILE_BREAKPOINT_QUERY = `(min-width: ${BREAKPOINTS['2xl']}px)`;
-
 export const ExportWrapper = styled.div`
     --export-wrapper-gap: ${SPACINGS.xl};
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: var(--export-wrapper-gap);
-    
-    @media ${MOBILE_BREAKPOINT_QUERY} {
-        flex-direction: row;
-    }
+    gap: ${SPACINGS.xl};
 `;
 
 export const DetailsWrapper = styled.div`
-    @media ${MOBILE_BREAKPOINT_QUERY} {
-        width: calc(33% - var(--export-wrapper-gap));
-    }
 `;
 
 export const PreviewWrapper = styled.div`
-    @media ${MOBILE_BREAKPOINT_QUERY} {
-        width: calc(67% - var(--export-wrapper-gap));
-    }
 `;
 
 export const StyledCardBody = styled(CardBody)`
