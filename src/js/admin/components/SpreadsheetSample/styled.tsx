@@ -1,6 +1,12 @@
 import { COLORS, SPACINGS } from '@admin/theme';
 import styled from 'styled-components';
 
+export const TableWrapper = styled.div`
+    overflow-x: auto;
+    max-width: 100%;
+    width: 100%;
+`;
+
 export const Table = styled.table`
     width: 100%;
     border-collapse: collapse;
