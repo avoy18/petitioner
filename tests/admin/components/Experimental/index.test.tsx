@@ -1,15 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
-// Mock @wordpress/components before importing your module
 vi.mock('@wordpress/components', () => ({
+    __esModule: true,
     __experimentalText: undefined,
     __experimentalHeading: undefined,
     __experimentalDivider: undefined,
 }));
 
-// Mock theme constants
 vi.mock('@admin/theme', () => ({
+    __esModule: true,
     SPACINGS: {
         lg: 'var(--ptr-admin-spacing-lg, 16px)',
     },
