@@ -37,3 +37,10 @@ export const NoticeSystemWrapper = styled(NoticeSystem)`
         padding: ${SPACINGS.xs};
     }
 `;
+
+export const SampleOfSubmissionsWrapper = styled.div`
+    margin-top: ${SPACINGS.md};
+    display: flex;
+    flex-direction: column;
+    gap: ${SPACINGS.md};
+`;

@@ -8,6 +8,7 @@ import {
 	SummaryItem,
 	NoticeSystemWrapper,
 	StyledCardBody,
+	SampleOfSubmissionsWrapper,
 } from './styled';
 import { getExportURL, getSubmissionCount } from '../utilities';
 import {
@@ -16,11 +17,13 @@ import {
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
 import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
-import {type SubmissionItem, DEFAULT_EXPORT_LOGIC } from '../consts';
+import SpreadsheetSample from '@admin/components/SpreadsheetSample';
+import { type SubmissionItem, DEFAULT_EXPORT_LOGIC } from '../consts';
 import Filters from '../Filters';
+import { Heading, Text } from '@admin/components/Experimental';
 
 export default function ExportModal({
-	onClose = () => {},
+	onClose = () => { },
 	total = 0,
 	submissionExample,
 }: {
@@ -55,6 +58,10 @@ export default function ExportModal({
 		});
 	}, [logic]);
 
+	// todo: get headings and rows from submissions
+	const headings = Object.keys(submissionExample).map((key) => key);
+	const rows = [Object.values(submissionExample), Object.values(submissionExample)];
+
 	const exportURL = useMemo(() => getExportURL(), []);
 
 	const { showNotice, noticeStatus, noticeText, hideNotice } =
@@ -62,7 +69,7 @@ export default function ExportModal({
 
 	return (
 		<Modal
-			size="large"
+			size="fill"
 			title={__('Export submissions', 'petitioner-theme')}
 			onRequestClose={onClose}
 		>
@@ -85,12 +92,19 @@ export default function ExportModal({
 						<CardDivider />
 					</SummaryWrapper>
 
-				<Filters
-					validCount={validCount}
-					logic={logic}
-					onLogicChange={handleLogicChange}
-					submissionExample={submissionExample}
-				/>
+					<Filters
+						validCount={validCount}
+						logic={logic}
+						onLogicChange={handleLogicChange}
+						submissionExample={submissionExample}
+					/>
+
+					<SampleOfSubmissionsWrapper>
+						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
+						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
+						<SpreadsheetSample headings={headings} rows={rows} />
+					</SampleOfSubmissionsWrapper>
+
 				</StyledCardBody>
 			</Card>
 			<form action={exportURL} method="POST" target="_blank">
