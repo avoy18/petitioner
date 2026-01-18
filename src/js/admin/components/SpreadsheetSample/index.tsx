@@ -1,5 +1,4 @@
 import { Table, TableHead, TableBody, TableRow, TableCell, TableHeadCell, TableWrapper } from './styled';
-import { LETTERS } from './consts';
 import type { SpreadsheetSampleProps } from './consts';
 
 export default function SpreadsheetSample({ headings, rows }: SpreadsheetSampleProps) {

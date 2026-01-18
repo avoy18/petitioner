@@ -55,6 +55,16 @@ export type GetSubmissionCountSettings = {
 	onError: (error: string) => void;
 };
 
+export type GetCSVExampleSettings = {
+	formID: FormID;
+	filters?: ConditionGroup;
+	onSuccess: (data: {
+		headings: string[];
+		rows: string[][];
+	}) => void;
+	onError: (error: string) => void;
+};
+
 export type UpdateSettings = {
 	data: Partial<SubmissionItem>;
 	onSuccess: (fetchData: { total: number }) => void;

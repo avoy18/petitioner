@@ -19,11 +19,13 @@ import {
 	FormattedLogic,
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
-import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
+import { DEFAULT_EXPORT_LOGIC } from '../consts';
 import SpreadsheetSample from '@admin/components/SpreadsheetSample';
-import { type SubmissionItem, DEFAULT_EXPORT_LOGIC } from '../consts';
 import Filters from '../Filters';
 import { Heading, Text } from '@admin/components/Experimental';
+
+import { type SubmissionItem } from '../consts';
+import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
 
 export default function ExportModal({
 	onClose = () => { },
@@ -64,7 +66,7 @@ export default function ExportModal({
 		getCSVExample({
 			formID,
 			filters: logic,
-			onSuccess: (data: any) => {
+			onSuccess: (data) => {
 				setCSVExample(data);
 			},
 			onError: () => {
@@ -74,21 +76,6 @@ export default function ExportModal({
 	}, [logic]);
 
 	console.log(csvExample);
-
-	// todo: get headings and rows from submissions
-	const headings = Object.keys(submissionExample).map((key) => key);
-	const rows = [
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-		Object.values(submissionExample),
-	];
 
 	const exportURL = useMemo(() => getExportURL(), []);
 
@@ -155,7 +142,7 @@ export default function ExportModal({
 					<SampleOfSubmissionsWrapper>
 						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
 						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
-						<SpreadsheetSample headings={headings} rows={rows} />
+						{csvExample && <SpreadsheetSample headings={csvExample.headings} rows={csvExample.rows} />}
 					</SampleOfSubmissionsWrapper>
 				</PreviewWrapper>
 			</ExportWrapper>

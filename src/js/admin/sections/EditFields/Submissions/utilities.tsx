@@ -5,6 +5,7 @@ import {
 	type UpdateSettings,
 	type DeleteSettings,
 	type GetSubmissionCountSettings,
+	type GetCSVExampleSettings,
 	UPDATE_ACTION,
 	FETCH_ACTION,
 	DELETE_ACTION,
@@ -176,7 +177,7 @@ export const getCSVExample = async ({
 	filters,
 	onSuccess = () => {},
 	onError = () => {},
-}: GetSubmissionCountSettings) => {
+}: GetCSVExampleSettings) => {
 	const finalQuery = new URLSearchParams();
 	finalQuery.set('action', 'petitioner_get_csv_example');
 
@@ -197,7 +198,7 @@ export const getCSVExample = async ({
 		const response = await request.json();
 
 		if (response.success) {
-			onSuccess(response.data.count);
+			onSuccess(response.data);
 		} else {
 			onError(response.message);
 		}
