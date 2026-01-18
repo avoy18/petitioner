@@ -1,5 +1,6 @@
 import type { ReactNode, CSSProperties } from 'react';
 import * as WPComponents from '@wordpress/components';
+import { SPACINGS } from '@admin/theme';
 
 type BaseProps = { children?: ReactNode; style?: CSSProperties;[key: string]: any };
 
@@ -10,4 +11,4 @@ export const Heading = (WPComponents as any).__experimentalHeading
     ?? (({ children, ...props }: BaseProps) => <h2 {...props}>{children}</h2>);
 
 export const Divider = (WPComponents as any).__experimentalDivider
-    ?? ((props: BaseProps) => <hr {...props} style={{ margin: '16px 0', ...props?.style }} />);
+    ?? ((props: BaseProps) => <hr {...props} style={{ margin: `${SPACINGS.lg} 0`, ...props?.style }} />);
