@@ -137,6 +137,9 @@ export const deleteSubmissions = async ({
 	}
 };
 
+/**
+ * @deprecated Use getCSVExample instead
+ */
 export const getSubmissionCount = async ({
 	formID,
 	filters,

@@ -1,7 +1,5 @@
-import { useState, useMemo, useCallback, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Card, CardDivider, Modal } from '@wordpress/components';
-import { useNoticeSystem } from '@admin/components/NoticeSystem';
 import {
 	StyledExportButton,
 	SummaryWrapper,
@@ -13,19 +11,17 @@ import {
 	DetailsWrapper,
 	PreviewWrapper,
 } from './styled';
-import { getExportURL, getSubmissionCount, getCSVExample } from '../utilities';
 import {
-	useConditionalLogic,
 	FormattedLogic,
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
-import { DEFAULT_EXPORT_LOGIC } from '../consts';
 import SpreadsheetSample from '@admin/components/SpreadsheetSample';
 import Filters from '../Filters';
 import { Heading, Text } from '@admin/components/Experimental';
 
 import { type SubmissionItem } from '../consts';
-import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
+import { useExportModal } from './hooks';
+
 
 export default function ExportModal({
 	onClose = () => { },
@@ -36,51 +32,21 @@ export default function ExportModal({
 	total: number;
 	submissionExample: SubmissionItem;
 }) {
-	const [totalCount, setTotalCount] = useState(total);
-	const [csvExample, setCSVExample] = useState<any>(null);
-	const { logic, setLogic, validCount } = useConditionalLogic({
-		initialValue: DEFAULT_EXPORT_LOGIC,
+	const {
+		totalCount,
+		csvExample,
+		isLoading,
+		exportURL,
+		logic,
+		validCount,
+		handleLogicChange,
+		noticeStatus,
+		noticeText,
+		hideNotice,
+	} = useExportModal({
+		submissionExample,
+		total,
 	});
-	const formID = submissionExample.form_id;
-
-	const handleLogicChange = useCallback((newValue: ConditionGroup) => {
-		setLogic(newValue);
-		showNotice('success', __('Filters applied successfully', 'petitioner'));
-	}, []);
-
-	useEffect(() => {
-		getSubmissionCount({
-			formID,
-			filters: logic,
-			onSuccess: (count: number) => {
-				setTotalCount(count);
-			},
-			onError: () => {
-				showNotice(
-					'error',
-					__('Error getting submission count', 'petitioner')
-				);
-			},
-		});
-
-		getCSVExample({
-			formID,
-			filters: logic,
-			onSuccess: (data) => {
-				setCSVExample(data);
-			},
-			onError: () => {
-				showNotice('error', __('Error getting CSV example', 'petitioner'));
-			},
-		});
-	}, [logic]);
-
-	console.log(csvExample);
-
-	const exportURL = useMemo(() => getExportURL(), []);
-
-	const { showNotice, noticeStatus, noticeText, hideNotice } =
-		useNoticeSystem({ timeoutDuration: 1500 });
 
 	return (
 		<Modal
@@ -142,7 +108,7 @@ export default function ExportModal({
 					<SampleOfSubmissionsWrapper>
 						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
 						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
-						{csvExample && <SpreadsheetSample headings={csvExample.headings} rows={csvExample.rows} />}
+						<SpreadsheetSample isLoading={isLoading} headings={csvExample?.headings ?? []} rows={csvExample?.rows ?? []} />
 					</SampleOfSubmissionsWrapper>
 				</PreviewWrapper>
 			</ExportWrapper>
