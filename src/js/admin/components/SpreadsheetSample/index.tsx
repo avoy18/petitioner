@@ -1,8 +1,11 @@
 import { Table, TableHead, TableBody, TableRow, TableCell, TableHeadCell, TableWrapper } from './styled';
 import type { SpreadsheetSampleProps } from './consts';
 
-export default function SpreadsheetSample({ headings, rows }: SpreadsheetSampleProps) {
-
+export default function SpreadsheetSample({ headings, rows, isLoading = false }: SpreadsheetSampleProps) {
+    if (isLoading) {
+        return 'Loading';
+    }
+    
     return (
         <TableWrapper>
             <Table>
