@@ -3,12 +3,10 @@ import {
 	CardHeader,
 	CardBody,
 	CardFooter,
-	__experimentalText as Text,
-	__experimentalHeading as Heading,
 	Button,
 	Modal,
-	__experimentalDivider as Divider,
 } from '@wordpress/components';
+import { Text, Divider, Heading } from '@admin/components/Experimental';
 
 import { useState } from '@wordpress/element';
 import type { IntegrationBoxProps } from './consts';
