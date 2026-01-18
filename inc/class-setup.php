@@ -82,7 +82,8 @@ class AV_Petitioner_Setup
         add_action('wp_ajax_petitioner_get_submission_count', ['AV_Petitioner_Submissions_Controller', 'api_get_submission_count']);
         add_action('wp_ajax_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
         add_action('wp_ajax_nopriv_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
-
+        add_action('wp_ajax_petitioner_get_csv_example', array('AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_get_csv_example'));
+        
         add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_export_csv'));
     }
     /**
