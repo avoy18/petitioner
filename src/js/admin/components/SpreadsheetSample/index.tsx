@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 export default function SpreadsheetSample({ headings, rows, isLoading }: SpreadsheetSampleProps) {
     const Headings = useMemo(() => {
         return <>
-            <TableHeadCell></TableHeadCell>
+            <TableHeadCell $isCount={true}></TableHeadCell>
             {headings.map((heading) => (
                 <TableHeadCell key={heading}>{heading}</TableHeadCell>
             ))}
@@ -22,7 +22,7 @@ export default function SpreadsheetSample({ headings, rows, isLoading }: Spreads
 
         return rows.map((row, index) => (
             <TableRow key={row.join(',')}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell $isCount={true}>{index + 1}</TableCell>
                 {row.map((cell) => (
                     <TableCell key={cell}>{cell}</TableCell>
                 ))}

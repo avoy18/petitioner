@@ -28,13 +28,16 @@ export const TableBody = styled.tbody`
 export const TableRow = styled.tr`
 `;
 
-export const TableCell = styled.td`
+export const TableCell = styled.td<{ $isCount?: boolean }>`
     padding: var(--cell-padding);
     border: var(--cell-border);
-`;
-
-export const TableHeadCell = styled.th`
+    min-width: ${({ $isCount }) => $isCount ? 'auto' : '100px'};
+    `;
+    
+    export const TableHeadCell = styled.th<{ $isCount?: boolean }>`
     padding: var(--cell-padding);
     border: var(--cell-border);
     text-align: left;
+    min-width: ${({ $isCount }) => $isCount ? 'auto' : '100px'};
+    white-space: nowrap;
 `;
