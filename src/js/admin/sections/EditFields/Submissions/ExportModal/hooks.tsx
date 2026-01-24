@@ -16,12 +16,17 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
     });
     const formID = submissionExample.form_id;
 
+    const { showNotice, noticeStatus, noticeText, hideNotice } =
+        useNoticeSystem({ timeoutDuration: 1500 });
+
     const handleLogicChange = useCallback((newValue: ConditionGroup) => {
         setLogic(newValue);
         showNotice('success', __('Filters applied successfully', 'petitioner'));
     }, []);
 
     useEffect(() => {
+        setIsLoading(true);
+
         getCSVExample({
             formID,
             filters: logic,
@@ -39,12 +44,9 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
                 setIsLoading(false);
             },
         });
-    }, [logic]);
+    }, [logic, formID, showNotice]);
 
     const exportURL = useMemo(() => getExportURL(), []);
-
-    const { showNotice, noticeStatus, noticeText, hideNotice } =
-        useNoticeSystem({ timeoutDuration: 1500 });
 
     return {
         totalCount,
