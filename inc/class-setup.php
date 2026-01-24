@@ -68,12 +68,12 @@ class AV_Petitioner_Setup
         });
 
         // api endpoints
-        add_action('wp_ajax_petitioner_form_submit', array('AV_Petitioner_Submissions_Controller', 'api_handle_form_submit'));
-        add_action('wp_ajax_nopriv_petitioner_form_submit', array('AV_Petitioner_Submissions_Controller', 'api_handle_form_submit'));
-        add_action('wp_ajax_petitioner_fetch_submissions', array('AV_Petitioner_Submissions_Controller', 'api_fetch_form_submissions'));
-        add_action('wp_ajax_petitioner_get_submissions', array('AV_Petitioner_Submissions_Controller', 'api_get_form_submissions'));
-        add_action('wp_ajax_nopriv_petitioner_get_submissions', array('AV_Petitioner_Submissions_Controller', 'api_get_form_submissions'));
-        add_action('wp_ajax_petitioner_change_status', array('AV_Petitioner_Submissions_Controller', 'api_change_submission_status'));
+        add_action('wp_ajax_petitioner_form_submit', ['AV_Petitioner_Submissions_Controller', 'api_handle_form_submit']);
+        add_action('wp_ajax_nopriv_petitioner_form_submit', ['AV_Petitioner_Submissions_Controller', 'api_handle_form_submit']);
+        add_action('wp_ajax_petitioner_fetch_submissions', ['AV_Petitioner_Submissions_Controller', 'api_fetch_form_submissions']);
+        add_action('wp_ajax_petitioner_get_submissions', ['AV_Petitioner_Submissions_Controller', 'api_get_form_submissions']);
+        add_action('wp_ajax_nopriv_petitioner_get_submissions', ['AV_Petitioner_Submissions_Controller', 'api_get_form_submissions']);
+        add_action('wp_ajax_petitioner_change_status', ['AV_Petitioner_Submissions_Controller', 'api_change_submission_status']);
         add_action('wp_ajax_petitioner_resend_confirmation_email', ['AV_Petitioner_Submissions_Controller', 'api_resend_confirmation_email']);
         add_action('wp_ajax_petitioner_resend_all_confirmation_emails', ['AV_Petitioner_Submissions_Controller', 'api_resend_all_confirmation_emails']);
         add_action('wp_ajax_petitioner_check_unconfirmed_count', ['AV_Petitioner_Submissions_Controller', 'api_check_unconfirmed_count']);
@@ -82,9 +82,9 @@ class AV_Petitioner_Setup
         add_action('wp_ajax_petitioner_get_submission_count', ['AV_Petitioner_Submissions_Controller', 'api_get_submission_count']);
         add_action('wp_ajax_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
         add_action('wp_ajax_nopriv_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
-        add_action('wp_ajax_petitioner_get_csv_example', array('AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_get_csv_example'));
-        
-        add_action('admin_post_petitioner_export_csv', array('AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_export_csv'));
+        add_action('wp_ajax_petitioner_get_csv_example', ['AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_get_csv_example']);
+
+        add_action('admin_post_petitioner_export_csv', ['AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_export_csv']);
     }
     /**
      * Plugin activation callback.
