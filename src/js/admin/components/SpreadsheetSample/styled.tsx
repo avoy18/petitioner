@@ -32,9 +32,9 @@ export const TableCell = styled.td<{ $isCount?: boolean }>`
     padding: var(--cell-padding);
     border: var(--cell-border);
     min-width: ${({ $isCount }) => $isCount ? 'auto' : '100px'};
-    `;
-    
-    export const TableHeadCell = styled.th<{ $isCount?: boolean }>`
+`;
+
+export const TableHeadCell = styled.th<{ $isCount?: boolean }>`
     padding: var(--cell-padding);
     border: var(--cell-border);
     text-align: left;
