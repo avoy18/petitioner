@@ -36,7 +36,7 @@ class AV_Petitioner_CSV_Exporter
 
         $settings = [
             'query'         => $query,
-            'relation'      => !empty($conditional_logic['logic']) ? $conditional_logic['logic'] : 'AND',
+            'relation'      => is_array($conditional_logic['logic']) ? $conditional_logic['logic'] : 'AND',
         ];
 
         $skip_unconfirmed = false;
