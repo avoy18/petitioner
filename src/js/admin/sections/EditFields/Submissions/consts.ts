@@ -48,10 +48,25 @@ export type FetchSettings = {
 	onSuccess: (fetchData: { total: number; submissions: Submissions }) => void;
 };
 
+/**
+ * @deprecated
+ */
 export type GetSubmissionCountSettings = {
 	formID: FormID;
 	filters?: ConditionGroup;
 	onSuccess: (count: number) => void;
+	onError: (error: string) => void;
+};
+
+export type GetCSVExampleSettings = {
+	formID: FormID;
+	filters?: ConditionGroup;
+	onSuccess: (data: {
+		headings: string[];
+		rows: string[][];
+		total_count: number;
+		filename: string;
+	}) => void;
 	onError: (error: string) => void;
 };
 

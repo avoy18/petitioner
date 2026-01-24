@@ -36,7 +36,7 @@ class AV_Petitioner_CSV_Exporter
 
         $settings = [
             'query'         => $query,
-            'relation'      => $conditional_logic['logic'] ?? 'AND',
+            'relation'      => is_array($conditional_logic['logic']) ? $conditional_logic['logic'] : 'AND',
         ];
 
         $skip_unconfirmed = false;
@@ -54,6 +54,70 @@ class AV_Petitioner_CSV_Exporter
         self::stream_csv_chunked($form_id, $settings, $total_count);
 
         exit;
+    }
+
+    /**
+     * Get CSV example entry point
+     * Handles the CSV example request and returns the headings and rows of the first 10 submissions
+     * 
+     * @return void
+     */
+    public static function api_admin_petitioner_get_csv_example()
+    {
+        self::check_permissions(true);
+
+        $form_id = isset($_POST['form_id']) ? intval($_POST['form_id']) : false;
+
+        if (!$form_id) {
+            wp_send_json_error([
+                'message' => AV_Petitioner_Labels::get('invalid_form_id'),
+            ]);
+        }
+
+        $conditional_logic_raw = isset($_POST['conditional_logic']) ? wp_unslash($_POST['conditional_logic']) : null;
+        $conditional_logic = av_petitioner_parse_conditional_logic($conditional_logic_raw);
+
+        $query = av_petitioner_build_model_query($conditional_logic);
+
+        $settings = [
+            'query'         => $query,
+            'relation'      => $conditional_logic['logic'] ?? 'AND',
+        ];
+
+        $skip_unconfirmed = false;
+
+        $total_count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, $skip_unconfirmed);
+
+        $rows = [];
+        $headings = [];
+
+        if ($total_count != 0) {
+            $result = AV_Petitioner_Submissions_Model::get_form_submissions(
+                $form_id,
+                array_merge($settings, [
+                    'offset'    => 0,
+                    'per_page'  => 10,
+                ])
+            );
+
+            if (!empty($result['submissions'])) {
+
+                $headings = self::get_csv_headers($form_id);
+
+                $rows = array_map(function ($submission) {
+                    return self::get_csv_row($submission);
+                }, $result['submissions']);
+            }
+        }
+
+        $filename = 'petition_submissions_' . current_time('Y-m-d_H-i-s') . '.csv';
+
+        wp_send_json_success([
+            'headings'      => $headings,
+            'rows'          => $rows,
+            'filename'      => $filename,
+            'total_count'   => $total_count,
+        ]);
     }
 
     /**
@@ -242,17 +306,32 @@ class AV_Petitioner_CSV_Exporter
     /**
      * Check user permissions and nonce
      * 
+     * @param bool $use_json Whether to use JSON response
      * @return void
      */
-    private static function check_permissions()
+    private static function check_permissions($use_json = false)
     {
         if (!current_user_can('manage_options')) {
+
+            if ($use_json) {
+                wp_send_json_error([
+                    'message' => AV_Petitioner_Labels::get('missing_permissions'),
+                ]);
+            }
+
             wp_die(AV_Petitioner_Labels::get('missing_permissions'));
         }
 
         // Nonce check
         $nonce_label = AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL;
         if (!isset($_POST['petitioner_nonce']) || !wp_verify_nonce($_POST['petitioner_nonce'], $nonce_label)) {
+
+            if ($use_json) {
+                wp_send_json_error([
+                    'message' => AV_Petitioner_Labels::get('invalid_nonce'),
+                ]);
+            }
+
             wp_die(AV_Petitioner_Labels::get('invalid_nonce'));
         }
     }

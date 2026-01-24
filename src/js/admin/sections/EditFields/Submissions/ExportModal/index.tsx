@@ -1,26 +1,30 @@
-import { useState, useMemo, useCallback, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Card, CardDivider, Modal } from '@wordpress/components';
-import { useNoticeSystem } from '@admin/components/NoticeSystem';
 import {
 	StyledExportButton,
 	SummaryWrapper,
 	SummaryItem,
 	NoticeSystemWrapper,
 	StyledCardBody,
+	SampleOfSubmissionsWrapper,
+	ExportWrapper,
+	DetailsWrapper,
+	PreviewWrapper,
 } from './styled';
-import { getExportURL, getSubmissionCount } from '../utilities';
 import {
-	useConditionalLogic,
 	FormattedLogic,
 } from '@admin/components/ConditionalLogic';
 import { getAjaxNonce } from '@admin/utilities';
-import type { ConditionGroup } from '@admin/components/ConditionalLogic/consts';
-import {type SubmissionItem, DEFAULT_EXPORT_LOGIC } from '../consts';
+import SpreadsheetSample from '@admin/components/SpreadsheetSample';
 import Filters from '../Filters';
+import { Heading, Text } from '@admin/components/Experimental';
+
+import { type SubmissionItem } from '../consts';
+import { useExportModal } from './hooks';
+
 
 export default function ExportModal({
-	onClose = () => {},
+	onClose = () => { },
 	total = 0,
 	submissionExample,
 }: {
@@ -28,37 +32,21 @@ export default function ExportModal({
 	total: number;
 	submissionExample: SubmissionItem;
 }) {
-	const [totalCount, setTotalCount] = useState(total);
-	const { logic, setLogic, validCount } = useConditionalLogic({
-		initialValue: DEFAULT_EXPORT_LOGIC,
+	const {
+		totalCount,
+		csvExample,
+		isLoading,
+		exportURL,
+		logic,
+		validCount,
+		handleLogicChange,
+		noticeStatus,
+		noticeText,
+		hideNotice,
+	} = useExportModal({
+		submissionExample,
+		total,
 	});
-	const formID = submissionExample.form_id;
-
-	const handleLogicChange = useCallback((newValue: ConditionGroup) => {
-		setLogic(newValue);
-		showNotice('success', __('Filters applied successfully', 'petitioner'));
-	}, []);
-
-	useEffect(() => {
-		getSubmissionCount({
-			formID,
-			filters: logic,
-			onSuccess: (count: number) => {
-				setTotalCount(count);
-			},
-			onError: () => {
-				showNotice(
-					'error',
-					__('Error getting submission count', 'petitioner')
-				);
-			},
-		});
-	}, [logic]);
-
-	const exportURL = useMemo(() => getExportURL(), []);
-
-	const { showNotice, noticeStatus, noticeText, hideNotice } =
-		useNoticeSystem({ timeoutDuration: 1500 });
 
 	return (
 		<Modal
@@ -66,52 +54,64 @@ export default function ExportModal({
 			title={__('Export submissions', 'petitioner-theme')}
 			onRequestClose={onClose}
 		>
-			<Card>
-				<StyledCardBody>
-					<NoticeSystemWrapper
-						noticeStatus={noticeStatus}
-						noticeText={noticeText}
-						hideNotice={hideNotice}
-					/>
-					<SummaryWrapper>
-						<SummaryItem>
-							{__('Total:', 'petitioner')}{' '}
-							<strong>{totalCount}</strong>
-						</SummaryItem>
-						<SummaryItem>
-							{__('Filters:', 'petitioner')}{' '}
-							<strong><FormattedLogic logic={logic} /></strong>
-						</SummaryItem>
-						<CardDivider />
-					</SummaryWrapper>
+			<ExportWrapper>
+				<DetailsWrapper>
+					<Card>
+						<NoticeSystemWrapper
+							noticeStatus={noticeStatus}
+							noticeText={noticeText}
+							hideNotice={hideNotice}
+						/>
+						<StyledCardBody>
+							<SummaryWrapper>
+								<SummaryItem>
+									{__('Total:', 'petitioner')}{' '}
+									<strong>{totalCount}</strong>
+								</SummaryItem>
+								<SummaryItem>
+									{__('Filters:', 'petitioner')}{' '}
+									<strong><FormattedLogic logic={logic} /></strong>
+								</SummaryItem>
+								<CardDivider />
+							</SummaryWrapper>
 
-				<Filters
-					validCount={validCount}
-					logic={logic}
-					onLogicChange={handleLogicChange}
-					submissionExample={submissionExample}
-				/>
-				</StyledCardBody>
-			</Card>
-			<form action={exportURL} method="POST" target="_blank">
-				<input
-					type="hidden"
-					name="conditional_logic"
-					value={JSON.stringify(logic)}
-				/>
-				<input
-					type="hidden"
-					name="petitioner_nonce"
-					value={getAjaxNonce()}
-				/>
-				<StyledExportButton
-					icon="download"
-					type="submit"
-					variant="primary"
-				>
-					{__('Export as CSV', 'petitioner')} ({totalCount})
-				</StyledExportButton>
-			</form>
+							<Filters
+								validCount={validCount}
+								logic={logic}
+								onLogicChange={handleLogicChange}
+								submissionExample={submissionExample}
+							/>
+
+						</StyledCardBody>
+					</Card>
+					<form action={exportURL} method="POST" target="_blank">
+						<input
+							type="hidden"
+							name="conditional_logic"
+							value={JSON.stringify(logic)}
+						/>
+						<input
+							type="hidden"
+							name="petitioner_nonce"
+							value={getAjaxNonce()}
+						/>
+						<StyledExportButton
+							icon="download"
+							type="submit"
+							variant="primary"
+						>
+							{__('Export as CSV', 'petitioner')} ({totalCount})
+						</StyledExportButton>
+					</form>
+				</DetailsWrapper>
+				<PreviewWrapper>
+					<SampleOfSubmissionsWrapper>
+						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
+						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
+						<SpreadsheetSample isLoading={isLoading} headings={csvExample?.headings ?? []} rows={csvExample?.rows ?? []} />
+					</SampleOfSubmissionsWrapper>
+				</PreviewWrapper>
+			</ExportWrapper>
 		</Modal>
 	);
 }

@@ -1,7 +1,21 @@
 import styled from 'styled-components';
 import { Button, CardBody } from '@wordpress/components';
-import { SPACINGS } from '@admin/theme';
+import { SPACINGS, BREAKPOINTS } from '@admin/theme';
 import NoticeSystem from '@admin/components/NoticeSystem';
+
+export const ExportWrapper = styled.div`
+    --export-wrapper-gap: ${SPACINGS.xl};
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: ${SPACINGS.xl};
+`;
+
+export const DetailsWrapper = styled.div`
+`;
+
+export const PreviewWrapper = styled.div`
+`;
 
 export const StyledCardBody = styled(CardBody)`
     padding-block: ${SPACINGS['4xl']} ${SPACINGS['2xl']} !important;
@@ -36,4 +50,11 @@ export const NoticeSystemWrapper = styled(NoticeSystem)`
     .components-notice {
         padding: ${SPACINGS.xs};
     }
+`;
+
+export const SampleOfSubmissionsWrapper = styled.div`
+    margin-top: ${SPACINGS.md};
+    display: flex;
+    flex-direction: column;
+    gap: ${SPACINGS.md};
 `;
