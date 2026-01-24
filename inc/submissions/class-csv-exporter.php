@@ -64,7 +64,7 @@ class AV_Petitioner_CSV_Exporter
      */
     public static function api_admin_petitioner_get_csv_example()
     {
-        self::check_permissions();
+        self::check_permissions(true);
 
         $form_id = isset($_POST['form_id']) ? intval($_POST['form_id']) : false;
 
@@ -306,17 +306,32 @@ class AV_Petitioner_CSV_Exporter
     /**
      * Check user permissions and nonce
      * 
+     * @param bool $use_json Whether to use JSON response
      * @return void
      */
-    private static function check_permissions()
+    private static function check_permissions($use_json = false)
     {
         if (!current_user_can('manage_options')) {
+
+            if ($use_json) {
+                wp_send_json_error([
+                    'message' => AV_Petitioner_Labels::get('missing_permissions'),
+                ]);
+            }
+
             wp_die(AV_Petitioner_Labels::get('missing_permissions'));
         }
 
         // Nonce check
         $nonce_label = AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL;
         if (!isset($_POST['petitioner_nonce']) || !wp_verify_nonce($_POST['petitioner_nonce'], $nonce_label)) {
+
+            if ($use_json) {
+                wp_send_json_error([
+                    'message' => AV_Petitioner_Labels::get('invalid_nonce'),
+                ]);
+            }
+
             wp_die(AV_Petitioner_Labels::get('invalid_nonce'));
         }
     }
