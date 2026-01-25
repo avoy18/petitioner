@@ -3,6 +3,12 @@ import { COLORS, SPACINGS } from '@admin/theme';
 
 export const TableHeadingEditorContainer = styled.div`
     display: flex;
+    flex-direction: column;
+    gap: ${SPACINGS.sm};
+`;
+
+export const TableHeadingsWrapper = styled.div`
+    display: flex;
     flex-direction: row;
     gap: ${SPACINGS.sm};
     overflow-x: auto;
@@ -19,17 +25,17 @@ export const TableHeading = styled.div<{ $isActive?: boolean, $deleted?: boolean
     border: 1px solid ${({ $isActive }) => $isActive ? COLORS.primary : COLORS.grey};
     border-radius: var(--ptr-admin-input-border-radius);
     min-width: 150px;
+`
+
+export const TableHeadingLabel = styled.span<{ $deleted?: boolean }>`
+    ${({ $deleted }) => $deleted && css`
+        opacity: 0.5;
+        text-decoration: line-through;
+    `}
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    
-    > span {
-        ${({ $deleted }) => $deleted && css`
-            opacity: 0.5;
-            text-decoration: line-through;
-        `}
-    }
-`
+`;
 
 export const TableHeadingActions = styled.div`
     display: flex;

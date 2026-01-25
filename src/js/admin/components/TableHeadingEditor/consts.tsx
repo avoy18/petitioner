@@ -1,13 +1,13 @@
-export type Heading = {
+export type TableHeading = {
     id: string;
     label: React.ReactNode;
 };
 
 export type TableHeadingEditorProps = {
-    headings: Heading[];
+    headings: TableHeading[];
 };
 
-export const DEFAULT_STORY_HEADINGS: Heading[] = [
+export const DEFAULT_STORY_HEADINGS: TableHeading[] = [
     { id: 'id', label: 'Id' },
     { id: 'form_id', label: 'Form ID' },
     { id: 'fname', label: 'First name' },
