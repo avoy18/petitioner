@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import SpreadsheetSample from '@admin/components/SpreadsheetSample'; // adjust path as needed
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import SpreadsheetSample from '@admin/components/SpreadsheetSample';
 
 describe('SpreadsheetSample', () => {
     it('renders all column headings', () => {

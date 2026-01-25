@@ -3,7 +3,7 @@ import { SelectControl, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import type { Condition } from '../consts';
 import { LOGIC_OPTIONS, type GroupComponentProps } from '../consts';
-import { generateId } from '../utilities';
+import { generateId } from '@admin/utilities';
 import { GroupWrapper, GroupHeader, ActionButtons } from '../styled';
 import ConditionComponent from '../ConditionComponent';
 

@@ -2,13 +2,19 @@ import styled from 'styled-components';
 import { COLORS, SPACINGS } from '@admin/theme';
 
 export const ShowcaseWrapper = styled.div`
+	--ptr-showcase-sidebar-width: 250px;
+	--ptr-showcase-gap: ${SPACINGS.xl};
 	display: flex;
-	gap: ${SPACINGS.xl};
+	gap: var(--ptr-showcase-gap);
 	margin-top: ${SPACINGS.lg};
+	max-width: 95%;
+
+	padding-inline: ${SPACINGS.xl};
+	box-sizing: border-box;
 `;
 
 export const Sidebar = styled.nav`
-	width: 250px;
+	width: var(--ptr-showcase-sidebar-width);
 	flex-shrink: 0;
 	display: flex;
 	flex-direction: column;
@@ -48,12 +54,12 @@ export const Sidebar = styled.nav`
 `;
 
 export const Content = styled.main`
-	flex: 1;
 	background: white;
 	padding: ${SPACINGS.xl};
 	border: 1px solid ${COLORS.grey};
 	border-radius: 4px;
-	max-width: 1200px;
+	flex-grow: 0;
+	max-width: calc(100% - var(--ptr-showcase-sidebar-width) - var(--ptr-showcase-gap));
 `;
 
 export const ComponentSection = styled.section`
