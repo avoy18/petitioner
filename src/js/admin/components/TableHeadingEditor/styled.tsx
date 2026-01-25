@@ -18,4 +18,6 @@ export const TableHeading = styled.div<{ $isActive?: boolean }>`
     border-radius: var(--ptr-admin-input-border-radius);
     min-width: 150px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `
