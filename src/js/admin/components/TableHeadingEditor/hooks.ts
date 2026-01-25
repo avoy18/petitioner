@@ -18,6 +18,7 @@ import type { TableHeading } from "./consts";
  * @returns {Object} TableHeadingEditorState
  * @returns {TableHeading['id'] | null} activeHeading - The active heading
  * @returns {TableHeading[]} modifiedHeadings - The modified headings
+ * @returns {TableHeading | undefined} currentHeading - The currently active heading object
  * @returns {boolean} showHiddenHeadings - Whether to show hidden headings
  * @returns {Function} handleEditHeading - Handle the edit heading
  * @returns {Function} handleDeleteHeading - Handle the delete heading
