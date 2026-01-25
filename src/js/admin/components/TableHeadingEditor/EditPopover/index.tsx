@@ -18,7 +18,7 @@ const EditPopover = ({ heading, onClose, onSave }: EditPopoverProps) => {
     const headingLabel = getHeadingLabel(heading);
     const originalLabel = heading.label;
     const [label, setLabel] = useState<string>(headingLabel);
-    const [mappings, setMappings] = useState<ValueMapping[] | []>(heading.overrides?.mappings || []);
+    const [mappings, setMappings] = useState<ValueMapping[]>(heading.overrides?.mappings || []);
 
     const handleSave = useCallback(() => {
         onSave({ ...heading, overrides: { ...(heading.overrides || {}), label, mappings } });
