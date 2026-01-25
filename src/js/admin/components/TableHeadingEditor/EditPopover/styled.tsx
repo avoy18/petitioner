@@ -22,3 +22,21 @@ export const PopoverInputGroup = styled.div`
     flex-direction: column;
     gap: ${SPACINGS.sm};
 `;
+
+export const MappingWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: ${SPACINGS.md};
+	padding: ${SPACINGS.md};
+	background: ${COLORS.light};
+	border-radius: 4px;
+	border: 1px solid ${COLORS.grey};
+`;
+
+export const MappingExample = styled.div`
+	margin-top: ${SPACINGS.xs};
+	padding: ${SPACINGS.sm};
+	background: white;
+	border-left: 3px solid ${COLORS.dark};
+	border-radius: 2px;
+`;

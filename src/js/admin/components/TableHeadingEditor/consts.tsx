@@ -1,6 +1,6 @@
 export type TableHeading = {
     id: string;
-    label: React.ReactNode;
+    label: string;
 };
 
 export type TableHeadingEditorProps = {
@@ -24,11 +24,7 @@ export const DEFAULT_STORY_HEADINGS: TableHeading[] = [
     { id: 'bcc', label: 'BCC yourself' },
     { id: 'subscribe_newsletter', label: 'Subscribe to newsletter' },
     { id: 'keep_name_anonymous', label: 'Keep my name anonymous' },
-    { id: 'accept_tos', label: (
-        <> 
-            <a href="#">By</a> submitting this form, I agree to the terms of service
-        </>
-    ) },
+    { id: 'accept_tos', label: "<a href=\"#\">By</a> submitting this form, I agree to the terms of service"},
     { id: 'approval_status', label: 'Approval status' },
     { id: 'submission_date', label: 'Submission date' },
     { id: 'confirmation_token', label: 'Confirmation token' },
