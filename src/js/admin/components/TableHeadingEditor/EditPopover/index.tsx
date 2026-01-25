@@ -2,7 +2,7 @@ import { memo, useState, useCallback } from '@wordpress/element';
 import { Button, TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-import { Heading } from '@admin/components/Experimental';
+import { Heading, Text, Divider } from '@admin/components/Experimental';
 
 import {
     EditPopoverContainer,
@@ -15,21 +15,39 @@ import type { EditPopoverProps } from './consts';
 
 
 const EditPopover = ({ heading, onClose, onSave }: EditPopoverProps) => {
-    const [label, setLabel] = useState<string>(heading.label);
-    const [mappings, setMappings] = useState<ValueMapping[] | []>([]);
+    const headingLabel = heading?.overrides?.label || heading.label;
+    const originalLabel = heading.label;
+    const [label, setLabel] = useState<string>(headingLabel);
+    const [mappings, setMappings] = useState<ValueMapping[] | []>(heading.overrides?.mappings || []);
 
     const handleSave = useCallback(() => {
-        onSave({ ...heading, label, mappings });
+        onSave({ ...heading, overrides: { label, mappings } });
     }, [heading, label, mappings, onSave]);
 
     return (
         <EditPopoverContainer>
             <Heading level={4}>
-                {__('Editing: ', 'petitioner')} <span>{heading.label}</span>
+                {__('Editing: ', 'petitioner')}
+                <span>{headingLabel}</span>
             </Heading>
+
+            <Text size="small">
+                {__('ID: ', 'petitioner')}
+                <code>{`${heading.id}`}</code>
+            </Text>
+
+            <Text size="small">
+                {__('Original label: ', 'petitioner')}
+                <code>{originalLabel}</code>
+            </Text>
+
+
+            <Divider margin="md" color="grey" />
 
             <PopoverInputGroup>
                 <TextControl
+                    id={`override-label-${heading.id}`}
+                    name={`override-label-${heading.id}`}
                     label={__('Override label', 'petitioner')}
                     value={label}
                     onChange={setLabel}
