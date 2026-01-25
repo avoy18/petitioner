@@ -28,7 +28,7 @@ const TableHeadingEditor = ({ headingState }: TableHeadingEditorProps) => {
 		handleShowHiddenHeadings,
 	} = headingState;
 
-	const hiddenCount = modifiedHeadings.filter((heading) => heading.overrides?.hidden).length
+	const hiddenCount = modifiedHeadings.filter((heading) => heading.overrides?.hidden).length;
 
 	return (
 		<TableHeadingEditorContainer>
