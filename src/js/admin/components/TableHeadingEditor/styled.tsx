@@ -42,3 +42,10 @@ export const TableHeadingActions = styled.div`
     flex-direction: row;
     gap: ${SPACINGS.xs};
 `;
+
+export const HiddenItemsWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: ${SPACINGS.xs};
+    justify-content: flex-end;
+`;

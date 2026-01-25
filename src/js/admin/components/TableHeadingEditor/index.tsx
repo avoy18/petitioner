@@ -8,6 +8,7 @@ import {
 	TableHeadingActions,
 	TableHeadingLabel,
 	TableHeadingsWrapper,
+	HiddenItemsWrapper
 } from './styled';
 import { useTableHeadingState } from './hooks';
 import type { TableHeadingEditorProps } from './consts';
@@ -22,13 +23,30 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 		handleDeleteHeading,
 		handleRestoreHeading,
 		handleSaveHeading,
+		showHiddenHeadings,
+		setShowHiddenHeadings,
 	} = useTableHeadingState(headings);
 
 	return (
 		<TableHeadingEditorContainer>
+			<HiddenItemsWrapper>
+				<Button
+					size="small"
+					icon="visibility"
+					variant="tertiary"
+					label={__('Show hidden columns', 'petitioner')}
+					showTooltip={true}
+					onClick={() => setShowHiddenHeadings(!showHiddenHeadings)}>
+					{showHiddenHeadings ? __('Hide hidden columns', 'petitioner') : __('Show hidden columns', 'petitioner')}
+				</Button>
+			</HiddenItemsWrapper>
 			<TableHeadingsWrapper>
 				{modifiedHeadings.map((heading) => {
 					const isDeletedHeading = heading.overrides?.hidden;
+
+					if (isDeletedHeading && !showHiddenHeadings) {
+						return null;
+					}
 
 					return (
 						<TableHeading key={heading.id}>

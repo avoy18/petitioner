@@ -4,6 +4,8 @@ import type { TableHeading } from "./consts";
 export const useTableHeadingState = (headings: TableHeading[]) => {
     const [activeHeading, setActiveHeading] = useState<TableHeading['id'] | null>(null);
     const [modifiedHeadings, setModifiedHeadings] = useState<TableHeading[]>(headings);
+    const [showHiddenHeadings, setShowHiddenHeadings] = useState(false);
+
     const currentHeading = modifiedHeadings.find((heading) => heading.id === activeHeading);
 
     const handleEditHeading = (id: TableHeading['id'] | null) => {
@@ -53,5 +55,7 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
         handleDeleteHeading,
         handleRestoreHeading,
         handleSaveHeading,
+        showHiddenHeadings,
+        setShowHiddenHeadings,
     };
 };
