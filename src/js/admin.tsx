@@ -2,6 +2,7 @@ import { createRoot } from '@wordpress/element';
 import EditFields from '@admin/sections/EditFields';
 import SettingsFields from '@admin/sections/SettingsFields';
 import ShortcodeArea from '@admin/sections/ShortcodeArea';
+import ComponentPreview from '@admin/sections/ComponentPreviewArea';
 
 import '../css/admin/index.css';
 import { safelyParseJSON } from '@js/utilities';
@@ -48,6 +49,14 @@ function SettingsUI() {
 	}
 }
 
+function ComponentPreviewUI() {
+	const componentPreviewContainer = document.getElementById('petitioner-component-preview');
+	if (componentPreviewContainer) {
+		const componentPreviewRoot = createRoot(componentPreviewContainer);
+		componentPreviewRoot.render(<ComponentPreview />);
+	}
+}
+
 function removeLoading() {
 	const loadingElement = document.querySelector('.ptr-is-loading');
 
@@ -59,5 +68,7 @@ function removeLoading() {
 EditUI();
 
 SettingsUI();
+
+ComponentPreviewUI();
 
 removeLoading();

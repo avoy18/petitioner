@@ -41,6 +41,10 @@ class AV_Petitioner_Setup
                 new AV_Petitioner_Admin_Settings_UI();
             }
 
+            if (class_exists('AV_Petitioner_Admin_Component_Preview_UI')) {
+                new AV_Petitioner_Admin_Component_Preview_UI();
+            }
+
             // shared admin settings
             if (class_exists('AV_Petitioner_Admin_Shared')) {
                 new AV_Petitioner_Admin_Shared();
