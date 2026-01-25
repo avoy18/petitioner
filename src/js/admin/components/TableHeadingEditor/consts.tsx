@@ -8,12 +8,16 @@ export type TableHeadingEditorProps = {
 };
 
 export const DEFAULT_STORY_HEADINGS: Heading[] = [
-    { id: 'name', label: 'Name' },
+    { id: 'fname', label: 'First Name' },
+    { id: 'lname', label: 'Last Name' },
     { id: 'email', label: 'Email' },
     { id: 'phone', label: 'Phone' },
-    { id: 'address', label: 'Address' },
+    { id: 'street_address', label: 'Street Address' },
     { id: 'city', label: 'City' },
-    { id: 'state', label: 'State' },
-    { id: 'zip', label: 'Zip' },
+    { id: 'postal_code', label: 'Postal Code' },
     { id: 'country', label: 'Country' },
+    { id: 'date_of_birth', label: 'Date of Birth' },
+    { id: 'accept_tos', label: 'Accept TOS' },
+    { id: 'legal', label: 'Legal' },
+    { id: 'comments', label: 'Comments' },
 ]
