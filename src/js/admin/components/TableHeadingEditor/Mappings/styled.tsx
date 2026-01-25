@@ -38,9 +38,9 @@ export const MappingArrow = styled(Icon).attrs({ icon: 'arrow-right-alt' })`
 	flex-direction: row;
 	gap: ${SPACINGS.sm};
 	align-items: center;
-    transform: translateY(10px)
+    transform: translateY(10px);
 `;
 
 export const StyledButton = styled(Button)`
-	transform: translateY(10px)
+	transform: translateY(10px);
 `;
