@@ -16,6 +16,41 @@ import EditPopover from './EditPopover';
 
 export { useTableHeadingState } from './hooks';
 
+/**
+ * Table heading editor component.
+ * @example
+ * 
+ * const initialHeadings = [
+ *     { id: 'id', label: 'ID' },
+ *     { id: 'name', label: 'Name' },
+ *     { id: 'email', label: 'Email' },
+ * ];
+ * const headingState = useTableHeadingState(initialHeadings);
+ * 
+ * const { currentHeading, modifiedHeadings } = headingState; // you can use these to display the current heading and modified headings
+ * 
+ * return (
+ *     <div>
+ *     	<TableHeadingEditor headingState={headingState} />
+ *     	<div>
+ *     		<h1>{currentHeading?.label}</h1>
+ *     	</div>
+ *     	<div>
+ *     		<h2>Modified Headings</h2>
+ *     		<ul>
+ *     			{modifiedHeadings.map((heading) => (
+ *     				<li key={heading.id}>{heading.label}</li>
+ *     			))}
+ *     		</ul>
+ *     	</div>
+ *     </div>
+ * );
+ * 
+ * Note: The headings array is not synced if you modify it.
+ * 
+ * @param headingState - The state of the table heading editor
+ * @returns {JSX.Element} The table heading editor component
+ */
 const TableHeadingEditor = ({ headingState }: TableHeadingEditorProps) => {
 	const {
 		currentHeading,

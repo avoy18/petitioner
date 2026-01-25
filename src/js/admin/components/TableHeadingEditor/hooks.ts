@@ -1,6 +1,30 @@
 import { useState } from "@wordpress/element";
 import type { TableHeading } from "./consts";
 
+/**
+ * Custom hook for managing the table heading editor state.
+ * @example
+ * const headingState = useTableHeadingState([
+ *     { id: 'id', label: 'ID' },
+ *     { id: 'name', label: 'Name' },
+ *     { id: 'email', label: 'Email' },
+ * ]);
+ * 
+ * return (
+ *     <TableHeadingEditor headingState={headingState} />
+ * );
+ * 
+ * @param headings - The INITIAL headings to manage, does not get synced if you modify it.
+ * @returns {Object} TableHeadingEditorState
+ * @returns {TableHeading['id'] | null} activeHeading - The active heading
+ * @returns {TableHeading[]} modifiedHeadings - The modified headings
+ * @returns {boolean} showHiddenHeadings - Whether to show hidden headings
+ * @returns {Function} handleEditHeading - Handle the edit heading
+ * @returns {Function} handleDeleteHeading - Handle the delete heading
+ * @returns {Function} handleRestoreHeading - Handle the restore heading
+ * @returns {Function} handleSaveHeading - Handle the save heading
+ * @returns {Function} handleShowHiddenHeadings - Handle the show hidden headings
+ */
 export const useTableHeadingState = (headings: TableHeading[]) => {
     const [activeHeading, setActiveHeading] = useState<TableHeading['id'] | null>(null);
     const [modifiedHeadings, setModifiedHeadings] = useState<TableHeading[]>(headings);
