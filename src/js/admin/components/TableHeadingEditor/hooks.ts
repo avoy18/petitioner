@@ -4,7 +4,7 @@ import type { TableHeading } from "./consts";
 export const useTableHeadingState = (headings: TableHeading[]) => {
     const [activeHeading, setActiveHeading] = useState<TableHeading['id'] | null>(null);
     const [modifiedHeadings, setModifiedHeadings] = useState<TableHeading[]>(headings);
-    const [showHiddenHeadings, setShowHiddenHeadings] = useState(false);
+    const [showHiddenHeadings, setShowHiddenHeadings] = useState(true);
 
     const currentHeading = modifiedHeadings.find((heading) => heading.id === activeHeading);
 
@@ -13,7 +13,9 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
     };
 
     const handleDeleteHeading = (id: TableHeading['id']) => {
-        setActiveHeading(null);
+        if (!showHiddenHeadings) {
+            setActiveHeading(null);
+        }
         setModifiedHeadings(prev => {
             const newHeadings = [...prev];
             const index = newHeadings.findIndex(heading => heading.id === id);
@@ -47,6 +49,11 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
         setActiveHeading(null);
     };
 
+    const handleShowHiddenHeadings = () => {
+        setActiveHeading(null);
+        setShowHiddenHeadings(!showHiddenHeadings);
+    };
+
     return {
         activeHeading,
         modifiedHeadings,
@@ -56,6 +63,6 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
         handleRestoreHeading,
         handleSaveHeading,
         showHiddenHeadings,
-        setShowHiddenHeadings,
+        handleShowHiddenHeadings,
     };
 };

@@ -1,4 +1,4 @@
-import { memo } from '@wordpress/element';
+import { memo, useMemo } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -24,8 +24,12 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 		handleRestoreHeading,
 		handleSaveHeading,
 		showHiddenHeadings,
-		setShowHiddenHeadings,
+		handleShowHiddenHeadings,
 	} = useTableHeadingState(headings);
+
+	const hiddenCount = useMemo(() => {
+		return modifiedHeadings.filter((heading) => heading.overrides?.hidden).length;
+	}, [modifiedHeadings]);
 
 	return (
 		<TableHeadingEditorContainer>
@@ -36,8 +40,8 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 					variant="tertiary"
 					label={showHiddenHeadings ? HIDE_HIDDEN_COLUMNS_LABEL : SHOW_HIDDEN_COLUMNS_LABEL}
 					showTooltip={true}
-					onClick={() => setShowHiddenHeadings(!showHiddenHeadings)}>
-					{showHiddenHeadings ? HIDE_HIDDEN_COLUMNS_LABEL : SHOW_HIDDEN_COLUMNS_LABEL}
+					onClick={handleShowHiddenHeadings}>
+					{showHiddenHeadings ? HIDE_HIDDEN_COLUMNS_LABEL : SHOW_HIDDEN_COLUMNS_LABEL} ({hiddenCount})
 				</Button>
 			</HiddenItemsWrapper>
 			<TableHeadingsWrapper>
@@ -49,7 +53,7 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 					}
 
 					return (
-						<TableHeading key={heading.id}>
+						<TableHeading key={heading.id} $isActive={currentHeading?.id === heading.id} $deleted={isDeletedHeading}>
 							<TableHeadingLabel $deleted={isDeletedHeading}>
 								{getHeadingLabel(heading)}
 							</TableHeadingLabel>
@@ -77,7 +81,6 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 										size="small"
 										icon="hidden"
 										variant="tertiary"
-										isDestructive={true}
 										label={__('Hide column', 'petitioner')}
 										showTooltip={true}
 										onClick={() => handleDeleteHeading(heading.id)}

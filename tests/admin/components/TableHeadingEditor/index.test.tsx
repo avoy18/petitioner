@@ -75,10 +75,7 @@ describe('TableHeadingEditor', () => {
                 },
             ]} />);
 
-            // Show hidden columns
-            const showHiddenColumnsButton = screen.getByLabelText('Show hidden columns');
-            await user.click(showHiddenColumnsButton);
-
+            // Hidden columns are visible by default
             expect(screen.getByText('ID')).toBeInTheDocument();
 
             // Hide hidden columns
@@ -86,6 +83,12 @@ describe('TableHeadingEditor', () => {
             await user.click(hideHiddenColumnsButton);
 
             expect(screen.queryByText('ID')).not.toBeInTheDocument();
+
+            // Show hidden columns again
+            const showHiddenColumnsButton = screen.getByLabelText('Show hidden columns');
+            await user.click(showHiddenColumnsButton);
+
+            expect(screen.getByText('ID')).toBeInTheDocument();
         });
 
 
@@ -93,10 +96,7 @@ describe('TableHeadingEditor', () => {
             const user = userEvent.setup();
             render(<TableHeadingEditor headings={mockHeadings} />);
 
-            // Show hidden columns
-            const showHiddenColumnsButton = screen.getByLabelText('Show hidden columns');
-            await user.click(showHiddenColumnsButton);
-
+            // Hidden columns are already visible by default
             const hideButtons = screen.getAllByLabelText('Hide column');
             await user.click(hideButtons[0]);
 
@@ -113,11 +113,7 @@ describe('TableHeadingEditor', () => {
             const hideButtons = screen.getAllByLabelText('Hide column');
             await user.click(hideButtons[0]);
 
-            // Show hidden columns
-            const showHiddenColumnsButton = screen.getByLabelText('Show hidden columns');
-            await user.click(showHiddenColumnsButton);
-
-            // Show it again
+            // Hidden columns are already visible, so "Show column" button should be visible
             const showButton = screen.getByLabelText('Show column');
             await user.click(showButton);
 
@@ -126,8 +122,6 @@ describe('TableHeadingEditor', () => {
         });
 
         it('loads with hidden columns when preselected', async () => {
-            const user = userEvent.setup();
-
             render(<TableHeadingEditor headings={[
                 {
                     id: 'custom_item',
@@ -138,10 +132,7 @@ describe('TableHeadingEditor', () => {
                 },
             ]} />);
 
-            // Show hidden columns
-            const showHiddenColumnsButton = screen.getByLabelText('Show hidden columns');
-            await user.click(showHiddenColumnsButton);
-
+            // Hidden columns are visible by default, so "Show column" button should be visible
             expect(screen.getByLabelText('Show column')).toBeInTheDocument();
         });
     });

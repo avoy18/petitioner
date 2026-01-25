@@ -25,6 +25,7 @@ export const TableHeading = styled.div<{ $isActive?: boolean, $deleted?: boolean
     border: 1px solid ${({ $isActive }) => $isActive ? COLORS.primary : COLORS.grey};
     border-radius: var(--ptr-admin-input-border-radius);
     min-width: 150px;
+    background-color: ${({ $deleted }) => $deleted ? COLORS.grey : 'white'};
 `
 
 export const TableHeadingLabel = styled.span<{ $deleted?: boolean }>`
