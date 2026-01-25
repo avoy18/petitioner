@@ -15,7 +15,8 @@
 		"build:gutenberg": "wp-scripts build --output-path=dist-gutenberg",
 		"deploy": "pnpm build && node scripts/deploy.js",
 		"test": "vitest run",
-		"prepare": "husky"
+		"prepare": "husky",
+		"ladle": "ladle serve --port 1337"
 	},
 	"repository": {
 		"type": "git",
@@ -33,6 +34,7 @@
 	},
 	"homepage": "https://github.com/avoy18/petitioner#readme",
 	"devDependencies": {
+		"@ladle/react": "^5.1.1",
 		"@prettier/plugin-php": "^0.22.4",
 		"@testing-library/dom": "^10.4.0",
 		"@testing-library/jest-dom": "^6.6.3",
