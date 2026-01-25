@@ -1,6 +1,9 @@
+import type { ValueMapping } from './Mappings/consts';
+
 export type TableHeading = {
     id: string;
     label: string;
+    mappings?: ValueMapping[];
 };
 
 export type TableHeadingEditorProps = {

@@ -2,23 +2,25 @@ import { memo, useState, useCallback } from '@wordpress/element';
 import { Button, TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-import { Heading, Text } from '@admin/components/Experimental';
+import { Heading } from '@admin/components/Experimental';
 
 import {
     EditPopoverContainer,
     PopoverActions,
     PopoverInputGroup,
-    MappingWrapper,
-    MappingExample,
 } from './styled';
+import Mappings from '../Mappings';
+import type { ValueMapping } from '../Mappings/consts';
 import type { EditPopoverProps } from './consts';
+
 
 const EditPopover = ({ heading, onClose, onSave }: EditPopoverProps) => {
     const [label, setLabel] = useState<string>(heading.label);
+    const [mappings, setMappings] = useState<ValueMapping[] | []>([]);
 
     const handleSave = useCallback(() => {
-        onSave({ ...heading, label });
-    }, [heading, label, onSave]);
+        onSave({ ...heading, label, mappings });
+    }, [heading, label, mappings, onSave]);
 
     return (
         <EditPopoverContainer>
@@ -34,26 +36,7 @@ const EditPopover = ({ heading, onClose, onSave }: EditPopoverProps) => {
                 />
             </PopoverInputGroup>
 
-            <MappingWrapper>
-                <div>
-                    <Text size="sm" weight="medium">
-                        {__('Value Mappings', 'petitioner')}
-                    </Text>
-                    <MappingExample>
-                        <Text size="sm" color="grey">
-                            {__('Replace raw values with readable text. For example, convert "0" -> "No" or "1" -> "Yes".', 'petitioner')}
-                        </Text>
-                    </MappingExample>
-                </div>
-                <Button
-                    size="small"
-                    icon="plus"
-                    variant="tertiary"
-                    onClick={() => { }}
-                >
-                    {__('Add mapping', 'petitioner')}
-                </Button>
-            </MappingWrapper>
+            <Mappings mappings={mappings} onUpdate={setMappings} />
 
             <PopoverActions>
                 <Button
