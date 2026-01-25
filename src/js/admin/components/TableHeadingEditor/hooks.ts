@@ -51,7 +51,7 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
 
     const handleShowHiddenHeadings = () => {
         setActiveHeading(null);
-        setShowHiddenHeadings(!showHiddenHeadings);
+        setShowHiddenHeadings((prev) => !prev);
     };
 
     return {
