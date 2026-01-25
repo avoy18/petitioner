@@ -1,9 +1,15 @@
 import type { ValueMapping } from './Mappings/consts';
 
+export type OverrideOptions = {
+    label: string;
+    mappings?: ValueMapping[]; 
+    hidden?: boolean;
+}
+
 export type TableHeading = {
     id: string;
     label: string;
-    mappings?: ValueMapping[];
+    overrides?: OverrideOptions;
 };
 
 export type TableHeadingEditorProps = {

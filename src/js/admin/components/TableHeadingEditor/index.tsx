@@ -74,6 +74,7 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 
 			{currentHeading && (
 				<EditPopover
+					key={currentHeading.id}
 					heading={currentHeading}
 					onClose={() => handleEditHeading(null)}
 					onSave={handleSaveHeading}
