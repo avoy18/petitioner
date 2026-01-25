@@ -1,5 +1,5 @@
 import { useState } from "@wordpress/element";
-import type { TableHeading } from "./consts";
+import type { TableHeading, TableHeadingEditorState } from "./consts";
 
 /**
  * Custom hook for managing the table heading editor state.
@@ -26,7 +26,7 @@ import type { TableHeading } from "./consts";
  * @returns {Function} handleSaveHeading - Handle the save heading
  * @returns {Function} handleShowHiddenHeadings - Handle the show hidden headings
  */
-export const useTableHeadingState = (headings: TableHeading[]) => {
+export const useTableHeadingState = (headings: TableHeading[]): TableHeadingEditorState => {
     const [activeHeading, setActiveHeading] = useState<TableHeading['id'] | null>(null);
     const [modifiedHeadings, setModifiedHeadings] = useState<TableHeading[]>(headings);
     const [showHiddenHeadings, setShowHiddenHeadings] = useState(true);
