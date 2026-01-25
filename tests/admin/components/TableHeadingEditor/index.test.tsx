@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import TableHeadingEditor from '@admin/components/TableHeadingEditor';
+import { describe, it, expect } from 'vitest';
+import TableHeadingEditor, { useTableHeadingState } from '@admin/components/TableHeadingEditor';
 import type { TableHeading } from '@admin/components/TableHeadingEditor/consts';
 
 const mockHeadings: TableHeading[] = [
@@ -26,9 +26,15 @@ const mockHeadings: TableHeading[] = [
     },
 ];
 
+// Helper component to wrap the component with hook
+const TableHeadingEditorWrapper = ({ headings }: { headings: TableHeading[] }) => {
+    const headingState = useTableHeadingState(headings);
+    return <TableHeadingEditor headingState={headingState} />;
+};
+
 describe('TableHeadingEditor', () => {
     it('renders all headings', () => {
-        render(<TableHeadingEditor headings={mockHeadings} />);
+        render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
         expect(screen.getByText('Name')).toBeInTheDocument();
         expect(screen.getByText('Email')).toBeInTheDocument();
@@ -36,7 +42,7 @@ describe('TableHeadingEditor', () => {
     });
 
     it('displays override label when present', () => {
-        render(<TableHeadingEditor headings={mockHeadings} />);
+        render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
         // Should show override label, not original
         expect(screen.getByText('Custom Status')).toBeInTheDocument();
@@ -44,7 +50,7 @@ describe('TableHeadingEditor', () => {
     });
 
     it('shows edit and hide buttons for each heading', () => {
-        render(<TableHeadingEditor headings={mockHeadings} />);
+        render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
         const editButtons = screen.getAllByLabelText('Edit column');
         const hideButtons = screen.getAllByLabelText('Hide column');
@@ -57,7 +63,7 @@ describe('TableHeadingEditor', () => {
 
         it('shows and hides hidden columns when toggled', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={[
+            const headings = [
                 {
                     id: 'id',
                     label: 'ID',
@@ -73,7 +79,8 @@ describe('TableHeadingEditor', () => {
                     id: 'status',
                     label: 'Status',
                 },
-            ]} />);
+            ];
+            render(<TableHeadingEditorWrapper headings={headings} />);
 
             // Hidden columns are visible by default
             expect(screen.getByText('ID')).toBeInTheDocument();
@@ -94,7 +101,7 @@ describe('TableHeadingEditor', () => {
 
         it('hides a column when hide button is clicked', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             // Hidden columns are already visible by default
             const hideButtons = screen.getAllByLabelText('Hide column');
@@ -107,7 +114,7 @@ describe('TableHeadingEditor', () => {
 
         it('restores a hidden column when show button is clicked', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             // Hide a column
             const hideButtons = screen.getAllByLabelText('Hide column');
@@ -121,8 +128,8 @@ describe('TableHeadingEditor', () => {
             expect(screen.queryByLabelText('Show column')).not.toBeInTheDocument();
         });
 
-        it('loads with hidden columns when preselected', async () => {
-            render(<TableHeadingEditor headings={[
+        it('loads with hidden columns when preselected', () => {
+            render(<TableHeadingEditorWrapper headings={[
                 {
                     id: 'custom_item',
                     label: 'Custom Item',
@@ -141,7 +148,7 @@ describe('TableHeadingEditor', () => {
 
         it('opens edit popover when edit button is clicked', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             const editButtons = screen.getAllByLabelText('Edit column');
             await user.click(editButtons[0]);
@@ -152,7 +159,7 @@ describe('TableHeadingEditor', () => {
 
         it('closes popover when cancel button is clicked', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             const editButtons = screen.getAllByLabelText('Edit column');
             await user.click(editButtons[0]);
@@ -165,7 +172,7 @@ describe('TableHeadingEditor', () => {
 
         it('updates label when saved', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             // Open edit popover for first heading
             const editButtons = screen.getAllByLabelText('Edit column');
@@ -188,7 +195,7 @@ describe('TableHeadingEditor', () => {
 
         it('shows original label and ID in popover', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             // Edit the heading with override
             const editButtons = screen.getAllByLabelText('Edit column');
@@ -202,7 +209,7 @@ describe('TableHeadingEditor', () => {
 
         it('preserves state when reopening same heading (key prop test)', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             // Open edit, change label
             const editButtons = screen.getAllByLabelText('Edit column');
@@ -229,7 +236,7 @@ describe('TableHeadingEditor', () => {
     describe('Value Mappings', () => {
         it('displays existing mappings when editing', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             // Edit heading with mappings
             const editButtons = screen.getAllByLabelText('Edit column');
@@ -250,7 +257,7 @@ describe('TableHeadingEditor', () => {
 
         it('adds new mapping when add button is clicked', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             const editButtons = screen.getAllByLabelText('Edit column');
             await user.click(editButtons[0]);
@@ -268,7 +275,7 @@ describe('TableHeadingEditor', () => {
 
         it('removes mapping when delete button is clicked', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             const editButtons = screen.getAllByLabelText('Edit column');
             await user.click(editButtons[2]);
@@ -284,7 +291,7 @@ describe('TableHeadingEditor', () => {
 
         it('updates mapping values', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             const editButtons = screen.getAllByLabelText('Edit column');
             await user.click(editButtons[2]);
@@ -298,7 +305,7 @@ describe('TableHeadingEditor', () => {
 
         it('saves mappings along with label', async () => {
             const user = userEvent.setup();
-            render(<TableHeadingEditor headings={mockHeadings} />);
+            render(<TableHeadingEditorWrapper headings={mockHeadings} />);
 
             const editButtons = screen.getAllByLabelText('Edit column');
             await user.click(editButtons[0]);

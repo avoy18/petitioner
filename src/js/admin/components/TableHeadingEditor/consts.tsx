@@ -13,8 +13,20 @@ export type TableHeading = {
     overrides?: OverrideOptions;
 };
 
+export type TableHeadingEditorState = {
+    activeHeading: TableHeading['id'] | null;
+    modifiedHeadings: TableHeading[];
+    currentHeading: TableHeading | undefined;
+    handleEditHeading: (id: TableHeading['id'] | null) => void;
+    handleDeleteHeading: (id: TableHeading['id']) => void;
+    handleRestoreHeading: (id: TableHeading['id']) => void;
+    handleSaveHeading: (updatedHeading: TableHeading) => void;
+    showHiddenHeadings: boolean;
+    handleShowHiddenHeadings: () => void;
+};
+
 export type TableHeadingEditorProps = {
-    headings: TableHeading[];
+    headingState: TableHeadingEditorState;
 };
 
 export const DEFAULT_STORY_HEADINGS: TableHeading[] = [

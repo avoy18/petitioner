@@ -10,12 +10,13 @@ import {
 	TableHeadingsWrapper,
 	HiddenItemsWrapper
 } from './styled';
-import { useTableHeadingState } from './hooks';
 import { HIDE_HIDDEN_COLUMNS_LABEL, SHOW_HIDDEN_COLUMNS_LABEL, type TableHeadingEditorProps } from './consts';
 import { getHeadingLabel } from './utilities';
 import EditPopover from './EditPopover';
 
-const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
+export { useTableHeadingState } from './hooks';
+
+const TableHeadingEditor = ({ headingState }: TableHeadingEditorProps) => {
 	const {
 		currentHeading,
 		modifiedHeadings,
@@ -25,7 +26,7 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 		handleSaveHeading,
 		showHiddenHeadings,
 		handleShowHiddenHeadings,
-	} = useTableHeadingState(headings);
+	} = headingState;
 
 	const hiddenCount = modifiedHeadings.filter((heading) => heading.overrides?.hidden).length
 
