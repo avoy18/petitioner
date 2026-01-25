@@ -1,7 +1,7 @@
 import type { ValueMapping } from './Mappings/consts';
 
 export type OverrideOptions = {
-    label: string;
+    label?: string;
     mappings?: ValueMapping[]; 
     hidden?: boolean;
 }
@@ -17,8 +17,8 @@ export type TableHeadingEditorProps = {
 };
 
 export const DEFAULT_STORY_HEADINGS: TableHeading[] = [
-    { id: 'id', label: 'Id' },
-    { id: 'form_id', label: 'Form ID', overrides: { label: 'Form ID!!' } },
+    { id: 'id', label: 'Id', overrides: { hidden: true } },
+    { id: 'form_id', label: 'Form ID', overrides: { hidden: true } },
     { id: 'fname', label: 'First name' },
     { id: 'lname', label: 'Last name' },
     { id: 'email', label: 'Your email' },

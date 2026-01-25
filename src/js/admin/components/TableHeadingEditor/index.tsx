@@ -22,14 +22,13 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 		handleDeleteHeading,
 		handleRestoreHeading,
 		handleSaveHeading,
-		isDeleted,
 	} = useTableHeadingState(headings);
 
 	return (
 		<TableHeadingEditorContainer>
 			<TableHeadingsWrapper>
 				{modifiedHeadings.map((heading) => {
-					const isDeletedHeading = isDeleted(heading.id);
+					const isDeletedHeading = heading.overrides?.hidden;
 
 					return (
 						<TableHeading key={heading.id}>

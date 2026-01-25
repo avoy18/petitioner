@@ -81,6 +81,20 @@ describe('TableHeadingEditor', () => {
             expect(screen.getAllByLabelText('Hide column')).toHaveLength(3);
             expect(screen.queryByLabelText('Show column')).not.toBeInTheDocument();
         });
+
+        it('loads with hidden columns when preselected', async () => {
+            render(<TableHeadingEditor headings={[
+                {
+                    id: 'custom_item',
+                    label: 'Custom Item',
+                    overrides: {
+                        hidden: true,
+                    },
+                },
+            ]} />);
+
+            expect(screen.getByLabelText('Show column')).toBeInTheDocument();
+        });
     });
 
     describe('Edit Popover', () => {
@@ -171,7 +185,6 @@ describe('TableHeadingEditor', () => {
             expect(labelInputAgain).toHaveValue('Changed Label');
         });
     });
-
 
     describe('Value Mappings', () => {
         it('displays existing mappings when editing', async () => {
