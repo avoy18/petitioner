@@ -21,12 +21,15 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
             const newHeadings = [...prev];
             const index = newHeadings.findIndex(heading => heading.id === id);
             if (index !== -1) {
-                newHeadings[index] = { ...newHeadings[index], overrides: { ...newHeadings[index].overrides, hidden: true } };
+                newHeadings[index] = {
+                    ...newHeadings[index], overrides: {
+                        ...(newHeadings[index].overrides || {}),
+                        hidden: true
+                    }
+                };
             }
             return newHeadings;
         });
-
-        console.log('activeHeading', activeHeading);
     };
 
     const handleRestoreHeading = (id: TableHeading['id']) => {
