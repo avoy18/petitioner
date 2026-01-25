@@ -1,9 +1,10 @@
 import type { ComponentStories } from './consts';
 
-import * as TableRowEditorStories from '@admin/components/TableRowEditor/TableRowEditor.stories';
+import * as TableHeadingEditorStories from '@admin/components/TableHeadingEditor/TableHeadingEditor.stories';
 import * as TabsStories from '@admin/components/Tabs/Tabs.stories';
+
 export const storyRegistry: Record<string, ComponentStories> = {
-	'table-row-editor': TableRowEditorStories,
+	'table-heading-editor': TableHeadingEditorStories,
 	'tabs': TabsStories,
 };
 
