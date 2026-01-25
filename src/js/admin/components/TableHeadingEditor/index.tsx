@@ -27,14 +27,18 @@ export default function TableHeadingEditor({ headings }: TableHeadingEditorProps
 								{isDeletedHeading ?
 									<Button
 										size="small"
-										icon="plus"
+										icon="visibility"
 										variant="tertiary"
+										showTooltip={true}
+										label={__('Show column', 'petitioner')}
 										onClick={() => handleRestoreHeading(heading.id)} /> :
 									<Button
 										size="small"
-										icon="trash"
+										icon="hidden"
 										variant="tertiary"
 										isDestructive={true}
+										showTooltip={true}
+										label={__('Hide column', 'petitioner')}
 										onClick={() => handleDeleteHeading(heading.id)}
 									/>}
 							</TableHeadingActions>
