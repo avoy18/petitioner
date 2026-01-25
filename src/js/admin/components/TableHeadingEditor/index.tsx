@@ -11,7 +11,7 @@ import {
 	HiddenItemsWrapper
 } from './styled';
 import { useTableHeadingState } from './hooks';
-import type { TableHeadingEditorProps } from './consts';
+import { HIDE_HIDDEN_COLUMNS_LABEL, SHOW_HIDDEN_COLUMNS_LABEL, type TableHeadingEditorProps } from './consts';
 import { getHeadingLabel } from './utilities';
 import EditPopover from './EditPopover';
 
@@ -34,10 +34,10 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 					size="small"
 					icon="visibility"
 					variant="tertiary"
-					label={__('Show hidden columns', 'petitioner')}
+					label={showHiddenHeadings ? HIDE_HIDDEN_COLUMNS_LABEL : SHOW_HIDDEN_COLUMNS_LABEL}
 					showTooltip={true}
 					onClick={() => setShowHiddenHeadings(!showHiddenHeadings)}>
-					{showHiddenHeadings ? __('Hide hidden columns', 'petitioner') : __('Show hidden columns', 'petitioner')}
+					{showHiddenHeadings ? HIDE_HIDDEN_COLUMNS_LABEL : SHOW_HIDDEN_COLUMNS_LABEL}
 				</Button>
 			</HiddenItemsWrapper>
 			<TableHeadingsWrapper>

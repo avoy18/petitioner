@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { ValueMapping } from './Mappings/consts';
 
 export type OverrideOptions = {
@@ -38,3 +39,6 @@ export const DEFAULT_STORY_HEADINGS: TableHeading[] = [
     { id: 'submission_date', label: 'Submission date' },
     { id: 'confirmation_token', label: 'Confirmation token' },
 ]
+
+export const HIDE_HIDDEN_COLUMNS_LABEL = __('Hide hidden columns', 'petitioner');
+export const SHOW_HIDDEN_COLUMNS_LABEL = __('Show hidden columns', 'petitioner');
