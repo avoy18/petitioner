@@ -5,11 +5,10 @@ import { MappingExample, MappingInputGroup, MappingInputs, MappingArrow, Mapping
 import { Text } from '@admin/components/Experimental';
 import { TextControl } from '@wordpress/components';
 import { Button } from '@wordpress/components';
-
+import { MAPPING_DESCRIPTION } from './consts';
 import type { MappingsProps, ValueMapping } from './consts';
 
 const Mappings = ({ mappings, onUpdate }: MappingsProps) => {
-
     const handleAddMapping = useCallback(() => {
         const newMapping: ValueMapping = {
             id: crypto.randomUUID(),
@@ -45,7 +44,7 @@ const Mappings = ({ mappings, onUpdate }: MappingsProps) => {
                 </Text>
                 <MappingExample>
                     <Text size="sm" color="grey">
-                        {__('Replace raw values with readable text. For example, convert "0" -> "No" or "1" -> "Yes".', 'petitioner')}
+                        {MAPPING_DESCRIPTION}
                     </Text>
                 </MappingExample>
             </div>
