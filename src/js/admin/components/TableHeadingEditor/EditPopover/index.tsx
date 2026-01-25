@@ -12,10 +12,10 @@ import {
 import Mappings from '../Mappings';
 import type { ValueMapping } from '../Mappings/consts';
 import type { EditPopoverProps } from './consts';
-
+import { getHeadingLabel } from '../utilities';
 
 const EditPopover = ({ heading, onClose, onSave }: EditPopoverProps) => {
-    const headingLabel = heading?.overrides?.label || heading.label;
+    const headingLabel = getHeadingLabel(heading);
     const originalLabel = heading.label;
     const [label, setLabel] = useState<string>(headingLabel);
     const [mappings, setMappings] = useState<ValueMapping[] | []>(heading.overrides?.mappings || []);

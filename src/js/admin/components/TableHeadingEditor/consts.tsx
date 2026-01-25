@@ -18,7 +18,7 @@ export type TableHeadingEditorProps = {
 
 export const DEFAULT_STORY_HEADINGS: TableHeading[] = [
     { id: 'id', label: 'Id' },
-    { id: 'form_id', label: 'Form ID' },
+    { id: 'form_id', label: 'Form ID', overrides: { label: 'Form ID!!' } },
     { id: 'fname', label: 'First name' },
     { id: 'lname', label: 'Last name' },
     { id: 'email', label: 'Your email' },

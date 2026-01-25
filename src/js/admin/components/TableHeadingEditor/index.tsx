@@ -11,7 +11,7 @@ import {
 } from './styled';
 import { useTableHeadingState } from './hooks';
 import type { TableHeadingEditorProps } from './consts';
-
+import { getHeadingLabel } from './utilities';
 import EditPopover from './EditPopover';
 
 const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
@@ -34,7 +34,7 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 					return (
 						<TableHeading key={heading.id}>
 							<TableHeadingLabel $deleted={isDeletedHeading}>
-								{heading.label}
+								{getHeadingLabel(heading)}
 							</TableHeadingLabel>
 
 							<TableHeadingActions>
