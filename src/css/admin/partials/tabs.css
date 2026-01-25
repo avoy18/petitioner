@@ -11,4 +11,8 @@
     .petitioner-tab.active {
         display: block;
     }
+
+    .petition-tablink--hidden {
+        display: none;
+    }
 }

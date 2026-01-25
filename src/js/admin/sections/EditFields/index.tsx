@@ -5,7 +5,7 @@ import PetitionDetails from '@admin/sections/EditFields/PetitionDetails';
 import BottomCallout from '@admin/sections/EditFields/BottomCallout';
 import AdvancedSettings from '@admin/sections/EditFields/AdvancedSettings';
 import Tabs from '@admin/components/Tabs';
-
+import ComponentPreviewArea from '../ComponentPreviewArea';
 import {
 	EditFormContextProvider,
 	useEditFormContext,
@@ -57,6 +57,18 @@ export const tabs = [
 function EditFieldsComponent() {
 	const { formState } = useEditFormContext();
 	const { active_tab } = formState;
+	let addPreviewArea = false;
+
+	if (active_tab === 'component-preview-area') {
+		addPreviewArea = true;
+
+		tabs.push({
+			name: 'component-preview-area',
+			title: <></>,
+			className: 'petition-tablink--hidden',
+			renderingEl: <ComponentPreviewArea />,
+		});
+	}
 
 	return (
 		<>
