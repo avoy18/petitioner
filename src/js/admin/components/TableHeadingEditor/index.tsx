@@ -1,4 +1,4 @@
-import { memo, useMemo } from '@wordpress/element';
+import { memo } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -27,9 +27,7 @@ const TableHeadingEditor = ({ headings }: TableHeadingEditorProps) => {
 		handleShowHiddenHeadings,
 	} = useTableHeadingState(headings);
 
-	const hiddenCount = useMemo(() => {
-		return modifiedHeadings.filter((heading) => heading.overrides?.hidden).length;
-	}, [modifiedHeadings]);
+	const hiddenCount = modifiedHeadings.filter((heading) => heading.overrides?.hidden).length
 
 	return (
 		<TableHeadingEditorContainer>
