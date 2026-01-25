@@ -13,9 +13,10 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
     };
 
     const handleDeleteHeading = (id: TableHeading['id']) => {
-        if (!showHiddenHeadings) {
+        if (!showHiddenHeadings && activeHeading === id) {
             setActiveHeading(null);
         }
+
         setModifiedHeadings(prev => {
             const newHeadings = [...prev];
             const index = newHeadings.findIndex(heading => heading.id === id);
@@ -24,6 +25,8 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
             }
             return newHeadings;
         });
+
+        console.log('activeHeading', activeHeading);
     };
 
     const handleRestoreHeading = (id: TableHeading['id']) => {
@@ -50,7 +53,9 @@ export const useTableHeadingState = (headings: TableHeading[]) => {
     };
 
     const handleShowHiddenHeadings = () => {
-        setActiveHeading(null);
+        if (activeHeading && currentHeading?.overrides?.hidden) {
+            setActiveHeading(null);
+        }
         setShowHiddenHeadings((prev) => !prev);
     };
 
