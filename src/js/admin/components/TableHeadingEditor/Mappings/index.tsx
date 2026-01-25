@@ -1,17 +1,17 @@
 import { memo, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import { MappingExample, MappingInputGroup, MappingInputs, MappingArrow, MappingWrapper, StyledButton } from './styled';
+import { generateId } from '@admin/utilities';
+import { TextControl, Button } from '@wordpress/components';
 import { Text } from '@admin/components/Experimental';
-import { TextControl } from '@wordpress/components';
-import { Button } from '@wordpress/components';
+import { MappingExample, MappingInputGroup, MappingInputs, MappingArrow, MappingWrapper, StyledButton } from './styled';
 import { MAPPING_DESCRIPTION } from './consts';
 import type { MappingsProps, ValueMapping } from './consts';
 
 const Mappings = ({ mappings, onUpdate }: MappingsProps) => {
     const handleAddMapping = useCallback(() => {
         const newMapping: ValueMapping = {
-            id: crypto.randomUUID(),
+            id: generateId(),
             rawValue: '',
             mappedValue: '',
         };
