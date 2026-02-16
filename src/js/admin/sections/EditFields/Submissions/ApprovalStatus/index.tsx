@@ -1,6 +1,5 @@
 import { Button } from '@wordpress/components';
 import type { ApprovalStatusProps } from '../consts';
-import ResendButton from './ResendButton';
 
 export default function ApprovalStatus(props: ApprovalStatusProps) {
 	const { item, onStatusChange = () => {}, defaultApprovalState } = props;
