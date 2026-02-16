@@ -2,6 +2,7 @@ import { useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import type { FormID } from '@admin/sections/EditFields/consts';
 import type { SubmissionItem } from '../consts';
+import { getAjaxNonce } from '@admin/utilities';
 
 export default function ResendButton(props: { item: SubmissionItem }) {
 	const { id, confirmation_token } = props.item;
@@ -25,6 +26,7 @@ export default function ResendButton(props: { item: SubmissionItem }) {
 					},
 					body: new URLSearchParams({
 						id: id.toString(),
+						petitioner_nonce: getAjaxNonce(),
 					}),
 				}
 			);
@@ -68,7 +70,7 @@ export function ResendAllButton() {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-				body: new URLSearchParams({ form_id: String(form_id) }),
+				body: new URLSearchParams({ form_id: String(form_id), petitioner_nonce: getAjaxNonce() }),
 			}
 		);
 
@@ -95,7 +97,7 @@ export function ResendAllButton() {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-				body: new URLSearchParams({ form_id: String(form_id) }),
+				body: new URLSearchParams({ form_id: String(form_id), petitioner_nonce: getAjaxNonce() }),
 			}
 		);
 

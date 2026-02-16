@@ -6,6 +6,8 @@ if (! defined('ABSPATH')) {
 
 class AV_Petitioner_Setup
 {
+    public static $FRONTEND_FORM_NONCE_LABEL = 'petitioner_form_nonce';
+
     public function __construct()
     {
         // db schema
@@ -191,7 +193,7 @@ class AV_Petitioner_Setup
 
         wp_localize_script('petitioner-script', 'petitionerFormSettings', [
             'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
-            'nonce'         => wp_create_nonce('petitioner_form_nonce'),
+            'nonce'         => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
             'nonceEndpoint' => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
         ]);
 
@@ -262,7 +264,7 @@ class AV_Petitioner_Setup
     public function api_get_frontend_nonce()
     {
         wp_send_json_success([
-            'nonce' => wp_create_nonce('petitioner_form_nonce'),
+            'nonce' => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
         ]);
     }
 }
