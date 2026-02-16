@@ -475,6 +475,8 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_change_submission_status()
     {
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
+
         $id         = isset($_POST['id']) ? absint($_POST['id']) : 0;
         $new_status = isset($_POST['status']) ? sanitize_text_field(wp_unslash($_POST['status'])) : '';
 
@@ -501,11 +503,7 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_resend_confirmation_email()
     {
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error([
-                'message'   => AV_Petitioner_Labels::get('missing_permissions'),
-            ]);
-        }
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
         if (!$id) {
@@ -536,9 +534,7 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_resend_all_confirmation_emails()
     {
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => AV_Petitioner_Labels::get('missing_permissions')]);
-        }
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
 
         $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
 
@@ -568,6 +564,8 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_check_unconfirmed_count()
     {
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
+
         $form_id = isset($_POST['form_id']) ? absint($_POST['form_id']) : 0;
 
         if (!$form_id) {
@@ -688,7 +686,7 @@ class AV_Petitioner_Submissions_Controller
     public static function check_admin_request($nonce_label)
     {
         if (!check_ajax_referer($nonce_label, 'petitioner_nonce', false)) {
-            av_ptr_error_log(['nonce', $nonce_label, $_POST['petitioner_nonce']]);
+            av_ptr_error_log(['nonce', $nonce_label, $_REQUEST['petitioner_nonce']]);
             wp_send_json_error([
                 'title'     => AV_Petitioner_Labels::get('could_not_submit'),
                 'message'   => AV_Petitioner_Labels::get('invalid_nonce'),
