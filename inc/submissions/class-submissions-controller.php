@@ -200,10 +200,12 @@ class AV_Petitioner_Submissions_Controller
     }
 
     /**
-     * Fetch form submissions for the API
+     * Fetch form submissions for the API - admin only
      */
     public static function api_fetch_form_submissions()
     {
+        self::check_admin_request(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
+
         // Get the form ID and pagination info from the request
         $page           = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $per_page       = isset($_GET['per_page']) ? intval($_GET['per_page']) : 1000;
