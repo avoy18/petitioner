@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 5.9
 Tested up to: 6.9
-Stable Tag: 0.7.3
+Stable Tag: 0.7.4
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -139,6 +139,10 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 13. Submissions on the frontend
 
 == Changelog ==
+
+= 0.7.4 =
+* Security: fixed broken access control on the submissions API that allowed subscribers to access submission data.
+* 
 
 = 0.7.3 =
 * Bugfix: ensure tinymce doesn't re-initialize on value change
