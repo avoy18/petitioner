@@ -13,7 +13,13 @@ class AV_Petitioner_Submissions_Controller
      */
     public static function api_handle_form_submit()
     {
-        self::check_frontend_request(AV_Petitioner_Setup::$FRONTEND_FORM_NONCE_LABEL);
+        if (!check_ajax_referer(AV_Petitioner_Setup::$FRONTEND_FORM_NONCE_LABEL, 'petitioner_nonce', false)) {
+            wp_send_json_error([
+                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                'message'   => AV_Petitioner_Labels::get('invalid_nonce'),
+            ]);
+            wp_die();
+        }
 
         if (!empty($_POST['ptr_info'])) {
             wp_send_json_error([
@@ -691,17 +697,6 @@ class AV_Petitioner_Submissions_Controller
         if (!current_user_can('manage_options')) {
             wp_send_json_error([
                 'message'   => AV_Petitioner_Labels::get('missing_permissions'),
-            ]);
-            wp_die();
-        }
-    }
-
-    public static function check_frontend_request($nonce_label)
-    {
-        if (!check_ajax_referer($nonce_label, 'petitioner_nonce', false)) {
-            wp_send_json_error([
-                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
-                'message'   => AV_Petitioner_Labels::get('invalid_nonce'),
             ]);
             wp_die();
         }
