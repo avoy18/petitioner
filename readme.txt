@@ -142,7 +142,6 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 = 0.7.4 =
 * Security: fixed broken access control on the submissions API that allowed subscribers to access submission data.
-* 
 
 = 0.7.3 =
 * Bugfix: ensure tinymce doesn't re-initialize on value change
