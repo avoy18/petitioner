@@ -47,11 +47,14 @@ class AV_Petitioner_CSV_Exporter
             wp_die(AV_Petitioner_Labels::get('no_submissions_to_export'));
         }
 
+        $csv_column_config_raw = isset($_POST['csv_column_config']) ? wp_unslash($_POST['csv_column_config']) : null;
+        $resolved_config = self::resolve_csv_column_config($form_id, $csv_column_config_raw);
+
         $filename = 'petition_submissions_' . current_time('Y-m-d_H-i-s') . '.csv';
 
         self::send_download_headers($filename);
 
-        self::stream_csv_chunked($form_id, $settings, $total_count);
+        self::stream_csv_chunked($form_id, $settings, $total_count, $resolved_config);
 
         exit;
     }
@@ -87,6 +90,8 @@ class AV_Petitioner_CSV_Exporter
         $skip_unconfirmed = false;
 
         $total_count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, $skip_unconfirmed);
+        $csv_column_config_raw = isset($_POST['csv_column_config']) ? wp_unslash($_POST['csv_column_config']) : null;
+        $resolved_config = self::resolve_csv_column_config($form_id, $csv_column_config_raw);
 
         $rows = [];
         $headings = [];
@@ -102,10 +107,10 @@ class AV_Petitioner_CSV_Exporter
 
             if (!empty($result['submissions'])) {
 
-                $headings = self::get_csv_headers($form_id);
+                $headings = self::get_csv_headers($form_id, $resolved_config);
 
-                $rows = array_map(function ($submission) {
-                    return self::get_csv_row($submission);
+                $rows = array_map(function ($submission) use ($resolved_config) {
+                    return self::get_csv_row($submission, $resolved_config);
                 }, $result['submissions']);
             }
         }
@@ -126,8 +131,13 @@ class AV_Petitioner_CSV_Exporter
      * @param int   $form_id      Form ID to export
      * @param array $settings     Query settings (query, relation)
      * @param int   $total_count  Total number of submissions
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null $resolved_config Resolved CSV config for headers/rows.
      */
-    private static function stream_csv_chunked($form_id, $settings, $total_count)
+    private static function stream_csv_chunked($form_id, $settings, $total_count, $resolved_config = null)
     {
         $output = fopen('php://output', 'w');
 
@@ -138,7 +148,7 @@ class AV_Petitioner_CSV_Exporter
         // Add UTF-8 BOM for Excel compatibility (must be first thing)
         fprintf($output, "\xEF\xBB\xBF");
 
-        fputcsv($output, self::get_csv_headers($form_id));
+        fputcsv($output, self::get_csv_headers($form_id, $resolved_config));
 
         $total_pages = ceil($total_count / self::BATCH_SIZE);
 
@@ -157,7 +167,7 @@ class AV_Petitioner_CSV_Exporter
 
             if (!empty($results['submissions'])) {
                 foreach ($results['submissions'] as $row) {
-                    fputcsv($output, self::get_csv_row($row));
+                    fputcsv($output, self::get_csv_row($row, $resolved_config));
                 }
             }
 
@@ -174,10 +184,24 @@ class AV_Petitioner_CSV_Exporter
      * Maps database field names to human-readable labels
      * Ensures all headers are unique and not empty
      * 
-     * @return array Array of column header names
+     * @param int $form_id Petition ID.
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null $resolved_config Resolved CSV config, or null to use legacy headers.
+     * @return array<int, string> Array of column header names.
      */
-    public static function get_csv_headers($form_id)
+    public static function get_csv_headers($form_id, $resolved_config = null)
     {
+        if (is_array($resolved_config) && isset($resolved_config['visible_columns']) && isset($resolved_config['labels'])) {
+            $headers = array_map(static function ($field_id) use ($resolved_config) {
+                return $resolved_config['labels'][$field_id] ?? ucwords(str_replace('_', ' ', $field_id));
+            }, $resolved_config['visible_columns']);
+
+            return apply_filters('av_petitioner_get_csv_column_headers', $headers, $form_id);
+        }
+
         $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
 
         // Get defaults
@@ -238,11 +262,28 @@ class AV_Petitioner_CSV_Exporter
      * Dynamically builds row based on allowed fields from model
      * Sanitizes values to prevent CSV injection attacks
      * 
-     * @param object $submission Submission database row object
-     * @return array Array of values for CSV row
+     * @param object $submission Submission database row object.
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null $resolved_config Resolved CSV config, or null to use legacy row building.
+     * @return array<int, string> Array of values for CSV row.
      */
-    public static function get_csv_row($submission)
+    public static function get_csv_row($submission, $resolved_config = null)
     {
+        if (is_array($resolved_config) && isset($resolved_config['visible_columns'])) {
+            $row = [];
+
+            foreach ($resolved_config['visible_columns'] as $field) {
+                $value = isset($submission->$field) ? $submission->$field : '';
+                $mapped = self::map_csv_value($field, $value, $resolved_config);
+                $row[] = self::sanitize_csv_value($mapped);
+            }
+
+            return apply_filters('av_petitioner_get_csv_row', $row, $submission);
+        }
+
         $row = [];
 
         foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
@@ -266,6 +307,64 @@ class AV_Petitioner_CSV_Exporter
         $row = apply_filters('av_petitioner_get_csv_row', $row, $submission);
 
         return $row;
+    }
+
+    /**
+     * Parse and resolve CSV config from request JSON.
+     *
+     * @param int         $form_id Petition ID.
+     * @param string|null $json    Raw request JSON.
+     * @return array{
+     *   visible_columns: array<int, string>,
+     *   labels: array<string, string>,
+     *   mappings: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null Resolved CSV config, or null for invalid/missing input.
+     */
+    private static function resolve_csv_column_config($form_id, $json)
+    {
+        if (!is_string($json) || $json === '') {
+            return null;
+        }
+
+        $payload = json_decode($json, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($payload)) {
+            return null;
+        }
+
+        return AV_Petitioner_Column_Config::resolve($form_id, $payload);
+    }
+
+    /**
+     * Apply first matching mapping for a field.
+     *
+     * @param string $field_id Field key.
+     * @param mixed  $value    Raw submission value.
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * } $resolved_config Resolved CSV config.
+     * @return string
+     */
+    private static function map_csv_value($field_id, $value, $resolved_config)
+    {
+        $value_as_string = (string) $value;
+
+        if (empty($resolved_config['mappings'][$field_id]) || !is_array($resolved_config['mappings'][$field_id])) {
+            return $value_as_string;
+        }
+
+        foreach ($resolved_config['mappings'][$field_id] as $mapping) {
+            if (!is_array($mapping) || !array_key_exists('raw', $mapping) || !array_key_exists('mapped', $mapping)) {
+                continue;
+            }
+
+            if ((string) $mapping['raw'] === $value_as_string) {
+                return (string) $mapping['mapped'];
+            }
+        }
+
+        return $value_as_string;
     }
 
     /**

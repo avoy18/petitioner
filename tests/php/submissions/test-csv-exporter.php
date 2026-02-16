@@ -206,4 +206,68 @@ class Test_CSV_Exporter extends BaseTestCase
         // fname should be sanitized (prefixed with ')
         $this->assertStringStartsWith("'=", $row[2]); // fname is 3rd field (after id, form_id)
     }
+
+    public function test_get_csv_headers_with_resolved_config_applies_visibility_and_label_override()
+    {
+        $payload = [
+            [
+                'id' => 'email',
+                'overrides' => [
+                    'hidden' => true,
+                ],
+            ],
+            [
+                'id' => 'fname',
+                'overrides' => [
+                    'label' => 'First Name',
+                ],
+            ],
+        ];
+
+        $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
+        $headers = AV_Petitioner_CSV_Exporter::get_csv_headers(1, $resolved);
+
+        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2; // -custom_properties, -email
+        $this->assertCount($expected_count, $headers);
+        $this->assertContains('First Name', $headers);
+    }
+
+    public function test_get_csv_row_with_resolved_config_applies_mapping_and_keeps_order()
+    {
+        $payload = [
+            [
+                'id' => 'newsletter',
+                'overrides' => [
+                    'mappings' => [
+                        ['raw_value' => '0', 'mapped_value' => 'No'],
+                        ['raw_value' => '1', 'mapped_value' => 'Yes'],
+                    ],
+                ],
+            ],
+            [
+                'id' => 'email',
+                'overrides' => [
+                    'hidden' => true,
+                ],
+            ],
+        ];
+
+        $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
+        $submission = (object) [
+            'id' => 1,
+            'form_id' => 1,
+            'fname' => 'John',
+            'lname' => 'Doe',
+            'email' => 'john@example.com',
+            'newsletter' => 0,
+        ];
+
+        $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission, $resolved);
+        $newsletter_idx = array_search('newsletter', $resolved['visible_columns'], true);
+
+        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2; // -custom_properties, -email
+        $this->assertCount($expected_count, $row);
+        $this->assertNotFalse($newsletter_idx);
+        $this->assertSame('No', $row[$newsletter_idx]);
+    }
 }

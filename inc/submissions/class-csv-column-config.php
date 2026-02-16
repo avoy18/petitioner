@@ -87,8 +87,8 @@ class AV_Petitioner_Column_Config
     }
 
     /**
-     * @param array $raw_payload
-     * @param array $allowed_fields
+     * @param array<int, mixed>  $raw_payload
+     * @param array<int, string> $allowed_fields
      * @return array<int, array{id: string, label?: string, overrides?: array<string, mixed>}>
      */
     private static function sanitize_payload_array($raw_payload, $allowed_fields)
@@ -213,7 +213,7 @@ class AV_Petitioner_Column_Config
 
     /**
      * @param int   $form_id
-     * @param array $allowed_fields
+     * @param array<int, string> $allowed_fields
      * @return array<string, string>
      */
     private static function get_default_labels($form_id, $allowed_fields)
