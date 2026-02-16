@@ -44,6 +44,8 @@ export const fetchSubmissions = async ({
 		finalQuery.set('orderby', orderby);
 	}
 
+	finalQuery.set('petitioner_nonce', getAjaxNonce());
+
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`);
 		const response = await request.json();

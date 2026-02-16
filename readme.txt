@@ -147,6 +147,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Submissions on the frontend: connect all of the fields to be managed in 1 place, also ensure that none of the sensitive data is sent to the frontend
     * Added PHP Unit tests + workflow and a pre-push hook
 
+= 0.7.4 =
+* Security: fixed broken access control on the submissions API that allowed subscribers to access submission data.
+
 = 0.7.3 =
 * Bugfix: ensure tinymce doesn't re-initialize on value change
 
