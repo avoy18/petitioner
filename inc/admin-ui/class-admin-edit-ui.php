@@ -38,7 +38,8 @@ class AV_Petitioner_Admin_Edit_UI
         'add_honeypot'              => '_petitioner_add_honeypot',
         'form_fields'               => '_petitioner_form_fields',
         'field_order'               => '_petitioner_field_order',
-        'hide_last_names'           => '_petitioner_hide_last_names'
+        'hide_last_names'           => '_petitioner_hide_last_names',
+        'csv_column_config'         => '_petitioner_csv_column_config',
     ];
 
     public function __construct()
@@ -115,6 +116,7 @@ class AV_Petitioner_Admin_Edit_UI
             "from_name"                     => sanitize_text_field($meta_values['from_name']),
             "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
             "hide_last_names"               => (bool) $meta_values['hide_last_names'],
+            "csv_column_config"             => !empty($meta_values['csv_column_config']) ? json_decode($meta_values['csv_column_config'], true) : null,
             "default_values"                => [
                 "ty_email_subject"              => AV_Petitioner_Labels::get('ty_email_subject'),
                 "ty_email"                      => AV_Petitioner_Labels::get('ty_email'),
@@ -240,6 +242,8 @@ class AV_Petitioner_Admin_Edit_UI
                 $value = $this->sanitize_form_fields($value);
             } elseif ($key === 'field_order') {
                 $value = $this->sanitize_array($value);
+            } elseif ($key === 'csv_column_config') {
+                $value = AV_Petitioner_Column_Config::sanitize_payload_json($value);
             } else {
                 $value = sanitize_text_field($value);
             }
