@@ -27,14 +27,21 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
     }, [formID]);
 
     const csvColumnConfigString = useMemo(() => {
+        // Avoid sending stale config while we are (re)loading defaults for a new form.
+        if (initialHeadings.length === 0) {
+            return undefined;
+        }
+
         return headingState.modifiedHeadings.length > 0
-            ? JSON.stringify(headingState.modifiedHeadings.map(h => ({
-                id: h.id,
-                label: h.label,
-                overrides: h.overrides
-            })))
+            ? JSON.stringify(
+                headingState.modifiedHeadings.map((h) => ({
+                    id: h.id,
+                    label: h.label,
+                    overrides: h.overrides,
+                }))
+            )
             : undefined;
-    }, [headingState.modifiedHeadings]);
+    }, [headingState.modifiedHeadings, initialHeadings.length]);
 
     const { showNotice, noticeStatus, noticeText, hideNotice } =
         useNoticeSystem({ timeoutDuration: 1500 });
