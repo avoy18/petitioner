@@ -44,13 +44,13 @@ export const DEFAULT_STORY_HEADINGS: TableHeading[] = [
     { id: 'city', label: 'City' },
     { id: 'postal_code', label: 'Postal code' },
     { id: 'comments', label: 'Comments!!' },
-    { id: 'bcc', label: 'BCC yourself' },
+    { id: 'bcc', label: 'BCC yourself', overrides: { hidden: true } },
     { id: 'subscribe_newsletter', label: 'Subscribe to newsletter' },
-    { id: 'keep_name_anonymous', label: 'Keep my name anonymous' },
-    { id: 'accept_tos', label: "<a href=\"#\">By</a> submitting this form, I agree to the terms of service"},
-    { id: 'approval_status', label: 'Approval status' },
+    { id: 'keep_name_anonymous', label: 'Keep my name anonymous', overrides: { hidden: true } },
+    { id: 'accept_tos', label: "<a href=\"#\">By</a> submitting this form, I agree to the terms of service", overrides: { hidden: true }},
+    { id: 'approval_status', label: 'Approval status', overrides: { hidden: true } },
     { id: 'submission_date', label: 'Submission date' },
-    { id: 'confirmation_token', label: 'Confirmation token' },
+    { id: 'confirmation_token', label: 'Confirmation token', overrides: { hidden: true } },
 ];
 
 export const HIDE_HIDDEN_COLUMNS_LABEL = __('Hide hidden columns', 'petitioner');
