@@ -277,7 +277,7 @@ class AV_Petitioner_Column_Config
         foreach ($allowed_fields as $field_id) {
             $column = [
                 'id'    => $field_id,
-                'label' => $labels[$field_id],
+                'label' => wp_strip_all_tags($labels[$field_id]),
             ];
 
             if (in_array($field_id, ['id', 'form_id', 'bcc', 'keep_name_anonymous', 'accept_tos', 'confirmation_token', 'approval_status'], true)) {
