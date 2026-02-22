@@ -45,12 +45,18 @@ class AV_Petitioner_Column_Config
             }
 
             if (isset($overrides['mappings']) && is_array($overrides['mappings'])) {
-                $mappings[$field_id] = array_map(static function ($mapping) {
-                    return [
-                        'raw'    => isset($mapping['raw_value']) ? $mapping['raw_value'] : '',
-                        'mapped' => isset($mapping['mapped_value']) ? $mapping['mapped_value'] : '',
-                    ];
-                }, $overrides['mappings']);
+                $valid_mappings = array_filter($overrides['mappings'], static function ($mapping) {
+                    return is_array($mapping) && isset($mapping['raw_value']) && isset($mapping['mapped_value']);
+                });
+
+                if (!empty($valid_mappings)) {
+                    $mappings[$field_id] = array_map(static function ($mapping) {
+                        return [
+                            'raw'    => $mapping['raw_value'],
+                            'mapped' => $mapping['mapped_value'],
+                        ];
+                    }, array_values($valid_mappings));
+                }
             }
         }
 
