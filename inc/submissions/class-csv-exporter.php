@@ -241,7 +241,7 @@ class AV_Petitioner_CSV_Exporter
             $label = $all_labels[$field] ?? ucwords(str_replace('_', ' ', $field));
 
             // Ensure label is not empty
-            $label = trim($label);
+            $label = trim((string) $label);
             if (empty($label)) {
                 $label = ucwords(str_replace('_', ' ', $field));
             }
@@ -290,7 +290,7 @@ class AV_Petitioner_CSV_Exporter
 
             foreach ($resolved_config['visible_columns'] as $field) {
                 $value = isset($submission->$field) ? $submission->$field : '';
-                $mapped = self::map_csv_value($field, $value, $resolved_config);
+                $mapped = self::map_csv_value($field, $value, $resolved_config, $submission);
                 $row[] = self::sanitize_csv_value($mapped);
             }
 
@@ -348,7 +348,7 @@ class AV_Petitioner_CSV_Exporter
     }
 
     /**
-     * Apply first matching mapping for a field.
+     * Apply first matching mapping for a field and interpolate values.
      *
      * @param string $field_id Field key.
      * @param mixed  $value    Raw submission value.
@@ -357,9 +357,10 @@ class AV_Petitioner_CSV_Exporter
      *   labels?: array<string, string>,
      *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
      * } $resolved_config Resolved CSV config.
+     * @param object|null $submission      The full submission object for interpolation context.
      * @return string
      */
-    private static function map_csv_value($field_id, $value, $resolved_config)
+    private static function map_csv_value($field_id, $value, $resolved_config, $submission = null)
     {
         $value_as_string = (string) $value;
 
@@ -372,8 +373,23 @@ class AV_Petitioner_CSV_Exporter
                 continue;
             }
 
-            if ((string) $mapping['raw'] === $value_as_string) {
-                return (string) $mapping['mapped'];
+            if ((string) $mapping['raw'] === $value_as_string || (string) $mapping['raw'] === '{{' . $field_id . '}}') {
+                $mapped_string = (string) $mapping['mapped'];
+
+                if (strpos($mapped_string, '{{') !== false && is_object($submission)) {
+                    $mapped_string = preg_replace_callback('/\{\{([a-zA-Z0-9_-]+)\}\}/', function($matches) use ($submission, $resolved_config) {
+                        $placeholder = $matches[1];
+                        
+                        // Security: Only allow interpolation for explicitly visible columns
+                        if (!in_array($placeholder, $resolved_config['visible_columns'], true)) {
+                            return '';
+                        }
+
+                        return (isset($submission->$placeholder) && is_scalar($submission->$placeholder)) ? (string) $submission->$placeholder : '';
+                    }, $mapped_string);
+                }
+
+                return $mapped_string;
             }
         }
 

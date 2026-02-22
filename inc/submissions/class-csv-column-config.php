@@ -44,13 +44,19 @@ class AV_Petitioner_Column_Config
                 $labels[$field_id] = $overrides['label'];
             }
 
-            if (!empty($overrides['mappings'])) {
-                $mappings[$field_id] = array_map(static function ($mapping) {
-                    return [
-                        'raw'    => (string) $mapping['raw_value'],
-                        'mapped' => (string) $mapping['mapped_value'],
-                    ];
-                }, $overrides['mappings']);
+            if (isset($overrides['mappings']) && is_array($overrides['mappings'])) {
+                $valid_mappings = array_filter($overrides['mappings'], static function ($mapping) {
+                    return is_array($mapping) && isset($mapping['raw_value']) && isset($mapping['mapped_value']);
+                });
+
+                if (!empty($valid_mappings)) {
+                    $mappings[$field_id] = array_map(static function ($mapping) {
+                        return [
+                            'raw'    => $mapping['raw_value'],
+                            'mapped' => $mapping['mapped_value'],
+                        ];
+                    }, array_values($valid_mappings));
+                }
             }
         }
 
@@ -202,8 +208,8 @@ class AV_Petitioner_Column_Config
             }
 
             $sanitized_mappings[] = [
-                'raw_value'    => sanitize_text_field((string) $raw_value),
-                'mapped_value' => sanitize_text_field((string) $mapped_value),
+                'raw_value'    => $raw_value !== '' ? sanitize_text_field($raw_value) : '',
+                'mapped_value' => $mapped_value !== '' ? sanitize_text_field($mapped_value) : '',
             ];
         }
 

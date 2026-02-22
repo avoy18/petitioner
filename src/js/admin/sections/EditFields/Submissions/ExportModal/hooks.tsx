@@ -39,7 +39,13 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
                 headingState.modifiedHeadings.map((h) => ({
                     id: h.id,
                     label: h.label,
-                    overrides: h.overrides,
+                    overrides: {
+                        ...h.overrides,
+                        mappings: h.overrides?.mappings?.map((m) => ({
+                            raw_value: m.rawValue,
+                            mapped_value: m.mappedValue
+                        }))
+                    },
                 }))
             )
             : undefined;
