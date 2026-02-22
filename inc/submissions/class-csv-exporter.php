@@ -380,7 +380,7 @@ class AV_Petitioner_CSV_Exporter
                 if (strpos($mapped_string, '{{') !== false && is_object($submission)) {
                     $mapped_string = preg_replace_callback('/\{\{([a-zA-Z0-9_-]+)\}\}/', function($matches) use ($submission) {
                         $placeholder = $matches[1];
-                        return isset($submission->$placeholder) ? (string) $submission->$placeholder : '';
+                        return (isset($submission->$placeholder) && is_scalar($submission->$placeholder)) ? (string) $submission->$placeholder : '';
                     }, $mapped_string);
                 }
 
