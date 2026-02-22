@@ -2,6 +2,7 @@ import { Table, TableHead, TableBody, TableRow, TableCell, TableHeadCell, TableW
 import type { SpreadsheetSampleProps } from './consts';
 import { useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { VisuallyHidden } from '@wordpress/components';
 
 export default function SpreadsheetSample({ headings, rows, isLoading }: SpreadsheetSampleProps) {
     const columnCount = Math.max(headings.length, 5);
@@ -64,6 +65,7 @@ export default function SpreadsheetSample({ headings, rows, isLoading }: Spreads
 
     return (
         <TableWrapper>
+            {isLoading && <VisuallyHidden>{__('Loading...', 'petitioner')}</VisuallyHidden>}
             <Table>
                 <TableHead>
                     <TableRow>
