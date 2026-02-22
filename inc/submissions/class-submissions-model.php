@@ -277,8 +277,8 @@ class AV_Petitioner_Submissions_Model
                     $params[] = '%' . $wpdb->esc_like($value) . '%';
                     break;
                 case 'does_not_contain':
-                    $conditions[] = "`$field` NOT LIKE %s";
-                    $params[] = '%' . $wpdb->esc_like($value) . '%';
+                    $conditions[] = "(`$field` NOT LIKE %s OR `$field` IS NULL OR `$field` = '')";
+                    $params[] = '%' . $wpdb->esc_like((string) $value) . '%';
                     break;
             }
         }

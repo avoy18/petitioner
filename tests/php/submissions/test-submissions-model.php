@@ -184,7 +184,7 @@ class Test_Submissions_Model extends BaseTestCase
             AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS
         );
 
-        $this->assertStringContainsString('`comments` NOT LIKE %s', $result['where']);
+        $this->assertStringContainsString('(`comments` NOT LIKE %s OR `comments` IS NULL OR `comments` = \'\')', $result['where']);
         $this->assertContains('%spam%', $result['params']);
         $this->assertCount(2, $result['params']); // form_id + value
     }
