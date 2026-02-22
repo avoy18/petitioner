@@ -47,8 +47,8 @@ class AV_Petitioner_Column_Config
             if (!empty($overrides['mappings'])) {
                 $mappings[$field_id] = array_map(static function ($mapping) {
                     return [
-                        'raw'    => (string) $mapping['raw_value'],
-                        'mapped' => (string) $mapping['mapped_value'],
+                        'raw'    => $mapping['raw_value'],
+                        'mapped' => $mapping['mapped_value'],
                     ];
                 }, $overrides['mappings']);
             }
@@ -202,8 +202,8 @@ class AV_Petitioner_Column_Config
             }
 
             $sanitized_mappings[] = [
-                'raw_value'    => sanitize_text_field((string) $raw_value),
-                'mapped_value' => sanitize_text_field((string) $mapped_value),
+                'raw_value'    => sanitize_text_field($raw_value),
+                'mapped_value' => sanitize_text_field($mapped_value),
             ];
         }
 
@@ -256,7 +256,7 @@ class AV_Petitioner_Column_Config
 
         foreach ($allowed_fields as $field_id) {
             $label = $all_labels[$field_id] ?? ucwords(str_replace('_', ' ', $field_id));
-            $label = trim((string) $label);
+            $label = trim($label);
 
             if ($label === '') {
                 $label = ucwords(str_replace('_', ' ', $field_id));
