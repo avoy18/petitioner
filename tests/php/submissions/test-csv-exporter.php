@@ -270,4 +270,71 @@ class Test_CSV_Exporter extends BaseTestCase
         $this->assertNotFalse($newsletter_idx);
         $this->assertSame('No', $row[$newsletter_idx]);
     }
+
+    public function test_get_csv_row_with_dynamic_mapping_interpolation()
+    {
+        $payload = [
+            [
+                'id' => 'fname',
+                'overrides' => [
+                    'mappings' => [
+                        ['raw_value' => 'Anton', 'mapped_value' => 'Anton ({{email}})'],
+                    ],
+                ]
+            ]
+        ];
+
+        $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
+        $submission = (object) [
+            'id' => 1,
+            'form_id' => 1,
+            'fname' => 'Anton',
+            'lname' => 'Voytenko',
+            'email' => 'anton@example.com',
+        ];
+
+        $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission, $resolved);
+        $fname_idx = array_search('fname', $resolved['visible_columns'], true);
+
+        $this->assertSame('Anton (anton@example.com)', $row[$fname_idx]);
+    }
+
+    public function test_get_csv_row_with_empty_and_wildcard_mapping()
+    {
+        $payload = [
+            [
+                'id' => 'fname',
+                'overrides' => [
+                    'mappings' => [
+                        ['raw_value' => '', 'mapped_value' => 'N/A'],
+                        ['raw_value' => '{{fname}}', 'mapped_value' => '{{fname}} {{lname}}'],
+                    ],
+                ]
+            ]
+        ];
+
+        $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
+        
+        // Test empty match
+        $submission_empty = (object) [
+            'id' => 1,
+            'fname' => '',
+            'lname' => 'Missing',
+        ];
+
+        $row_empty = AV_Petitioner_CSV_Exporter::get_csv_row($submission_empty, $resolved);
+        $fname_idx = array_search('fname', $resolved['visible_columns'], true);
+
+        $this->assertSame('N/A', $row_empty[$fname_idx]);
+
+        // Test wildcard interpolation match
+        $submission_full = (object) [
+            'id' => 2,
+            'fname' => 'Anton',
+            'lname' => 'Voytenko',
+        ];
+
+        $row_full = AV_Petitioner_CSV_Exporter::get_csv_row($submission_full, $resolved);
+        $this->assertSame('Anton Voytenko', $row_full[$fname_idx]);
+    }
 }
