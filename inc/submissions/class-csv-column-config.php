@@ -275,10 +275,16 @@ class AV_Petitioner_Column_Config
         $columns = [];
 
         foreach ($allowed_fields as $field_id) {
-            $columns[] = [
+            $column = [
                 'id'    => $field_id,
                 'label' => $labels[$field_id],
             ];
+
+            if (in_array($field_id, ['id', 'form_id'], true)) {
+                $column['overrides'] = ['hidden' => true];
+            }
+
+            $columns[] = $column;
         }
 
         return $columns;
