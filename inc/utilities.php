@@ -280,7 +280,7 @@ function av_petitioner_parse_conditional_logic($raw_json)
 
 /**
  * Convert conditional logic to model query array
- * Supports: equals, not_equals, is_empty, is_not_empty
+ * Supports: equals, not_equals, is_empty, is_not_empty, contains, does_not_contain
  * 
  * @param array|null $conditional_logic Parsed conditional logic
  * @return array Query array for model in format: [['field' => 'x', 'operator' => 'y', 'value' => 'z'], ...]
@@ -293,7 +293,7 @@ function av_petitioner_build_model_query($conditional_logic)
         return $query;
     }
 
-    $supported_operators = ['equals', 'not_equals', 'is_empty', 'is_not_empty'];
+    $supported_operators = ['equals', 'not_equals', 'is_empty', 'is_not_empty', 'contains', 'does_not_contain'];
     $ignored_operators = [];
 
     foreach ($conditional_logic['conditions'] as $condition) {
@@ -318,6 +318,10 @@ function av_petitioner_build_model_query($conditional_logic)
             $query[] = ['field' => $field, 'operator' => 'is_empty', 'value' => null];
         } else if ($operator === 'is_not_empty') {
             $query[] = ['field' => $field, 'operator' => 'is_not_empty', 'value' => null];
+        } else if ($operator === 'contains' && $value !== '' && $value !== null) {
+            $query[] = ['field' => $field, 'operator' => 'contains', 'value' => $value];
+        } else if ($operator === 'does_not_contain' && $value !== '' && $value !== null) {
+            $query[] = ['field' => $field, 'operator' => 'does_not_contain', 'value' => $value];
         } else if (!in_array($operator, $supported_operators) && !in_array($operator, $ignored_operators)) {
             // Track ignored operators for logging
             $ignored_operators[] = $operator;
