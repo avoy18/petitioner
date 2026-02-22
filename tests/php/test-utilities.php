@@ -73,7 +73,6 @@ class Test_Utilities extends BaseTestCase
         $result = av_petitioner_parse_conditional_logic($valid_json);
         
         $this->assertEquals($valid_data, $result);
-        $this->assertIsArray($result);
     }
 
     // ============================================
