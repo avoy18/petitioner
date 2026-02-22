@@ -116,12 +116,14 @@ class AV_Petitioner_CSV_Exporter
         }
 
         $filename = 'petition_submissions_' . current_time('Y-m-d_H-i-s') . '.csv';
+        $columns = AV_Petitioner_Column_Config::get_default_columns($form_id);
 
         wp_send_json_success([
             'headings'      => $headings,
             'rows'          => $rows,
             'filename'      => $filename,
             'total_count'   => $total_count,
+            'columns'       => $columns,
         ]);
     }
 

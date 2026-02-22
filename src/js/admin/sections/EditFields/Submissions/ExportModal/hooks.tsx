@@ -6,6 +6,8 @@ import { DEFAULT_EXPORT_LOGIC } from "../consts";
 import { useConditionalLogic } from "@admin/components/ConditionalLogic";
 import type { ConditionGroup } from "@admin/components/ConditionalLogic/consts";
 import type { SubmissionItem } from "../consts";
+import { useTableHeadingState } from "@admin/components/TableHeadingEditor";
+import type { TableHeading } from "@admin/components/TableHeadingEditor/consts";
 
 export const useExportModal = ({ submissionExample, total }: { submissionExample: SubmissionItem, total: number }) => {
     const [totalCount, setTotalCount] = useState(total);
@@ -15,6 +17,19 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
         initialValue: DEFAULT_EXPORT_LOGIC,
     });
     const formID = submissionExample.form_id;
+
+    const [initialHeadings, setInitialHeadings] = useState<TableHeading[]>([]);
+    const headingState = useTableHeadingState(initialHeadings);
+
+    const csvColumnConfigString = useMemo(() => {
+        return headingState.modifiedHeadings.length > 0
+            ? JSON.stringify(headingState.modifiedHeadings.map(h => ({
+                id: h.id,
+                label: h.label,
+                overrides: h.overrides
+            })))
+            : undefined;
+    }, [headingState.modifiedHeadings]);
 
     const { showNotice, noticeStatus, noticeText, hideNotice } =
         useNoticeSystem({ timeoutDuration: 1500 });
@@ -30,11 +45,16 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
         getCSVExample({
             formID,
             filters: logic,
+            csv_column_config: csvColumnConfigString,
             onSuccess: (data) => {
                 setCSVExample({
                     headings: data.headings,
                     rows: data.rows,
                 });
+
+                if (initialHeadings.length === 0 && data.columns) {
+                    setInitialHeadings(data.columns);
+                }
 
                 setTotalCount(data.total_count);
                 setIsLoading(false);
@@ -44,7 +64,7 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
                 setIsLoading(false);
             },
         });
-    }, [logic, formID, showNotice]);
+    }, [logic, formID, showNotice, csvColumnConfigString]);
 
     const exportURL = useMemo(() => getExportURL(), []);
 
@@ -60,5 +80,7 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
         noticeStatus,
         noticeText,
         hideNotice,
+        headingState,
+        csvColumnConfigString,
     };
 };

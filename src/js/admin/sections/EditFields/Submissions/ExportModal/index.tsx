@@ -18,6 +18,7 @@ import { getAjaxNonce } from '@admin/utilities';
 import SpreadsheetSample from '@admin/components/SpreadsheetSample';
 import Filters from '../Filters';
 import { Heading, Text } from '@admin/components/Experimental';
+import TableHeadingEditor from '@admin/components/TableHeadingEditor';
 
 import { type SubmissionItem } from '../consts';
 import { useExportModal } from './hooks';
@@ -43,6 +44,8 @@ export default function ExportModal({
 		noticeStatus,
 		noticeText,
 		hideNotice,
+		headingState,
+		csvColumnConfigString,
 	} = useExportModal({
 		submissionExample,
 		total,
@@ -90,6 +93,13 @@ export default function ExportModal({
 							name="conditional_logic"
 							value={JSON.stringify(logic)}
 						/>
+						{csvColumnConfigString && (
+							<input
+								type="hidden"
+								name="csv_column_config"
+								value={csvColumnConfigString}
+							/>
+						)}
 						<input
 							type="hidden"
 							name="petitioner_nonce"
@@ -108,6 +118,7 @@ export default function ExportModal({
 					<SampleOfSubmissionsWrapper>
 						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
 						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
+						<TableHeadingEditor headingState={headingState} />
 						<SpreadsheetSample isLoading={isLoading} headings={csvExample?.headings ?? []} rows={csvExample?.rows ?? []} />
 					</SampleOfSubmissionsWrapper>
 				</PreviewWrapper>

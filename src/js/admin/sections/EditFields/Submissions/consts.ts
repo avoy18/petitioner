@@ -61,11 +61,13 @@ export type GetSubmissionCountSettings = {
 export type GetCSVExampleSettings = {
 	formID: FormID;
 	filters?: ConditionGroup;
+	csv_column_config?: string;
 	onSuccess: (data: {
 		headings: string[];
 		rows: string[][];
 		total_count: number;
 		filename: string;
+		columns?: { id: string; label: string }[];
 	}) => void;
 	onError: (error: string) => void;
 };

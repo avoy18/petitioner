@@ -180,6 +180,7 @@ export const getSubmissionCount = async ({
 export const getCSVExample = async ({
 	formID,
 	filters,
+	csv_column_config,
 	onSuccess = () => { },
 	onError = () => { },
 }: GetCSVExampleSettings) => {

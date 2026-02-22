@@ -229,7 +229,7 @@ class AV_Petitioner_Column_Config
     /**
      * @return array<int, string>
      */
-    private static function get_exportable_fields()
+    public static function get_exportable_fields()
     {
         return array_values(array_filter(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, static function ($field_id) {
             return $field_id !== 'custom_properties';
@@ -241,7 +241,7 @@ class AV_Petitioner_Column_Config
      * @param array<int, string> $allowed_fields
      * @return array<string, string>
      */
-    private static function get_default_labels($form_id, $allowed_fields)
+    public static function get_default_labels($form_id, $allowed_fields)
     {
         $default_labels = AV_Petitioner_Labels::get_field_labels();
         $custom_labels = av_petitioner_get_form_labels($form_id, $allowed_fields);
@@ -260,5 +260,27 @@ class AV_Petitioner_Column_Config
         }
 
         return $labels;
+    }
+
+    /**
+     * Get the default columns configuration for the frontend table heading editor.
+     *
+     * @param int $form_id Petition ID.
+     * @return array<int, array{id: string, label: string}> Array of default column definitions.
+     */
+    public static function get_default_columns($form_id)
+    {
+        $allowed_fields = self::get_exportable_fields();
+        $labels = self::get_default_labels($form_id, $allowed_fields);
+        $columns = [];
+
+        foreach ($allowed_fields as $field_id) {
+            $columns[] = [
+                'id'    => $field_id,
+                'label' => $labels[$field_id],
+            ];
+        }
+
+        return $columns;
     }
 }
