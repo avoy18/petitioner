@@ -310,16 +310,14 @@ function av_petitioner_build_model_query($conditional_logic)
         $value = isset($condition['value']) ? $condition['value'] : null;
 
         // Process supported operators
-        if ($operator === 'equals' && $value !== '' && $value !== null) {
-            $query[] = ['field' => $field, 'operator' => 'equals', 'value' => $value];
-        } else if ($operator === 'not_equals' && $value !== '' && $value !== null) {
-            $query[] = ['field' => $field, 'operator' => 'not_equals', 'value' => $value];
-        } else if ($operator === 'is_empty') {
-            $query[] = ['field' => $field, 'operator' => 'is_empty', 'value' => null];
-        } else if ($operator === 'is_not_empty') {
-            $query[] = ['field' => $field, 'operator' => 'is_not_empty', 'value' => null];
-        } else if (in_array($operator, ['contains', 'does_not_contain'], true) && $value !== '' && $value !== null) {
-            $query[] = ['field' => $field, 'operator' => $operator, 'value' => $value];
+        $value_required_operators = ['equals', 'not_equals', 'contains', 'does_not_contain'];
+
+        if (in_array($operator, $value_required_operators, true)) {
+            if ($value !== '' && $value !== null) {
+                $query[] = ['field' => $field, 'operator' => $operator, 'value' => $value];
+            }
+        } else if ($operator === 'is_empty' || $operator === 'is_not_empty') {
+            $query[] = ['field' => $field, 'operator' => $operator, 'value' => null];
         } else if (!in_array($operator, $supported_operators) && !in_array($operator, $ignored_operators)) {
             // Track ignored operators for logging
             $ignored_operators[] = $operator;
