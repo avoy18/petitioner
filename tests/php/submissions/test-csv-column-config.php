@@ -106,4 +106,19 @@ class Test_CSV_Column_Config extends BaseTestCase
         $this->assertSame('First Name', $decoded[0]['overrides']['label']);
         $this->assertCount(2, $decoded[0]['overrides']['mappings']);
     }
+
+    public function test_get_default_columns_returns_array_of_columns()
+    {
+        $form_id = 999;
+        $columns = AV_Petitioner_Column_Config::get_default_columns($form_id);
+
+        $this->assertIsArray($columns);
+        $this->assertNotEmpty($columns);
+
+        $first_column = $columns[0];
+        $this->assertArrayHasKey('id', $first_column);
+        $this->assertArrayHasKey('label', $first_column);
+        $this->assertIsString($first_column['id']);
+        $this->assertIsString($first_column['label']);
+    }
 }
