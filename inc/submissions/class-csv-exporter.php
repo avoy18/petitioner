@@ -293,7 +293,7 @@ class AV_Petitioner_CSV_Exporter
                 $row[] = self::sanitize_csv_value($mapped);
             }
 
-            return apply_filters('av_petitioner_get_csv_row', $row, $submission);
+            return apply_filters('av_petitioner_get_csv_row', $row, $submission, $resolved_config);
         }
 
         $row = [];
@@ -316,7 +316,7 @@ class AV_Petitioner_CSV_Exporter
          * @param object $submission Submission database row object
          * @return array Array of values for CSV row
          */
-        $row = apply_filters('av_petitioner_get_csv_row', $row, $submission);
+        $row = apply_filters('av_petitioner_get_csv_row', $row, $submission, $resolved_config);
 
         return $row;
     }
