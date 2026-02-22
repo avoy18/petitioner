@@ -83,7 +83,7 @@ class AV_Petitioner_Column_Config
             return '';
         }
 
-        return wp_slash($encoded);
+        return $encoded;
     }
 
     /**
@@ -202,10 +202,9 @@ class AV_Petitioner_Column_Config
     }
 
     /**
-     * Decode a slashed JSON meta value back into an array.
+     * Decode a JSON meta value back into an array.
      *
-     * Use this to read values that were stored via sanitize_payload_json(),
-     * which applies wp_slash() before storage.
+     * Use this to read values that were stored via sanitize_payload_json().
      *
      * @param mixed $meta_value Raw value from get_post_meta().
      * @return array|null Decoded array, or null on empty/invalid input.
@@ -216,7 +215,7 @@ class AV_Petitioner_Column_Config
             return null;
         }
 
-        $decoded = json_decode(wp_unslash($meta_value), true);
+        $decoded = json_decode($meta_value, true);
         if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
             return null;
         }
