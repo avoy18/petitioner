@@ -51,7 +51,7 @@ export { useTableHeadingState } from './hooks';
  * @param headingState - The state of the table heading editor
  * @returns {JSX.Element} The table heading editor component
  */
-const TableHeadingEditor = ({ headingState }: TableHeadingEditorProps) => {
+const TableHeadingEditor = ({ headingState, title }: TableHeadingEditorProps) => {
 	const {
 		currentHeading,
 		modifiedHeadings,
@@ -68,6 +68,7 @@ const TableHeadingEditor = ({ headingState }: TableHeadingEditorProps) => {
 	return (
 		<TableHeadingEditorContainer>
 			<HiddenItemsWrapper>
+				<div>{title}</div>
 				<Button
 					size="small"
 					icon="visibility"

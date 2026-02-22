@@ -6,6 +6,12 @@
 class AV_Petitioner_Column_Config
 {
     /**
+     * Fields hidden by default in the column configuration.
+     * @var string[]
+     */
+    public static $DEFAULT_HIDDEN_FIELDS = ['id', 'form_id', 'bcc', 'keep_name_anonymous', 'accept_tos', 'confirmation_token', 'approval_status'];
+
+    /**
      * Resolve user-provided payload into export-ready config.
      *
      * @param int   $form_id     Petition (form) ID.
@@ -229,7 +235,7 @@ class AV_Petitioner_Column_Config
     /**
      * @return array<int, string>
      */
-    private static function get_exportable_fields()
+    public static function get_exportable_fields()
     {
         return array_values(array_filter(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, static function ($field_id) {
             return $field_id !== 'custom_properties';
@@ -241,7 +247,7 @@ class AV_Petitioner_Column_Config
      * @param array<int, string> $allowed_fields
      * @return array<string, string>
      */
-    private static function get_default_labels($form_id, $allowed_fields)
+    public static function get_default_labels($form_id, $allowed_fields)
     {
         $default_labels = AV_Petitioner_Labels::get_field_labels();
         $custom_labels = av_petitioner_get_form_labels($form_id, $allowed_fields);
@@ -260,5 +266,33 @@ class AV_Petitioner_Column_Config
         }
 
         return $labels;
+    }
+
+    /**
+     * Get the default columns configuration for the frontend table heading editor.
+     *
+     * @param int $form_id Petition ID.
+     * @return array<int, array{id: string, label: string}> Array of default column definitions.
+     */
+    public static function get_default_columns($form_id)
+    {
+        $allowed_fields = self::get_exportable_fields();
+        $labels = self::get_default_labels($form_id, $allowed_fields);
+        $columns = [];
+
+        foreach ($allowed_fields as $field_id) {
+            $column = [
+                'id'    => $field_id,
+                'label' => wp_strip_all_tags($labels[$field_id]),
+            ];
+
+            if (in_array($field_id, self::$DEFAULT_HIDDEN_FIELDS, true)) {
+                $column['overrides'] = ['hidden' => true];
+            }
+
+            $columns[] = $column;
+        }
+
+        return $columns;
     }
 }

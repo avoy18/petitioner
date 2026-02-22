@@ -180,6 +180,7 @@ export const getSubmissionCount = async ({
 export const getCSVExample = async ({
 	formID,
 	filters,
+	csv_column_config,
 	onSuccess = () => { },
 	onError = () => { },
 }: GetCSVExampleSettings) => {
@@ -192,6 +193,10 @@ export const getCSVExample = async ({
 
 	if (filters) {
 		finalData.append('conditional_logic', JSON.stringify(filters));
+	}
+
+	if (csv_column_config) {
+		finalData.append('csv_column_config', csv_column_config);
 	}
 
 	try {

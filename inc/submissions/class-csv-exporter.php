@@ -96,6 +96,8 @@ class AV_Petitioner_CSV_Exporter
         $rows = [];
         $headings = [];
 
+        $headings = self::get_csv_headers($form_id, $resolved_config);
+
         if ($total_count != 0) {
             $result = AV_Petitioner_Submissions_Model::get_form_submissions(
                 $form_id,
@@ -106,9 +108,6 @@ class AV_Petitioner_CSV_Exporter
             );
 
             if (!empty($result['submissions'])) {
-
-                $headings = self::get_csv_headers($form_id, $resolved_config);
-
                 $rows = array_map(function ($submission) use ($resolved_config) {
                     return self::get_csv_row($submission, $resolved_config);
                 }, $result['submissions']);
@@ -116,12 +115,14 @@ class AV_Petitioner_CSV_Exporter
         }
 
         $filename = 'petition_submissions_' . current_time('Y-m-d_H-i-s') . '.csv';
+        $columns = AV_Petitioner_Column_Config::get_default_columns($form_id);
 
         wp_send_json_success([
             'headings'      => $headings,
             'rows'          => $rows,
             'filename'      => $filename,
             'total_count'   => $total_count,
+            'columns'       => $columns,
         ]);
     }
 

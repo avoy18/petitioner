@@ -17,7 +17,8 @@ import {
 import { getAjaxNonce } from '@admin/utilities';
 import SpreadsheetSample from '@admin/components/SpreadsheetSample';
 import Filters from '../Filters';
-import { Heading, Text } from '@admin/components/Experimental';
+import { Heading, Text, Divider } from '@admin/components/Experimental';
+import TableHeadingEditor from '@admin/components/TableHeadingEditor';
 
 import { type SubmissionItem } from '../consts';
 import { useExportModal } from './hooks';
@@ -43,6 +44,8 @@ export default function ExportModal({
 		noticeStatus,
 		noticeText,
 		hideNotice,
+		headingState,
+		csvColumnConfigString,
 	} = useExportModal({
 		submissionExample,
 		total,
@@ -90,6 +93,13 @@ export default function ExportModal({
 							name="conditional_logic"
 							value={JSON.stringify(logic)}
 						/>
+						{csvColumnConfigString && (
+							<input
+								type="hidden"
+								name="csv_column_config"
+								value={csvColumnConfigString}
+							/>
+						)}
 						<input
 							type="hidden"
 							name="petitioner_nonce"
@@ -106,8 +116,10 @@ export default function ExportModal({
 				</DetailsWrapper>
 				<PreviewWrapper>
 					<SampleOfSubmissionsWrapper>
-						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
-						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
+						<Heading as="h3" level={3}>{__('Export Preview', 'petitioner')}</Heading>
+						<Text>{__('This is a live preview of the submissions that will be exported. Use the options below to hide or rename columns.', 'petitioner')}</Text>
+						<CardDivider />
+						<TableHeadingEditor headingState={headingState} title={<Heading as="h4" level={4} style={{ margin: 0 }}>{__('Columns', 'petitioner')}</Heading>} />
 						<SpreadsheetSample isLoading={isLoading} headings={csvExample?.headings ?? []} rows={csvExample?.rows ?? []} />
 					</SampleOfSubmissionsWrapper>
 				</PreviewWrapper>

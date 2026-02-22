@@ -1,4 +1,4 @@
-import { useState } from "@wordpress/element";
+import { useEffect, useState } from "@wordpress/element";
 import type { TableHeading, TableHeadingEditorState } from "./consts";
 
 /**
@@ -30,6 +30,16 @@ export const useTableHeadingState = (headings: TableHeading[]): TableHeadingEdit
     const [activeHeading, setActiveHeading] = useState<TableHeading['id'] | null>(null);
     const [modifiedHeadings, setModifiedHeadings] = useState<TableHeading[]>(headings);
     const [showHiddenHeadings, setShowHiddenHeadings] = useState(true);
+
+    useEffect(() => {
+        const incomingIds = headings.map((h) => h.id).join('|');
+        const currentIds = modifiedHeadings.map((h) => h.id).join('|');
+
+        if (incomingIds && incomingIds !== currentIds) {
+            setModifiedHeadings(headings);
+            setActiveHeading(null);
+        }
+    }, [headings, modifiedHeadings]);
 
     const currentHeading = modifiedHeadings.find((heading) => heading.id === activeHeading);
 

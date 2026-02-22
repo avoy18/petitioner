@@ -47,6 +47,7 @@ export const TableHeadingActions = styled.div`
 export const HiddenItemsWrapper = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: ${SPACINGS.xs};
-    justify-content: flex-end;
+    justify-content: space-between;
 `;
