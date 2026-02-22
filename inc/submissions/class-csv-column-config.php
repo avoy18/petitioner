@@ -44,11 +44,11 @@ class AV_Petitioner_Column_Config
                 $labels[$field_id] = $overrides['label'];
             }
 
-            if (!empty($overrides['mappings'])) {
+            if (isset($overrides['mappings']) && is_array($overrides['mappings'])) {
                 $mappings[$field_id] = array_map(static function ($mapping) {
                     return [
-                        'raw'    => $mapping['raw_value'],
-                        'mapped' => $mapping['mapped_value'],
+                        'raw'    => isset($mapping['raw_value']) ? $mapping['raw_value'] : '',
+                        'mapped' => isset($mapping['mapped_value']) ? $mapping['mapped_value'] : '',
                     ];
                 }, $overrides['mappings']);
             }
@@ -202,8 +202,8 @@ class AV_Petitioner_Column_Config
             }
 
             $sanitized_mappings[] = [
-                'raw_value'    => sanitize_text_field($raw_value),
-                'mapped_value' => sanitize_text_field($mapped_value),
+                'raw_value'    => $raw_value !== '' ? sanitize_text_field($raw_value) : '',
+                'mapped_value' => $mapped_value !== '' ? sanitize_text_field($mapped_value) : '',
             ];
         }
 
