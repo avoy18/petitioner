@@ -141,11 +141,16 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 == Changelog ==
 
 = 0.8.0 =
-* Architecture enhancements
+* Massive architecture overhaul
     * Moving away from SCSS in favour of styled components & regular CSS
     * Add an option to extend the plugin with custom fields via JS and PHP hooks
     * Submissions on the frontend: connect all of the fields to be managed in 1 place, also ensure that none of the sensitive data is sent to the frontend
     * Added PHP Unit tests + workflow and a pre-push hook
+* Performance enhancements - admin
+    * Significantly reduced the bundle size of the admin pages
+* CSV export: add an option to modify column headers & show preview of the CSV
+    * Show/hide/rename columns before exporting
+    * Specify custom mappings for things like updating values (e.g. "1" -> "Yes", "0" -> "No"). You can also dynamically pull values from other fields (e.g. putting fname and lname together into a single "Full Name" column).
 
 = 0.7.4 =
 * Security: fixed broken access control on the submissions API that allowed subscribers to access submission data.
