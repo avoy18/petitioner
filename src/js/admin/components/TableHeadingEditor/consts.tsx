@@ -27,6 +27,7 @@ export type TableHeadingEditorState = {
 
 export type TableHeadingEditorProps = {
     headingState: TableHeadingEditorState;
+    title?: React.ReactNode;
 };
 
 export const DEFAULT_STORY_HEADINGS: TableHeading[] = [

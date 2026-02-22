@@ -17,7 +17,7 @@ import {
 import { getAjaxNonce } from '@admin/utilities';
 import SpreadsheetSample from '@admin/components/SpreadsheetSample';
 import Filters from '../Filters';
-import { Heading, Text } from '@admin/components/Experimental';
+import { Heading, Text, Divider } from '@admin/components/Experimental';
 import TableHeadingEditor from '@admin/components/TableHeadingEditor';
 
 import { type SubmissionItem } from '../consts';
@@ -116,9 +116,10 @@ export default function ExportModal({
 				</DetailsWrapper>
 				<PreviewWrapper>
 					<SampleOfSubmissionsWrapper>
-						<Heading as="h3" level={3}>{__('Modify Export', 'petitioner')}</Heading>
+						<Heading as="h3" level={3}>{__('Export Preview', 'petitioner')}</Heading>
 						<Text>{__('This is a live preview of the submissions that will be exported. Use the options below to hide or rename columns.', 'petitioner')}</Text>
-						<TableHeadingEditor headingState={headingState} />
+						<CardDivider />
+						<TableHeadingEditor headingState={headingState} title={<Heading as="h4" level={4} style={{ margin: 0 }}>{__('Columns', 'petitioner')}</Heading>} />
 						<SpreadsheetSample isLoading={isLoading} headings={csvExample?.headings ?? []} rows={csvExample?.rows ?? []} />
 					</SampleOfSubmissionsWrapper>
 				</PreviewWrapper>
