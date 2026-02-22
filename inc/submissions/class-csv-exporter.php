@@ -376,10 +376,15 @@ class AV_Petitioner_CSV_Exporter
             if ((string) $mapping['raw'] === $value_as_string || (string) $mapping['raw'] === '{{' . $field_id . '}}') {
                 $mapped_string = (string) $mapping['mapped'];
 
-                // Handle string interpolation if there are {{...}} placeholders
                 if (strpos($mapped_string, '{{') !== false && is_object($submission)) {
-                    $mapped_string = preg_replace_callback('/\{\{([a-zA-Z0-9_-]+)\}\}/', function($matches) use ($submission) {
+                    $mapped_string = preg_replace_callback('/\{\{([a-zA-Z0-9_-]+)\}\}/', function($matches) use ($submission, $resolved_config) {
                         $placeholder = $matches[1];
+                        
+                        // Security: Only allow interpolation for explicitly visible columns
+                        if (!isset($resolved_config['visible_columns']) || !in_array($placeholder, $resolved_config['visible_columns'], true)) {
+                            return '';
+                        }
+
                         return (isset($submission->$placeholder) && is_scalar($submission->$placeholder)) ? (string) $submission->$placeholder : '';
                     }, $mapped_string);
                 }
