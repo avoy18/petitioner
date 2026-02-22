@@ -11,4 +11,4 @@ export type MappingsProps = {
     onUpdate: (mappings: ValueMapping[]) => void;
 };
 
-export const MAPPING_DESCRIPTION = __('Replace raw values with readable text. For example, convert "0" -> "No" or "1" -> "Yes". Pro tip: You can reference other fields in the form using {{field_id}}.', 'petitioner');
+export const MAPPING_DESCRIPTION = __('Transform column values for your export. Translate exact matches (e.g. "0" -> "No"), provide fallbacks for missing data (leave raw value empty -> "N/A"), or stitch fields together by using the field placeholder as the raw value (e.g. Raw: "{{fname}}" -> Mapped: "{{fname}} {{lname}}").', 'petitioner');
