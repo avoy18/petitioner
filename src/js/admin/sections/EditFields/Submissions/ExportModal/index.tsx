@@ -116,11 +116,9 @@ export default function ExportModal({
 				</DetailsWrapper>
 				<PreviewWrapper>
 					<SampleOfSubmissionsWrapper>
-						<Heading as="h3" level={3}>{__('Modify export', 'petitioner')}</Heading>
-						<Text>{__('Use the options below to hide or rename columns. These changes will be applied to your downloaded CSV file.', 'petitioner')}</Text>
+						<Heading as="h3" level={3}>{__('Modify Export', 'petitioner')}</Heading>
+						<Text>{__('This is a live preview of the submissions that will be exported. Use the options below to hide or rename columns.', 'petitioner')}</Text>
 						<TableHeadingEditor headingState={headingState} />
-						<Heading as="h3" level={3}>{__('Preview', 'petitioner')}</Heading>
-						<Text>{__('This is a preview of the submissions that will be exported.', 'petitioner')}</Text>
 						<SpreadsheetSample isLoading={isLoading} headings={csvExample?.headings ?? []} rows={csvExample?.rows ?? []} />
 					</SampleOfSubmissionsWrapper>
 				</PreviewWrapper>
