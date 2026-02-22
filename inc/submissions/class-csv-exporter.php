@@ -290,7 +290,7 @@ class AV_Petitioner_CSV_Exporter
 
             foreach ($resolved_config['visible_columns'] as $field) {
                 $value = isset($submission->$field) ? $submission->$field : '';
-                $mapped = self::map_csv_value($field, $value, $resolved_config);
+                $mapped = self::map_csv_value($field, $value, $resolved_config, $submission);
                 $row[] = self::sanitize_csv_value($mapped);
             }
 
@@ -348,18 +348,15 @@ class AV_Petitioner_CSV_Exporter
     }
 
     /**
-     * Apply first matching mapping for a field.
+     * Apply first matching mapping for a field and interpolate values.
      *
      * @param string $field_id Field key.
      * @param mixed  $value    Raw submission value.
-     * @param array{
-     *   visible_columns?: array<int, string>,
-     *   labels?: array<string, string>,
-     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
-     * } $resolved_config Resolved CSV config.
+     * @param array  $resolved_config Resolved CSV config.
+     * @param object $submission      The full submission object for interpolation context.
      * @return string
      */
-    private static function map_csv_value($field_id, $value, $resolved_config)
+    private static function map_csv_value($field_id, $value, $resolved_config, $submission = null)
     {
         $value_as_string = (string) $value;
 
@@ -373,7 +370,17 @@ class AV_Petitioner_CSV_Exporter
             }
 
             if ((string) $mapping['raw'] === $value_as_string) {
-                return (string) $mapping['mapped'];
+                $mapped_string = (string) $mapping['mapped'];
+
+                // Handle string interpolation if there are {{...}} placeholders
+                if (strpos($mapped_string, '{{') !== false && is_object($submission)) {
+                    $mapped_string = preg_replace_callback('/\{\{([a-zA-Z0-9_-]+)\}\}/', function($matches) use ($submission) {
+                        $placeholder = $matches[1];
+                        return isset($submission->$placeholder) ? (string) $submission->$placeholder : '';
+                    }, $mapped_string);
+                }
+
+                return $mapped_string;
             }
         }
 
