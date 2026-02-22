@@ -32,10 +32,14 @@ export const useTableHeadingState = (headings: TableHeading[]): TableHeadingEdit
     const [showHiddenHeadings, setShowHiddenHeadings] = useState(true);
 
     useEffect(() => {
-        if (headings.length > 0 && modifiedHeadings.length === 0) {
+        const incomingIds = headings.map((h) => h.id).join('|');
+        const currentIds = modifiedHeadings.map((h) => h.id).join('|');
+
+        if (incomingIds && incomingIds !== currentIds) {
             setModifiedHeadings(headings);
+            setActiveHeading(null);
         }
-    }, [headings, modifiedHeadings.length]);
+    }, [headings, modifiedHeadings]);
 
     const currentHeading = modifiedHeadings.find((heading) => heading.id === activeHeading);
 
