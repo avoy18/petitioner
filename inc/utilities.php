@@ -318,10 +318,8 @@ function av_petitioner_build_model_query($conditional_logic)
             $query[] = ['field' => $field, 'operator' => 'is_empty', 'value' => null];
         } else if ($operator === 'is_not_empty') {
             $query[] = ['field' => $field, 'operator' => 'is_not_empty', 'value' => null];
-        } else if ($operator === 'contains' && $value !== '' && $value !== null) {
-            $query[] = ['field' => $field, 'operator' => 'contains', 'value' => $value];
-        } else if ($operator === 'does_not_contain' && $value !== '' && $value !== null) {
-            $query[] = ['field' => $field, 'operator' => 'does_not_contain', 'value' => $value];
+        } else if (in_array($operator, ['contains', 'does_not_contain'], true) && $value !== '' && $value !== null) {
+            $query[] = ['field' => $field, 'operator' => $operator, 'value' => $value];
         } else if (!in_array($operator, $supported_operators) && !in_array($operator, $ignored_operators)) {
             // Track ignored operators for logging
             $ignored_operators[] = $operator;
