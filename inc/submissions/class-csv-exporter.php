@@ -381,7 +381,7 @@ class AV_Petitioner_CSV_Exporter
                         $placeholder = $matches[1];
                         
                         // Security: Only allow interpolation for explicitly visible columns
-                        if (!isset($resolved_config['visible_columns']) || !in_array($placeholder, $resolved_config['visible_columns'], true)) {
+                        if (!in_array($placeholder, $resolved_config['visible_columns'], true)) {
                             return '';
                         }
 
