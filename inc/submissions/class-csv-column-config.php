@@ -158,8 +158,8 @@ class AV_Petitioner_Column_Config
             $sanitized_overrides['label'] = sanitize_text_field($overrides['label']);
         }
 
-        if (isset($overrides['hidden']) && is_bool($overrides['hidden'])) {
-            $sanitized_overrides['hidden'] = $overrides['hidden'];
+        if (array_key_exists('hidden', $overrides) && !is_array($overrides['hidden']) && !is_object($overrides['hidden'])) {
+            $sanitized_overrides['hidden'] = wp_validate_boolean($overrides['hidden']);
         }
 
         if (isset($overrides['mappings']) && is_array($overrides['mappings'])) {
