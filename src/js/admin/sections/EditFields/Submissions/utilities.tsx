@@ -195,6 +195,10 @@ export const getCSVExample = async ({
 		finalData.append('conditional_logic', JSON.stringify(filters));
 	}
 
+	if (csv_column_config) {
+		finalData.append('csv_column_config', csv_column_config);
+	}
+
 	try {
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',
