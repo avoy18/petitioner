@@ -21,6 +21,11 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
     const [initialHeadings, setInitialHeadings] = useState<TableHeading[]>([]);
     const headingState = useTableHeadingState(initialHeadings);
 
+    useEffect(() => {
+        setInitialHeadings([]);
+        headingState.handleEditHeading(null);
+    }, [formID]);
+
     const csvColumnConfigString = useMemo(() => {
         return headingState.modifiedHeadings.length > 0
             ? JSON.stringify(headingState.modifiedHeadings.map(h => ({
