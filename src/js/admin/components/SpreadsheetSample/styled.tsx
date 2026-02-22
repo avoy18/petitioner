@@ -31,6 +31,7 @@ export const TableWrapper = styled.div`
     overflow-x: auto;
     max-width: 100%;
     width: 100%;
+    min-height: 500px;
 `;
 
 export const Table = styled.table`
