@@ -162,4 +162,30 @@ class Test_Submissions_Model extends BaseTestCase
 
         $this->assertStringContainsString('OR', $result['where']);
     }
+
+    public function test_build_where_clause_handles_contains_operator()
+    {
+        $result = AV_Petitioner_Submissions_Model::build_where_clause(
+            1,
+            [['field' => 'comments', 'operator' => 'contains', 'value' => 'test%value_']],
+            AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS
+        );
+
+        $this->assertStringContainsString('`comments` LIKE %s', $result['where']);
+        $this->assertContains('%test\\%value\\_%', $result['params']);
+        $this->assertCount(2, $result['params']); // form_id + value
+    }
+
+    public function test_build_where_clause_handles_does_not_contain_operator()
+    {
+        $result = AV_Petitioner_Submissions_Model::build_where_clause(
+            1,
+            [['field' => 'comments', 'operator' => 'does_not_contain', 'value' => 'spam']],
+            AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS
+        );
+
+        $this->assertStringContainsString('`comments` NOT LIKE %s', $result['where']);
+        $this->assertContains('%spam%', $result['params']);
+        $this->assertCount(2, $result['params']); // form_id + value
+    }
 }

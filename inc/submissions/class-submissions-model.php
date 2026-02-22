@@ -242,6 +242,8 @@ class AV_Petitioner_Submissions_Model
      */
     public static function build_where_clause($form_id, $query, $allowed_fields, $relation = 'AND')
     {
+        global $wpdb;
+
         $relation = strtoupper($relation) === 'OR' ? 'OR' : 'AND';
         $where = ['form_id = %d'];
         $params = [$form_id];
@@ -269,6 +271,14 @@ class AV_Petitioner_Submissions_Model
                     break;
                 case 'is_not_empty':
                     $conditions[] = "(`$field` != '' AND `$field` IS NOT NULL)";
+                    break;
+                case 'contains':
+                    $conditions[] = "`$field` LIKE %s";
+                    $params[] = '%' . $wpdb->esc_like($value) . '%';
+                    break;
+                case 'does_not_contain':
+                    $conditions[] = "`$field` NOT LIKE %s";
+                    $params[] = '%' . $wpdb->esc_like($value) . '%';
                     break;
             }
         }
