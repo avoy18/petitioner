@@ -256,7 +256,7 @@ class AV_Petitioner_Column_Config
 
         foreach ($allowed_fields as $field_id) {
             $label = $all_labels[$field_id] ?? ucwords(str_replace('_', ' ', $field_id));
-            $label = trim($label);
+            $label = trim((string) $label);
 
             if ($label === '') {
                 $label = ucwords(str_replace('_', ' ', $field_id));
