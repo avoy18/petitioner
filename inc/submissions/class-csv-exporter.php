@@ -196,8 +196,20 @@ class AV_Petitioner_CSV_Exporter
     {
         if (is_array($resolved_config) && isset($resolved_config['visible_columns']) && isset($resolved_config['labels'])) {
             $headers = array_map(static function ($field_id) use ($resolved_config) {
-                return $resolved_config['labels'][$field_id] ?? ucwords(str_replace('_', ' ', $field_id));
+                $label = $resolved_config['labels'][$field_id] ?? ucwords(str_replace('_', ' ', $field_id));
+                $label = trim((string) $label);
+                return $label !== '' ? $label : ucwords(str_replace('_', ' ', $field_id));
             }, $resolved_config['visible_columns']);
+
+            $header_counts = [];
+            foreach ($headers as $i => $header) {
+                if (!isset($header_counts[$header])) {
+                    $header_counts[$header] = 0;
+                    continue;
+                }
+                $header_counts[$header]++;
+                $headers[$i] = $header . ' (' . $header_counts[$header] . ')';
+            }
 
             return apply_filters('av_petitioner_get_csv_column_headers', $headers, $form_id);
         }
