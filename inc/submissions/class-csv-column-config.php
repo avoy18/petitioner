@@ -202,6 +202,29 @@ class AV_Petitioner_Column_Config
     }
 
     /**
+     * Decode a slashed JSON meta value back into an array.
+     *
+     * Use this to read values that were stored via sanitize_payload_json(),
+     * which applies wp_slash() before storage.
+     *
+     * @param mixed $meta_value Raw value from get_post_meta().
+     * @return array|null Decoded array, or null on empty/invalid input.
+     */
+    public static function decode_meta_json($meta_value): ?array
+    {
+        if (empty($meta_value) || !is_string($meta_value)) {
+            return null;
+        }
+
+        $decoded = json_decode(wp_unslash($meta_value), true);
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+            return null;
+        }
+
+        return $decoded;
+    }
+
+    /**
      * @return array<int, string>
      */
     private static function get_exportable_fields()
