@@ -6,6 +6,12 @@
 class AV_Petitioner_Column_Config
 {
     /**
+     * Fields hidden by default in the column configuration.
+     * @var string[]
+     */
+    public static $DEFAULT_HIDDEN_FIELDS = ['id', 'form_id', 'bcc', 'keep_name_anonymous', 'accept_tos', 'confirmation_token', 'approval_status'];
+
+    /**
      * Resolve user-provided payload into export-ready config.
      *
      * @param int   $form_id     Petition (form) ID.
@@ -280,7 +286,7 @@ class AV_Petitioner_Column_Config
                 'label' => wp_strip_all_tags($labels[$field_id]),
             ];
 
-            if (in_array($field_id, ['id', 'form_id', 'bcc', 'keep_name_anonymous', 'accept_tos', 'confirmation_token', 'approval_status'], true)) {
+            if (in_array($field_id, self::$DEFAULT_HIDDEN_FIELDS, true)) {
                 $column['overrides'] = ['hidden' => true];
             }
 
