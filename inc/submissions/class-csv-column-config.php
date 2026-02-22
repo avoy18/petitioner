@@ -159,7 +159,10 @@ class AV_Petitioner_Column_Config
         }
 
         if (array_key_exists('hidden', $overrides) && !is_array($overrides['hidden']) && !is_object($overrides['hidden'])) {
-            $sanitized_overrides['hidden'] = wp_validate_boolean($overrides['hidden']);
+            $hidden_value = wp_validate_boolean($overrides['hidden']);
+            if ($hidden_value === true) {
+                $sanitized_overrides['hidden'] = true;
+            }
         }
 
         if (isset($overrides['mappings']) && is_array($overrides['mappings'])) {
