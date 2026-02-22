@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "@wordpress/element";
+import { useEffect, useMemo, useState, useCallback, useRef } from "@wordpress/element";
 import { getCSVExample, getExportURL } from "../utilities";
 import { useNoticeSystem } from "@admin/components/NoticeSystem";
 import { __ } from "@wordpress/i18n";
@@ -20,8 +20,10 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
 
     const [initialHeadings, setInitialHeadings] = useState<TableHeading[]>([]);
     const headingState = useTableHeadingState(initialHeadings);
+    const hasLoadedInitialHeadings = useRef(false);
 
     useEffect(() => {
+        hasLoadedInitialHeadings.current = false;
         setInitialHeadings([]);
         headingState.handleEditHeading(null);
     }, [formID]);
@@ -64,7 +66,8 @@ export const useExportModal = ({ submissionExample, total }: { submissionExample
                     rows: data.rows,
                 });
 
-                if (initialHeadings.length === 0 && data.columns) {
+                if (!hasLoadedInitialHeadings.current && data.columns) {
+                    hasLoadedInitialHeadings.current = true;
                     setInitialHeadings(data.columns);
                 }
 
