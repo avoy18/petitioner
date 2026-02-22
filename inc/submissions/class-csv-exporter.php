@@ -198,7 +198,7 @@ class AV_Petitioner_CSV_Exporter
         if (is_array($resolved_config) && isset($resolved_config['visible_columns']) && isset($resolved_config['labels'])) {
             $headers = array_map(static function ($field_id) use ($resolved_config) {
                 $label = $resolved_config['labels'][$field_id] ?? ucwords(str_replace('_', ' ', $field_id));
-                $label = trim((string) $label);
+                $label = trim($label);
                 return $label !== '' ? $label : ucwords(str_replace('_', ' ', $field_id));
             }, $resolved_config['visible_columns']);
 
@@ -358,10 +358,8 @@ class AV_Petitioner_CSV_Exporter
      */
     private static function map_csv_value($field_id, $value, $resolved_config, $submission = null)
     {
-        $value_as_string = (string) $value;
-
         if (empty($resolved_config['mappings'][$field_id]) || !is_array($resolved_config['mappings'][$field_id])) {
-            return $value_as_string;
+            return $value;
         }
 
         foreach ($resolved_config['mappings'][$field_id] as $mapping) {
@@ -369,14 +367,14 @@ class AV_Petitioner_CSV_Exporter
                 continue;
             }
 
-            if ((string) $mapping['raw'] === $value_as_string) {
-                $mapped_string = (string) $mapping['mapped'];
+            if ($mapping['raw'] == $value) {
+                $mapped_string = $mapping['mapped'];
 
                 // Handle string interpolation if there are {{...}} placeholders
                 if (strpos($mapped_string, '{{') !== false && is_object($submission)) {
                     $mapped_string = preg_replace_callback('/\{\{([a-zA-Z0-9_-]+)\}\}/', function($matches) use ($submission) {
                         $placeholder = $matches[1];
-                        return isset($submission->$placeholder) ? (string) $submission->$placeholder : '';
+                        return isset($submission->$placeholder) ? $submission->$placeholder : '';
                     }, $mapped_string);
                 }
 
@@ -384,7 +382,7 @@ class AV_Petitioner_CSV_Exporter
             }
         }
 
-        return $value_as_string;
+        return $value;
     }
 
     /**
@@ -465,9 +463,11 @@ class AV_Petitioner_CSV_Exporter
      */
     public static function sanitize_csv_value($value)
     {
-        // Convert to string and trim leading whitespace
+        // Trim leading whitespace
         // (attackers may use spaces to hide dangerous characters)
-        $value = ltrim((string) $value);
+        if (is_string($value)) {
+            $value = ltrim($value);
+        }
 
         // Expanded list of dangerous characters that can trigger formula injection
         // = : Formula start
