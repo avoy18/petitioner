@@ -352,8 +352,12 @@ class AV_Petitioner_CSV_Exporter
      *
      * @param string $field_id Field key.
      * @param mixed  $value    Raw submission value.
-     * @param array  $resolved_config Resolved CSV config.
-     * @param object $submission      The full submission object for interpolation context.
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * } $resolved_config Resolved CSV config.
+     * @param object|null $submission      The full submission object for interpolation context.
      * @return string
      */
     private static function map_csv_value($field_id, $value, $resolved_config, $submission = null)
