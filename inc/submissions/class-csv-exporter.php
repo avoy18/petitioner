@@ -241,7 +241,7 @@ class AV_Petitioner_CSV_Exporter
             $label = $all_labels[$field] ?? ucwords(str_replace('_', ' ', $field));
 
             // Ensure label is not empty
-            $label = trim($label);
+            $label = trim((string) $label);
             if (empty($label)) {
                 $label = ucwords(str_replace('_', ' ', $field));
             }
