@@ -132,6 +132,8 @@ describe('ConditionalLogic component', () => {
 		expect(screen.getByText('not equals')).toBeInTheDocument();
 		expect(screen.getByText('is empty')).toBeInTheDocument();
 		expect(screen.getByText('is not empty')).toBeInTheDocument();
+		expect(screen.getByText('contains')).toBeInTheDocument();
+		expect(screen.getByText('does not contain')).toBeInTheDocument();
 	});
 
 	it('hides value input for is_empty and is_not_empty operators', async () => {

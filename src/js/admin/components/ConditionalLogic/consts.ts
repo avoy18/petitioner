@@ -48,6 +48,8 @@ export const OPERATORS = [
 	{ value: 'not_equals', label: __('not equals', 'petitioner') },
 	{ value: 'is_empty', label: __('is empty', 'petitioner') },
 	{ value: 'is_not_empty', label: __('is not empty', 'petitioner') },
+	{ value: 'contains', label: __('contains', 'petitioner') },
+	{ value: 'does_not_contain', label: __('does not contain', 'petitioner') },
 ];
 
 export const LOGIC_OPTIONS = [
