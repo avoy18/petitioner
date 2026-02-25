@@ -151,6 +151,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 * CSV export: add an option to modify column headers & show preview of the CSV
     * Show/hide/rename columns before exporting
     * Specify custom mappings for things like updating values (e.g. "1" -> "Yes", "0" -> "No"). You can also dynamically pull values from other fields (e.g. putting fname and lname together into a single "Full Name" column).
+* Country field improvements: you can now modify the country list (reorder and remove countries from the dropdown)
 
 = 0.7.4 =
 * Security: fixed broken access control on the submissions API that allowed subscribers to access submission data.
