@@ -98,6 +98,7 @@ export default function SubmissionEditModal({
 				<EditField
 					type={type}
 					value={valueString}
+					fieldKey={label}
 					onChange={(val) => {
 						updateSubmissionDetails(label, val);
 					}}
