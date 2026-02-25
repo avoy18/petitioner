@@ -120,6 +120,7 @@ export const useCustomHook = (options?: { initialValue?: Type }) => {
 - Manage internal state when possible
 - Keep filters, visibility toggles inside component
 - Close UI elements automatically after actions
+- For experimental components like Heading, Text, Button, use components/Experimental
 
 ## AJAX Pattern
 ```typescript

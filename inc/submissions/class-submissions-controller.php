@@ -127,9 +127,10 @@ class AV_Petitioner_Submissions_Controller
          * before the submission is created and stored.
          *
          * @param array $data Associative array of submission data (field values and metadata).
+         * @param array $post_data Associative array of post data. Added in 0.8.0.
          * @return array Modified submission data.
          */
-        $data = apply_filters('av_petitioner_submission_data_pre_save', $data);
+        $data = apply_filters('av_petitioner_submission_data_pre_save', $data, $_POST);
 
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
 
@@ -281,7 +282,13 @@ class AV_Petitioner_Submissions_Controller
         $hide_last_name = get_post_meta($form_id, '_petitioner_hide_last_names', true);
 
         // Fetch submissions and total count using the new method
-        $fields = ['id', 'fname', 'lname', 'country', 'salutation', 'date_of_birth', 'comments', 'city', 'postal_code', 'hide_name', 'submitted_at'];
+        $public_fields = self::get_public_fields();
+
+        $public_fields = array_values(array_unique($public_fields));
+
+        // even though you cant query some of these fields, we still need to include them in the fetch settings
+        // we later clean up the submission object to remove everything unwanted and merge lname with fname
+        $fields = array_merge($public_fields, AV_Petitioner_Submissions_Model::$INTERNAL_FIELDS);
 
         $fetch_settings = [
             'per_page'          => $per_page,
@@ -309,14 +316,13 @@ class AV_Petitioner_Submissions_Controller
         // Calculate the total number of pages
         $total_pages = ceil($result['total'] / $per_page);
 
-        $labels = av_petitioner_get_form_labels($form_id, [
-            'name',
-            'country',
-            'city',
-            'postal_code',
-            'comments',
-            'submitted_at',
-        ]);
+        // Merge the required UI fields with the public fields and remove duplicates
+        $label_fields = array_values(array_unique(array_merge(
+            ['name', 'submitted_at'],
+            $public_fields
+        )));
+
+        $labels = av_petitioner_get_form_labels($form_id, $label_fields);
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
             if ($submission->hide_name) {
@@ -337,7 +343,7 @@ class AV_Petitioner_Submissions_Controller
                     continue;
                 }
 
-                $modified_submission[$k] = $submission->{$k};
+                $modified_submission[$k] = property_exists($submission, $k) ? $submission->{$k} : '';
             }
 
             return $modified_submission;
@@ -402,6 +408,15 @@ class AV_Petitioner_Submissions_Controller
                 }
             }
         }
+
+        /**
+         * Filter the submission data before it is updated
+         *
+         * @param array $fields - the submission data array that is being updated
+         * @param array $_POST - the $_POST data passed to the form submission
+         * @return array - the modified submission data array
+         */
+        $submission = apply_filters('av_petitioner_submission_data_pre_update', $submission, $_POST);
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
@@ -700,5 +715,36 @@ class AV_Petitioner_Submissions_Controller
             ]);
             wp_die();
         }
+    }
+
+    /**
+     * Get fields that are safe to display publicly.
+     * 
+     * Note: these are not the same as the actual columns in the database. 
+     * 
+     * @return array Array of field names safe for public display
+     * @since 0.8.0
+     */
+    public static function get_public_fields()
+    {
+        // Calculate public fields: allowed minus sensitive
+        $public_fields = array_diff(
+            AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS,
+            AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS
+        );
+
+        /**
+         * Filter the public fields that are displayed in the submissions list
+         * 
+         * @param array $public_fields The public fields that are displayed in the submissions list
+         * @return array The public fields that are displayed in the submissions list
+         */
+        $public_fields = apply_filters('av_petitioner_public_fields', $public_fields);
+
+        // Remove internal fields and re-validate sensitive fields
+        $excluded_from_display = array_merge(AV_Petitioner_Submissions_Model::$INTERNAL_FIELDS, AV_Petitioner_Submissions_Model::$SENSITIVE_FIELDS);
+        $public_fields = array_diff($public_fields, $excluded_from_display);
+
+        return array_values($public_fields);
     }
 }

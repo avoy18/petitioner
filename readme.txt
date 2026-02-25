@@ -2,9 +2,9 @@
 Contributors: avoytenko
 Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
-Requires at least: 5.9
+Requires at least: 6.3
 Tested up to: 6.9
-Stable Tag: 0.7.4
+Stable Tag: 0.8.0
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -139,6 +139,20 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 13. Submissions on the frontend
 
 == Changelog ==
+
+= 0.8.0 =
+* Massive architecture overhaul
+    * Moving away from SCSS in favour of styled components & regular CSS
+    * Add an option to extend the plugin with custom fields via JS and PHP hooks
+    * Submissions on the frontend: connect all of the fields to be managed in 1 place, also ensure that none of the sensitive data is sent to the frontend
+    * Added PHP Unit tests + workflow and a pre-push hook
+* Performance enhancements - admin
+    * Significantly reduced the bundle size of the admin pages
+* CSV export: add an option to modify column headers & show preview of the CSV
+    * Show/hide/rename columns before exporting
+    * Specify custom mappings for things like updating values (e.g. "1" -> "Yes", "0" -> "No"). You can also dynamically pull values from other fields (e.g. putting fname and lname together into a single "Full Name" column).
+* Country field improvements: you can now modify the country list (reorder and remove countries from the dropdown)
+* Additional export filter options (contains|does not contain)
 
 = 0.7.4 =
 * Security: fixed broken access control on the submissions API that allowed subscribers to access submission data.
@@ -330,6 +344,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 * Initial version of the plugin
 
 == Upgrade Notice ==
+
+= 0.8.0 =
+* A big architectural overhaul, country dropdown improvements, CSV export improvements, and more!
 
 = 0.1.3 =
 * This version adds the Gutenberg block and fixes a few minor issues

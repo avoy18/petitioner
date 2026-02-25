@@ -1,8 +1,5 @@
 import styled from 'styled-components';
-import {
-	__experimentalText as Text,
-	__experimentalHeading as Heading,
-} from '@wordpress/components';
+import { Text, Heading } from '@admin/components/Experimental';
 
 export const StyledHeading = styled(Heading)`
 	margin-bottom: var(--ptr-admin-spacing-sm) !important;

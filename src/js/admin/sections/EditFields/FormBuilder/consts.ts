@@ -16,6 +16,7 @@ interface BaseField {
 	label: string;
 	required: boolean;
 	removable: boolean;
+	defaultValue?: string | boolean | string[] | number;
 }
 
 export interface TextField extends BaseField {
@@ -23,13 +24,15 @@ export interface TextField extends BaseField {
 	placeholder: string;
 }
 
+export type OptionItem = string;
+
 export interface SelectField extends BaseField {
 	type: 'select';
+	options: OptionItem[] | [];
 }
 
 export interface CheckboxField extends BaseField {
 	type: 'checkbox';
-	defaultValue: boolean;
 }
 
 export interface WysiwygField extends BaseField {

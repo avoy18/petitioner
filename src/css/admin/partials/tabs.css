@@ -1,0 +1,18 @@
+.wp-admin.post-type-petitioner-petition {
+    .petition-tablink.components-tab-panel__tabs-item {
+        display: flex;
+        gap: 4px;
+    }
+
+    .petitioner-tab {
+        display: none;
+    }
+
+    .petitioner-tab.active {
+        display: block;
+    }
+
+    .petition-tablink--hidden {
+        display: none;
+    }
+}

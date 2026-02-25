@@ -1,0 +1,82 @@
+.petitioner-modal {
+	position: fixed;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+}
+
+.petitioner-modal--visible {
+	display: flex;
+}
+
+.petitioner-modal__backdrop {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.petitioner-modal__close {
+	position: absolute;
+	right: var(--ptr-spacer-sm);
+	top: var(--ptr-spacer-sm);
+	z-index: 2;
+	background: transparent;
+	outline: none;
+	border: 1px solid #ccc;
+	padding: var(--ptr-spacer-sm);
+	border-radius: var(--ptr-spacer-xs);
+	line-height: 1;
+	width: var(--ptr-spacer-lg);
+	height: var(--ptr-spacer-lg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: 0.1s;
+	color: var(--ptr-color-dark);
+}
+
+.petitioner-modal__close:hover {
+	cursor: pointer;
+	background: var(--ptr-color-dark);
+	color: white;
+}
+
+.petitioner-modal__close span {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+.petitioner-modal hr {
+	border: 0;
+	height: 1px;
+	background: #ccc;
+	margin-top: var(--ptr-spacer-lg);
+	margin-bottom: var(--ptr-spacer-sm);
+}
+
+.petitioner-modal__letter {
+	position: relative;
+	max-width: 500px;
+	background-color: white;
+	border-radius: var(--ptr-spacer-md);
+	padding: var(--ptr-spacer-lg);
+}
+
+.petitioner-modal__inner {
+	max-height: 40vh;
+	overflow-y: auto;
+}

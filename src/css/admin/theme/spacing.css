@@ -1,0 +1,11 @@
+:root {
+    --ptr-admin-spacing-xs: 4px;
+    --ptr-admin-spacing-sm: 8px;
+    --ptr-admin-spacing-md: 12px;
+    --ptr-admin-spacing-lg: 16px;
+    --ptr-admin-spacing-xl: 24px;
+    --ptr-admin-spacing-2xl: 32px;
+    --ptr-admin-spacing-3xl: 40px;
+    --ptr-admin-spacing-4xl: 48px;
+    --ptr-admin-spacing-5xl: 64px;
+}

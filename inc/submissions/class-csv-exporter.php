@@ -36,7 +36,7 @@ class AV_Petitioner_CSV_Exporter
 
         $settings = [
             'query'         => $query,
-            'relation'      => $conditional_logic['logic'] ?? 'AND',
+            'relation'      => is_array($conditional_logic['logic']) ? $conditional_logic['logic'] : 'AND',
         ];
 
         $skip_unconfirmed = false;
@@ -47,13 +47,83 @@ class AV_Petitioner_CSV_Exporter
             wp_die(AV_Petitioner_Labels::get('no_submissions_to_export'));
         }
 
+        $csv_column_config_raw = isset($_POST['csv_column_config']) ? wp_unslash($_POST['csv_column_config']) : null;
+        $resolved_config = self::resolve_csv_column_config($form_id, $csv_column_config_raw);
+
         $filename = 'petition_submissions_' . current_time('Y-m-d_H-i-s') . '.csv';
 
         self::send_download_headers($filename);
 
-        self::stream_csv_chunked($form_id, $settings, $total_count);
+        self::stream_csv_chunked($form_id, $settings, $total_count, $resolved_config);
 
         exit;
+    }
+
+    /**
+     * Get CSV example entry point
+     * Handles the CSV example request and returns the headings and rows of the first 10 submissions
+     * 
+     * @return void
+     */
+    public static function api_admin_petitioner_get_csv_example()
+    {
+        self::check_permissions(true);
+
+        $form_id = isset($_POST['form_id']) ? intval($_POST['form_id']) : false;
+
+        if (!$form_id) {
+            wp_send_json_error([
+                'message' => AV_Petitioner_Labels::get('invalid_form_id'),
+            ]);
+        }
+
+        $conditional_logic_raw = isset($_POST['conditional_logic']) ? wp_unslash($_POST['conditional_logic']) : null;
+        $conditional_logic = av_petitioner_parse_conditional_logic($conditional_logic_raw);
+
+        $query = av_petitioner_build_model_query($conditional_logic);
+
+        $settings = [
+            'query'         => $query,
+            'relation'      => $conditional_logic['logic'] ?? 'AND',
+        ];
+
+        $skip_unconfirmed = false;
+
+        $total_count = AV_Petitioner_Submissions_Model::get_submission_count($form_id, $settings, $skip_unconfirmed);
+        $csv_column_config_raw = isset($_POST['csv_column_config']) ? wp_unslash($_POST['csv_column_config']) : null;
+        $resolved_config = self::resolve_csv_column_config($form_id, $csv_column_config_raw);
+
+        $rows = [];
+        $headings = [];
+
+        $headings = self::get_csv_headers($form_id, $resolved_config);
+
+        if ($total_count != 0) {
+            $result = AV_Petitioner_Submissions_Model::get_form_submissions(
+                $form_id,
+                array_merge($settings, [
+                    'offset'    => 0,
+                    'per_page'  => 10,
+                ])
+            );
+
+            if (!empty($result['submissions'])) {
+                $rows = array_map(function ($submission) use ($resolved_config) {
+                    return self::get_csv_row($submission, $resolved_config);
+                }, $result['submissions']);
+            }
+        }
+
+        $filename = 'petition_submissions_' . current_time('Y-m-d_H-i-s') . '.csv';
+        $columns = AV_Petitioner_Column_Config::get_default_columns($form_id);
+
+        wp_send_json_success([
+            'headings'      => $headings,
+            'rows'          => $rows,
+            'filename'      => $filename,
+            'total_count'   => $total_count,
+            'columns'       => $columns,
+        ]);
     }
 
     /**
@@ -62,8 +132,13 @@ class AV_Petitioner_CSV_Exporter
      * @param int   $form_id      Form ID to export
      * @param array $settings     Query settings (query, relation)
      * @param int   $total_count  Total number of submissions
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null $resolved_config Resolved CSV config for headers/rows.
      */
-    private static function stream_csv_chunked($form_id, $settings, $total_count)
+    private static function stream_csv_chunked($form_id, $settings, $total_count, $resolved_config = null)
     {
         $output = fopen('php://output', 'w');
 
@@ -74,7 +149,7 @@ class AV_Petitioner_CSV_Exporter
         // Add UTF-8 BOM for Excel compatibility (must be first thing)
         fprintf($output, "\xEF\xBB\xBF");
 
-        fputcsv($output, self::get_csv_headers($form_id));
+        fputcsv($output, self::get_csv_headers($form_id, $resolved_config));
 
         $total_pages = ceil($total_count / self::BATCH_SIZE);
 
@@ -93,7 +168,7 @@ class AV_Petitioner_CSV_Exporter
 
             if (!empty($results['submissions'])) {
                 foreach ($results['submissions'] as $row) {
-                    fputcsv($output, self::get_csv_row($row));
+                    fputcsv($output, self::get_csv_row($row, $resolved_config));
                 }
             }
 
@@ -110,10 +185,36 @@ class AV_Petitioner_CSV_Exporter
      * Maps database field names to human-readable labels
      * Ensures all headers are unique and not empty
      * 
-     * @return array Array of column header names
+     * @param int $form_id Petition ID.
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null $resolved_config Resolved CSV config, or null to use legacy headers.
+     * @return array<int, string> Array of column header names.
      */
-    private static function get_csv_headers($form_id)
+    public static function get_csv_headers($form_id, $resolved_config = null)
     {
+        if (is_array($resolved_config) && isset($resolved_config['visible_columns']) && isset($resolved_config['labels'])) {
+            $headers = array_map(static function ($field_id) use ($resolved_config) {
+                $label = $resolved_config['labels'][$field_id] ?? ucwords(str_replace('_', ' ', $field_id));
+                $label = trim((string) $label);
+                return $label !== '' ? $label : ucwords(str_replace('_', ' ', $field_id));
+            }, $resolved_config['visible_columns']);
+
+            $header_counts = [];
+            foreach ($headers as $i => $header) {
+                if (!isset($header_counts[$header])) {
+                    $header_counts[$header] = 0;
+                    continue;
+                }
+                $header_counts[$header]++;
+                $headers[$i] = $header . ' (' . $header_counts[$header] . ')';
+            }
+
+            return apply_filters('av_petitioner_get_csv_column_headers', $headers, $form_id);
+        }
+
         $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;
 
         // Get defaults
@@ -131,15 +232,20 @@ class AV_Petitioner_CSV_Exporter
         $used_headers = []; // Track used headers to prevent duplicates
 
         foreach ($allowed_fields as $field) {
+            // Skip custom_properties - handled separately via filter
+            if ($field === 'custom_properties') {
+                continue;
+            }
+
             // Get label with fallback to field name
             $label = $all_labels[$field] ?? ucwords(str_replace('_', ' ', $field));
-            
+
             // Ensure label is not empty
-            $label = trim($label);
+            $label = trim((string) $label);
             if (empty($label)) {
                 $label = ucwords(str_replace('_', ' ', $field));
             }
-            
+
             // Make label unique if duplicate exists
             $original_label = $label;
             $counter = 1;
@@ -147,10 +253,19 @@ class AV_Petitioner_CSV_Exporter
                 $label = $original_label . ' (' . $counter . ')';
                 $counter++;
             }
-            
+
             $used_headers[] = $label;
             $headers[] = $label;
         }
+
+        /**
+         * Filter the CSV column headers
+         * 
+         * @param array $headers Array of column header names
+         * @param int $form_id Form ID
+         * @return array Array of column header names
+         */
+        $headers = apply_filters('av_petitioner_get_csv_column_headers', $headers, $form_id);
 
         return $headers;
     }
@@ -160,21 +275,125 @@ class AV_Petitioner_CSV_Exporter
      * Dynamically builds row based on allowed fields from model
      * Sanitizes values to prevent CSV injection attacks
      * 
-     * @param object $submission Submission database row object
-     * @return array Array of values for CSV row
+     * @param object $submission Submission database row object.
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null $resolved_config Resolved CSV config, or null to use legacy row building.
+     * @return array<int, string> Array of values for CSV row.
      */
-    private static function get_csv_row($submission)
+    public static function get_csv_row($submission, $resolved_config = null)
     {
+        if (is_array($resolved_config) && isset($resolved_config['visible_columns'])) {
+            $row = [];
+
+            foreach ($resolved_config['visible_columns'] as $field) {
+                $value = isset($submission->$field) ? $submission->$field : '';
+                $mapped = self::map_csv_value($field, $value, $resolved_config, $submission);
+                $row[] = self::sanitize_csv_value($mapped);
+            }
+
+            return apply_filters('av_petitioner_get_csv_row', $row, $submission, $resolved_config);
+        }
+
         $row = [];
 
         foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
+            // Skip custom_properties - handled separately via filter
+            if ($field === 'custom_properties') {
+                continue;
+            }
+
             $value = isset($submission->$field) ? $submission->$field : '';
 
             // Sanitize to prevent CSV injection
             $row[] = self::sanitize_csv_value($value);
         }
 
+        /**
+         * Filter the CSV row data
+         * @param array $row Array of values for CSV row
+         * @param object $submission Submission database row object
+         * @return array Array of values for CSV row
+         */
+        $row = apply_filters('av_petitioner_get_csv_row', $row, $submission, $resolved_config);
+
         return $row;
+    }
+
+    /**
+     * Parse and resolve CSV config from request JSON.
+     *
+     * @param int         $form_id Petition ID.
+     * @param string|null $json    Raw request JSON.
+     * @return array{
+     *   visible_columns: array<int, string>,
+     *   labels: array<string, string>,
+     *   mappings: array<string, array<int, array{raw: string, mapped: string}>>
+     * }|null Resolved CSV config, or null for invalid/missing input.
+     */
+    private static function resolve_csv_column_config($form_id, $json)
+    {
+        if (!is_string($json) || $json === '') {
+            return null;
+        }
+
+        $payload = json_decode($json, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($payload)) {
+            return null;
+        }
+
+        return AV_Petitioner_Column_Config::resolve($form_id, $payload);
+    }
+
+    /**
+     * Apply first matching mapping for a field and interpolate values.
+     *
+     * @param string $field_id Field key.
+     * @param mixed  $value    Raw submission value.
+     * @param array{
+     *   visible_columns?: array<int, string>,
+     *   labels?: array<string, string>,
+     *   mappings?: array<string, array<int, array{raw: string, mapped: string}>>
+     * } $resolved_config Resolved CSV config.
+     * @param object|null $submission      The full submission object for interpolation context.
+     * @return string
+     */
+    private static function map_csv_value($field_id, $value, $resolved_config, $submission = null)
+    {
+        $value_as_string = (string) $value;
+
+        if (empty($resolved_config['mappings'][$field_id]) || !is_array($resolved_config['mappings'][$field_id])) {
+            return $value_as_string;
+        }
+
+        foreach ($resolved_config['mappings'][$field_id] as $mapping) {
+            if (!is_array($mapping) || !array_key_exists('raw', $mapping) || !array_key_exists('mapped', $mapping)) {
+                continue;
+            }
+
+            if ((string) $mapping['raw'] === $value_as_string || (string) $mapping['raw'] === '{{' . $field_id . '}}') {
+                $mapped_string = (string) $mapping['mapped'];
+
+                if (strpos($mapped_string, '{{') !== false && is_object($submission)) {
+                    $mapped_string = preg_replace_callback('/\{\{([a-zA-Z0-9_-]+)\}\}/', function($matches) use ($submission, $resolved_config) {
+                        $placeholder = $matches[1];
+                        
+                        // Security: Only allow interpolation for explicitly visible columns
+                        if (!in_array($placeholder, $resolved_config['visible_columns'], true)) {
+                            return '';
+                        }
+
+                        return (isset($submission->$placeholder) && is_scalar($submission->$placeholder)) ? (string) $submission->$placeholder : '';
+                    }, $mapped_string);
+                }
+
+                return $mapped_string;
+            }
+        }
+
+        return $value_as_string;
     }
 
     /**
@@ -215,17 +434,32 @@ class AV_Petitioner_CSV_Exporter
     /**
      * Check user permissions and nonce
      * 
+     * @param bool $use_json Whether to use JSON response
      * @return void
      */
-    private static function check_permissions()
+    private static function check_permissions($use_json = false)
     {
         if (!current_user_can('manage_options')) {
+
+            if ($use_json) {
+                wp_send_json_error([
+                    'message' => AV_Petitioner_Labels::get('missing_permissions'),
+                ]);
+            }
+
             wp_die(AV_Petitioner_Labels::get('missing_permissions'));
         }
 
         // Nonce check
         $nonce_label = AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL;
         if (!isset($_POST['petitioner_nonce']) || !wp_verify_nonce($_POST['petitioner_nonce'], $nonce_label)) {
+
+            if ($use_json) {
+                wp_send_json_error([
+                    'message' => AV_Petitioner_Labels::get('invalid_nonce'),
+                ]);
+            }
+
             wp_die(AV_Petitioner_Labels::get('invalid_nonce'));
         }
     }
@@ -238,7 +472,7 @@ class AV_Petitioner_CSV_Exporter
      * @param string $value Raw value
      * @return string Sanitized value
      */
-    private static function sanitize_csv_value($value)
+    public static function sanitize_csv_value($value)
     {
         // Convert to string and trim leading whitespace
         // (attackers may use spaces to hide dangerous characters)

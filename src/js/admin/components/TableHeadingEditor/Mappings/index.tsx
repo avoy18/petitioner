@@ -1,0 +1,101 @@
+import { memo, useCallback } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+
+import { generateId } from '@admin/utilities';
+import { TextControl, Button } from '@wordpress/components';
+import { Text } from '@admin/components/Experimental';
+import { MappingExample, MappingInputGroup, MappingInputs, MappingArrow, MappingWrapper, StyledButton } from './styled';
+import { MAPPING_DESCRIPTION } from './consts';
+import type { MappingsProps, ValueMapping } from './consts';
+
+const Mappings = ({ mappings, onUpdate }: MappingsProps) => {
+    const handleAddMapping = useCallback(() => {
+        const newMapping: ValueMapping = {
+            id: generateId(),
+            rawValue: '',
+            mappedValue: '',
+        };
+        onUpdate([...mappings, newMapping]);
+    }, [mappings, onUpdate]);
+
+    const handleUpdateMapping = useCallback(
+        (id: string, field: 'rawValue' | 'mappedValue', value: string) => {
+            const updated = mappings.map((mapping) =>
+                mapping.id === id ? { ...mapping, [field]: value } : mapping
+            );
+            onUpdate(updated);
+        },
+        [mappings, onUpdate]
+    );
+
+    const handleDeleteMapping = useCallback(
+        (id: string) => {
+            const filtered = mappings.filter((mapping) => mapping.id !== id);
+            onUpdate(filtered);
+        },
+        [mappings, onUpdate]
+    );
+
+    return (
+        <MappingWrapper>
+            <div>
+                <Text size="sm" weight="medium">
+                    {__('Value Mappings', 'petitioner')}
+                </Text>
+                <MappingExample>
+                    <Text size="sm" color="grey">
+                        {MAPPING_DESCRIPTION}
+                    </Text>
+                </MappingExample>
+            </div>
+
+            <MappingInputGroup>
+                {mappings.map((mapping) => {
+                    return (
+                        <MappingInputs key={mapping.id}>
+                            <TextControl
+                                label={__('Raw value', 'petitioner')}
+                                value={mapping.rawValue}
+                                onChange={(value) =>
+                                    handleUpdateMapping(mapping.id, 'rawValue', value)
+                                }
+                                placeholder="Original value"
+                                __nextHasNoMarginBottom={true}
+                            />
+                            <MappingArrow />
+                            <TextControl
+                                label={__('Mapped value', 'petitioner')}
+                                value={mapping.mappedValue}
+                                onChange={(value) =>
+                                    handleUpdateMapping(mapping.id, 'mappedValue', value)
+                                }
+                                placeholder="New value"
+                                __nextHasNoMarginBottom={true}
+                            />
+                            <StyledButton
+                                size="small"
+                                icon="trash"
+                                variant="tertiary"
+                                onClick={() => handleDeleteMapping(mapping.id)}
+                                isDestructive={true}
+                                label={__('Delete mapping', 'petitioner')}
+                            />
+                        </MappingInputs>
+                    )
+                })}
+
+            </MappingInputGroup>
+
+            <Button
+                size="small"
+                icon="plus"
+                variant="tertiary"
+                onClick={handleAddMapping}
+            >
+                {__('Add mapping', 'petitioner')}
+            </Button>
+        </MappingWrapper>
+    );
+};
+
+export default memo(Mappings);

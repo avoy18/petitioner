@@ -4,10 +4,10 @@ import type { SubmissionItem } from '../consts';
 import {
 	Card,
 	CardDivider,
-	__experimentalText as Text,
 	Button,
 	Modal,
 } from '@wordpress/components';
+import { Text } from '@admin/components/Experimental';
 
 import { getHumanValue, getSubmissionValType } from '../utilities';
 import { getFieldLabels } from './../utilities';
@@ -28,9 +28,9 @@ export const isValidFieldKey = (
 
 export default function SubmissionEditModal({
 	submission,
-	onClose = () => {},
-	onSave = (upatedItem) => {},
-	onDelete = (id) => {},
+	onClose = () => { },
+	onSave = (upatedItem) => { },
+	onDelete = (id) => { },
 }: {
 	submission: SubmissionItem;
 	onClose: () => void;
@@ -98,6 +98,7 @@ export default function SubmissionEditModal({
 				<EditField
 					type={type}
 					value={valueString}
+					fieldKey={label}
 					onChange={(val) => {
 						updateSubmissionDetails(label, val);
 					}}

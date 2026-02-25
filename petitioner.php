@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.7.4
+ * Version:           0.8.0
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_PLUGIN_VERSION', '0.7.4');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.8.0');
 
 if (!function_exists('av_ptr_error_log')) {
 
@@ -38,7 +38,9 @@ if (!function_exists('av_ptr_error_log')) {
 
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-csv-column-config.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-csv-exporter.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-custom-properties.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';
@@ -51,6 +53,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-form-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-shortcodes.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-edit-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-settings-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-component-preview-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-shared.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/gutenberg/class-gutenberg.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-setup.php';

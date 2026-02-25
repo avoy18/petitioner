@@ -10,6 +10,7 @@ const fieldTypeToGroup = {
 	wysiwyg: 'wysiwyg',
 	submit: 'submit',
 	comments: 'textarea',
+	textarea: 'textarea',
 	date: 'date',
 };
 
@@ -64,3 +65,6 @@ export const getAjaxNonce = () => {
 
 	return petitionerNonce;
 };
+
+export const generateId = () =>
+	`${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;

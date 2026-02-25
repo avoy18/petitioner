@@ -6,6 +6,9 @@ if (!defined('ABSPATH')) {
 
 class AV_Petitioner_Submissions_Model
 {
+    /**
+     * All of the possible fields allowed to be requested in the model
+     */
     public static $ALLOWED_FIELDS = [
         'id',
         'form_id',
@@ -27,6 +30,36 @@ class AV_Petitioner_Submissions_Model
         'approval_status',
         'submitted_at',
         'confirmation_token',
+        'custom_properties'
+    ];
+
+    /**
+     * Fields containing personally identifiable information (PII) 
+     * that should not be displayed on the frontend
+     */
+    public static $SENSITIVE_FIELDS = [
+        'email',
+        'phone',
+        'street_address',
+        'date_of_birth',
+        'confirmation_token',
+        'bcc_yourself',
+        'newsletter',
+        'accept_tos',
+        'approval_status',
+    ];
+
+    /**
+     * Fields used internally (IDs, computed fields, storage) 
+     * that should not be displayed on the frontend, but technically allowed
+     */
+    public static $INTERNAL_FIELDS = [
+        'id',
+        'form_id',
+        'fname',
+        'lname',
+        'hide_name',
+        'custom_properties'
     ];
 
     public static function table_name()
@@ -61,6 +94,7 @@ class AV_Petitioner_Submissions_Model
             approval_status varchar(255) DEFAULT 'Confirmed',
             submitted_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             confirmation_token varchar(64) DEFAULT NULL,
+            custom_properties LONGTEXT DEFAULT NULL,
             PRIMARY KEY  (id),
             KEY form_id (form_id)
         )";
@@ -180,10 +214,20 @@ class AV_Petitioner_Submissions_Model
             $total_submissions = 0; // Ensure we return 0 if no submissions found
         }
 
-        return [
+        $result = [
             'submissions'   => $submissions,
             'total'         => $total_submissions,
         ];
+
+        /**
+         * Filter to modify the result of the get_form_submissions method
+         *
+         * @param array $result The result array
+         * @param int $form_id The form ID
+         * @param array $settings The settings array
+         * @return array The result array
+         */
+        return apply_filters('av_petitioner_get_form_submissions_result', $result, $form_id, $settings);
     }
 
     /**
@@ -198,6 +242,8 @@ class AV_Petitioner_Submissions_Model
      */
     public static function build_where_clause($form_id, $query, $allowed_fields, $relation = 'AND')
     {
+        global $wpdb;
+
         $relation = strtoupper($relation) === 'OR' ? 'OR' : 'AND';
         $where = ['form_id = %d'];
         $params = [$form_id];
@@ -225,6 +271,14 @@ class AV_Petitioner_Submissions_Model
                     break;
                 case 'is_not_empty':
                     $conditions[] = "(`$field` != '' AND `$field` IS NOT NULL)";
+                    break;
+                case 'contains':
+                    $conditions[] = "`$field` LIKE %s";
+                    $params[] = '%' . $wpdb->esc_like($value) . '%';
+                    break;
+                case 'does_not_contain':
+                    $conditions[] = "(`$field` NOT LIKE %s OR `$field` IS NULL OR `$field` = '')";
+                    $params[] = '%' . $wpdb->esc_like((string) $value) . '%';
                     break;
             }
         }
@@ -327,26 +381,27 @@ class AV_Petitioner_Submissions_Model
         $table = $wpdb->prefix . 'av_petitioner_submissions';
 
         $field_formats = [
-            'id'                => '%d',
-            'form_id'           => '%d',
-            'fname'             => '%s',
-            'lname'             => '%s',
-            'email'             => '%s',
-            'date_of_birth'     => '%s',
-            'country'           => '%s',
-            'salutation'        => '%s',
-            'phone'             => '%s',
-            'street_address'    => '%s',
-            'city'              => '%s',
-            'postal_code'       => '%s',
-            'comments'          => '%s',
-            'bcc_yourself'      => '%d',
-            'newsletter'        => '%d',
-            'hide_name'         => '%d',
-            'accept_tos'        => '%d',
-            'approval_status'   => '%s',
-            'submitted_at'      => '%s',
-            'confirmation_token' => '%s',
+            'id'                    => '%d',
+            'form_id'               => '%d',
+            'fname'                 => '%s',
+            'lname'                 => '%s',
+            'email'                 => '%s',
+            'date_of_birth'         => '%s',
+            'country'               => '%s',
+            'salutation'            => '%s',
+            'phone'                 => '%s',
+            'street_address'        => '%s',
+            'city'                  => '%s',
+            'postal_code'           => '%s',
+            'comments'              => '%s',
+            'bcc_yourself'          => '%d',
+            'newsletter'            => '%d',
+            'hide_name'             => '%d',
+            'accept_tos'            => '%d',
+            'approval_status'       => '%s',
+            'submitted_at'          => '%s',
+            'confirmation_token'    => '%s',
+            'custom_properties'     => '%s',
         ];
 
         $formats = [];

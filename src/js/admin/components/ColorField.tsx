@@ -1,5 +1,5 @@
 import { ColorPicker, Button, ColorIndicator } from '@wordpress/components';
-import { createPortal } from 'react-dom';
+import { createPortal } from '@wordpress/element';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import styled from 'styled-components';
 

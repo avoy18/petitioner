@@ -1,7 +1,7 @@
 // FieldList.tsx
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { DRAGGABLE_FIELD_TYPES } from '@admin/context/FormBuilderContext';
+import { getDraggableFields } from '@admin/context/FormBuilderContext';
 import styled from 'styled-components';
 import DragHandle from '@admin/components/DragHandle';
 import { __ } from '@wordpress/i18n';
@@ -25,7 +25,7 @@ const FieldPaletteItem = styled.div`
 	gap: 4px;
 `;
 
-const D_PREFIX = 'ptr_insert_'
+const D_PREFIX = 'ptr_insert_';
 
 export const getIDNoPrefix = (id: string) => id.replace(D_PREFIX, '');
 
@@ -39,7 +39,6 @@ function PaletteDraggable({ id, label }: { id: string; label: string }) {
 				type: id,
 			},
 		});
-
 	const alreadyExists = fieldOrder.includes(getIDNoPrefix(id));
 
 	const style = {
@@ -72,6 +71,8 @@ function PaletteDraggable({ id, label }: { id: string; label: string }) {
 }
 
 export default function FieldList() {
+	const draggableFields = getDraggableFields();
+
 	return (
 		<FieldPaletteWrapper>
 			<h3>{__('Available fields', 'petitioner')}</h3>
@@ -81,10 +82,10 @@ export default function FieldList() {
 					'petitioner'
 				)}
 			</p>
-			{DRAGGABLE_FIELD_TYPES.map((field) => (
+			{draggableFields.map((field) => (
 				<PaletteDraggable
 					key={field.fieldKey}
-					id={D_PREFIX + field.fieldKey as string}
+					id={(D_PREFIX + field.fieldKey) as string}
 					label={field.fieldName}
 				/>
 			))}

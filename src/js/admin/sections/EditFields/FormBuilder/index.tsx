@@ -3,7 +3,7 @@ import DndSortableProvider from '@admin/context/DndSortableProvider';
 import BuilderSettings from './BuilderSettings';
 import {
 	FormBuilderContextProvider,
-	DRAGGABLE_FIELD_TYPES,
+	getDraggableFields,
 	useFormBuilderContext,
 } from '@admin/context/FormBuilderContext';
 import { getIDNoPrefix } from './BuilderSettings/FieldList';
@@ -32,13 +32,13 @@ function FormBuilderComponent() {
 		addFormBuilderField,
 	} = useFormBuilderContext();
 
+	const draggableFields = getDraggableFields();
+
 	const handleFieldInsert = (rawID: string, position: number) => {
 		const id = getIDNoPrefix(rawID);
 
 		// get the field type from the draggable options
-		const newField = DRAGGABLE_FIELD_TYPES.find(
-			(field) => field.fieldKey === id
-		);
+		const newField = draggableFields.find((field) => field.fieldKey === id);
 
 		const newFieldID = newField?.fieldKey;
 

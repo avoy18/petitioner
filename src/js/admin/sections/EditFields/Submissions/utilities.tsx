@@ -5,6 +5,7 @@ import {
 	type UpdateSettings,
 	type DeleteSettings,
 	type GetSubmissionCountSettings,
+	type GetCSVExampleSettings,
 	UPDATE_ACTION,
 	FETCH_ACTION,
 	DELETE_ACTION,
@@ -13,7 +14,7 @@ import type {
 	FieldKey,
 	FieldType,
 } from '@admin/sections/EditFields/FormBuilder/consts';
-import { ALl_POSSIBLE_FIELDS } from '@admin/context/FormBuilderContext';
+import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 
 export const fetchSubmissions = async ({
 	currentPage = 1,
@@ -21,7 +22,7 @@ export const fetchSubmissions = async ({
 	perPage = 100,
 	order,
 	orderby,
-	onSuccess = (data) => {},
+	onSuccess = (data) => { },
 }: FetchSettings) => {
 	if (!formID) {
 		console.error('Submission fetch error: missing the form id');
@@ -61,8 +62,8 @@ export const fetchSubmissions = async ({
 
 export const updateSubmissions = async ({
 	data,
-	onSuccess = () => {},
-	onError = (msg: string) => {},
+	onSuccess = () => { },
+	onError = (msg: string) => { },
 }: UpdateSettings) => {
 	if (!data?.id) {
 		onError('Submission update error: missing the submission id');
@@ -138,11 +139,14 @@ export const deleteSubmissions = async ({
 	}
 };
 
+/**
+ * @deprecated Use getCSVExample instead
+ */
 export const getSubmissionCount = async ({
 	formID,
 	filters,
-	onSuccess = () => {},
-	onError = () => {},
+	onSuccess = () => { },
+	onError = () => { },
 }: GetSubmissionCountSettings) => {
 	const finalQuery = new URLSearchParams();
 	finalQuery.set('action', 'petitioner_get_submission_count');
@@ -173,13 +177,62 @@ export const getSubmissionCount = async ({
 	}
 };
 
+export const getCSVExample = async ({
+	formID,
+	filters,
+	csv_column_config,
+	onSuccess = () => { },
+	onError = () => { },
+}: GetCSVExampleSettings) => {
+	const finalQuery = new URLSearchParams();
+	finalQuery.set('action', 'petitioner_get_csv_example');
+
+	const finalData = new FormData();
+	finalData.append('form_id', String(formID));
+	finalData.append('petitioner_nonce', getAjaxNonce());
+
+	if (filters) {
+		finalData.append('conditional_logic', JSON.stringify(filters));
+	}
+
+	if (csv_column_config) {
+		finalData.append('csv_column_config', csv_column_config);
+	}
+
+	try {
+		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
+			method: 'POST',
+			body: finalData,
+		});
+
+		if (!request.ok) {
+			onError(__('HTTP error: ', 'petitioner') + request.status);
+			return;
+		}
+
+		const response = await request.json();
+
+		if (response.success) {
+			onSuccess(response.data);
+		} else {
+			const errorMessage = response.data?.message || response.message || __('Failed to get CSV example', 'petitioner');
+			onError(errorMessage);
+		}
+	} catch (error) {
+		onError(__('Error getting CSV example: ', 'petitioner') + (error as Error)?.message);
+	}
+};
+
+
 /**
  * Returns a mapping from fieldKey to label for all available form fields.
  */
 export const getFieldLabels = (): Record<string, string> => {
 	const fieldMap: Record<string, string> = {};
 
-	ALl_POSSIBLE_FIELDS.forEach((field) => {
+	const allPossibleFields = getAllPossibleFields();
+
+	allPossibleFields.forEach((field) => {
 		if (field?.fieldKey) {
 			fieldMap[field.fieldKey] = field.label;
 		}
@@ -233,7 +286,7 @@ export const getHumanValue = (val: string, type: string): string => {
 /**
  * Returns the FieldType for a given FieldKey.
  * If the key is 'submitted_at', returns 'date'.
- * Otherwise, looks up the type from the ALl_POSSIBLE_FIELDS list.
+ * Otherwise, looks up the type from the allPossibleFields list.
  * Falls back to 'text' if the field or type is not found.
  */
 export const getSubmissionValType = (label: FieldKey): FieldType => {
@@ -241,7 +294,9 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 		return 'date';
 	}
 
-	const correctItem = ALl_POSSIBLE_FIELDS.find(
+	const allPossibleFields = getAllPossibleFields();
+
+	const correctItem = allPossibleFields.find(
 		(item) => item.fieldKey === label
 	);
 
