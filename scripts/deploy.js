@@ -1,8 +1,16 @@
 const path = require('path');
 const fs = require('fs-extra');
 
-// Directories to exclude (matched against path segments)
-const EXCLUDED_DIRS = ['.git', '.github', 'node_modules', 'scripts'];
+const EXCLUDED_DIRS = [
+	'.git',
+	'.github',
+	'node_modules',
+	'scripts',
+	'vendor',
+	'wordpress',
+	'.husky',
+	'coverage',
+];
 
 // Files to exclude (matched against basename)
 const EXCLUDED_FILES = [
@@ -11,7 +19,6 @@ const EXCLUDED_FILES = [
 	'package-lock.json',
 	'yarn.lock',
 	'pnpm-lock.yaml',
-	'README.md',
 ];
 
 const deploy = () => {
