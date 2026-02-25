@@ -345,6 +345,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Upgrade Notice ==
 
+= 0.8.0 =
+* A big architectural overhaul, country dropdown improvements, CSV export improvements, and more!
+
 = 0.1.3 =
 * This version adds the Gutenberg block and fixes a few minor issues
 
