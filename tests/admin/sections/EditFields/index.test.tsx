@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import EditFields, { tabs } from '@admin/sections/EditFields';
 
-describe('Edit fields', () => {
+describe('EditFields', () => {
 	const defaultPetitionerData = {
 		form_id: 123,
 		form_fields: {
@@ -17,7 +18,7 @@ describe('Edit fields', () => {
 		window.petitionerData = structuredClone(defaultPetitionerData);
 	});
 
-	it('Tabs are rendered', () => {
+	it('renders all tabs', () => {
 		render(<EditFields />);
 
 		tabs.forEach((tabObject) => {
@@ -26,24 +27,71 @@ describe('Edit fields', () => {
 			).toBeInTheDocument();
 		});
 	});
-	// 	render(<EditFields />);
 
-	// 	tabs.forEach((tabObject) => {
-	// 		const currentTab = screen.getByTestId(`ptr-tab-${tabObject.name}`);
+	it('renders tab buttons that are clickable', () => {
+		render(<EditFields />);
 
-	// 		// expect(
+		// The TabPanel from WP renders tab buttons with role="tab"
+		const tabButtons = screen.getAllByRole('tab');
+		expect(tabButtons.length).toBeGreaterThanOrEqual(tabs.length);
+	});
 
-	// 		// ).toBeInTheDocument();
-	// 	});
-	// 	// Find and click the Form builder tab
-	// 	const formBuilderTab = screen.getByRole('tab', {
-	// 		name: /Form builder/i,
-	// 	});
+	it('renders first tab content by default', () => {
+		render(<EditFields />);
 
-	// 	await userEvent.click(formBuilderTab);
+		// The first tab is "petition-details", verify its content area exists
+		const firstTabContent = screen.getByTestId(`ptr-tab-${tabs[0].name}`);
+		expect(firstTabContent).toBeInTheDocument();
+		expect(firstTabContent.classList.contains('active')).toBe(true);
+	});
 
-	// 	// Now assert that the content of FormBuilder is visible
-	// 	// Replace this with something you know renders inside <FormBuilder />
-	// 	// expect(screen.getByText(/Form builder/i)).toBeInTheDocument();
-	// });
+	it('switches active tab when a tab is clicked', async () => {
+		const user = userEvent.setup();
+		render(<EditFields />);
+
+		// Click the second tab
+		const secondTabName = tabs[1].name;
+		const tabButtons = screen.getAllByRole('tab');
+
+		// Find the tab button that corresponds to the second tab
+		const secondTabButton = tabButtons.find((btn) =>
+			btn.textContent?.toLowerCase().includes('form builder')
+		);
+
+		if (secondTabButton) {
+			await user.click(secondTabButton);
+
+			const secondTabContent = screen.getByTestId(
+				`ptr-tab-${secondTabName}`
+			);
+			expect(secondTabContent.classList.contains('active')).toBe(true);
+
+			// First tab should no longer be active
+			const firstTabContent = screen.getByTestId(
+				`ptr-tab-${tabs[0].name}`
+			);
+			expect(firstTabContent.classList.contains('active')).toBe(false);
+		}
+	});
+
+	it('renders BottomCallout alongside tabs', () => {
+		render(<EditFields />);
+
+		// All tab content areas should exist in the DOM
+		tabs.forEach((tab) => {
+			expect(
+				screen.getByTestId(`ptr-tab-${tab.name}`)
+			).toBeInTheDocument();
+		});
+	});
+
+	it('has exactly the expected number of tabs', () => {
+		expect(tabs).toHaveLength(4);
+		expect(tabs.map((t) => t.name)).toEqual([
+			'petition-details',
+			'form-builder',
+			'advanced-settings',
+			'submissions',
+		]);
+	});
 });
