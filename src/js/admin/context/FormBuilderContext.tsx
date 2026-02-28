@@ -33,29 +33,29 @@ const normalizeBuilderConfig = () => {
 const cleanBuilderConfig = normalizeBuilderConfig();
 
 export function getDraggableFields(): BuilderField[] {
-	const DRAGGABLE_FIELD_TYPES: BuilderField[] =
+	const draggableFieldTypes: BuilderField[] =
 		(cleanBuilderConfig.draggable) || [];
 
-	const draggableFields = applyFilters(
+	const finalDraggableFields = applyFilters(
 		'petitioner.formBuilder.draggableFields',
-		DRAGGABLE_FIELD_TYPES
+		draggableFieldTypes
 	) as BuilderField[];
 
-	return Array.isArray(draggableFields)
-		? draggableFields
-		: DRAGGABLE_FIELD_TYPES;
+	return Array.isArray(finalDraggableFields)
+		? finalDraggableFields
+		: draggableFieldTypes;
 }
 
 export function getDefaultBuilderFields(): BuilderFieldMap {
-	const DEFAULT_BUILDER_FIELDS: BuilderFieldMap =
+	const defaultBuilderFields: BuilderFieldMap =
 		(cleanBuilderConfig.defaults) || {};
 
-	const result = applyFilters(
+	const finalDefaultBuilderFields = applyFilters(
 		'petitioner.formBuilder.defaultFields',
-		DEFAULT_BUILDER_FIELDS
+		defaultBuilderFields
 	) as BuilderFieldMap;
 
-	return result || DEFAULT_BUILDER_FIELDS;
+	return finalDefaultBuilderFields || defaultBuilderFields;
 }
 
 export function getAllPossibleFields(): BuilderField[] {
