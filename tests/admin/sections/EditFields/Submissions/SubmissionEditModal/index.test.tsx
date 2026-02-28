@@ -23,8 +23,8 @@ const mockSubmission = {
 const defaultBuilderConfig = {
 	builder_config: {
 		defaults: {
-			fname: { fieldKey: 'fname', label: 'First Name', type: 'text' },
-			lname: { fieldKey: 'lname', label: 'Last Name', type: 'text' },
+			fname: { fieldKey: 'fname', label: 'First name', type: 'text' },
+			lname: { fieldKey: 'lname', label: 'Last name', type: 'text' },
 			email: { fieldKey: 'email', label: 'Email', type: 'text' },
 		},
 		draggable: [],
