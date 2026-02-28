@@ -21,3 +21,14 @@ declare namespace tinymce {
 		remove: () => void;
 	}
 }
+
+interface Window {
+	petitionerData: Record<string, unknown> & {
+		form_fields?: Record<string, unknown>;
+		field_order?: string[];
+		builder_config?: {
+			defaults: Record<string, unknown>;
+			draggable: unknown[];
+		};
+	};
+}

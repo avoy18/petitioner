@@ -20,196 +20,41 @@ export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 	null
 );
 
-export const DRAGGABLE_FIELD_TYPES = [
-	{
-		fieldKey: 'phone',
-		type: 'tel',
-		fieldName: __('Phone #', 'petitioner'),
-		label: __('Phone #', 'petitioner'),
-		value: '',
-		required: false,
-		removable: true,
-		description: __(
-			'Allows users to enter their phone number. The pattern is set to allow only digits.',
-			'petitioner'
-		),
-	},
-	{
-		fieldKey: 'date_of_birth',
-		type: 'date',
-		fieldName: __('Date of Birth', 'petitioner'),
-		label: __('Date of Birth', 'petitioner'),
-		value: '',
-		required: false,
-		removable: true,
-		description: __(
-			'Allows users to enter their date of birth using a date picker.',
-			'petitioner'
-		),
-	},
-	{
-		fieldKey: 'country',
-		type: 'select',
-		fieldName: __('Country', 'petitioner'),
-		label: __('Country', 'petitioner'),
-		required: false,
-		removable: true,
-		options: [],
-	},
-	{
-		fieldKey: 'street_address',
-		type: 'text',
-		fieldName: __('Street address', 'petitioner'),
-		label: __('Street address', 'petitioner'),
-		value: '',
-		required: false,
-		removable: true,
-	},
-	{
-		fieldKey: 'city',
-		type: 'text',
-		fieldName: __('City', 'petitioner'),
-		label: __('City', 'petitioner'),
-		value: '',
-		required: false,
-		removable: true,
-	},
-	{
-		fieldKey: 'postal_code',
-		type: 'text',
-		fieldName: __('Postal code', 'petitioner'),
-		label: __('Postal code', 'petitioner'),
-		value: '',
-		required: false,
-		removable: true,
-	},
-	{
-		fieldKey: 'accept_tos',
-		type: 'checkbox',
-		fieldName: 'Terms of service checkbox',
-		label: __(
-			'By submitting this form, I agree to the terms of service',
-			'petitioner'
-		),
-		defaultValue: false,
-		required: true,
-		removable: true,
-	},
-	{
-		fieldKey: 'hide_name',
-		type: 'checkbox',
-		fieldName: __('Keep me anonymous checkbox', 'petitioner'),
-		label: __('Keep my name anonymous', 'petitioner'),
-		defaultValue: false,
-		required: false,
-		removable: true,
-		description: __(
-			'Allows users to opt-in to keep their name anonymous in public signature lists.',
-			'petitioner'
-		),
-	},
-	{
-		fieldKey: 'newsletter',
-		type: 'checkbox',
-		fieldName: __('Newsletter opt-in checkbox', 'petitioner'),
-		label: __('Subscribe to newsletter', 'petitioner'),
-		defaultValue: false,
-		required: false,
-		removable: true,
-		description: __(
-			'Allows users to opt-in to receive newsletter updates.',
-			'petitioner'
-		),
-	},
-	{
-		fieldKey: 'bcc',
-		type: 'checkbox',
-		fieldName: __('BCC checkbox', 'petitioner'),
-		label: __('BCC me on the email', 'petitioner'),
-		defaultValue: false,
-		required: false,
-		removable: true,
-		description: __(
-			'Allows users to opt-in to send a copy of the petition to the email address entered in this form. Only works if you send emails to the representative.',
-			'petitioner'
-		),
-	},
-	{
-		fieldKey: 'legal',
-		type: 'wysiwyg',
-		fieldName: __('Legal text', 'petitioner'),
-		label: '',
-		value: __('By submitting, you agree to our terms.', 'petitioner'),
-		required: false,
-		removable: true,
-	},
-	{
-		fieldKey: 'comments',
-		type: 'textarea',
-		fieldName: __('Comments', 'petitioner'),
-		label: __('Comments', 'petitioner'),
-		placeholder: '',
-		required: false,
-		removable: true,
-	},
-] as BuilderField[];
-
-export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap = {
-	fname: {
-		fieldKey: 'fname',
-		type: 'text',
-		fieldName: __('First name', 'petitioner'),
-		label: __('First name', 'petitioner'),
-		placeholder: __('John', 'petitioner'),
-		required: true,
-		removable: false,
-	},
-	lname: {
-		fieldKey: 'lname',
-		type: 'text',
-		fieldName: __('Last name', 'petitioner'),
-		label: __('Last name', 'petitioner'),
-		placeholder: __('Smith', 'petitioner'),
-		required: true,
-		removable: false,
-	},
-	email: {
-		fieldKey: 'email',
-		type: 'email',
-		fieldName: __('Your email', 'petitioner'),
-		label: __('Your email', 'petitioner'),
-		placeholder: __('Smith', 'petitioner'),
-		required: true,
-		removable: false,
-	},
-	submit: {
-		fieldKey: 'submit',
-		type: 'submit',
-		fieldName: __('Submit button', 'petitioner'),
-		label: __('Sign this petition', 'petitioner'),
-		required: true,
-		removable: false,
-	},
+const normalizeBuilderConfig = () => {
+	const rawData = window.petitionerData?.builder_config || {};
+	const defaultData = {
+		draggable: [],
+		defaults: {},
+	};
+	return { ...defaultData, ...rawData };
 };
 
 export function getDraggableFields(): BuilderField[] {
-	const draggableFields = applyFilters(
+	const cleanBuilderConfig = normalizeBuilderConfig();
+	const draggableFieldTypes: BuilderField[] =
+		(cleanBuilderConfig.draggable) || [];
+
+	const finalDraggableFields = applyFilters(
 		'petitioner.formBuilder.draggableFields',
-		DRAGGABLE_FIELD_TYPES
+		draggableFieldTypes
 	) as BuilderField[];
 
-	return Array.isArray(draggableFields)
-		? draggableFields
-		: DRAGGABLE_FIELD_TYPES;
+	return Array.isArray(finalDraggableFields)
+		? finalDraggableFields
+		: draggableFieldTypes;
 }
 
 export function getDefaultBuilderFields(): BuilderFieldMap {
-	const result = applyFilters(
+	const cleanBuilderConfig = normalizeBuilderConfig();
+	const defaultBuilderFields: BuilderFieldMap =
+		(cleanBuilderConfig.defaults) || {};
+
+	const finalDefaultBuilderFields = applyFilters(
 		'petitioner.formBuilder.defaultFields',
-		DEFAULT_BUILDER_FIELDS
+		defaultBuilderFields
 	) as BuilderFieldMap;
 
-	return result || DEFAULT_BUILDER_FIELDS;
+	return finalDefaultBuilderFields || defaultBuilderFields;
 }
 
 export function getAllPossibleFields(): BuilderField[] {

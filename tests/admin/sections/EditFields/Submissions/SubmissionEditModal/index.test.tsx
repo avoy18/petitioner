@@ -3,7 +3,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import SubmissionEditModal from '@admin/sections/EditFields/Submissions/SubmissionEditModal';
 import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
-
 const mockSubmission = {
 	id: '1',
 	fname: 'John',
