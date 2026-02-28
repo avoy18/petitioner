@@ -11,6 +11,7 @@ class Test_AV_Petitioner_Field_Registry extends BaseTestCase
         // Reset the cached fields before each test to ensure test isolation
         $reflection = new ReflectionClass('AV_Petitioner_Field_Registry');
         $property = $reflection->getProperty('cached_fields');
+        $property->setAccessible(true);
         $property->setValue(null, null);
     }
 
