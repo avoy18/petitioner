@@ -26,13 +26,11 @@ const normalizeBuilderConfig = () => {
 		draggable: [],
 		defaults: {},
 	};
-
 	return { ...defaultData, ...rawData };
 };
 
-const cleanBuilderConfig = normalizeBuilderConfig();
-
 export function getDraggableFields(): BuilderField[] {
+	const cleanBuilderConfig = normalizeBuilderConfig();
 	const draggableFieldTypes: BuilderField[] =
 		(cleanBuilderConfig.draggable) || [];
 
@@ -47,6 +45,7 @@ export function getDraggableFields(): BuilderField[] {
 }
 
 export function getDefaultBuilderFields(): BuilderFieldMap {
+	const cleanBuilderConfig = normalizeBuilderConfig();
 	const defaultBuilderFields: BuilderFieldMap =
 		(cleanBuilderConfig.defaults) || {};
 
