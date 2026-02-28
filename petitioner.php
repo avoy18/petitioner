@@ -43,7 +43,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-csv-exporter.php'
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-custom-properties.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-builder-fields.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-field-registry.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';

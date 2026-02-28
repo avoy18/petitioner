@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class AV_Petitioner_Builder_Fields {
+class AV_Petitioner_Field_Registry {
 
     /**
      * Cache for retrieved fields.
