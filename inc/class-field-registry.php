@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Form Builder Fields Registry
  *
@@ -9,7 +10,8 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-class AV_Petitioner_Field_Registry {
+class AV_Petitioner_Field_Registry
+{
 
     /**
      * Cache for retrieved fields.
@@ -19,7 +21,8 @@ class AV_Petitioner_Field_Registry {
     /**
      * Get default core fields.
      */
-    public static function get_defaults() {
+    public static function get_defaults()
+    {
         return [
             'fname' => [
                 'fieldKey'    => 'fname',
@@ -62,7 +65,8 @@ class AV_Petitioner_Field_Registry {
     /**
      * Get draggable fields.
      */
-    public static function get_draggable() {
+    public static function get_draggable()
+    {
         return [
             [
                 'fieldKey'    => 'phone',
@@ -125,7 +129,7 @@ class AV_Petitioner_Field_Registry {
                 'type'        => 'checkbox',
                 'fieldName'   => AV_Petitioner_Labels::get('accept_tos_checkbox', null, true),
                 'label'       => AV_Petitioner_Labels::get('accept_tos', null, true),
-                'defaultValue'=> false,
+                'defaultValue' => false,
                 'required'    => true,
                 'removable'   => true,
             ],
@@ -134,7 +138,7 @@ class AV_Petitioner_Field_Registry {
                 'type'        => 'checkbox',
                 'fieldName'   => AV_Petitioner_Labels::get('hide_name_checkbox', null, true),
                 'label'       => AV_Petitioner_Labels::get('hide_name', null, true),
-                'defaultValue'=> false,
+                'defaultValue' => false,
                 'required'    => false,
                 'removable'   => true,
                 'description' => AV_Petitioner_Labels::get('hide_name_desc', null, true),
@@ -144,7 +148,7 @@ class AV_Petitioner_Field_Registry {
                 'type'        => 'checkbox',
                 'fieldName'   => AV_Petitioner_Labels::get('newsletter_checkbox', null, true),
                 'label'       => AV_Petitioner_Labels::get('newsletter', null, true),
-                'defaultValue'=> false,
+                'defaultValue' => false,
                 'required'    => false,
                 'removable'   => true,
                 'description' => AV_Petitioner_Labels::get('newsletter_desc', null, true),
@@ -154,7 +158,7 @@ class AV_Petitioner_Field_Registry {
                 'type'        => 'checkbox',
                 'fieldName'   => AV_Petitioner_Labels::get('bcc_yourself_checkbox', null, true),
                 'label'       => AV_Petitioner_Labels::get('bcc_yourself', null, true),
-                'defaultValue'=> false,
+                'defaultValue' => false,
                 'required'    => false,
                 'removable'   => true,
                 'description' => AV_Petitioner_Labels::get('bcc_yourself_desc', null, true),
@@ -185,7 +189,8 @@ class AV_Petitioner_Field_Registry {
      *
      * @return array Array containing 'defaults' and 'draggable' fields.
      */
-    public static function get_all() {
+    public static function get_all()
+    {
         if (self::$cached_fields !== null) {
             return self::$cached_fields;
         }
@@ -202,21 +207,58 @@ class AV_Petitioner_Field_Registry {
      * Get a specific field by its key.
      * Searches both defaults and draggables.
      */
-    public static function get( $field_key ) {
+    public static function get($field_key)
+    {
         $fields = self::get_all();
 
         // Check defaults first (they are keyed by fieldKey)
-        if ( isset( $fields['defaults'][ $field_key ] ) ) {
-            return $fields['defaults'][ $field_key ];
+        if (isset($fields['defaults'][$field_key])) {
+            return $fields['defaults'][$field_key];
         }
 
         // Search draggables (which is an indexed array of objects)
-        foreach ( $fields['draggable'] as $field ) {
-            if ( isset( $field['fieldKey'] ) && $field['fieldKey'] === $field_key ) {
+        foreach ($fields['draggable'] as $field) {
+            if (isset($field['fieldKey']) && $field['fieldKey'] === $field_key) {
                 return $field;
             }
         }
 
         return null; // Not found
+    }
+
+    /**
+     * Helper to statically register a custom field in one place.
+     * Hooks into the UI builder and custom properties API to ensure data saves correctly.
+     * 
+     * @param array $config The field configuration associative array.
+     *                      Must contain at minimum: 'fieldKey', 'type', 'fieldName', 'label'
+     *                      Can optionally include 'sanitize_callback' which defaults to 'sanitize_text_field'.
+     */
+    public static function register_form_field($config)
+    {
+        if (empty($config['fieldKey'])) {
+            av_ptr_error_log('Petitioner Field Registry: "fieldKey" is required to register a custom field.');
+            return;
+        }
+
+        add_filter('av_petitioner_builder_fields', function ($fields) use ($config) {
+            $frontend_config = $config;
+            unset($frontend_config['sanitize_callback']);
+
+            $frontend_config['removable'] = $frontend_config['removable'] ?? true;
+            $frontend_config['required'] = $frontend_config['required'] ?? false;
+
+            $fields['draggable'][] = $frontend_config;
+
+            return $fields;
+        });
+
+        add_filter('av_petitioner_get_custom_property_types', function ($properties) use ($config) {
+            $properties[$config['fieldKey']] = [
+                'sanitize_callback' => $config['sanitize_callback'] ?? 'sanitize_text_field'
+            ];
+
+            return $properties;
+        });
     }
 }
