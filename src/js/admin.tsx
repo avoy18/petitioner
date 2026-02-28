@@ -1,11 +1,11 @@
 import { createRoot } from '@wordpress/element';
-import EditFields from '@admin/sections/EditFields';
-import SettingsFields from '@admin/sections/SettingsFields';
-import ShortcodeArea from '@admin/sections/ShortcodeArea';
 import ComponentPreview from '@admin/sections/ComponentPreviewArea';
 
 import '../css/admin/index.css';
 import { safelyParseJSON } from '@js/utilities';
+
+import EditUI from '@admin/pages/EditUI';
+import SettingsUI from '@admin/pages/SettingsUI';
 
 const jsonContainer = document.getElementById('petitioner-json-data');
 const rawJson = jsonContainer?.textContent || '{}';
@@ -14,34 +14,6 @@ window.petitionerData = jsonContainer
 	? safelyParseJSON(rawJson)
 	: {};
 
-function EditUI() {
-	function FormArea() {
-		return (
-			<div>
-				<ShortcodeArea />
-				<EditFields />
-			</div>
-		);
-	}
-
-	const editorContainer = document.getElementById('petitioner-admin-form');
-
-	if (editorContainer) {
-		const editorRoot = createRoot(editorContainer);
-		editorRoot.render(<FormArea />);
-	}
-}
-
-function SettingsUI() {
-	const settingsContainer = document.getElementById(
-		'petitioner-settings-admin-form'
-	);
-
-	if (settingsContainer) {
-		const submissionsRoot = createRoot(settingsContainer);
-		submissionsRoot.render(<SettingsFields />);
-	}
-}
 
 function ComponentPreviewUI() {
 	const componentPreviewContainer = document.getElementById('petitioner-component-preview');
