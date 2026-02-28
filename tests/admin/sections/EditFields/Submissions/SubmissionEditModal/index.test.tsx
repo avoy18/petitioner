@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import SubmissionEditModal from '@admin/sections/EditFields/Submissions/SubmissionEditModal';
-
+import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
 const mockSubmission = {
 	id: '1',
 	fname: 'John',
@@ -20,14 +20,31 @@ const mockSubmission = {
 };
 
 describe('SubmissionEditModal', () => {
+
+	beforeEach(() => {
+		window.petitionerData = {
+			builder_config: {
+				defaults: {
+					fname: { fieldKey: 'fname', label: 'First Name', type: 'text' },
+					lname: { fieldKey: 'lname', label: 'Last Name', type: 'text' },
+					email: { fieldKey: 'email', label: 'Email', type: 'text' },
+				},
+				draggable: []
+			},
+			form_fields: {}
+		};
+	});
+
 	it('Modal renders', () => {
 		render(
-			<SubmissionEditModal
-				onSave={() => {}}
-				onClose={() => {}}
-				onDelete={() => {}}
-				submission={mockSubmission}
-			></SubmissionEditModal>
+			<FormBuilderContextProvider>
+				<SubmissionEditModal
+					onSave={() => {}}
+					onClose={() => {}}
+					onDelete={() => {}}
+					submission={mockSubmission}
+				/>
+			</FormBuilderContextProvider>
 		);
 
         expect(screen.getByText('John')).toBeInTheDocument();

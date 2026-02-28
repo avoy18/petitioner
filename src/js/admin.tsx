@@ -7,12 +7,6 @@ import ComponentPreview from '@admin/sections/ComponentPreviewArea';
 import '../css/admin/index.css';
 import { safelyParseJSON } from '@js/utilities';
 
-declare global {
-	interface Window {
-		petitionerData: Record<string, unknown>;
-	}
-}
-
 const jsonContainer = document.getElementById('petitioner-json-data');
 const rawJson = jsonContainer?.textContent || '{}';
 

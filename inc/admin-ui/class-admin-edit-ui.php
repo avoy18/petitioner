@@ -128,7 +128,7 @@ class AV_Petitioner_Admin_Edit_UI
                 'success_message'               => AV_Petitioner_Labels::get('success_message'),
                 "country_list"                  => av_petitioner_get_countries()
             ],
-            // new way of handling the form fields
+            "builder_config"                => AV_Petitioner_Field_Registry::get_all(),
             "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
             "field_order"                   =>  !empty($meta_values['field_order']) ? $this->sanitize_array($meta_values['field_order'], false) : null,
             "ajax_nonce"                    =>  $ajax_nonce
