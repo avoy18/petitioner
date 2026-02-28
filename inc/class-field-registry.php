@@ -236,8 +236,15 @@ class AV_Petitioner_Field_Registry
      */
     public static function register_form_field($config)
     {
-        if (empty($config['fieldKey'])) {
-            av_ptr_error_log('Petitioner Field Registry: "fieldKey" is required to register a custom field.');
+        $required_keys = ['fieldKey', 'type', 'fieldName', 'label'];
+        $missing_keys  = array_filter($required_keys, function ($key) use ($config) {
+            return empty($config[$key]);
+        });
+
+        if (!empty($missing_keys)) {
+            av_ptr_error_log(
+                'Petitioner Field Registry: Missing required key(s): ' . implode(', ', $missing_keys) . '.'
+            );
             return;
         }
 
