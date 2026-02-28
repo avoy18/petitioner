@@ -20,13 +20,22 @@ export const FormBuilderContext = createContext<FormBuilderContextValue | null>(
 	null
 );
 
-export const DRAGGABLE_FIELD_TYPES: BuilderField[] =
-	(window.petitionerData?.builder_config?.draggable as unknown as BuilderField[]) || [];
+const normalizeBuilderConfig = () => {
+	const rawData = window.petitionerData?.builder_config || {};
+	const defaultData = {
+		draggable: [],
+		defaults: {},
+	};
 
-export const DEFAULT_BUILDER_FIELDS: BuilderFieldMap =
-	(window.petitionerData?.builder_config?.defaults as unknown as BuilderFieldMap) || {};
+	return { ...defaultData, ...rawData };
+};
+
+const cleanBuilderConfig = normalizeBuilderConfig();
 
 export function getDraggableFields(): BuilderField[] {
+	const DRAGGABLE_FIELD_TYPES: BuilderField[] =
+		(cleanBuilderConfig.draggable) || [];
+
 	const draggableFields = applyFilters(
 		'petitioner.formBuilder.draggableFields',
 		DRAGGABLE_FIELD_TYPES
@@ -38,6 +47,9 @@ export function getDraggableFields(): BuilderField[] {
 }
 
 export function getDefaultBuilderFields(): BuilderFieldMap {
+	const DEFAULT_BUILDER_FIELDS: BuilderFieldMap =
+		(cleanBuilderConfig.defaults) || {};
+
 	const result = applyFilters(
 		'petitioner.formBuilder.defaultFields',
 		DEFAULT_BUILDER_FIELDS

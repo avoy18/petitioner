@@ -24,41 +24,11 @@ declare namespace tinymce {
 
 interface Window {
 	petitionerData: Record<string, unknown> & {
-		form_fields?: Record<string, {
-			fieldKey?: string;
-			type: 'text' | 'email' | 'select' | 'checkbox' | 'wysiwyg' | 'date' | 'tel' | 'textarea' | 'submit';
-			fieldName: string;
-			label: string;
-			required: boolean;
-			removable: boolean;
-			[key: string]: unknown;
-		}>;
+		form_fields?: Record<string, unknown>;
 		field_order?: string[];
 		builder_config?: {
-			defaults: Record<string, {
-				fieldKey?: string;
-				type: 'text' | 'email' | 'select' | 'checkbox' | 'wysiwyg' | 'date' | 'tel' | 'textarea' | 'submit';
-				fieldName: string;
-				label: string;
-				required: boolean;
-				removable: boolean;
-				placeholder?: string;
-				value?: string | boolean | string[] | number;
-				options?: string[];
-				[key: string]: unknown;
-			}>;
-			draggable: {
-				fieldKey?: string;
-				type: 'text' | 'email' | 'select' | 'checkbox' | 'wysiwyg' | 'date' | 'tel' | 'textarea' | 'submit';
-				fieldName: string;
-				label: string;
-				required: boolean;
-				removable: boolean;
-				placeholder?: string;
-				value?: string | boolean | string[] | number;
-				options?: string[];
-				[key: string]: unknown;
-			}[];
+			defaults: Record<string, unknown>;
+			draggable: unknown[];
 		};
 	};
 }
