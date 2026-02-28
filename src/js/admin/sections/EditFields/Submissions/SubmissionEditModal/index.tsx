@@ -16,11 +16,17 @@ import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
 import EditField from '@admin/components/EditField';
 
-const getSubmissionLabels = (): Partial<Record<FieldKey, string>> => {
-	return Object.fromEntries(
-		Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
-	) as Partial<Record<FieldKey, string>>;
-};
+const getSubmissionLabels = (() => {
+	let cached: Partial<Record<FieldKey, string>> | null = null;
+	return (): Partial<Record<FieldKey, string>> => {
+		if (!cached) {
+			cached = Object.fromEntries(
+				Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
+			) as Partial<Record<FieldKey, string>>;
+		}
+		return cached;
+	};
+})();
 
 export const isValidFieldKey = (key: string): key is FieldKey => {
 	return key in getSubmissionLabels();
