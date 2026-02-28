@@ -16,14 +16,14 @@ import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
 import EditField from '@admin/components/EditField';
 
-const SUBMISSION_LABELS = Object.fromEntries(
-	Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
-) as Partial<Record<FieldKey, string>>;
+const getSubmissionLabels = (): Partial<Record<FieldKey, string>> => {
+	return Object.fromEntries(
+		Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
+	) as Partial<Record<FieldKey, string>>;
+};
 
-export const isValidFieldKey = (
-	key: string
-): key is keyof typeof SUBMISSION_LABELS => {
-	return key in SUBMISSION_LABELS;
+export const isValidFieldKey = (key: string): key is FieldKey => {
+	return key in getSubmissionLabels();
 };
 
 export default function SubmissionEditModal({
@@ -70,7 +70,7 @@ export default function SubmissionEditModal({
 			return;
 		}
 		const valueString = String(value);
-		const finalLabel = SUBMISSION_LABELS[label] ?? label;
+		const finalLabel = getSubmissionLabels()[label] ?? label;
 		const type = getSubmissionValType(label);
 		const finalValue = getHumanValue(valueString, type);
 
