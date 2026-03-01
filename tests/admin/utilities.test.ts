@@ -9,6 +9,10 @@ import {
 	generateId,
 } from '@admin/utilities';
 
+afterEach(() => {
+	vi.restoreAllMocks();
+});
+
 describe('getFieldTypeGroup', () => {
 	it('returns the correct group for each field type', () => {
 		expect(getFieldTypeGroup('text')).toBe('input');
@@ -44,9 +48,7 @@ describe('updateSearchParams', () => {
 			.mockImplementation(() => {});
 	});
 
-	afterEach(() => {
-		replaceStateSpy.mockRestore();
-	});
+
 
 	it('adds a search param to the URL', () => {
 		updateSearchParams('foo', 'bar');
@@ -74,9 +76,7 @@ describe('updateActiveTabURL', () => {
 			.mockImplementation(() => {});
 	});
 
-	afterEach(() => {
-		replaceStateSpy.mockRestore();
-	});
+
 
 	it('sets ptr_active_tab when tab is not the first', () => {
 		updateActiveTabURL('second', ['first', 'second', 'third']);
@@ -114,7 +114,7 @@ describe('getAjaxNonce', () => {
 		expect(warnSpy).toHaveBeenCalledWith(
 			'Petitioner error: ajax nonce not showing up'
 		);
-		warnSpy.mockRestore();
+
 	});
 });
 
