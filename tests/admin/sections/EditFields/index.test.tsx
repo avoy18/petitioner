@@ -49,29 +49,22 @@ describe('EditFields', () => {
 		const user = userEvent.setup();
 		render(<EditFields />);
 
-		// Click the second tab
 		const secondTabName = tabs[1].name;
-		const tabButtons = screen.getAllByRole('tab');
 
-		// Find the tab button that corresponds to the second tab
-		const secondTabButton = tabButtons.find((btn) =>
-			btn.textContent?.toLowerCase().includes('form builder')
+		// Find and click the Form builder tab
+		const secondTabButton = screen.getByRole('tab', {
+			name: /form builder/i,
+		});
+		await user.click(secondTabButton);
+
+		const secondTabContent = screen.getByTestId(
+			`ptr-tab-${secondTabName}`
 		);
+		expect(secondTabContent.classList.contains('active')).toBe(true);
 
-		if (secondTabButton) {
-			await user.click(secondTabButton);
-
-			const secondTabContent = screen.getByTestId(
-				`ptr-tab-${secondTabName}`
-			);
-			expect(secondTabContent.classList.contains('active')).toBe(true);
-
-			// First tab should no longer be active
-			const firstTabContent = screen.getByTestId(
-				`ptr-tab-${tabs[0].name}`
-			);
-			expect(firstTabContent.classList.contains('active')).toBe(false);
-		}
+		// First tab should no longer be active
+		const firstTabContent = screen.getByTestId(`ptr-tab-${tabs[0].name}`);
+		expect(firstTabContent.classList.contains('active')).toBe(false);
 	});
 
 	it('renders BottomCallout alongside tabs', () => {
