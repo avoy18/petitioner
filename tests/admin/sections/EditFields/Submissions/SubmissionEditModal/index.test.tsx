@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import SubmissionEditModal from '@admin/sections/EditFields/Submissions/SubmissionEditModal';
 import { FormBuilderContextProvider } from '@admin/context/FormBuilderContext';
@@ -51,6 +51,10 @@ function renderModal(props = {}) {
 describe('SubmissionEditModal', () => {
 	beforeEach(() => {
 		window.petitionerData = structuredClone(defaultBuilderConfig) as any;
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
 	});
 
 	it('renders the modal with submission details title', () => {
@@ -150,8 +154,6 @@ describe('SubmissionEditModal', () => {
 
 		expect(confirmSpy).toHaveBeenCalled();
 		expect(mockOnDelete).toHaveBeenCalledWith('1');
-
-		confirmSpy.mockRestore();
 	});
 
 	it('does not delete when confirmation is cancelled', async () => {
@@ -168,8 +170,6 @@ describe('SubmissionEditModal', () => {
 
 		expect(confirmSpy).toHaveBeenCalled();
 		expect(mockOnDelete).not.toHaveBeenCalled();
-
-		confirmSpy.mockRestore();
 	});
 
 	it('enables Save button after editing a field', async () => {
