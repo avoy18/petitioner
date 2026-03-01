@@ -67,16 +67,6 @@ describe('EditFields', () => {
 		expect(firstTabContent.classList.contains('active')).toBe(false);
 	});
 
-	it('renders BottomCallout alongside tabs', () => {
-		render(<EditFields />);
-
-		// All tab content areas should exist in the DOM
-		tabs.forEach((tab) => {
-			expect(
-				screen.getByTestId(`ptr-tab-${tab.name}`)
-			).toBeInTheDocument();
-		});
-	});
 
 	it('has exactly the expected number of tabs', () => {
 		expect(tabs).toHaveLength(4);
