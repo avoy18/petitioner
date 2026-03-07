@@ -41,8 +41,9 @@ class AV_Petitioner_Custom_Properties
         /**
          * Filter the CSV column headers and rows
          */
-        add_filter('av_petitioner_get_csv_column_headers', [$this, 'filter_csv_column_headers'], 10, 2);
-        add_filter('av_petitioner_get_csv_row', [$this, 'filter_csv_row'], 10, 2);
+        add_filter('av_petitioner_get_csv_column_headers', [$this, 'filter_csv_column_headers'], 10, 3);
+        add_filter('av_petitioner_get_csv_row', [$this, 'filter_csv_row'], 10, 3);
+        add_filter('av_petitioner_exportable_fields', [$this, 'filter_exportable_fields'], 10, 1);
 
         /**
          * Filter the available fields that are displayed in the shortcode
@@ -158,8 +159,14 @@ class AV_Petitioner_Custom_Properties
      * @param int $form_id - the form id
      * @return array - the modified headers array with custom property labels appended
      */
-    public function filter_csv_column_headers($headers, $form_id)
+    public function filter_csv_column_headers($headers, $form_id, $resolved_config = null)
     {
+        // When using resolved config, custom properties are already included
+        // via get_exportable_fields() — skip to avoid duplication.
+        if (is_array($resolved_config)) {
+            return $headers;
+        }
+
         if (empty($headers) || empty($form_id)) {
             av_ptr_error_log('Petitioner custom properties: empty headers or form id. Skipping filtering column headers.');
             return $headers;
@@ -189,14 +196,32 @@ class AV_Petitioner_Custom_Properties
     }
 
     /**
+     * Append custom property keys to the exportable fields list.
+     *
+     * @param array $fields - the exportable field IDs
+     * @return array - the modified fields array with custom property keys appended
+     */
+    public function filter_exportable_fields($fields)
+    {
+        $property_keys = array_keys(self::get_property_types());
+        return array_values(array_unique(array_merge($fields, $property_keys)));
+    }
+
+    /**
      * Filter the CSV row to add custom property values
      *
      * @param array $row - the row array that is being returned from the get_csv_row method
      * @param object $submission - the submission object
      * @return array - the modified row array with custom property values appended
      */
-    public function filter_csv_row($row, $submission)
+    public function filter_csv_row($row, $submission, $resolved_config = null)
     {
+        // When using resolved config, custom properties are already included
+        // via get_exportable_fields() — skip to avoid duplication.
+        if (is_array($resolved_config)) {
+            return $row;
+        }
+
         if (empty($row) || $submission === null) {
             av_ptr_error_log('Petitioner custom properties: empty row or submission. Skipping filtering CSV row.');
             return $row;
