@@ -72,6 +72,7 @@ export default function SubmissionEditModal({
 		setValuesChanged(hasChanged);
 	}, [submissionDetails, submission]);
 
+	const allFields = getAllPossibleFields();
 	const SubmissionDetails = submissionEntries.map(([label, value], index) => {
 		if (!isValidFieldKey(label)) {
 			return;
@@ -101,7 +102,7 @@ export default function SubmissionEditModal({
 		};
 
 		if (currentlyEditing) {
-			const fieldConfig = getAllPossibleFields().find(
+			const fieldConfig = allFields.find(
 				(f) => f.fieldKey === label
 			);
 			const fieldOptions =
