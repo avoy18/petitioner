@@ -4,6 +4,7 @@ import { __ } from '@wordpress/i18n';
 import ConditionalLogic from '@admin/components/ConditionalLogic';
 import type { ConditionGroup, AvailableFields } from '@admin/components/ConditionalLogic/consts';
 import { getFieldLabels, getSubmissionValType } from '../utilities';
+import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 import { FiltersWrapper } from './styled';
 import { EXCLUDED_FIELDS, type FiltersProps } from './consts';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
@@ -23,6 +24,8 @@ const Filters = ({
 	};
 
 	const availableFields = useMemo(() => {
+		const allFields = getAllPossibleFields();
+
 		return Object.keys(submissionExample)
 			.map((key) => {
 				if (EXCLUDED_FIELDS.includes(key)) {
@@ -36,10 +39,20 @@ const Filters = ({
 					return null;
 				}
 
+				const fieldConfig = allFields.find((f) => f.fieldKey === key);
+				const options =
+					type === 'select' && fieldConfig && 'options' in fieldConfig
+						? (fieldConfig as any).options.map((o: string) => ({
+								label: o,
+								value: o,
+							}))
+						: undefined;
+
 				return {
 					value: key,
 					label,
 					inputType: type,
+					...(options ? { options } : {}),
 				};
 			})
 			.filter(Boolean) as AvailableFields;

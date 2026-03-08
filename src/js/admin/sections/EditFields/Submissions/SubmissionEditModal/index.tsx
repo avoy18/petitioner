@@ -15,6 +15,7 @@ import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
 import EditField from '@admin/components/EditField';
+import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 
 const getSubmissionLabels = (() => {
 	let cached: Partial<Record<FieldKey, string>> | null = null;
@@ -100,11 +101,23 @@ export default function SubmissionEditModal({
 		};
 
 		if (currentlyEditing) {
+			const fieldConfig = getAllPossibleFields().find(
+				(f) => f.fieldKey === label
+			);
+			const fieldOptions =
+				type === 'select' && fieldConfig && 'options' in fieldConfig
+					? (fieldConfig as any).options.map((o: string) => ({
+							label: o,
+							value: o,
+						}))
+					: undefined;
+
 			ValueField = (
 				<EditField
 					type={type}
 					value={valueString}
 					fieldKey={label}
+					options={fieldOptions}
 					onChange={(val) => {
 						updateSubmissionDetails(label, val);
 					}}
