@@ -7,7 +7,6 @@ import { getFieldLabels } from '../utilities';
 import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 import { FiltersWrapper } from './styled';
 import { EXCLUDED_FIELDS, type FiltersProps } from './consts';
-import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 
 const Filters = ({
 	validCount,
@@ -43,7 +42,7 @@ const Filters = ({
 
 				const options =
 					type === 'select' && fieldConfig && 'options' in fieldConfig
-						? (fieldConfig as any).options.map((o: string) => ({
+						? (fieldConfig).options.map((o: string) => ({
 								label: o,
 								value: o,
 							}))
