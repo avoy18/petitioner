@@ -49,6 +49,12 @@ class AV_Petitioner_Custom_Properties
          * Filter the available fields that are displayed in the shortcode
          */
         add_filter('av_petitioner_available_fields_shortcode', [$this, 'filter_available_fields_shortcode'], 10, 1);
+
+        /**
+         * Handle WHERE clause conditions for custom property fields
+         */
+        add_filter('av_petitioner_query_allowed_fields', [$this, 'filter_query_allowed_fields'], 10, 1);
+        add_filter('av_petitioner_query_field_column', [$this, 'filter_query_field_column'], 10, 2);
     }
 
     /**
@@ -236,6 +242,36 @@ class AV_Petitioner_Custom_Properties
         }
 
         return $row;
+    }
+
+    /**
+     * Append custom property keys to the query allowed fields list.
+     *
+     * @param array $fields - the allowed field names for query conditions
+     * @return array - the modified fields array with custom property keys appended
+     */
+    public function filter_query_allowed_fields($fields)
+    {
+        $property_keys = array_keys(self::get_property_types());
+        return array_values(array_unique(array_merge($fields, $property_keys)));
+    }
+
+    /**
+     * Return JSON_EXTRACT expression for custom property fields.
+     *
+     * @param string $column_expr The default column expression.
+     * @param string $field The field name.
+     * @return string The SQL column expression.
+     */
+    public function filter_query_field_column($column_expr, $field)
+    {
+        $property_types = self::get_property_types();
+
+        if (array_key_exists($field, $property_types)) {
+            return "JSON_UNQUOTE(JSON_EXTRACT(custom_properties, '$.". esc_sql($field) ."'))";
+        }
+
+        return $column_expr;
     }
 
     /**

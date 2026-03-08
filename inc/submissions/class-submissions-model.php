@@ -244,6 +244,15 @@ class AV_Petitioner_Submissions_Model
     {
         global $wpdb;
 
+        /**
+         * Filter to extend the allowed fields for query conditions.
+         * Allows plugins to add custom property keys so they can be used in WHERE clauses.
+         *
+         * @param array $allowed_fields List of allowed field names.
+         * @return array Extended list of allowed field names.
+         */
+        $allowed_fields = apply_filters('av_petitioner_query_allowed_fields', $allowed_fields);
+
         $relation = strtoupper($relation) === 'OR' ? 'OR' : 'AND';
         $where = ['form_id = %d'];
         $params = [$form_id];
@@ -257,27 +266,38 @@ class AV_Petitioner_Submissions_Model
 
             if (!in_array($field, $allowed_fields)) continue;
 
+            /**
+             * Filter the SQL column expression for a query field.
+             * Defaults to backtick-quoted column name. Plugins can return
+             * a different expression (e.g. for JSON-stored fields).
+             *
+             * @param string $column_expr The SQL column expression.
+             * @param string $field The field name.
+             * @return string The SQL column expression.
+             */
+            $field = apply_filters('av_petitioner_query_field_column', "`$field`", $field);
+
             switch ($operator) {
                 case 'equals':
-                    $conditions[] = "`$field` = %s";
+                    $conditions[] = "$field = %s";
                     $params[] = $value;
                     break;
                 case 'not_equals':
-                    $conditions[] = "`$field` != %s";
+                    $conditions[] = "$field != %s";
                     $params[] = $value;
                     break;
                 case 'is_empty':
-                    $conditions[] = "(`$field` = '' OR `$field` IS NULL)";
+                    $conditions[] = "($field = '' OR $field IS NULL)";
                     break;
                 case 'is_not_empty':
-                    $conditions[] = "(`$field` != '' AND `$field` IS NOT NULL)";
+                    $conditions[] = "($field != '' AND $field IS NOT NULL)";
                     break;
                 case 'contains':
-                    $conditions[] = "`$field` LIKE %s";
+                    $conditions[] = "$field LIKE %s";
                     $params[] = '%' . $wpdb->esc_like($value) . '%';
                     break;
                 case 'does_not_contain':
-                    $conditions[] = "(`$field` NOT LIKE %s OR `$field` IS NULL OR `$field` = '')";
+                    $conditions[] = "($field NOT LIKE %s OR $field IS NULL OR $field = '')";
                     $params[] = '%' . $wpdb->esc_like((string) $value) . '%';
                     break;
             }
