@@ -201,7 +201,19 @@ class Test_Custom_Properties extends BaseTestCase
 
         $this->assertStringContainsString('JSON_UNQUOTE', $result);
         $this->assertStringContainsString('JSON_EXTRACT', $result);
-        $this->assertStringContainsString('$.favorite_color', $result);
+        $this->assertStringContainsString('$."favorite_color"', $result);
+    }
+
+    public function test_filter_query_field_column_handles_keys_with_special_characters()
+    {
+        add_filter('av_petitioner_get_custom_property_types', function () {
+            return ['my-field' => ['sanitize_callback' => 'sanitize_text_field']];
+        });
+
+        $instance = new AV_Petitioner_Custom_Properties();
+        $result = $instance->filter_query_field_column('`my-field`', 'my-field');
+
+        $this->assertStringContainsString('$."my-field"', $result);
     }
 
     public function test_filter_query_field_column_returns_default_for_non_custom_field()
@@ -232,7 +244,7 @@ class Test_Custom_Properties extends BaseTestCase
         );
 
         $this->assertStringContainsString('JSON_UNQUOTE', $result['where']);
-        $this->assertStringContainsString('$.favorite_color', $result['where']);
+        $this->assertStringContainsString('$."favorite_color"', $result['where']);
         $this->assertContains('Blue', $result['params']);
     }
 }
