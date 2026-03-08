@@ -3,7 +3,7 @@ import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import ConditionalLogic from '@admin/components/ConditionalLogic';
 import type { ConditionGroup, AvailableFields } from '@admin/components/ConditionalLogic/consts';
-import { getFieldLabels, getSubmissionValType } from '../utilities';
+import { getFieldLabels } from '../utilities';
 import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 import { FiltersWrapper } from './styled';
 import { EXCLUDED_FIELDS, type FiltersProps } from './consts';
@@ -32,14 +32,15 @@ const Filters = ({
 					return null;
 				}
 
-				const type = getSubmissionValType(key as FieldKey) || 'text';
+				const fieldConfig = allFields.find((f) => f.fieldKey === key);
+				const type = fieldConfig ? fieldConfig.type : 'text';
+
 				const label = potentialLabels?.[key as keyof typeof potentialLabels];
 
 				if (!label) {
 					return null;
 				}
 
-				const fieldConfig = allFields.find((f) => f.fieldKey === key);
 				const options =
 					type === 'select' && fieldConfig && 'options' in fieldConfig
 						? (fieldConfig as any).options.map((o: string) => ({
