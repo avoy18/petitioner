@@ -269,7 +269,7 @@ class AV_Petitioner_Custom_Properties
 
         if (array_key_exists($field, $property_types)) {
             $escaped_field = str_replace(array('\\', '"'), array('\\\\', '\\"'), $field);
-            return "JSON_UNQUOTE(JSON_EXTRACT(custom_properties, '$.". $escaped_field ."'))";
+            return "JSON_UNQUOTE(JSON_EXTRACT(custom_properties, '$.\"". $escaped_field ."\"'))";
         }
 
         return $column_expr;
