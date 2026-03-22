@@ -95,7 +95,7 @@ class AV_Petitioner_Admin_Edit_UI
             "email"                         => sanitize_text_field($meta_values['email']),
             "cc_emails"                     => sanitize_text_field($meta_values['cc_emails']),
             "show_goal"                     => (bool) $meta_values['show_goal'],
-            "goal"                          => (int) $meta_values['goal'],
+            "goal"                          => AV_Petitioner_Goal_Milestones::normalize($meta_values['goal']),
             "show_country"                  => (bool) $meta_values['show_country'],
             "subject"                       => esc_html($meta_values['subject']),
             "require_approval"              => (bool) $meta_values['require_approval'],
@@ -237,7 +237,7 @@ class AV_Petitioner_Admin_Edit_UI
             } elseif (in_array($key, $checkboxes)) {
                 $value = $value === "on" ? 1 : 0;
             } elseif ($key === 'goal') {
-                $value = (int) $value;
+                $value = AV_Petitioner_Goal_Milestones::sanitize_json($value);
             } elseif ($key === 'form_fields') {
                 $value = $this->sanitize_form_fields($value);
             } elseif ($key === 'field_order') {

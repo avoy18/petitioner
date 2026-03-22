@@ -1,5 +1,6 @@
 import { TextControl } from '@wordpress/components';
 import PTRichText from '@admin/components/PTRichText';
+import GoalMilestones from '@admin/components/GoalMilestones';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 
 /**
@@ -21,19 +22,15 @@ export default function PetitionDetails() {
 				/>
 			</p>
 
-			<p>
-				<TextControl
-					style={{ width: '100%' }}
-					required
-					type="number"
-					label="Signature goal *"
-					value={Number(formState.goal)}
-					name="petitioner_goal"
-					id="petitioner_goal"
-					help="Select your target submission number. You can disable this in the general settings"
-					onChange={(value) => updateFormState('goal', Number(value))}
-				/>
-			</p>
+			<GoalMilestones
+				milestones={formState.goal}
+				onChange={(milestones) => updateFormState('goal', milestones)}
+			/>
+			<input
+				type="hidden"
+				name="petitioner_goal"
+				value={JSON.stringify(formState.goal)}
+			/>
 
 			<p>
 				<input

@@ -91,8 +91,7 @@ class AV_Petitioner_Frontend_UI
 
         if (!$show_goal) return;
 
-        $petitioner_goal        = get_post_meta($form_id, '_petitioner_goal', true);
-        $goal                   = intval($petitioner_goal);
+        $goal                   = AV_Petitioner_Goal_Milestones::get_active_goal($form_id);
         $total_submissions      = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
         $progress               = 0;
 

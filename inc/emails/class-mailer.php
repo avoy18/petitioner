@@ -210,7 +210,7 @@ class AV_Petitioner_Mailer
         $variables = [
             'user_name'         => $this->user_name,
             'petition_letter'   => $this->letter,
-            'petition_goal'     => get_post_meta($this->form_id, '_petitioner_goal', true),
+            'petition_goal'     => AV_Petitioner_Goal_Milestones::get_active_goal($this->form_id),
             'confirmation_link' => $confirmation_link
         ];
 
