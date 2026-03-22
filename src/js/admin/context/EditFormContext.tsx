@@ -24,7 +24,7 @@ const normalizePetitionerData = () => {
 
 	// Normalize goal: legacy number → milestone array
 	let normalizedGoal = [{ value: 0, count_start: 0 }];
-	if (Array.isArray(rawData.goal)) {
+	if (Array.isArray(rawData.goal) && rawData.goal.length > 0) {
 		normalizedGoal = rawData.goal.map((m: Record<string, unknown>) => ({
 			value: Number(m.value) || 0,
 			count_start: Number(m.count_start) || 0,
