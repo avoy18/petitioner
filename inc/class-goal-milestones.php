@@ -82,10 +82,11 @@ class AV_Petitioner_Goal_Milestones
             return 0;
         }
 
-        // Milestones are sorted by count_start ascending.
-        // Walk backwards from last to find the first whose count_start <= count.
-        $active = $milestones[0];
+        // Start with a zero default so that if count hasn't reached
+        // any milestone's count_start, we return 0.
+        $active = ['value' => 0, 'count_start' => 0];
 
+        // Milestones are sorted by count_start ascending.
         foreach ($milestones as $milestone) {
             if ($count >= $milestone['count_start']) {
                 $active = $milestone;

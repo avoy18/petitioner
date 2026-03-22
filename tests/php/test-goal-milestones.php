@@ -181,6 +181,17 @@ class Test_Goal_Milestones extends BaseTestCase
         $this->assertEquals(100, AV_Petitioner_Goal_Milestones::resolve_active_goal($milestones, 99));
     }
 
+    public function test_resolve_active_goal_count_below_all_thresholds_returns_zero()
+    {
+        $milestones = [
+            ['value' => 500, 'count_start' => 100],
+            ['value' => 1000, 'count_start' => 500],
+        ];
+
+        // Count is 50, below the lowest count_start (100), should return 0
+        $this->assertEquals(0, AV_Petitioner_Goal_Milestones::resolve_active_goal($milestones, 50));
+    }
+
     // ============================================
     // SANITIZE_JSON TESTS
     // ============================================
