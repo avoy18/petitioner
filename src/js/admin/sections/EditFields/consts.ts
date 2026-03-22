@@ -45,6 +45,7 @@ export type PetitionerData = {
 	override_success_message?: CheckboxValue;
 	success_message?: TextValue;
     hide_last_names: boolean;
+	redirect_url: TextValue;
 	active_tab: string;
 };
 

@@ -20,11 +20,12 @@ class AV_Petitioner_Frontend_UI
         if (!$post_exists || $post_exists->post_type !== 'petitioner-petition') {
             return;
         }
-        $form_handler = new AV_Petitioner_Form_UI($form_id);
+        $form_handler       = new AV_Petitioner_Form_UI($form_id);
+        $form_attributes    = $this->get_form_attributes($form_id);
 
         ob_start();
 ?>
-        <div class="petitioner">
+        <div <?php echo $form_attributes; ?>>
             <?php
             $this->render_title($form_id);
             $this->render_goal($form_id, get_option('petitioner_show_goal', true));
@@ -41,6 +42,47 @@ class AV_Petitioner_Frontend_UI
         </div>
     <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Build the HTML attributes string for the main .petitioner wrapper div.
+     *
+     * Collects data-* attributes (e.g. redirect URL) and passes them through
+     * a filter so other plugins/extensions can append their own.
+     *
+     * @param int|string $form_id The petition form ID.
+     * @return string Rendered HTML attributes string, e.g. `class="petitioner" data-redirect-url="..."`.
+     */
+    public function get_form_attributes($form_id): string
+    {
+        $attrs = [
+            'class' => 'petitioner',
+        ];
+
+        $redirect_url = get_post_meta($form_id, '_petitioner_redirect_url', true);
+
+        if (!empty($redirect_url)) {
+            $attrs['data-redirect-url'] = esc_url($redirect_url);
+        }
+
+        /**
+         * Filter the HTML attributes for the petition form wrapper element.
+         *
+         * Use this to add custom data-* attributes or classes to the
+         * `.petitioner` wrapper div rendered on the frontend.
+         *
+         * @param array      $attrs   Associative array of attribute name => value.
+         * @param int|string $form_id The petition form ID.
+         * @return array Modified attributes array.
+         */
+        $attrs = apply_filters('av_petitioner_form_attributes', $attrs, $form_id);
+
+        $parts = [];
+        foreach ($attrs as $key => $value) {
+            $parts[] = esc_attr($key) . '="' . esc_attr($value) . '"';
+        }
+
+        return implode(' ', $parts);
     }
 
     public function render_title($form_id)

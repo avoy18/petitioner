@@ -223,6 +223,12 @@ export default class PetitionerForm {
 			const res = (await response.json()) as ApiResponse;
 
 			if (res.success) {
+				const redirectUrl =
+					this.wrapper?.getAttribute('data-redirect-url');
+				if (redirectUrl) {
+					window.location.href = redirectUrl;
+					return;
+				}
 				this.showResponseMSG(res.data, true);
 			} else {
 				this.showResponseMSG(res.data, false);

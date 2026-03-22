@@ -381,6 +381,25 @@ export default function AdvancedSettings() {
 					updateFormState('hide_last_names', e.target.checked)
 				}
 			/>
+
+			<hr />
+
+			<p>
+				<TextControl
+					type="url"
+					label={__('Redirect URL after submission', 'petitioner')}
+					value={formState.redirect_url}
+					name="petitioner_redirect_url"
+					id="petitioner_redirect_url"
+					help={__(
+						'Optional. If set, the user will be redirected to this URL after a successful submission instead of seeing the success message.',
+						'petitioner'
+					)}
+					onChange={(value) =>
+						updateFormState('redirect_url', value)
+					}
+				/>
+			</p>
 		</>
 	);
 }
