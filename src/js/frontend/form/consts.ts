@@ -27,6 +27,7 @@ export type CaptchaProvider = {
 
 export type CustomEventDetail = {
 	formData: FormData;
+	success: boolean;
 };
 
 export type ApiResponse = {
