@@ -45,7 +45,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-field-registry.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-goal-milestones.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-goal-milestones.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-template.php';
