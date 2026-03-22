@@ -28,7 +28,8 @@ export default function GoalMilestones({
 	const handleAdd = useCallback(() => {
 		const lastMilestone = milestones[milestones.length - 1];
 		const newCountStart = lastMilestone ? lastMilestone.value : 0;
-		onChange([...milestones, { value: 0, count_start: newCountStart }]);
+		const newValue = lastMilestone ? lastMilestone.value + 100 : 100;
+		onChange([...milestones, { value: newValue, count_start: newCountStart }]);
 	}, [milestones, onChange]);
 
 	const handleRemove = useCallback(

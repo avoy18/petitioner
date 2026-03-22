@@ -65,7 +65,56 @@ describe('GoalMilestones Component', () => {
 		expect(onChange).toHaveBeenCalledTimes(1);
 		const newMilestones = onChange.mock.calls[0][0];
 		expect(newMilestones).toHaveLength(2);
-		expect(newMilestones[1]).toEqual({ value: 0, count_start: 100 });
+		expect(newMilestones[1]).toEqual({ value: 200, count_start: 100 });
+	});
+
+	it('increments new milestone value by 100 from the last milestone', async () => {
+		const user = userEvent.setup();
+		const onChange = vi.fn();
+		const milestones = [{ value: 500, count_start: 0 }];
+
+		render(
+			<GoalMilestones milestones={milestones} onChange={onChange} />
+		);
+
+		await user.click(screen.getByTestId('add-milestone-btn'));
+
+		const newMilestones = onChange.mock.calls[0][0];
+		expect(newMilestones[1]).toEqual({ value: 600, count_start: 500 });
+	});
+
+	it('increments from the last milestone when multiple exist', async () => {
+		const user = userEvent.setup();
+		const onChange = vi.fn();
+		const milestones = [
+			{ value: 100, count_start: 0 },
+			{ value: 500, count_start: 100 },
+		];
+
+		render(
+			<GoalMilestones milestones={milestones} onChange={onChange} />
+		);
+
+		await user.click(screen.getByTestId('add-milestone-btn'));
+
+		const newMilestones = onChange.mock.calls[0][0];
+		expect(newMilestones).toHaveLength(3);
+		expect(newMilestones[2]).toEqual({ value: 600, count_start: 500 });
+	});
+
+	it('defaults to value 100 and count_start 0 when milestones are empty', async () => {
+		const user = userEvent.setup();
+		const onChange = vi.fn();
+
+		render(
+			<GoalMilestones milestones={[]} onChange={onChange} />
+		);
+
+		await user.click(screen.getByTestId('add-milestone-btn'));
+
+		const newMilestones = onChange.mock.calls[0][0];
+		expect(newMilestones).toHaveLength(1);
+		expect(newMilestones[0]).toEqual({ value: 100, count_start: 0 });
 	});
 
 	it('renders multiple milestones with remove buttons', () => {
@@ -130,7 +179,6 @@ describe('GoalMilestones Component', () => {
 		expect(firstCall[0].value).toBe(0);
 		expect(firstCall[0].count_start).toBe(0);
 	});
-
 
 	it('shows "Show after # signatures" label only on secondary milestones', () => {
 		const onChange = vi.fn();
