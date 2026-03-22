@@ -79,6 +79,11 @@ class AV_Petitioner_Frontend_UI
 
         $parts = [];
         foreach ($attrs as $key => $value) {
+            // Re-escape the redirect URL specifically to prevent DOM XSS
+            // in case a filter injected a dangerous protocol (e.g. javascript:)
+            if ($key === 'data-redirect-url') {
+                $value = esc_url($value);
+            }
             $parts[] = esc_attr($key) . '="' . esc_attr($value) . '"';
         }
 
