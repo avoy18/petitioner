@@ -45,7 +45,7 @@ class AV_Email_Confirmations
      */
     static function generate_confirmation_token()
     {
-        return bin2hex(random_bytes(32));
+        return wp_generate_password(64, false, false);
     }
 
     /**
