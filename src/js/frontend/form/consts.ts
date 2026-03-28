@@ -6,6 +6,10 @@ export type PetitionerFormSettings = {
 	actionPath?: string;
 	nonceEndpoint?: string;
 	nonce?: string;
+	labels?: {
+		emailConfirmedSuccess?: string;
+		emailConfirmedError?: string;
+	};
 };
 
 export type PetitionerCaptcha = {
