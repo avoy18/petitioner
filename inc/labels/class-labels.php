@@ -109,6 +109,8 @@ class AV_Petitioner_Labels
             'no_submissions_to_export'       => __('No submissions available to export.', 'petitioner'),
 
             // Email labels
+            'email_confirmed_success'        => __('Thank you for confirming your email!', 'petitioner'),
+            'email_confirmed_error'          => __('We couldn\'t confirm your email address. It may have already been confirmed, or the link has expired.', 'petitioner'),
             'ty_email_subject'               => AV_Petitioner_Email_Template::get_default_ty_subject(),
             'ty_email'                       => AV_Petitioner_Email_Template::get_default_ty_email(),
             'ty_email_subject_confirm'       => AV_Petitioner_Email_Template::get_default_ty_subject(true),

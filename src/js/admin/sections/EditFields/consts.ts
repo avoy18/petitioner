@@ -47,6 +47,8 @@ export type PetitionerData = {
 	success_message?: TextValue;
     hide_last_names: boolean;
 	redirect_url: TextValue;
+	confirm_success_url: TextValue;
+	confirm_error_url: TextValue;
 	active_tab: string;
 };
 

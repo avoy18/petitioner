@@ -134,7 +134,9 @@ export default class PetitionerForm {
 		// Redirect on successful submission if a redirect URL is configured
 		document.addEventListener('petitionerFormSubmit', ((e: CustomEvent) => {
 			if (!e.detail?.success) return;
-			const redirectUrl = this.wrapper?.getAttribute('data-redirect-url');
+			const wrapperEl = e.detail.wrapperEl;
+			const redirectUrl = wrapperEl.getAttribute('data-redirect-url');
+
 			if (redirectUrl) {
 				window.location.href = redirectUrl;
 			}
@@ -252,7 +254,11 @@ export default class PetitionerForm {
 
 		if (formData) {
 			const event = new CustomEvent('petitionerFormSubmit', {
-				detail: { formData, success: isSuccess },
+				detail: {
+					formData,
+					success: isSuccess,
+					wrapperEl: this.wrapper
+				},
 			});
 			document.dispatchEvent(event);
 		}

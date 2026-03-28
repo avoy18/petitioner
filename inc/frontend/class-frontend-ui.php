@@ -62,23 +62,7 @@ class AV_Petitioner_Frontend_UI
         $redirect_url = get_post_meta($form_id, '_petitioner_redirect_url', true);
 
         if (!empty($redirect_url)) {
-            /**
-             * Filter whether to allow external redirects after form submission.
-             * 
-             * By default, we use wp_validate_redirect() to restrict redirects to the same 
-             * origin for security against Open Redirect vulnerabilities. 
-             * If set to true, this completely bypasses the validation.
-             *
-             * @param bool $allow_external Default false.
-             * @param int  $form_id        The current petition form ID.
-             */
-            $allow_external = apply_filters('petitioner_allow_external_redirects', false, $form_id);
-
-            // If not allowing all external, enforce same-origin (or hosts in allowed_redirect_hosts)
-            if (!$allow_external) {
-                // If invalid, this returns the fallback (which we set to an empty string)
-                $redirect_url = wp_validate_redirect($redirect_url, '');
-            }
+            $redirect_url = av_petitioner_get_validated_redirect_url($redirect_url, $form_id);
 
             // Only add the data attribute if it survived validation
             if (!empty($redirect_url)) {
