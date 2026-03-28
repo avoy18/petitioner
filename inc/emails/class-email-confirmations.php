@@ -145,7 +145,7 @@ class AV_Email_Confirmations
         $custom_url = av_petitioner_get_validated_redirect_url($custom_url, $form_id);
 
         if (!empty($custom_url)) {
-            wp_redirect(esc_url_raw($custom_url));
+            wp_redirect($custom_url);
         } else {
             wp_redirect($default_url);
         }

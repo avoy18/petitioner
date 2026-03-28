@@ -362,6 +362,9 @@ function av_petitioner_get_validated_redirect_url($url, $form_id)
     }
 
     $allow_external = apply_filters('petitioner_allow_external_redirects', false, $form_id);
+    
+    $url = wp_sanitize_redirect($url);
+
     if (!$allow_external) {
         $url = wp_validate_redirect($url, '');
     }
