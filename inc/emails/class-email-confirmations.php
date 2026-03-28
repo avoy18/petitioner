@@ -88,6 +88,19 @@ class AV_Email_Confirmations
             // Send the emails
             self::send_emails($submission);
 
+            /**
+             * Fires immediately after a petition submission's email is successfully confirmed.
+             * 
+             * This action allows external code to run custom logic (e.g., syncing to a CRM,
+             * sending a custom notification, or triggering a webhook) the moment a user
+             * clicks the confirmation link in their email and the record is updated.
+             *
+             * @since 0.8.1
+             *
+             * @param object $submission The submission object containing the petition data.
+             */
+            do_action('petitioner_email_confirmation_success', $submission);
+
             if ($updated !== false) {
                 // Optional: custom redirect on success
                 $success_url = get_post_meta($form_id, '_petitioner_confirm_success_url', true);
@@ -106,6 +119,20 @@ class AV_Email_Confirmations
                 exit;
             }
         }
+
+        /**
+         * Fires when a petition submission's email confirmation fails.
+         * 
+         * This typically occurs if the token is invalid, expired, or the submission
+         * has already been confirmed. External code can use this to log failures
+         * or trigger alternative workflows.
+         *
+         * @since 0.8.1
+         *
+         * @param object $submission The submission object that failed confirmation.
+         * @param string $token      The invalid token that was provided in the URL.
+         */
+        do_action('petitioner_email_confirmation_error', $submission, $token);
 
         // Optional: custom redirect on failure
         $error_url = get_post_meta($form_id, '_petitioner_confirm_error_url', true);
