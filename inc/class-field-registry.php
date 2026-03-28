@@ -248,6 +248,8 @@ class AV_Petitioner_Field_Registry
             return;
         }
 
+        self::$cached_fields = null;
+
         add_filter('av_petitioner_builder_fields', function ($fields) use ($config) {
             $frontend_config = $config;
             unset($frontend_config['sanitize_callback']);
