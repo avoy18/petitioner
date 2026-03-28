@@ -75,6 +75,8 @@ class AV_Email_Confirmations
         if (!$submission) {
             return;
         }
+        
+        $form_id = $submission->form_id;
 
         if ($token === $submission->confirmation_token) {
             // Update status and remove the token
@@ -87,14 +89,38 @@ class AV_Email_Confirmations
             self::send_emails($submission);
 
             if ($updated !== false) {
-                // Optional: show success flag in query string
-                wp_redirect(home_url('/?petitioner=confirmed'));
+                // Optional: custom redirect on success
+                $success_url = get_post_meta($form_id, '_petitioner_confirm_success_url', true);
+                if (!empty($success_url)) {
+                    $allow_external = apply_filters('petitioner_allow_external_redirects', false, $form_id);
+                    if (!$allow_external) {
+                        $success_url = wp_validate_redirect($success_url, '');
+                    }
+                }
+
+                if (!empty($success_url)) {
+                    wp_redirect(esc_url_raw($success_url));
+                } else {
+                    wp_redirect(home_url('/?petitioner=confirmed'));
+                }
                 exit;
             }
         }
 
-        // Optional: redirect on failure
-        wp_redirect(home_url('/?petitioner=invalid'));
+        // Optional: custom redirect on failure
+        $error_url = get_post_meta($form_id, '_petitioner_confirm_error_url', true);
+        if (!empty($error_url)) {
+            $allow_external = apply_filters('petitioner_allow_external_redirects', false, $form_id);
+            if (!$allow_external) {
+                $error_url = wp_validate_redirect($error_url, '');
+            }
+        }
+
+        if (!empty($error_url)) {
+            wp_redirect(esc_url_raw($error_url));
+        } else {
+            wp_redirect(home_url('/?petitioner=invalid'));
+        }
         exit;
     }
 

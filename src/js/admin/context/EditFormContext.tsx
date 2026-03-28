@@ -61,6 +61,8 @@ const normalizePetitionerData = () => {
 		form_id: null,
 		hide_last_names: true,
 		redirect_url: '',
+		confirm_success_url: '',
+		confirm_error_url: '',
 		active_tab: 'default'
 	};
 
