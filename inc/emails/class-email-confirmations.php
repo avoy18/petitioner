@@ -45,7 +45,12 @@ class AV_Email_Confirmations
      */
     static function generate_confirmation_token()
     {
-        return wp_generate_password(64, false, false);
+        try {
+            return bin2hex(random_bytes(32));
+        } catch (Exception $e) {
+            av_ptr_error_log('Error generating confirmation token with random_bytes(), using fallback: ' . $e->getMessage());
+            return bin2hex(wp_generate_password(64, false, false));
+        }
     }
 
     /**
