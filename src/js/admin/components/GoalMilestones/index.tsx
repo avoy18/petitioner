@@ -45,7 +45,7 @@ export default function GoalMilestones({
 		<div data-testid="goal-milestones">
 			{milestones.map((milestone, index) => (
 				<MilestoneRow
-					key={`${milestone.value}-${milestone.count_start}`}
+					key={`milestone-row-${index}`}
 					data-testid={`milestone-row-${index}`}
 				>
 					<MilestoneField>
