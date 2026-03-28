@@ -75,7 +75,7 @@ class AV_Email_Confirmations
         if (!$submission) {
             return;
         }
-        
+
         $form_id = $submission->form_id;
 
         if ($token === $submission->confirmation_token) {
@@ -85,23 +85,22 @@ class AV_Email_Confirmations
                 'confirmation_token'    => null
             ]);
 
-            // Send the emails
-            self::send_emails($submission);
-
-            /**
-             * Fires immediately after a petition submission's email is successfully confirmed.
-             * 
-             * This action allows external code to run custom logic (e.g., syncing to a CRM,
-             * sending a custom notification, or triggering a webhook) the moment a user
-             * clicks the confirmation link in their email and the record is updated.
-             *
-             * @since 0.8.1
-             *
-             * @param object $submission The submission object containing the petition data.
-             */
-            do_action('petitioner_email_confirmation_success', $submission);
-
             if ($updated !== false) {
+                // Send the emails
+                self::send_emails($submission);
+
+                /**
+                 * Fires immediately after a petition submission's email is successfully confirmed.
+                 * 
+                 * This action allows external code to run custom logic (e.g., syncing to a CRM,
+                 * sending a custom notification, or triggering a webhook) the moment a user
+                 * clicks the confirmation link in their email and the record is updated.
+                 *
+                 * @since 0.8.1
+                 *
+                 * @param object $submission The submission object containing the petition data.
+                 */
+                do_action('petitioner_email_confirmation_success', $submission);
                 // Optional: custom redirect on success
                 $this->handle_redirect($form_id, '_petitioner_confirm_success_url', home_url('/?petitioner=confirmed'));
             }
@@ -151,7 +150,8 @@ class AV_Email_Confirmations
     /**
      * Sends emails to the user and the target email address.
      */
-    static public function send_emails($submission, $force_ty_email = false, $force_confirm_email = false){
+    static public function send_emails($submission, $force_ty_email = false, $force_confirm_email = false)
+    {
         $form_id           = $submission->form_id;
         $email             = $submission->email;
         $fname             = $submission->fname;
@@ -190,7 +190,7 @@ class AV_Email_Confirmations
          */
         $mailer_settings = apply_filters('av_petitioner_confirmation_mailer_settings', $mailer_settings, $submission);
 
-	    $mailer = new AV_Petitioner_Mailer($mailer_settings);
+        $mailer = new AV_Petitioner_Mailer($mailer_settings);
 
         return $mailer->send_emails();
     }
