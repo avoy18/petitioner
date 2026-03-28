@@ -21,13 +21,25 @@ const EditFormContext = createContext<EditFormContextValue | null>(null);
  */
 const normalizePetitionerData = () => {
 	const rawData = window.petitionerData || {};
+
+	// Normalize goal: legacy number → milestone array
+	let normalizedGoal = [{ value: 0, count_start: 0 }];
+	if (Array.isArray(rawData.goal) && rawData.goal.length > 0) {
+		normalizedGoal = rawData.goal.map((m: Record<string, unknown>) => ({
+			value: Number(m.value) || 0,
+			count_start: Number(m.count_start) || 0,
+		}));
+	} else if (typeof rawData.goal === 'number' || typeof rawData.goal === 'string') {
+		normalizedGoal = [{ value: Number(rawData.goal) || 0, count_start: 0 }];
+	}
+
 	const defaultData: PetitionerData = {
 		title: '',
 		send_to_representative: false,
 		email: '',
 		cc_emails: '',
 		show_goal: true,
-		goal: 0,
+		goal: normalizedGoal,
 		show_country: false,
 		subject: '',
 		require_approval: false,
@@ -52,7 +64,7 @@ const normalizePetitionerData = () => {
 		active_tab: 'default'
 	};
 
-	return { ...defaultData, ...rawData };
+	return { ...defaultData, ...rawData, goal: normalizedGoal };
 };
 
 export function EditFormContextProvider({

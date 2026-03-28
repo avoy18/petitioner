@@ -2,6 +2,7 @@ export type CheckboxValue = boolean;
 export type TextValue = string | number;
 export type NumberValue = number | null;
 export type ApprovalState = 'Email' | 'Confirmed' | 'Declined';
+export type GoalMilestone = { value: number; count_start: number };
 
 export type FormID = number|null;
 
@@ -23,7 +24,7 @@ export type PetitionerData = {
 	email: TextValue;
 	cc_emails: TextValue;
 	show_goal: CheckboxValue;
-	goal: NumberValue;
+	goal: GoalMilestone[];
 	show_country: CheckboxValue;
 	subject: TextValue;
 	require_approval: CheckboxValue;
