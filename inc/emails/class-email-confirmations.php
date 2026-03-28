@@ -103,20 +103,7 @@ class AV_Email_Confirmations
 
             if ($updated !== false) {
                 // Optional: custom redirect on success
-                $success_url = get_post_meta($form_id, '_petitioner_confirm_success_url', true);
-                if (!empty($success_url)) {
-                    $allow_external = apply_filters('petitioner_allow_external_redirects', false, $form_id);
-                    if (!$allow_external) {
-                        $success_url = wp_validate_redirect($success_url, '');
-                    }
-                }
-
-                if (!empty($success_url)) {
-                    wp_redirect(esc_url_raw($success_url));
-                } else {
-                    wp_redirect(home_url('/?petitioner=confirmed'));
-                }
-                exit;
+                $this->handle_redirect($form_id, '_petitioner_confirm_success_url', home_url('/?petitioner=confirmed'));
             }
         }
 
@@ -135,18 +122,28 @@ class AV_Email_Confirmations
         do_action('petitioner_email_confirmation_error', $submission, $token);
 
         // Optional: custom redirect on failure
-        $error_url = get_post_meta($form_id, '_petitioner_confirm_error_url', true);
-        if (!empty($error_url)) {
-            $allow_external = apply_filters('petitioner_allow_external_redirects', false, $form_id);
-            if (!$allow_external) {
-                $error_url = wp_validate_redirect($error_url, '');
-            }
-        }
+        $this->handle_redirect($form_id, '_petitioner_confirm_error_url', home_url('/?petitioner=invalid'));
+    }
 
-        if (!empty($error_url)) {
-            wp_redirect(esc_url_raw($error_url));
+    /**
+     * Safely executes a redirect by checking explicitly configured form metadata.
+     * Enforces strict validation using `wp_validate_redirect` to prevent open redirects
+     * unless explicitly bypassed by the `petitioner_allow_external_redirects` filter.
+     *
+     * @param int    $form_id     The ID of the submission's form.
+     * @param string $meta_key    The meta key holding the custom redirect URL.
+     * @param string $default_url The fallback URL to redirect to if custom URL is empty or invalid.
+     * @return void
+     */
+    private function handle_redirect($form_id, $meta_key, $default_url)
+    {
+        $custom_url = get_post_meta($form_id, $meta_key, true);
+        $custom_url = av_petitioner_get_validated_redirect_url($custom_url, $form_id);
+
+        if (!empty($custom_url)) {
+            wp_redirect(esc_url_raw($custom_url));
         } else {
-            wp_redirect(home_url('/?petitioner=invalid'));
+            wp_redirect($default_url);
         }
         exit;
     }

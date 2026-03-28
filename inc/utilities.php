@@ -343,3 +343,28 @@ function av_petitioner_get_remote_ip()
         ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']))
         : '';
 }
+
+/**
+ * Validates a redirect URL, enforcing a same-origin policy by default.
+ * External redirects are stripped unless explicitly allowed via the
+ * `petitioner_allow_external_redirects` filter for the given form.
+ *
+ * @param string $url     The URL to validate.
+ * @param int    $form_id The ID of the form to pass to the filter.
+ * @return string The validated URL, or an empty string if it fails validation.
+ * 
+ * @since 0.8.1
+ */
+function av_petitioner_get_validated_redirect_url($url, $form_id)
+{
+    if (empty($url)) {
+        return '';
+    }
+
+    $allow_external = apply_filters('petitioner_allow_external_redirects', false, $form_id);
+    if (!$allow_external) {
+        $url = wp_validate_redirect($url, '');
+    }
+
+    return $url;
+}
