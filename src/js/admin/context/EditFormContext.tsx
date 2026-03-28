@@ -48,6 +48,7 @@ const normalizePetitionerData = () => {
 		add_honeypot: true,
 		form_id: null,
 		hide_last_names: true,
+		redirect_url: '',
 		active_tab: 'default'
 	};
 

@@ -40,6 +40,7 @@ class AV_Petitioner_Admin_Edit_UI
         'field_order'               => '_petitioner_field_order',
         'hide_last_names'           => '_petitioner_hide_last_names',
         'csv_column_config'         => '_petitioner_csv_column_config',
+        'redirect_url'              => '_petitioner_redirect_url',
     ];
 
     public function __construct()
@@ -116,6 +117,7 @@ class AV_Petitioner_Admin_Edit_UI
             "from_name"                     => sanitize_text_field($meta_values['from_name']),
             "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
             "hide_last_names"               => (bool) $meta_values['hide_last_names'],
+            "redirect_url"                  => esc_url($meta_values['redirect_url']),
             "csv_column_config"             => AV_Petitioner_Column_Config::decode_meta_json($meta_values['csv_column_config']),
             "default_values"                => [
                 "ty_email_subject"              => AV_Petitioner_Labels::get('ty_email_subject'),
@@ -244,6 +246,8 @@ class AV_Petitioner_Admin_Edit_UI
                 $value = $this->sanitize_array($value);
             } elseif ($key === 'csv_column_config') {
                 $value = AV_Petitioner_Column_Config::sanitize_payload_json($value);
+            } elseif ($key === 'redirect_url') {
+                $value = esc_url_raw($value);
             } else {
                 $value = sanitize_text_field($value);
             }
