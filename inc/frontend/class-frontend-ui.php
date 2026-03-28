@@ -18,7 +18,7 @@ class AV_Petitioner_Frontend_UI
         $post_exists    = get_post($form_id);
 
         if (!$post_exists || $post_exists->post_type !== 'petitioner-petition') {
-            return;
+            return '';
         }
         $form_handler       = new AV_Petitioner_Form_UI($form_id);
         $form_attributes    = $this->get_form_attributes($form_id);
