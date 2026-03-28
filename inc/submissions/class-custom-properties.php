@@ -268,8 +268,10 @@ class AV_Petitioner_Custom_Properties
         $property_types = self::get_property_types();
 
         if (array_key_exists($field, $property_types)) {
-            $escaped_field = str_replace(array('\\', '"'), array('\\\\', '\\"'), $field);
-            return "JSON_UNQUOTE(JSON_EXTRACT(custom_properties, '$.\"". $escaped_field ."\"'))";
+            $json_key = str_replace(array('\\', '"'), array('\\\\', '\\"'), $field);
+            $json_path = '$."' . $json_key . '"';
+
+            return "JSON_UNQUOTE(JSON_EXTRACT(custom_properties, '" . esc_sql($json_path) . "'))";
         }
 
         return $column_expr;
