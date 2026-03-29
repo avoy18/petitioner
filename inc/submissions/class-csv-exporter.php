@@ -212,7 +212,7 @@ class AV_Petitioner_CSV_Exporter
                 $headers[$i] = $header . ' (' . $header_counts[$header] . ')';
             }
 
-            return apply_filters('av_petitioner_get_csv_column_headers', $headers, $form_id);
+            return apply_filters('av_petitioner_get_csv_column_headers', $headers, $form_id, $resolved_config);
         }
 
         $allowed_fields = AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS;

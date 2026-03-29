@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.8.0
+ * Version:           0.8.1
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_PLUGIN_VERSION', '0.8.0');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.8.1');
 
 if (!function_exists('av_ptr_error_log')) {
 
@@ -43,7 +43,9 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-csv-exporter.php'
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-custom-properties.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-field-registry.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-goal-milestones.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-template.php';

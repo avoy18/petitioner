@@ -243,9 +243,17 @@ class AV_Petitioner_Column_Config
      */
     public static function get_exportable_fields()
     {
-        return array_values(array_filter(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, static function ($field_id) {
+        $fields = array_values(array_filter(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, static function ($field_id) {
             return $field_id !== 'custom_properties';
         }));
+
+        /**
+         * Filter the list of exportable field IDs.
+         *
+         * @param array<int, string> $fields Exportable field IDs (without 'custom_properties').
+         * @return array<int, string>
+         */
+        return apply_filters('av_petitioner_exportable_fields', $fields);
     }
 
     /**
@@ -299,6 +307,13 @@ class AV_Petitioner_Column_Config
             $columns[] = $column;
         }
 
-        return $columns;
+        /**
+         * Filter the default CSV columns for the table heading editor.
+         *
+         * @param array $columns Array of default column definitions.
+         * @param int   $form_id Petition ID.
+         * @return array Array of column definitions.
+         */
+        return apply_filters('av_petitioner_get_default_csv_columns', $columns, $form_id);
     }
 }

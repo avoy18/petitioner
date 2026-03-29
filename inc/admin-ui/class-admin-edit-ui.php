@@ -40,6 +40,9 @@ class AV_Petitioner_Admin_Edit_UI
         'field_order'               => '_petitioner_field_order',
         'hide_last_names'           => '_petitioner_hide_last_names',
         'csv_column_config'         => '_petitioner_csv_column_config',
+        'redirect_url'              => '_petitioner_redirect_url',
+        'confirm_success_url'       => '_petitioner_confirm_success_url',
+        'confirm_error_url'         => '_petitioner_confirm_error_url',
     ];
 
     public function __construct()
@@ -95,7 +98,7 @@ class AV_Petitioner_Admin_Edit_UI
             "email"                         => sanitize_text_field($meta_values['email']),
             "cc_emails"                     => sanitize_text_field($meta_values['cc_emails']),
             "show_goal"                     => (bool) $meta_values['show_goal'],
-            "goal"                          => (int) $meta_values['goal'],
+            "goal"                          => AV_Petitioner_Goal_Milestones::normalize($meta_values['goal']),
             "show_country"                  => (bool) $meta_values['show_country'],
             "subject"                       => esc_html($meta_values['subject']),
             "require_approval"              => (bool) $meta_values['require_approval'],
@@ -116,6 +119,9 @@ class AV_Petitioner_Admin_Edit_UI
             "from_name"                     => sanitize_text_field($meta_values['from_name']),
             "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
             "hide_last_names"               => (bool) $meta_values['hide_last_names'],
+            "redirect_url"                  => esc_url($meta_values['redirect_url']),
+            "confirm_success_url"           => esc_url($meta_values['confirm_success_url']),
+            "confirm_error_url"             => esc_url($meta_values['confirm_error_url']),
             "csv_column_config"             => AV_Petitioner_Column_Config::decode_meta_json($meta_values['csv_column_config']),
             "default_values"                => [
                 "ty_email_subject"              => AV_Petitioner_Labels::get('ty_email_subject'),
@@ -128,7 +134,7 @@ class AV_Petitioner_Admin_Edit_UI
                 'success_message'               => AV_Petitioner_Labels::get('success_message'),
                 "country_list"                  => av_petitioner_get_countries()
             ],
-            // new way of handling the form fields
+            "builder_config"                => AV_Petitioner_Field_Registry::get_all(),
             "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
             "field_order"                   =>  !empty($meta_values['field_order']) ? $this->sanitize_array($meta_values['field_order'], false) : null,
             "ajax_nonce"                    =>  $ajax_nonce
@@ -237,13 +243,15 @@ class AV_Petitioner_Admin_Edit_UI
             } elseif (in_array($key, $checkboxes)) {
                 $value = $value === "on" ? 1 : 0;
             } elseif ($key === 'goal') {
-                $value = (int) $value;
+                $value = AV_Petitioner_Goal_Milestones::sanitize_json($value);
             } elseif ($key === 'form_fields') {
                 $value = $this->sanitize_form_fields($value);
             } elseif ($key === 'field_order') {
                 $value = $this->sanitize_array($value);
             } elseif ($key === 'csv_column_config') {
                 $value = AV_Petitioner_Column_Config::sanitize_payload_json($value);
+            } elseif ($key === 'redirect_url' || $key === 'confirm_success_url' || $key === 'confirm_error_url') {
+                $value = esc_url_raw($value);
             } else {
                 $value = sanitize_text_field($value);
             }

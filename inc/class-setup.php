@@ -205,6 +205,10 @@ class AV_Petitioner_Setup
             'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
             'nonce'         => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
             'nonceEndpoint' => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
+            'labels'        => [
+                'emailConfirmedSuccess' => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_success')),
+                'emailConfirmedError'   => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_error')),
+            ],
         ]);
 
         wp_localize_script('petitioner-script', 'petitionerSubmissionSettings', [

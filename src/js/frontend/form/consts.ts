@@ -6,6 +6,10 @@ export type PetitionerFormSettings = {
 	actionPath?: string;
 	nonceEndpoint?: string;
 	nonce?: string;
+	labels?: {
+		emailConfirmedSuccess?: string;
+		emailConfirmedError?: string;
+	};
 };
 
 export type PetitionerCaptcha = {
@@ -27,6 +31,7 @@ export type CaptchaProvider = {
 
 export type CustomEventDetail = {
 	formData: FormData;
+	success: boolean;
 };
 
 export type ApiResponse = {

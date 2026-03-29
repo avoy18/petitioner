@@ -15,15 +15,22 @@ import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
 import EditField from '@admin/components/EditField';
+import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 
-const SUBMISSION_LABELS = Object.fromEntries(
-	Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
-) as Partial<Record<FieldKey, string>>;
+const getSubmissionLabels = (() => {
+	let cached: Partial<Record<FieldKey, string>> | null = null;
+	return (): Partial<Record<FieldKey, string>> => {
+		if (!cached) {
+			cached = Object.fromEntries(
+				Object.entries(getFieldLabels()).filter(([key]) => key !== 'submitted_at')
+			) as Partial<Record<FieldKey, string>>;
+		}
+		return cached;
+	};
+})();
 
-export const isValidFieldKey = (
-	key: string
-): key is keyof typeof SUBMISSION_LABELS => {
-	return key in SUBMISSION_LABELS;
+export const isValidFieldKey = (key: string): key is FieldKey => {
+	return key in getSubmissionLabels();
 };
 
 export default function SubmissionEditModal({
@@ -65,12 +72,13 @@ export default function SubmissionEditModal({
 		setValuesChanged(hasChanged);
 	}, [submissionDetails, submission]);
 
+	const allFields = getAllPossibleFields();
 	const SubmissionDetails = submissionEntries.map(([label, value], index) => {
 		if (!isValidFieldKey(label)) {
 			return;
 		}
 		const valueString = String(value);
-		const finalLabel = SUBMISSION_LABELS[label] ?? label;
+		const finalLabel = getSubmissionLabels()[label] ?? label;
 		const type = getSubmissionValType(label);
 		const finalValue = getHumanValue(valueString, type);
 
@@ -94,11 +102,23 @@ export default function SubmissionEditModal({
 		};
 
 		if (currentlyEditing) {
+			const fieldConfig = allFields.find(
+				(f) => f.fieldKey === label
+			);
+			const fieldOptions =
+				type === 'select' && fieldConfig && 'options' in fieldConfig
+					? (fieldConfig as any).options.map((o: string) => ({
+							label: o,
+							value: o,
+						}))
+					: undefined;
+
 			ValueField = (
 				<EditField
 					type={type}
 					value={valueString}
 					fieldKey={label}
+					options={fieldOptions}
 					onChange={(val) => {
 						updateSubmissionDetails(label, val);
 					}}

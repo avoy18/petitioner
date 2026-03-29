@@ -47,6 +47,7 @@ export default function PTRichText({
 				plugins,
 				toolbar,
 				relative_urls: false,
+				remove_script_host: false,
 				block_formats:
 					'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3',
 				height,

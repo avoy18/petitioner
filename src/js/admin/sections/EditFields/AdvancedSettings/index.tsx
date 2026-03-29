@@ -381,6 +381,61 @@ export default function AdvancedSettings() {
 					updateFormState('hide_last_names', e.target.checked)
 				}
 			/>
+
+			<hr />
+
+			<p>
+				<TextControl
+					type="url"
+					label={__('Redirect URL after submission', 'petitioner')}
+					value={formState.redirect_url}
+					name="petitioner_redirect_url"
+					id="petitioner_redirect_url"
+					help={__(
+						'Optional. If set, the user will be redirected to this URL after a successful submission instead of seeing the success message.',
+						'petitioner'
+					)}
+					onChange={(value) =>
+						updateFormState('redirect_url', value)
+					}
+				/>
+			</p>
+
+			<hr />
+
+			<p>
+				<TextControl
+					type="url"
+					label={__('Email confirmation success URL', 'petitioner')}
+					value={formState.confirm_success_url}
+					name="petitioner_confirm_success_url"
+					id="petitioner_confirm_success_url"
+					help={__(
+						'Optional. If set, the user will be redirected here after successfully verifying their email address.',
+						'petitioner'
+					)}
+					onChange={(value) =>
+						updateFormState('confirm_success_url', value)
+					}
+				/>
+			</p>
+
+			<p>
+				<TextControl
+					type="url"
+					label={__('Email confirmation error URL', 'petitioner')}
+					value={formState.confirm_error_url}
+					name="petitioner_confirm_error_url"
+					id="petitioner_confirm_error_url"
+					help={__(
+						'Optional. If set, the user will be redirected here if their confirmation link is invalid, expired, or previously used.',
+						'petitioner'
+					)}
+					onChange={(value) =>
+						updateFormState('confirm_error_url', value)
+					}
+				/>
+			</p>
 		</>
 	);
 }

@@ -34,9 +34,7 @@ class AV_Petitioner_Shortcodes
             return '';
         }
 
-        $goal = get_post_meta($form_id, '_petitioner_goal', true);
-
-        return intval($goal);
+        return AV_Petitioner_Goal_Milestones::get_active_goal($form_id);
     }
 
     /**

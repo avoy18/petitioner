@@ -45,7 +45,12 @@ class AV_Email_Confirmations
      */
     static function generate_confirmation_token()
     {
-        return bin2hex(random_bytes(32));
+        try {
+            return bin2hex(random_bytes(32));
+        } catch (Exception $e) {
+            av_ptr_error_log('Error generating confirmation token with random_bytes(), using fallback: ' . $e->getMessage());
+            return bin2hex(wp_generate_password(64, false, false));
+        }
     }
 
     /**
@@ -76,6 +81,8 @@ class AV_Email_Confirmations
             return;
         }
 
+        $form_id = $submission->form_id;
+
         if ($token === $submission->confirmation_token) {
             // Update status and remove the token
             $updated = AV_Petitioner_Submissions_Model::update_submission($id, [
@@ -83,25 +90,73 @@ class AV_Email_Confirmations
                 'confirmation_token'    => null
             ]);
 
-            // Send the emails
-            self::send_emails($submission);
-
             if ($updated !== false) {
-                // Optional: show success flag in query string
-                wp_redirect(home_url('/?petitioner=confirmed'));
-                exit;
+                // Send the emails
+                self::send_emails($submission);
+
+                /**
+                 * Fires immediately after a petition submission's email is successfully confirmed.
+                 * 
+                 * This action allows external code to run custom logic (e.g., syncing to a CRM,
+                 * sending a custom notification, or triggering a webhook) the moment a user
+                 * clicks the confirmation link in their email and the record is updated.
+                 *
+                 * @since 0.8.1
+                 *
+                 * @param object $submission The submission object containing the petition data.
+                 */
+                do_action('petitioner_email_confirmation_success', $submission);
+                // Optional: custom redirect on success
+                $this->handle_redirect($form_id, '_petitioner_confirm_success_url', home_url('/?petitioner=confirmed'));
             }
         }
 
-        // Optional: redirect on failure
-        wp_redirect(home_url('/?petitioner=invalid'));
+        /**
+         * Fires when a petition submission's email confirmation fails.
+         * 
+         * This typically occurs if the token is invalid, expired, or the submission
+         * has already been confirmed. External code can use this to log failures
+         * or trigger alternative workflows.
+         *
+         * @since 0.8.1
+         *
+         * @param object $submission The submission object that failed confirmation.
+         * @param string $token      The invalid token that was provided in the URL.
+         */
+        do_action('petitioner_email_confirmation_error', $submission, $token);
+
+        // Optional: custom redirect on failure
+        $this->handle_redirect($form_id, '_petitioner_confirm_error_url', home_url('/?petitioner=invalid'));
+    }
+
+    /**
+     * Safely executes a redirect by checking explicitly configured form metadata.
+     * Enforces strict validation using `wp_validate_redirect` to prevent open redirects
+     * unless explicitly bypassed by the `petitioner_allow_external_redirects` filter.
+     *
+     * @param int    $form_id     The ID of the submission's form.
+     * @param string $meta_key    The meta key holding the custom redirect URL.
+     * @param string $default_url The fallback URL to redirect to if custom URL is empty or invalid.
+     * @return void
+     */
+    private function handle_redirect($form_id, $meta_key, $default_url)
+    {
+        $custom_url = get_post_meta($form_id, $meta_key, true);
+        $custom_url = av_petitioner_get_validated_redirect_url($custom_url, $form_id);
+
+        if (!empty($custom_url)) {
+            wp_redirect($custom_url);
+        } else {
+            wp_redirect($default_url);
+        }
         exit;
     }
 
     /**
      * Sends emails to the user and the target email address.
      */
-    static public function send_emails($submission, $force_ty_email = false, $force_confirm_email = false){
+    static public function send_emails($submission, $force_ty_email = false, $force_confirm_email = false)
+    {
         $form_id           = $submission->form_id;
         $email             = $submission->email;
         $fname             = $submission->fname;
@@ -140,7 +195,7 @@ class AV_Email_Confirmations
          */
         $mailer_settings = apply_filters('av_petitioner_confirmation_mailer_settings', $mailer_settings, $submission);
 
-	    $mailer = new AV_Petitioner_Mailer($mailer_settings);
+        $mailer = new AV_Petitioner_Mailer($mailer_settings);
 
         return $mailer->send_emails();
     }

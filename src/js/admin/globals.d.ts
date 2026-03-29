@@ -7,6 +7,7 @@ declare const tinymce: {
 		plugins?: string;
 		toolbar?: string;
 		relative_urls?: boolean;
+		remove_script_host?: boolean;
 		block_formats?: string;
 		height?: number;
 		setup?: (editor: tinymce.Editor) => void;
@@ -20,4 +21,15 @@ declare namespace tinymce {
 		setContent: (content: string) => void;
 		remove: () => void;
 	}
+}
+
+interface Window {
+	petitionerData: Record<string, unknown> & {
+		form_fields?: Record<string, unknown>;
+		field_order?: string[];
+		builder_config?: {
+			defaults: Record<string, unknown>;
+			draggable: unknown[];
+		};
+	};
 }

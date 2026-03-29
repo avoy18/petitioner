@@ -130,6 +130,17 @@ export default class PetitionerForm {
 				this.toggleModal(false)
 			);
 		}
+
+		// Redirect on successful submission if a redirect URL is configured
+		document.addEventListener('petitionerFormSubmit', ((e: CustomEvent) => {
+			if (!e.detail?.success) return;
+			const wrapperEl = e.detail.wrapperEl;
+			const redirectUrl = wrapperEl.getAttribute('data-redirect-url');
+
+			if (redirectUrl) {
+				window.location.href = redirectUrl;
+			}
+		}) as EventListener);
 	}
 
 	private showResponseMSG(
@@ -228,7 +239,7 @@ export default class PetitionerForm {
 				this.showResponseMSG(res.data, false);
 			}
 
-			this.handleSubmissionComplete(formData);
+			this.handleSubmissionComplete(formData, res.success);
 		} catch (error) {
 			console.error('Error:', error);
 			alert('An unexpected error occurred. Please try again later.');
@@ -236,14 +247,18 @@ export default class PetitionerForm {
 		}
 	}
 
-	private handleSubmissionComplete(formData?: FormData): void {
+	private handleSubmissionComplete(formData?: FormData, isSuccess: boolean = false): void {
 		this.wrapper?.classList.remove('petitioner--loading');
 		this.formEl?.reset();
 		this.captchaValidated = false; // ✅ Reset for next submission
 
 		if (formData) {
 			const event = new CustomEvent('petitionerFormSubmit', {
-				detail: { formData },
+				detail: {
+					formData,
+					success: isSuccess,
+					wrapperEl: this.wrapper
+				},
 			});
 			document.dispatchEvent(event);
 		}

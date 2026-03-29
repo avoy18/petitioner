@@ -24,10 +24,13 @@ allSubmissions.forEach((submissionsDiv) => {
 	new PetitionerSubmissions(submissionsDiv);
 });
 
+const settings = window.petitionerFormSettings || {};
+const labels = settings.labels || {};
+
 if (window.location.search.includes('petitioner=confirmed')) {
-	alert('Thank you for confirming your email!');
+	alert(labels.emailConfirmedSuccess || 'Thank you for confirming your email!');
 }
 
 if (window.location.search.includes('petitioner=invalid')) {
-	alert('Something went wrong - could not confirm your email');
+	alert(labels.emailConfirmedError || 'Something went wrong, could not confirm the email. Perhaps you have already confirmed it');
 }

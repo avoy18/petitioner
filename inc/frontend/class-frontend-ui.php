@@ -18,13 +18,14 @@ class AV_Petitioner_Frontend_UI
         $post_exists    = get_post($form_id);
 
         if (!$post_exists || $post_exists->post_type !== 'petitioner-petition') {
-            return;
+            return '';
         }
-        $form_handler = new AV_Petitioner_Form_UI($form_id);
+        $form_handler       = new AV_Petitioner_Form_UI($form_id);
+        $form_attributes    = $this->get_form_attributes($form_id);
 
         ob_start();
 ?>
-        <div class="petitioner">
+        <div <?php echo $form_attributes; ?>>
             <?php
             $this->render_title($form_id);
             $this->render_goal($form_id, get_option('petitioner_show_goal', true));
@@ -41,6 +42,58 @@ class AV_Petitioner_Frontend_UI
         </div>
     <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Build the HTML attributes string for the main .petitioner wrapper div.
+     *
+     * Collects data-* attributes (e.g. redirect URL) and passes them through
+     * a filter so other plugins/extensions can append their own.
+     *
+     * @param int|string $form_id The petition form ID.
+     * @return string Rendered HTML attributes string, e.g. `class="petitioner" data-redirect-url="..."`.
+     */
+    public function get_form_attributes($form_id): string
+    {
+        $attrs = [
+            'class' => 'petitioner',
+        ];
+
+        $redirect_url = get_post_meta($form_id, '_petitioner_redirect_url', true);
+
+        if (!empty($redirect_url)) {
+            $redirect_url = av_petitioner_get_validated_redirect_url($redirect_url, $form_id);
+
+            // Only add the data attribute if it survived validation
+            if (!empty($redirect_url)) {
+                $attrs['data-redirect-url'] = esc_url($redirect_url);
+            }
+        }
+
+
+        /**
+         * Filter the HTML attributes for the petition form wrapper element.
+         *
+         * Use this to add custom data-* attributes or classes to the
+         * `.petitioner` wrapper div rendered on the frontend.
+         *
+         * @param array      $attrs   Associative array of attribute name => value.
+         * @param int|string $form_id The petition form ID.
+         * @return array Modified attributes array.
+         */
+        $attrs = apply_filters('av_petitioner_form_attributes', $attrs, $form_id);
+
+        $parts = [];
+        foreach ($attrs as $key => $value) {
+            // Re-escape the redirect URL specifically to prevent DOM XSS
+            // in case a filter injected a dangerous protocol (e.g. javascript:)
+            if ($key === 'data-redirect-url') {
+                $value = esc_url($value);
+            }
+            $parts[] = esc_attr($key) . '="' . esc_attr($value) . '"';
+        }
+
+        return implode(' ', $parts);
     }
 
     public function render_title($form_id)
@@ -91,8 +144,7 @@ class AV_Petitioner_Frontend_UI
 
         if (!$show_goal) return;
 
-        $petitioner_goal        = get_post_meta($form_id, '_petitioner_goal', true);
-        $goal                   = intval($petitioner_goal);
+        $goal                   = AV_Petitioner_Goal_Milestones::get_active_goal($form_id);
         $total_submissions      = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
         $progress               = 0;
 

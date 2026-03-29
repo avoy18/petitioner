@@ -172,4 +172,79 @@ class Test_Custom_Properties extends BaseTestCase
         $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
+
+    // ============================================
+    // QUERY FILTER TESTS
+    // ============================================
+
+    public function test_filter_query_allowed_fields_appends_custom_property_keys()
+    {
+        add_filter('av_petitioner_get_custom_property_types', function () {
+            return ['favorite_color' => ['sanitize_callback' => 'sanitize_text_field']];
+        });
+
+        $instance = new AV_Petitioner_Custom_Properties();
+        $fields = $instance->filter_query_allowed_fields(['fname', 'lname']);
+
+        $this->assertContains('favorite_color', $fields);
+        $this->assertContains('fname', $fields);
+    }
+
+    public function test_filter_query_field_column_returns_json_extract_for_custom_property()
+    {
+        add_filter('av_petitioner_get_custom_property_types', function () {
+            return ['favorite_color' => ['sanitize_callback' => 'sanitize_text_field']];
+        });
+
+        $instance = new AV_Petitioner_Custom_Properties();
+        $result = $instance->filter_query_field_column('`favorite_color`', 'favorite_color');
+
+        $this->assertStringContainsString('JSON_UNQUOTE', $result);
+        $this->assertStringContainsString('JSON_EXTRACT', $result);
+        $this->assertStringContainsString('$."favorite_color"', $result);
+    }
+
+    public function test_filter_query_field_column_handles_keys_with_special_characters()
+    {
+        add_filter('av_petitioner_get_custom_property_types', function () {
+            return ['my-field' => ['sanitize_callback' => 'sanitize_text_field']];
+        });
+
+        $instance = new AV_Petitioner_Custom_Properties();
+        $result = $instance->filter_query_field_column('`my-field`', 'my-field');
+
+        $this->assertStringContainsString('$."my-field"', $result);
+    }
+
+    public function test_filter_query_field_column_returns_default_for_non_custom_field()
+    {
+        add_filter('av_petitioner_get_custom_property_types', function () {
+            return ['favorite_color' => ['sanitize_callback' => 'sanitize_text_field']];
+        });
+
+        $instance = new AV_Petitioner_Custom_Properties();
+        $result = $instance->filter_query_field_column('`fname`', 'fname');
+
+        $this->assertEquals('`fname`', $result);
+    }
+
+    public function test_build_where_clause_uses_json_extract_for_custom_fields()
+    {
+        add_filter('av_petitioner_get_custom_property_types', function () {
+            return ['favorite_color' => ['sanitize_callback' => 'sanitize_text_field']];
+        });
+
+        // Instantiate to register hooks
+        new AV_Petitioner_Custom_Properties();
+
+        $result = AV_Petitioner_Submissions_Model::build_where_clause(
+            1,
+            [['field' => 'favorite_color', 'operator' => 'equals', 'value' => 'Blue']],
+            AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS
+        );
+
+        $this->assertStringContainsString('JSON_UNQUOTE', $result['where']);
+        $this->assertStringContainsString('$."favorite_color"', $result['where']);
+        $this->assertContains('Blue', $result['params']);
+    }
 }

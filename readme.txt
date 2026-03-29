@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 6.3
 Tested up to: 6.9
-Stable Tag: 0.8.0
+Stable Tag: 0.8.1
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -47,8 +47,11 @@ Create and manage an unlimited number of petitions.
 - Option to confirm emails via email
 - Customize email confirmations, petition letters, and thank you emails
 - Option to edit and delete submissions
-- Form submissions export: Export petition signups and submission data to a CSV file for easy reporting.
+- Form submissions export: export petition signups and submission data to a CSV file for easy reporting.
+- Preview data, rename columns, and map values (e.g., "1" to "Yes" or dynamic values like {{field_name}}) before downloading CRM-ready files.
 - Filter out unwanted submissions before exporting by targeting any form field
+- Goal milestones: set incremental signature targets (e.g., 100, 500, 1000) to keep momentum high.
+- Custom redirects: redirect users to custom "Thank You" or "Action" pages after signing or confirming their email.
 
 **Design & layout features**
 - The plugin features a modern, mobile-friendly design for a seamless user experience.
@@ -110,9 +113,14 @@ Simply open the edit page for the petition in question and you will see a table 
 
 Insert either the Gutenberg “Petitioner Submissions” block or the `[petitioner_submissions]` shortcode wherever you want the signatures to appear. Full walk-through: https://getpetitioner.com/docs/show-submissions-on-the-frontend/
 
-= Can I extend the plugin? =
+= Can I redirect users to a specific page after they sign? =
+Yes. In the petition settings, you can define custom redirect URLs for successful submissions, email confirmations, and even error states.
 
-Yes. Petitioner exposes dozens of filters, actions, and JavaScript events plus helper shortcodes for rendering counts, goals, progress bars, popups, and more. See the full extension reference at https://getpetitioner.com/docs/filters-and-hooks/
+= Does the plugin support incremental goals? =
+Yes! The milestones feature lets you set multiple signature targets so you can celebrate progress as your campaign grows.
+
+= Is it developer-friendly? =
+Very. The plugin exposes dozens of filters, actions, and JavaScript events plus helper shortcodes for rendering counts, goals, progress bars, popups, and more. See the full extension reference at https://getpetitioner.com/docs/filters-and-hooks/
 
 = Can I request features? =
 
@@ -139,6 +147,18 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 13. Submissions on the frontend
 
 == Changelog ==
+
+= 0.8.1 =
+* Improvements
+    * Add an option for custom redirects on form submit, email confirmation, and email error
+    * Simplify custom field creation with `AV_Petitioner_Field_Registry`
+    * Adding a new goal milestones feature letting you have several incremental goals
+    * New hooks & filters: `petitioner_allow_external_redirects`, `av_petitioner_form_attributes`, `petitioner_email_confirmation_success, `petitioner_email_confirmation_error`
+    * Improved test coverage
+    * Additional architectural and performance improvements
+* Bugfixes
+    * Allow overriding the confirmation email messages in the settings
+    * Fix tinymce editor not letting you pass absolute urls (and breaking images in the process)
 
 = 0.8.0 =
 * Massive architecture overhaul
