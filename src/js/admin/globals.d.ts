@@ -7,6 +7,7 @@ declare const tinymce: {
 		plugins?: string;
 		toolbar?: string;
 		relative_urls?: boolean;
+		remove_script_host?: boolean;
 		block_formats?: string;
 		height?: number;
 		setup?: (editor: tinymce.Editor) => void;
