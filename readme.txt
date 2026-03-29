@@ -140,6 +140,18 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.8.1 =
+* Improvements
+    * Add an option for custom redirects on form submit, email confirmation, and email error
+    * Simplify custom field creation with `AV_Petitioner_Field_Registry`
+    * Adding a new goal milestones feature letting you have several incremental goals
+    * New hooks & filters: `petitioner_allow_external_redirects`, `av_petitioner_form_attributes`, `petitioner_email_confirmation_success, `petitioner_email_confirmation_error`
+    * Improved test coverage
+    * Additional architectural and performance improvements
+* Bugfixes
+    * Allow overriding the confirmation email messages in the settings
+    * Fix tinymce editor not letting you pass absolute urls (and breaking images in the process)
+
 = 0.8.0 =
 * Massive architecture overhaul
     * Moving away from SCSS in favour of styled components & regular CSS
