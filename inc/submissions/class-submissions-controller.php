@@ -150,24 +150,9 @@ class AV_Petitioner_Submissions_Controller
         do_action('petitioner_after_submission', $submission_id, $form_id);
 
         if ($submission_id !== false) {
-            // If email confirmation is NOT required, the submission is immediately verified.
-            if (!$require_approval || $default_approval_status !== 'Email') {
-                $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
-                /**
-                 * petitioner_submission_finalized
-                 *
-                 * Fires when a petition submission is verified and fully complete.
-                 * This abstracts away double-opt-in logic, firing either right after
-                 * submission (if confirmations are off) or after email confirmation.
-                 * 
-                 * Use this to sync data to external services, send custom notifications, etc.
-                 *
-                 * @since 0.8.2
-                 * 
-                 * @param object $submission The submission object.
-                 * @param int $form_id The ID of the form associated with the submission.
-                 */
-                do_action('petitioner_submission_finalized', $submission, $form_id);
+            // Only finalize if the starting state is fully confirmed (bypasses manual moderation and emails)
+            if ($approval_status === 'Confirmed') {
+                self::trigger_finalized_hook($submission_id);
             }
         }
 
@@ -524,6 +509,12 @@ class AV_Petitioner_Submissions_Controller
             return;
         }
 
+        // If the admin manually approved a pending/declined submission, fire the finalization hook
+        // so that CRMs and Webhooks recognize it's now ready for processing.
+        if ($new_status === 'Confirmed') {
+            self::trigger_finalized_hook($id);
+        }
+
         wp_send_json_success([
             'message' => 'Status updated successfully.',
             'updated_rows' => $updated_rows
@@ -809,5 +800,38 @@ class AV_Petitioner_Submissions_Controller
         $submission->name = trim($submission->fname . ' ' . $submission->lname);
 
         return $submission;
+    }
+
+    /**
+     * Helper method to uniformly trigger the finalized hook.
+     * Ensures the fully hydrated object is passed to downstream integrations.
+     * 
+     * @param int|object $submission The submission ID or the submission object itself
+     * @return void
+     * @since 0.8.2
+     */
+    public static function trigger_finalized_hook($submission)
+    {
+        if (is_numeric($submission)) {
+            $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission);
+        }
+
+        if ($submission && is_object($submission)) {
+            /**
+             * petitioner_submission_finalized
+             *
+             * Fires when a petition submission is verified and fully complete.
+             * This abstracts away double-opt-in logic, firing either right after
+             * submission (if confirmations are off), after email confirmation, or after manual approval.
+             *
+             * Use this to sync data to external services, send custom notifications, etc.
+             * 
+             * @since 0.8.2
+             * 
+             * @param object $submission The submission object.
+             * @param int $form_id       The ID of the form associated with the submission.
+             */
+            do_action('petitioner_submission_finalized', $submission, $submission->form_id);
+        }
     }
 }

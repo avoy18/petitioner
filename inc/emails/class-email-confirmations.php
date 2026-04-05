@@ -108,20 +108,9 @@ class AV_Email_Confirmations
                 do_action('petitioner_email_confirmation_success', $submission);
 
                 /**
-                 * petitioner_submission_finalized
-                 *
-                 * Fires when a petition submission is verified and fully complete.
-                 * This abstracts away double-opt-in logic, firing either right after
-                 * submission (if confirmations are off) or after email confirmation.
-                 *
-                 * Use this to sync data to external services, send custom notifications, etc.
-                 * 
-                 * @since 0.8.2
-                 * 
-                 * @param object $submission The submission object.
-                 * @param int $form_id       The ID of the form associated with the submission.
+                 * Fire the finalized hook since the submission is now completely verified via double-opt-in.
                  */
-                do_action('petitioner_submission_finalized', $submission, $submission->form_id);
+                AV_Petitioner_Submissions_Controller::trigger_finalized_hook($submission);
 
                 $this->handle_redirect($form_id, '_petitioner_confirm_success_url', home_url('/?petitioner=confirmed'));
             }
