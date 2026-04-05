@@ -149,6 +149,15 @@ class AV_Petitioner_Submissions_Controller
          */
         do_action('petitioner_after_submission', $submission_id, $form_id);
 
+        if ($submission_id !== false) {
+            // Only finalize if the starting state is fully confirmed (bypasses manual moderation and emails)
+            if ($approval_status === 'Confirmed') {
+                self::trigger_finalized_hook($submission_id);
+            }
+        }
+
+
+
         $send_to_rep = $default_approval_status !== 'Email' && get_post_meta($form_id, '_petitioner_send_to_representative', true);
 
         $mailer_settings = array(
@@ -325,17 +334,10 @@ class AV_Petitioner_Submissions_Controller
         $labels = av_petitioner_get_form_labels($form_id, $label_fields);
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
-            if ($submission->hide_name) {
-                $submission->fname = AV_Petitioner_Labels::get('anonymous');
-                $submission->lname = '';
-            }
-
-            if ($hide_last_name) {
-                $submission->lname = mb_substr($submission->lname, 0, 1);
-            }
+            $submission = self::maybe_make_names_private($submission, $hide_last_name);
 
             $modified_submission = [
-                'name'          => $submission->fname . ' ' . $submission->lname
+                'name'          => $submission->name
             ];
 
             foreach ($labels as $k => $v) {
@@ -505,6 +507,12 @@ class AV_Petitioner_Submissions_Controller
         if ($updated_rows === false) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
             return;
+        }
+
+        // If the admin manually approved a pending/declined submission, fire the finalization hook
+        // so that CRMs and Webhooks recognize it's now ready for processing.
+        if ($new_status === 'Confirmed' && $updated_rows > 0) {
+            self::trigger_finalized_hook($id);
         }
 
         wp_send_json_success([
@@ -746,5 +754,82 @@ class AV_Petitioner_Submissions_Controller
         $public_fields = array_diff($public_fields, $excluded_from_display);
 
         return array_values($public_fields);
+    }
+
+    /**
+     * Helper that will either turn the name into "Anonymous" or shorten the last name.
+     * 
+     * @param object $submission The current submission object
+     * @param bool   $hide_last_name Whether the form dictates last names should be shortened
+     * @return object Returns the same object with modified fname, lname, and an added name property
+     * @since 0.8.2
+     */
+    public static function maybe_make_names_private($submission, $hide_last_name)
+    {
+        if ($submission->hide_name) {
+            $submission->fname = AV_Petitioner_Labels::get('anonymous');
+            $submission->lname = '';
+        } elseif ($hide_last_name) {
+            $hidden_last_name = mb_substr($submission->lname, 0, 1);
+            /**
+             * Filter the modified/hidden last name for an anonymized submission.
+             * 
+             * Allows developers to customize how a last name is shortened. For example, 
+             * turning "van der Sar" into "v. d. S." instead of just "v".
+             * 
+             * @param string $hidden_last_name The initially calculated hidden last name (e.g., the first letter).
+             * @param array  $submission       The full submission array, including the original `$submission['lname']`.
+             *
+             * @example
+             * ```php
+             * add_filter('av_petitioner_hide_last_name', function ($hidden_last_name, $submission) {
+             *     // Example: $submission['fname'] is "Jan", $submission['lname'] is "van der Sar"
+             *     // We want to turn the last name into "v. d. S."
+             *     $parts = explode(' ', $submission['lname']);
+             *     $initials = array_map(function($part) {
+             *         return mb_substr($part, 0, 1) . '.';
+             *     }, $parts);
+             *     
+             *     return implode(' ', $initials);
+             * }, 10, 2);
+             * ```
+             */
+            $submission->lname = apply_filters('av_petitioner_hide_last_name', $hidden_last_name, (array) $submission);
+        }
+
+        $submission->name = trim($submission->fname . ' ' . $submission->lname);
+
+        return $submission;
+    }
+
+    /**
+     * Helper method to uniformly trigger the finalized hook.
+     * Ensures the fully hydrated object is passed to downstream integrations.
+     * 
+     * @param int $submission_id The submission ID
+     * @return void
+     * @since 0.8.2
+     */
+    public static function trigger_finalized_hook($submission_id)
+    {
+        $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
+
+        if ($submission) {
+            /**
+             * petitioner_submission_finalized
+             *
+             * Fires when a petition submission is verified and fully complete.
+             * This abstracts away double-opt-in logic, firing either right after
+             * submission (if confirmations are off), after email confirmation, or after manual approval.
+             *
+             * Use this to sync data to external services, send custom notifications, etc.
+             * 
+             * @since 0.8.2
+             * 
+             * @param object $submission The submission object.
+             * @param int $form_id       The ID of the form associated with the submission.
+             */
+            do_action('petitioner_submission_finalized', $submission, $submission->form_id);
+        }
     }
 }
