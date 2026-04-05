@@ -355,7 +355,7 @@ class AV_Petitioner_Submissions_Controller
                  * }, 10, 2);
                  * ```
                  */
-                $submission->lname = apply_filters('petitioner_hide_last_name', $hidden_last_name, (array) $submission);
+                $submission->lname = apply_filters('av_petitioner_hide_last_name', $hidden_last_name, (array) $submission);
             }
 
             $modified_submission = [
