@@ -325,39 +325,10 @@ class AV_Petitioner_Submissions_Controller
         $labels = av_petitioner_get_form_labels($form_id, $label_fields);
 
         $final_submissions = array_map(function ($submission) use ($hide_last_name, $labels) {
-            if ($submission->hide_name) {
-                $submission->fname = AV_Petitioner_Labels::get('anonymous');
-                $submission->lname = '';
-            } elseif ($hide_last_name) {
-                $hidden_last_name = mb_substr($submission->lname, 0, 1);
-                /**
-                 * Filter the modified/hidden last name for an anonymized submission.
-                 * 
-                 * Allows developers to customize how a last name is shortened. For example, 
-                 * turning "van der Sar" into "v. d. S." instead of just "v".
-                 * 
-                 * @param string $hidden_last_name The initially calculated hidden last name (e.g., the first letter).
-                 * @param array  $submission       The full submission array, including the original `$submission['lname']`.
-                 *
-                 * @example
-                 * ```php
-                 * add_filter('petitioner_hide_last_name', function ($hidden_last_name, $submission) {
-                 *     // Example: $submission['fname'] is "Jan", $submission['lname'] is "van der Sar"
-                 *     // We want to turn the last name into "v. d. S."
-                 *     $parts = explode(' ', $submission['lname']);
-                 *     $initials = array_map(function($part) {
-                 *         return mb_substr($part, 0, 1) . '.';
-                 *     }, $parts);
-                 *     
-                 *     return implode(' ', $initials);
-                 * }, 10, 2);
-                 * ```
-                 */
-                $submission->lname = apply_filters('av_petitioner_hide_last_name', $hidden_last_name, (array) $submission);
-            }
+            $submission = self::maybe_make_names_private($submission, $hide_last_name);
 
             $modified_submission = [
-                'name'          => trim($submission->fname . ' ' . $submission->lname)
+                'name'          => $submission->name
             ];
 
             foreach ($labels as $k => $v) {
@@ -768,5 +739,51 @@ class AV_Petitioner_Submissions_Controller
         $public_fields = array_diff($public_fields, $excluded_from_display);
 
         return array_values($public_fields);
+    }
+
+    /**
+     * Helper that will either turn the name into "Anonymous" or shorten the last name.
+     * 
+     * @param object $submission The current submission object
+     * @param bool   $hide_last_name Whether the form dictates last names should be shortened
+     * @return object Returns the same object with modified fname, lname, and an added name property
+     * @since 0.8.2
+     */
+    public static function maybe_make_names_private($submission, $hide_last_name)
+    {
+        if ($submission->hide_name) {
+            $submission->fname = AV_Petitioner_Labels::get('anonymous');
+            $submission->lname = '';
+        } elseif ($hide_last_name) {
+            $hidden_last_name = mb_substr($submission->lname, 0, 1);
+            /**
+             * Filter the modified/hidden last name for an anonymized submission.
+             * 
+             * Allows developers to customize how a last name is shortened. For example, 
+             * turning "van der Sar" into "v. d. S." instead of just "v".
+             * 
+             * @param string $hidden_last_name The initially calculated hidden last name (e.g., the first letter).
+             * @param array  $submission       The full submission array, including the original `$submission['lname']`.
+             *
+             * @example
+             * ```php
+             * add_filter('petitioner_hide_last_name', function ($hidden_last_name, $submission) {
+             *     // Example: $submission['fname'] is "Jan", $submission['lname'] is "van der Sar"
+             *     // We want to turn the last name into "v. d. S."
+             *     $parts = explode(' ', $submission['lname']);
+             *     $initials = array_map(function($part) {
+             *         return mb_substr($part, 0, 1) . '.';
+             *     }, $parts);
+             *     
+             *     return implode(' ', $initials);
+             * }, 10, 2);
+             * ```
+             */
+            $submission->lname = apply_filters('av_petitioner_hide_last_name', $hidden_last_name, (array) $submission);
+        }
+
+        $submission->name = trim($submission->fname . ' ' . $submission->lname);
+
+        return $submission;
     }
 }
