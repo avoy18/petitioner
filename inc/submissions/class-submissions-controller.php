@@ -328,9 +328,7 @@ class AV_Petitioner_Submissions_Controller
             if ($submission->hide_name) {
                 $submission->fname = AV_Petitioner_Labels::get('anonymous');
                 $submission->lname = '';
-            }
-
-            if ($hide_last_name) {
+            } elseif ($hide_last_name) {
                 $hidden_last_name = mb_substr($submission->lname, 0, 1);
                 /**
                  * Filter the modified/hidden last name for an anonymized submission.
@@ -359,7 +357,7 @@ class AV_Petitioner_Submissions_Controller
             }
 
             $modified_submission = [
-                'name'          => $submission->fname . ' ' . $submission->lname
+                'name'          => trim($submission->fname . ' ' . $submission->lname)
             ];
 
             foreach ($labels as $k => $v) {
