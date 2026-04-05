@@ -339,14 +339,14 @@ class AV_Petitioner_Submissions_Controller
                  * turning "van der Sar" into "v. d. S." instead of just "v".
                  * 
                  * @param string $hidden_last_name The initially calculated hidden last name (e.g., the first letter).
-                 * @param object $submission       The full submission object, including the original `$submission->lname`.
+                 * @param array  $submission       The full submission array, including the original `$submission['lname']`.
                  *
                  * @example
                  * ```php
                  * add_filter('petitioner_hide_last_name', function ($hidden_last_name, $submission) {
-                 *     // Example: $submission->fname is "Jan", $submission->lname is "van der Sar"
+                 *     // Example: $submission['fname'] is "Jan", $submission['lname'] is "van der Sar"
                  *     // We want to turn the last name into "v. d. S."
-                 *     $parts = explode(' ', $submission->lname);
+                 *     $parts = explode(' ', $submission['lname']);
                  *     $initials = array_map(function($part) {
                  *         return mb_substr($part, 0, 1) . '.';
                  *     }, $parts);
@@ -355,7 +355,7 @@ class AV_Petitioner_Submissions_Controller
                  * }, 10, 2);
                  * ```
                  */
-                $submission->lname = apply_filters('petitioner_hide_last_name', $hidden_last_name, $submission);
+                $submission->lname = apply_filters('petitioner_hide_last_name', $hidden_last_name, (array) $submission);
             }
 
             $modified_submission = [
