@@ -149,27 +149,29 @@ class AV_Petitioner_Submissions_Controller
          */
         do_action('petitioner_after_submission', $submission_id, $form_id);
 
-        // If email confirmation is NOT required, the submission is immediately verified.
-        if (!$require_approval || $default_approval_status !== 'Email') {
-            $submission = (object) $data;
-            $submission->id = $submission_id;
-
-            /**
-             * petitioner_submission_finalized
-             *
-             * Fires when a petition submission is verified and fully complete.
-             * This abstracts away double-opt-in logic, firing either right after
-             * submission (if confirmations are off) or after email confirmation.
-             * 
-             * Use this to sync data to external services, send custom notifications, etc.
-             *
-             * @since 0.8.2
-             * 
-             * @param object $submission The submission object.
-             * @param int $form_id The ID of the form associated with the submission.
-             */
-            do_action('petitioner_submission_finalized', $submission, $form_id);
+        if ($submission_id !== false) {
+            // If email confirmation is NOT required, the submission is immediately verified.
+            if (!$require_approval || $default_approval_status !== 'Email') {
+                $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
+                /**
+                 * petitioner_submission_finalized
+                 *
+                 * Fires when a petition submission is verified and fully complete.
+                 * This abstracts away double-opt-in logic, firing either right after
+                 * submission (if confirmations are off) or after email confirmation.
+                 * 
+                 * Use this to sync data to external services, send custom notifications, etc.
+                 *
+                 * @since 0.8.2
+                 * 
+                 * @param object $submission The submission object.
+                 * @param int $form_id The ID of the form associated with the submission.
+                 */
+                do_action('petitioner_submission_finalized', $submission, $form_id);
+            }
         }
+
+
 
         $send_to_rep = $default_approval_status !== 'Email' && get_post_meta($form_id, '_petitioner_send_to_representative', true);
 
