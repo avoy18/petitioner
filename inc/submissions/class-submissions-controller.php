@@ -511,7 +511,7 @@ class AV_Petitioner_Submissions_Controller
 
         // If the admin manually approved a pending/declined submission, fire the finalization hook
         // so that CRMs and Webhooks recognize it's now ready for processing.
-        if ($new_status === 'Confirmed') {
+        if ($new_status === 'Confirmed' && $updated_rows > 0) {
             self::trigger_finalized_hook($id);
         }
 
