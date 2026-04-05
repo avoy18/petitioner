@@ -8,10 +8,12 @@ import IntegrationBox from './IntegrationBox';
 import { __ } from '@wordpress/i18n';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 
+import { applyFilters } from '@wordpress/hooks';
+
 export default function Integrations() {
 	const { formState, updateFormState } = useSettingsFormContext();
 
-	const integrations = [
+	let integrations = [
 		{
 			name: 'recaptcha',
 			title: __('Google reCAPTCHA v3', 'petitioner'),
@@ -237,6 +239,13 @@ export default function Integrations() {
 			),
 		},
 	];
+
+	integrations = applyFilters(
+		'petitioner.admin.settings.integrations',
+		integrations,
+		formState,
+		updateFormState
+	) as any;
 
 	return (
 		<Grid alignment="bottom" columns={3} gap={3}>
