@@ -767,7 +767,7 @@ class AV_Petitioner_Submissions_Controller
              *
              * @example
              * ```php
-             * add_filter('petitioner_hide_last_name', function ($hidden_last_name, $submission) {
+             * add_filter('av_petitioner_hide_last_name', function ($hidden_last_name, $submission) {
              *     // Example: $submission['fname'] is "Jan", $submission['lname'] is "van der Sar"
              *     // We want to turn the last name into "v. d. S."
              *     $parts = explode(' ', $submission['lname']);
