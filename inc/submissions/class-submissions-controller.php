@@ -806,17 +806,15 @@ class AV_Petitioner_Submissions_Controller
      * Helper method to uniformly trigger the finalized hook.
      * Ensures the fully hydrated object is passed to downstream integrations.
      * 
-     * @param int|object $submission The submission ID or the submission object itself
+     * @param int $submission_id The submission ID
      * @return void
      * @since 0.8.2
      */
-    public static function trigger_finalized_hook($submission)
+    public static function trigger_finalized_hook($submission_id)
     {
-        if (is_numeric($submission)) {
-            $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission);
-        }
+        $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
 
-        if ($submission && is_object($submission)) {
+        if ($submission) {
             /**
              * petitioner_submission_finalized
              *
