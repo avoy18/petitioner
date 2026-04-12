@@ -7,7 +7,7 @@ import {
 } from '@wordpress/components';
 
 import IntegrationBox from './IntegrationBox';
-import type { IntegrationConfigItem } from './consts'
+import type { IntegrationConfigItem } from './consts';
 import { __ } from '@wordpress/i18n';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 
