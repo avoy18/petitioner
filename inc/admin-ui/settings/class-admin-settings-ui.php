@@ -11,23 +11,6 @@ class AV_Petitioner_Admin_Settings_UI
 {
     public $default_colors;
 
-    /**
-     * Get the schema for the settings
-     * 
-     * @since 0.8.2
-     * @return array
-     */
-    public static function get_settings_schema()
-    {
-        $schema = require plugin_dir_path(__FILE__) . 'admin-settings-schema.php';
-
-        /**
-         * Filter to allow Pro Addons to inject settings into the registry
-         */
-        return apply_filters('av_petitioner_settings_schema', $schema);
-    }
-
-
     function __construct()
     {
 
@@ -71,6 +54,22 @@ class AV_Petitioner_Admin_Settings_UI
                 wp_enqueue_script('wp-color-picker');
             }
         });
+    }
+
+    /**
+     * Get the schema for the settings
+     * 
+     * @since 0.8.2
+     * @return array
+     */
+    public static function get_settings_schema()
+    {
+        $schema = require plugin_dir_path(__FILE__) . 'admin-settings-schema.php';
+
+        /**
+         * Filter to allow Pro Addons to inject settings into the registry
+         */
+        return apply_filters('av_petitioner_settings_schema', $schema);
     }
 
     /**
