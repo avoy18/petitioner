@@ -52,4 +52,4 @@ export type IntegrationBoxProps = {
 export type IntegrationConfigItem = IntegrationBoxProps & {
 	name: string;
 	hiddenFields: React.ReactNode | null;
-}
+};
