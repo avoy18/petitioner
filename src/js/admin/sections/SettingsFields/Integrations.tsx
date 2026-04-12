@@ -14,7 +14,7 @@ import { applyFilters } from '@wordpress/hooks';
 export default function Integrations() {
 	const { formState, updateFormState } = useSettingsFormContext();
 
-	let integrations: IntegrationConfigItem[] = [
+	const integrations: IntegrationConfigItem[] = [
 		{
 			name: 'recaptcha',
 			title: __('Google reCAPTCHA v3', 'petitioner'),
@@ -241,16 +241,16 @@ export default function Integrations() {
 		},
 	];
 
-	integrations = applyFilters(
+	const finalIntegrations = applyFilters(
 		'petitioner.admin.settings.integrations',
 		integrations,
 		formState,
 		updateFormState
-	) as IntegrationConfigItem[];
+	) as IntegrationConfigItem[] || integrations;
 
 	return (
 		<Grid alignment="bottom" columns={3} gap={3}>
-			{integrations.map((integration) => (
+			{finalIntegrations.map((integration) => (
 				<div key={integration.name}>
 					<IntegrationBox {...integration} />
 					{integration.hiddenFields}
