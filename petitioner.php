@@ -54,7 +54,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-frontend-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-form-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-shortcodes.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-edit-ui.php';
-require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-settings-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/settings/class-admin-settings-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-component-preview-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-shared.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/gutenberg/class-gutenberg.php';
