@@ -80,8 +80,9 @@ class AV_Petitioner_Admin_Settings_UI
 
     public function get_option_fields()
     {
+        $option_fields = self::get_registered_option_fields();
         $option_values = [];
-        foreach (self::OPTION_FIELDS as $key => $meta_key) {
+        foreach ($option_fields as $key => $meta_key) {
             $option_values[$key] = get_option($meta_key, null);
         }
         return $option_values;
@@ -185,8 +186,9 @@ class AV_Petitioner_Admin_Settings_UI
         }
 
         // Process meta fields
+        $option_fields = self::get_registered_option_fields();
         $meta_values = [];
-        foreach (self::OPTION_FIELDS as $key => $meta_key) {
+        foreach ($option_fields as $key => $value) {
             $meta_values[$key] = isset($_POST["petitioner_$key"])
                 ? wp_unslash($_POST["petitioner_$key"])
                 : '';
@@ -211,6 +213,8 @@ class AV_Petitioner_Admin_Settings_UI
             'enable_akismet',
         ];
 
+        $option_fields = self::get_registered_option_fields();
+
         foreach ($meta_values as $key => $value) {
             if (in_array($key, $checkboxes)) {
                 $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
@@ -222,7 +226,7 @@ class AV_Petitioner_Admin_Settings_UI
                 $value = sanitize_text_field($value);
             }
 
-            update_option(self::OPTION_FIELDS[$key], $value);
+            update_option($option_fields[$key], $value);
         }
     }
 
@@ -267,5 +271,18 @@ class AV_Petitioner_Admin_Settings_UI
         }, ARRAY_FILTER_USE_BOTH);
 
         return $default_labels;
+    }
+
+    public static function get_registered_option_fields()
+    {
+        $options = self::OPTION_FIELDS;
+
+        /**
+         * Filter to get all option fields
+         * 
+         * @param array options - Array of option fields
+         * @var array
+         */
+        return apply_filters('av_petitioner_get_settings_options', $options);
     }
 }
