@@ -266,17 +266,4 @@ class AV_Petitioner_Admin_Settings_UI
 
         return $default_labels;
     }
-
-    public static function get_registered_option_fields()
-    {
-        $options = self::OPTION_FIELDS;
-
-        /**
-         * Filter to get all option fields
-         * 
-         * @param array options - Array of option fields
-         * @var array
-         */
-        return apply_filters('av_petitioner_get_settings_options', $options);
-    }
 }
