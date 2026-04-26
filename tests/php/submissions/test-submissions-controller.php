@@ -117,4 +117,78 @@ class Test_Submissions_Controller extends BaseTestCase
         $this->assertArrayHasKey('success', $result);
         $this->assertArrayHasKey('message', $result);
     }
+
+    // ============================================
+    // MAYBE_MAKE_NAMES_PRIVATE TESTS
+    // ============================================
+
+    public function test_maybe_make_names_private_fully_hidden()
+    {
+        $submission = (object) [
+            'fname' => 'John',
+            'lname' => 'Doe',
+            'hide_name' => 1
+        ];
+
+        $result = AV_Petitioner_Submissions_Controller::maybe_make_names_private($submission, false);
+        $this->assertEquals(AV_Petitioner_Labels::get('anonymous'), $result->fname);
+        $this->assertEquals('', $result->lname);
+        $this->assertEquals(AV_Petitioner_Labels::get('anonymous'), $result->name); // No trailing space!
+    }
+
+    public function test_maybe_make_names_private_hidden_last_name()
+    {
+        $submission = (object) [
+            'fname' => 'John',
+            'lname' => 'Doe',
+            'hide_name' => 0
+        ];
+
+        $result = AV_Petitioner_Submissions_Controller::maybe_make_names_private($submission, true);
+        $this->assertEquals('John', $result->fname);
+        $this->assertEquals('D', $result->lname);
+        $this->assertEquals('John D', $result->name);
+    }
+
+    public function test_maybe_make_names_private_empty_last_name()
+    {
+        $submission = (object) [
+            'fname' => 'Jane',
+            'lname' => '',
+            'hide_name' => 0
+        ];
+
+        // Even with hide_last_name true, empty is mapped normally without crash
+        $result = AV_Petitioner_Submissions_Controller::maybe_make_names_private($submission, false);
+        $this->assertEquals('Jane', $result->fname);
+        $this->assertEquals('', $result->lname);
+        $this->assertEquals('Jane', $result->name); // No trailing space!
+    }
+
+    public function test_maybe_make_names_private_van_der_sar_filter()
+    {
+        $filter_callback = function ($hidden_last_name, $submission) {
+            $parts = explode(' ', $submission['lname']);
+            $initials = array_map(function($part) {
+                return mb_substr($part, 0, 1) . '.';
+            }, $parts);
+            return implode(' ', $initials);
+        };
+
+        add_filter('av_petitioner_hide_last_name', $filter_callback, 10, 2);
+
+        $submission = (object) [
+            'fname' => 'Jan',
+            'lname' => 'van der Sar',
+            'hide_name' => 0
+        ];
+
+        $result = AV_Petitioner_Submissions_Controller::maybe_make_names_private($submission, true);
+        
+        $this->assertEquals('Jan', $result->fname);
+        $this->assertEquals('v. d. S.', $result->lname);
+        $this->assertEquals('Jan v. d. S.', $result->name); // Uses correctly formatted custom filter
+
+        remove_filter('av_petitioner_hide_last_name', $filter_callback, 10);
+    }
 }
