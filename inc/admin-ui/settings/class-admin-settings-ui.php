@@ -137,10 +137,8 @@ class AV_Petitioner_Admin_Settings_UI
                 $petitioner_info[$key] = (bool) $option_values[$key];
             } else if ($type === 'json') {
                 $petitioner_info[$key] = !empty($option_values[$key]) ? json_decode($option_values[$key]) : [];
-            } else if ($type === 'textarea') {
-                $petitioner_info[$key] = esc_textarea($option_values[$key]);
             } else {
-                $petitioner_info[$key] = esc_attr($option_values[$key]);
+                $petitioner_info[$key] = $option_values[$key];
             }
         }
 
@@ -158,7 +156,7 @@ class AV_Petitioner_Admin_Settings_UI
          */
         $petitioner_info = apply_filters('av_petitioner_info_settings', $petitioner_info);
 
-        $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
     ?>
         <div class="petitioner-admin__form ptr-is-loading">
             <script id="petitioner-json-data" type="text/json">
