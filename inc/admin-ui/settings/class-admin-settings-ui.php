@@ -11,28 +11,6 @@ class AV_Petitioner_Admin_Settings_UI
 {
     public $default_colors;
 
-    private const OPTION_FIELDS = [
-        'show_letter'               => 'petitioner_show_letter',
-        'show_title'                => 'petitioner_show_title',
-        'show_goal'                 => 'petitioner_show_goal',
-        'custom_css'                => 'petitioner_custom_css',
-        'primary_color'             => 'petitioner_primary_color',
-        'dark_color'                => 'petitioner_dark_color',
-        'grey_color'                => 'petitioner_grey_color',
-        'enable_recaptcha'          => 'petitioner_enable_recaptcha',
-        'recaptcha_site_key'        => 'petitioner_recaptcha_site_key',
-        'recaptcha_secret_key'      => 'petitioner_recaptcha_secret_key',
-        'enable_hcaptcha'           => 'petitioner_enable_hcaptcha',
-        'hcaptcha_site_key'         => 'petitioner_hcaptcha_site_key',
-        'hcaptcha_secret_key'       => 'petitioner_hcaptcha_secret_key',
-        'enable_turnstile'          => 'petitioner_enable_turnstile',
-        'turnstile_site_key'        => 'petitioner_turnstile_site_key',
-        'turnstile_secret_key'      => 'petitioner_turnstile_secret_key',
-        'enable_akismet'            => 'petitioner_enable_akismet',
-        'form_fields'               => 'petitioner_form_fields',
-        'label_overrides'           => 'petitioner_label_overrides'
-    ];
-
     function __construct()
     {
 
@@ -78,11 +56,37 @@ class AV_Petitioner_Admin_Settings_UI
         });
     }
 
+    /**
+     * Get the schema for the settings
+     * 
+     * @since 0.8.2
+     * @return array
+     */
+    public static function get_settings_schema()
+    {
+        $schema = require plugin_dir_path(__FILE__) . 'admin-settings-schema.php';
+
+        /**
+         * Filter to allow Pro Addons to inject settings into the registry
+         */
+        return apply_filters('av_petitioner_settings_schema', $schema);
+    }
+
+    /**
+     * Read from the schema util and convert the fields into the correct format
+     * for the meta boxes
+     * 
+     * @return array
+     * 
+     * @since 0.8.2
+     */
     public function get_option_fields()
     {
+        $schema = self::get_settings_schema();
         $option_values = [];
-        foreach (self::OPTION_FIELDS as $key => $meta_key) {
-            $option_values[$key] = get_option($meta_key, null);
+
+        foreach ($schema as $key => $config) {
+            $option_values[$key] = get_option($config['meta_key'], null);
         }
         return $option_values;
     }
@@ -121,45 +125,39 @@ class AV_Petitioner_Admin_Settings_UI
     public function render_form_fields()
     {
         wp_nonce_field("save_petition_settings", "petitioner_settings_nonce");
-        // Retrieve current meta values
-        $option_values      = $this->get_option_fields();
 
-        // Sanitize values for safe use in HTML attributes
-        $petitioner_info    = [
-            'show_letter'               => (bool) $option_values['show_letter'],
-            'show_title'                => (bool) $option_values['show_title'],
-            'show_goal'                 => (bool) $option_values['show_goal'],
-            'custom_css'                => esc_textarea($option_values['custom_css']),
-            'primary_color'             => esc_attr($option_values['primary_color']),
-            'dark_color'                => esc_attr($option_values['dark_color']),
-            'grey_color'                => esc_attr($option_values['grey_color']),
-            'enable_recaptcha'          => (bool) $option_values['enable_recaptcha'],
-            'recaptcha_site_key'        => sanitize_text_field($option_values['recaptcha_site_key']),
-            'recaptcha_secret_key'      => sanitize_text_field($option_values['recaptcha_secret_key']),
-            'enable_hcaptcha'           => (bool) $option_values['enable_hcaptcha'],
-            'hcaptcha_site_key'         => sanitize_text_field($option_values['hcaptcha_site_key']),
-            'hcaptcha_secret_key'       => sanitize_text_field($option_values['hcaptcha_secret_key']),
-            'enable_turnstile'          => (bool) $option_values['enable_turnstile'],
-            'turnstile_site_key'        => sanitize_text_field($option_values['turnstile_site_key']),
-            'turnstile_secret_key'      => sanitize_text_field($option_values['turnstile_secret_key']),
-            'enable_akismet'            => (bool) $option_values['enable_akismet'],
-            'label_overrides'           => !empty($option_values['label_overrides']) ? json_decode($option_values['label_overrides']) : [],
-            'default_values'                => [
-                "colors"              => $this->default_colors,
-                "labels"              => $this->get_default_labels()
-            ]
+        $option_values   = $this->get_option_fields();
+        $schema          = self::get_settings_schema();
+        $petitioner_info = [];
+
+        foreach ($schema as $key => $config) {
+            $type = $config['type'];
+
+            if ($type === 'checkbox') {
+                $petitioner_info[$key] = (bool) $option_values[$key];
+            } else if ($type === 'json') {
+                $decoded = !empty($option_values[$key]) ? json_decode($option_values[$key], true) : null;
+                $petitioner_info[$key] = is_array($decoded) ? $decoded : [];
+            } else {
+                $petitioner_info[$key] = $option_values[$key];
+            }
+        }
+
+        $petitioner_info['default_values'] = [
+            "colors" => $this->default_colors,
+            "labels" => $this->get_default_labels()
         ];
 
         /**
          * Filter to modify petitioner data that is sent to the edit screen
          * 
          *
-         * @param array $petitioner_info Array of the data
+         * @param $petitioner_info Array of the data
          * @return array Modified $petitioner_info data.
          */
         $petitioner_info = apply_filters('av_petitioner_info_settings', $petitioner_info);
 
-        $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
     ?>
         <div class="petitioner-admin__form ptr-is-loading">
             <script id="petitioner-json-data" type="text/json">
@@ -184,15 +182,15 @@ class AV_Petitioner_Admin_Settings_UI
             return;
         }
 
-        // Process meta fields
+        $schema = self::get_settings_schema();
         $meta_values = [];
-        foreach (self::OPTION_FIELDS as $key => $meta_key) {
+
+        foreach ($schema as $key => $config) {
             $meta_values[$key] = isset($_POST["petitioner_$key"])
                 ? wp_unslash($_POST["petitioner_$key"])
                 : '';
         }
 
-        // Sanitize and update meta fields
         $this->update_meta_fields($meta_values);
     }
 
@@ -201,30 +199,29 @@ class AV_Petitioner_Admin_Settings_UI
      */
     private function update_meta_fields($meta_values)
     {
-        $checkboxes = [
-            'show_letter',
-            'show_title',
-            'show_goal',
-            'enable_recaptcha',
-            'enable_hcaptcha',
-            'enable_turnstile',
-            'enable_akismet',
-        ];
+        $schema = self::get_settings_schema();
 
         foreach ($meta_values as $key => $value) {
-            if (in_array($key, $checkboxes)) {
-                $value = $value === "on" ? 1 : 0; // Convert checkboxes to 1/0
-            } else if ($key === 'label_overrides') {
+            if (!isset($schema[$key]) || empty($schema[$key]['meta_key'])) {
+                continue;
+            }
+
+            $type = $schema[$key]['type'] ?? 'text';
+
+            if ($type === 'checkbox') {
+                $value = $value === "on" ? 1 : 0;
+            } else if ($type === 'json') {
                 $value = $this->sanitize_array($value);
-            } else if ($key === 'custom_css') {
-                $value = wp_strip_all_tags($value);
+            } else if ($type === 'textarea') {
+                $value = sanitize_textarea_field($value);
             } else {
                 $value = sanitize_text_field($value);
             }
 
-            update_option(self::OPTION_FIELDS[$key], $value);
+            update_option($schema[$key]['meta_key'], $value);
         }
     }
+
 
     public function sanitize_array(string|array $json_items_raw, bool $stringify = true): string|array
     {
