@@ -136,7 +136,8 @@ class AV_Petitioner_Admin_Settings_UI
             if ($type === 'checkbox') {
                 $petitioner_info[$key] = (bool) $option_values[$key];
             } else if ($type === 'json') {
-                $petitioner_info[$key] = !empty($option_values[$key]) ? json_decode($option_values[$key]) : [];
+                $decoded = !empty($option_values[$key]) ? json_decode($option_values[$key], true) : null;
+                $petitioner_info[$key] = is_array($decoded) ? $decoded : [];
             } else {
                 $petitioner_info[$key] = $option_values[$key];
             }
@@ -201,11 +202,11 @@ class AV_Petitioner_Admin_Settings_UI
         $schema = self::get_settings_schema();
 
         foreach ($meta_values as $key => $value) {
-            if (!isset($schema[$key])) {
+            if (!isset($schema[$key]) || empty($schema[$key]['meta_key'])) {
                 continue;
             }
 
-            $type = $schema[$key]['type'];
+            $type = $schema[$key]['type'] ?? 'text';
 
             if ($type === 'checkbox') {
                 $value = $value === "on" ? 1 : 0;
