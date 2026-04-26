@@ -157,7 +157,7 @@ class AV_Petitioner_Admin_Settings_UI
          */
         $petitioner_info = apply_filters('av_petitioner_info_settings', $petitioner_info);
 
-        $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
     ?>
         <div class="petitioner-admin__form ptr-is-loading">
             <script id="petitioner-json-data" type="text/json">
