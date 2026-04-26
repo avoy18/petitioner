@@ -212,7 +212,7 @@ class AV_Petitioner_Admin_Settings_UI
             } else if ($type === 'json') {
                 $value = $this->sanitize_array($value);
             } else if ($type === 'textarea') {
-                $value = wp_strip_all_tags($value);
+                $value = sanitize_textarea_field($value);
             } else {
                 $value = sanitize_text_field($value);
             }
