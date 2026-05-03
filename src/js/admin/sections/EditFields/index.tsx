@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+
 import { applyFilters } from '@wordpress/hooks';
 import { Dashicon } from '@wordpress/components';
 import Submissions from './Submissions';
@@ -66,23 +66,16 @@ export const tabs = [
 	},
 ];
 
-const StyledTabs = styled(Tabs) <{ $showIntegrations: boolean }>`
-	${({ $showIntegrations }) => !$showIntegrations && `
-		.petition-tablink--integrations {
-			display: none !important;
-		}
-	`}
-`;
-
 function EditFieldsComponent() {
 	const { formState } = useEditFormContext();
 	const { active_tab } = formState;
 
 	const showIntegrations = applyFilters('petitioner.admin.sections.edit_fields.show_integrations', false) as boolean;
+	const visibleTabs = showIntegrations ? tabs : tabs.filter(tab => tab.name !== 'integrations');
 
 	return (
 		<>
-			<StyledTabs $showIntegrations={showIntegrations} tabs={tabs} defaultTab={active_tab} updateURL={true} />
+			<Tabs tabs={visibleTabs} defaultTab={active_tab} updateURL={true} />
 			<BottomCallout />
 		</>
 	);
