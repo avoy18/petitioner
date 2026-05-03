@@ -86,6 +86,9 @@ class AV_Petitioner_Admin_Settings_UI
         $option_values = [];
 
         foreach ($schema as $key => $config) {
+            if (empty($config['meta_key'])) {
+                continue;
+            }
             $option_values[$key] = get_option($config['meta_key'], null);
         }
         return $option_values;
