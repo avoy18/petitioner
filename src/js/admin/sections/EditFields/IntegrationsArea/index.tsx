@@ -5,7 +5,7 @@ export default function IntegrationArea() {
     const { formState, updateFormState } = useEditFormContext();
 
     let IntegrationContent = <div>
-        
+
     </div>;
 
     IntegrationContent = applyFilters(
