@@ -220,6 +220,22 @@ class AV_Petitioner_Admin_Edit_UI
                 $value = AV_Petitioner_Column_Config::sanitize_payload_json($value);
             } elseif ($type === 'url') {
                 $value = esc_url_raw($value);
+            } elseif (str_contains($type, 'json')) {
+                if ($value === '' || $value === null) {
+                    $value = '';
+                } elseif (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $value = wp_slash(wp_json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+                    } else {
+                        av_ptr_error_log('Error sanitizing generic JSON meta field');
+                        $value = '';
+                    }
+                } elseif (is_array($value)) {
+                    $value = wp_slash(wp_json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+                } else {
+                    $value = '';
+                }
             } else {
                 $value = sanitize_text_field($value);
             }
