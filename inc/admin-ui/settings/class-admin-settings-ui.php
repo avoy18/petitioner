@@ -239,11 +239,7 @@ class AV_Petitioner_Admin_Settings_UI
             }
         }
 
-        $sanitized = [];
-
-        foreach ($array_items as $key => $val) {
-            $sanitized[$key] = sanitize_text_field((string) $val);
-        }
+        $sanitized = map_deep($array_items, 'sanitize_text_field');
 
         return $stringify
             ? wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)

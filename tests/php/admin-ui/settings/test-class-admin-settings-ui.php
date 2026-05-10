@@ -54,4 +54,27 @@ class Test_Admin_Settings_UI extends BaseTestCase
         $this->assertEquals('petitioner_mock_integration_enabled', $schema['mock_integration_enabled']['meta_key']);
         $this->assertEquals('checkbox', $schema['mock_integration_enabled']['type']);
     }
+
+    public function test_sanitize_array_handles_nested_objects()
+    {
+        $settings_ui = new AV_Petitioner_Admin_Settings_UI();
+        
+        $nested_json = '[{"fieldName": "FIRSTNAME", "mappedTo": "fname", "badTag": "<script>alert(1)</script>"}]';
+        
+        // Return stringified json
+        $sanitized_json = $settings_ui->sanitize_array($nested_json);
+        $decoded = json_decode($sanitized_json, true);
+        
+        $this->assertIsArray($decoded);
+        $this->assertCount(1, $decoded);
+        $this->assertEquals('FIRSTNAME', $decoded[0]['fieldName']);
+        $this->assertEquals('fname', $decoded[0]['mappedTo']);
+        $this->assertEquals('alert(1)', $decoded[0]['badTag']); // Tags should be stripped
+
+        // Return raw array
+        $sanitized_array = $settings_ui->sanitize_array($nested_json, false);
+        $this->assertIsArray($sanitized_array);
+        $this->assertEquals('FIRSTNAME', $sanitized_array[0]['fieldName']);
+        $this->assertEquals('alert(1)', $sanitized_array[0]['badTag']);
+    }
 }
