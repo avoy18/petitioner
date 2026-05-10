@@ -59,7 +59,7 @@ class Test_Admin_Settings_UI extends BaseTestCase
     {
         $settings_ui = new AV_Petitioner_Admin_Settings_UI();
         
-        $nested_json = '[{"fieldName": "FIRSTNAME", "mappedTo": "fname", "badTag": "<script>alert(1)</script>"}]';
+        $nested_json = '[{"fieldName": "FIRSTNAME", "mappedTo": "fname", "boldTag": "<b>bad</b>", "xssTag": "<script>alert(1)</script>"}]';
         
         // Return stringified json
         $sanitized_json = $settings_ui->sanitize_array($nested_json);
@@ -69,12 +69,18 @@ class Test_Admin_Settings_UI extends BaseTestCase
         $this->assertCount(1, $decoded);
         $this->assertEquals('FIRSTNAME', $decoded[0]['fieldName']);
         $this->assertEquals('fname', $decoded[0]['mappedTo']);
-        $this->assertEquals('alert(1)', $decoded[0]['badTag']); // Tags should be stripped
+        
+        // Assert basic HTML tags are stripped but inner text remains
+        $this->assertEquals('bad', $decoded[0]['boldTag']); 
+        
+        // Assert dangerous <script> tags AND their inner contents are completely obliterated
+        $this->assertEquals('', $decoded[0]['xssTag']); 
 
         // Return raw array
         $sanitized_array = $settings_ui->sanitize_array($nested_json, false);
         $this->assertIsArray($sanitized_array);
         $this->assertEquals('FIRSTNAME', $sanitized_array[0]['fieldName']);
-        $this->assertEquals('alert(1)', $sanitized_array[0]['badTag']);
+        $this->assertEquals('bad', $sanitized_array[0]['boldTag']);
+        $this->assertEquals('', $sanitized_array[0]['xssTag']);
     }
 }
