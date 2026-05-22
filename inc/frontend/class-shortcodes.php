@@ -122,6 +122,7 @@ class AV_Petitioner_Shortcodes
             'style'             => 'simple',
             'fields'            => 'name,country,submitted_at',
             'show_pagination'   => "true",
+            'hide_page_numbers' => "false",
         ], $atts, 'petitioner-submissions');
 
         $form_id    = absint($atts['id']);
@@ -141,13 +142,15 @@ class AV_Petitioner_Shortcodes
         $fields = array_values(array_intersect($fields_arr, $available_fields));
 
         $show_pagination = filter_var($atts['show_pagination'], FILTER_VALIDATE_BOOLEAN);
+        $hide_page_numbers = filter_var($atts['hide_page_numbers'], FILTER_VALIDATE_BOOLEAN);
 
         $settings = [
             'form_id'           => $form_id,
             'per_page'          => $per_page,
             'style'             => $style,
             'fields'            => implode(',', $fields),
-            'show_pagination'   => $show_pagination
+            'show_pagination'   => $show_pagination,
+            'hide_page_numbers' => $hide_page_numbers
         ];
 
         ob_start();

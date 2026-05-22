@@ -9,6 +9,10 @@ declare global {
 		petitionerSubmissionSettings: {
 			actionPath: string;
 			nonce: string;
+			labels?: {
+				prevPage: string;
+				nextPage: string;
+			};
 		};
 	}
 }
@@ -87,6 +91,7 @@ export default class PetitionerSubmissions {
 					? this.settings.fields.split(',').map((f) => f.trim())
 					: [],
 				pagination: this.settings.show_pagination,
+				hidePageNumbers: this.settings.hide_page_numbers || false,
 				onPageChange: async (pageNum: number) => {
 					this.currentPage = pageNum;
 					await this.fetchSubmissions();

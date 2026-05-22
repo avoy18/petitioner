@@ -192,16 +192,21 @@ class AV_Petitioner_Submissions_Controller
         $send_emails = $mailer->send_emails();
 
         // Check if the insert was successful
-        if ($submission_id === false || $send_emails === false) {
+        if ($submission_id === false) {
             wp_send_json_error([
                 'title'   => AV_Petitioner_Labels::get('could_not_submit'),
                 'message' => AV_Petitioner_Labels::get('error_generic'),
             ]);
 
             av_ptr_error_log(
-                'Petitioner submission error: Failed to save submission with ID ' . $submission_id . ' or send emails.'
+                'Petitioner submission error: Failed to save submission.'
             );
         } else {
+            if ($send_emails === false) {
+                av_ptr_error_log(
+                    'Petitioner submission warning: Failed to send emails for submission ID ' . $submission_id . '.'
+                );
+            }
             wp_send_json_success([
                 'title'     => AV_Petitioner_Labels::get('success_message_title', $form_id),
                 'message'   => AV_Petitioner_Labels::get('success_message', $form_id),

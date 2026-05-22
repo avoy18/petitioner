@@ -6,6 +6,7 @@ export type SubmissionSettings = {
 	style: SubmissionsStyle;
 	fields: string;
 	show_pagination: boolean;
+	hide_page_numbers: boolean;
 };
 
 export type SubmissionItem = {
@@ -20,8 +21,9 @@ export type SubmissionRendererOptions = {
 	perPage?: number;
 	total?: number;
 	currentPage: number; // initial page
-	labels: { [key: string]: string } | {};
+	labels?: Record<string, string>;
 	fields: string[];
 	pagination: boolean;
+	hidePageNumbers: boolean;
 	onPageChange: (page: number) => Promise<Submissions>;
 };
