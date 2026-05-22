@@ -1,8 +1,4 @@
-import type {
-	SubmissionItem,
-	Submissions,
-	SubmissionRendererOptions,
-} from './consts';
+import type { SubmissionItem, SubmissionRendererOptions } from './consts';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -31,10 +27,10 @@ export default class SubmissionsRenderer {
 		if (!this.paginationDiv) return;
 
 		this.paginationDiv.addEventListener('click', async (event) => {
-			const target = event.target as HTMLElement;
+			const target = event.target as HTMLButtonElement;
 
-			if (target.tagName === 'BUTTON') {
-				const page = parseInt(target.dataset.page || '1', 10);
+			if (target && !target.disabled && target.dataset.page) {
+				const page = parseInt(target.dataset.page, 10);
 				if (!isNaN(page)) {
 					this.options.currentPage = page;
 					const newSubmissions =
@@ -64,14 +60,8 @@ export default class SubmissionsRenderer {
 		// Update the submissions list
 		this.submissionListDiv.innerHTML = this.renderSubmissionsList();
 
-		// Update the pagination
-		this.paginationDiv.querySelectorAll('.active').forEach((btn) => {
-			btn.classList.remove('active');
-		});
-
-		this.paginationDiv
-			.querySelector(`[data-page="${this.options.currentPage}"]`)
-			?.classList.add('active');
+		// Update the pagination completely to reflect ellipses and new active states
+		this.paginationDiv.innerHTML = this.renderPagination();
 	}
 
 	public renderSubmissionsList() {
@@ -93,6 +83,40 @@ export default class SubmissionsRenderer {
 		return `<span class="submissions__item">${submission.name}</span>`;
 	}
 
+	private getPaginationRange(
+		totalPages: number,
+		currentPage: number
+	): (number | string)[] {
+		const initialPagesToShow = 1;
+		const adjacentPages = 1;
+		const range: number[] = [];
+		const rangeWithDots: (number | string)[] = [];
+		let lastNum = 0;
+
+		// Determine which page numbers to show
+		for (let i = 1; i <= totalPages; i++) {
+			if (
+				i <= initialPagesToShow ||
+				i === totalPages ||
+				(i >= currentPage - adjacentPages &&
+					i <= currentPage + adjacentPages)
+			) {
+				range.push(i);
+			}
+		}
+
+		// Insert ellipses where there are gaps
+		for (const i of range) {
+			if (lastNum > 0 && i - lastNum !== 1) {
+				rangeWithDots.push('...');
+			}
+			rangeWithDots.push(i);
+			lastNum = i;
+		}
+
+		return rangeWithDots;
+	}
+
 	public renderPagination(): string {
 		if (
 			!this.options.total ||
@@ -108,10 +132,32 @@ export default class SubmissionsRenderer {
 			return '';
 		}
 
+		const currentPage = this.options.currentPage || 1;
 		let paginationHTML = '<div class="ptr-pagination">';
 
-		for (let i = 1; i <= totalPages; i++) {
-			paginationHTML += `<button class="ptr-pagination__item ${i === this.options.currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+		// Prev Button
+		if (currentPage > 1) {
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--prev" data-page="${currentPage - 1}">&lsaquo;</button>`;
+		} else {
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--prev" disabled>&lsaquo;</button>`;
+		}
+
+		const rangeWithDots = this.getPaginationRange(totalPages, currentPage);
+
+		// Render the numbers and dots
+		for (const page of rangeWithDots) {
+			if (page === '...') {
+				paginationHTML += `<span class="ptr-pagination__dots">...</span>`;
+			} else {
+				paginationHTML += `<button class="ptr-pagination__item ${page === currentPage ? 'active' : ''}" data-page="${page}">${page}</button>`;
+			}
+		}
+
+		// Next Button
+		if (currentPage < totalPages) {
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--next" data-page="${currentPage + 1}">&rsaquo;</button>`;
+		} else {
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--next" disabled>&rsaquo;</button>`;
 		}
 
 		paginationHTML += '</div>';
@@ -188,7 +234,9 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 	public renderSubmissionItem(submission: SubmissionItem): string {
 		const filteredKeys = Object.keys(submission).filter(
 			(key) =>
-				key in this.options.labels && this.options.fields.includes(key)
+				this.options.labels &&
+				key in this.options.labels &&
+				this.options.fields.includes(key)
 		);
 
 		return `<div class="submissions__item">

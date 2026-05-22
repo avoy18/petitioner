@@ -20,7 +20,7 @@ export type SubmissionRendererOptions = {
 	perPage?: number;
 	total?: number;
 	currentPage: number; // initial page
-	labels: { [key: string]: string } | {};
+	labels?: Record<string, string>;
 	fields: string[];
 	pagination: boolean;
 	onPageChange: (page: number) => Promise<Submissions>;
