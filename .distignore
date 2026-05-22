@@ -7,6 +7,8 @@ vendor
 wordpress
 .husky
 coverage
+tests
+__tests__
 
 # Excluded Files
 .DS_Store
