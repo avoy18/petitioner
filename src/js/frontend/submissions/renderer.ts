@@ -35,7 +35,7 @@ export default class SubmissionsRenderer {
 
 			if (target && !target.disabled && target.dataset.page) {
 				const page = parseInt(target.dataset.page, 10);
-				if (!isNaN(page)) {
+				if (!isNaN(page) && page !== this.options.currentPage) {
 					this.options.currentPage = page;
 					const newSubmissions =
 						await this.options.onPageChange(page);
