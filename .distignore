@@ -14,3 +14,11 @@ coverage
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+package.json
+tsconfig.json
+vite.admin.config.ts
+vite.frontend.config.ts
+vitest.config.ts
+composer.json
+composer.lock
+phpunit.xml
