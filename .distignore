@@ -1,0 +1,33 @@
+# Excluded Directories
+.git
+.github
+node_modules
+scripts
+vendor
+wordpress
+.husky
+coverage
+tests
+__tests__
+
+# Excluded Files
+.DS_Store
+.gitignore
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+package.json
+tsconfig.json
+vite.admin.config.ts
+vite.frontend.config.ts
+vitest.config.ts
+composer.json
+composer.lock
+phpunit.xml
+.editorconfig
+.prettierrc*
+.eslintrc*
+.vscode
+.idea
+.wp-env.json
+*.log
