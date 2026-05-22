@@ -54,4 +54,33 @@ class Test_Admin_Settings_UI extends BaseTestCase
         $this->assertEquals('petitioner_mock_integration_enabled', $schema['mock_integration_enabled']['meta_key']);
         $this->assertEquals('checkbox', $schema['mock_integration_enabled']['type']);
     }
+
+    public function test_sanitize_array_handles_nested_objects()
+    {
+        $settings_ui = new AV_Petitioner_Admin_Settings_UI();
+        
+        $nested_json = '[{"fieldName": "FIRSTNAME", "mappedTo": "fname", "boldTag": "<b>bad</b>", "xssTag": "<script>alert(1)</script>"}]';
+        
+        // Return stringified json
+        $sanitized_json = $settings_ui->sanitize_array($nested_json);
+        $decoded = json_decode($sanitized_json, true);
+        
+        $this->assertIsArray($decoded);
+        $this->assertCount(1, $decoded);
+        $this->assertEquals('FIRSTNAME', $decoded[0]['fieldName']);
+        $this->assertEquals('fname', $decoded[0]['mappedTo']);
+        
+        // Assert basic HTML tags are stripped but inner text remains
+        $this->assertEquals('bad', $decoded[0]['boldTag']); 
+        
+        // Assert dangerous <script> tags AND their inner contents are completely obliterated
+        $this->assertEquals('', $decoded[0]['xssTag']); 
+
+        // Return raw array
+        $sanitized_array = $settings_ui->sanitize_array($nested_json, false);
+        $this->assertIsArray($sanitized_array);
+        $this->assertEquals('FIRSTNAME', $sanitized_array[0]['fieldName']);
+        $this->assertEquals('bad', $sanitized_array[0]['boldTag']);
+        $this->assertEquals('', $sanitized_array[0]['xssTag']);
+    }
 }

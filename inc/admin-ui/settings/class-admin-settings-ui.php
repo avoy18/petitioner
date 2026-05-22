@@ -239,15 +239,16 @@ class AV_Petitioner_Admin_Settings_UI
             }
         }
 
-        $sanitized = [];
+        $sanitized = map_deep($array_items, function ($value) {
+            return is_string($value) ? sanitize_text_field($value) : $value;
+        });
 
-        foreach ($array_items as $key => $val) {
-            $sanitized[$key] = sanitize_text_field((string) $val);
+        if ($stringify) {
+            $encoded = wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return $encoded !== false ? $encoded : '{}';
         }
 
-        return $stringify
-            ? wp_json_encode($sanitized, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
-            : $sanitized;
+        return $sanitized;
     }
 
     public function get_default_labels()
