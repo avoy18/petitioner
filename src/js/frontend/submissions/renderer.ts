@@ -31,7 +31,7 @@ export default class SubmissionsRenderer {
 		if (!this.paginationDiv) return;
 
 		this.paginationDiv.addEventListener('click', async (event) => {
-			const target = event.target as HTMLButtonElement;
+			const target = (event.target as HTMLElement).closest('button');
 
 			if (target && !target.disabled && target.dataset.page) {
 				const page = parseInt(target.dataset.page, 10);
