@@ -1,5 +1,4 @@
 import type { SubmissionItem, SubmissionRendererOptions } from './consts';
-import { __ } from '@wordpress/i18n';
 
 /**
  * @class SubmissionsRenderer
@@ -8,6 +7,8 @@ import { __ } from '@wordpress/i18n';
 export default class SubmissionsRenderer {
 	public paginationDiv: HTMLDivElement;
 	public submissionListDiv: HTMLDivElement;
+	public prevPageLabel: string;
+	public nextPageLabel: string;
 
 	constructor(public options: SubmissionRendererOptions) {
 		this.options.currentPage = this.options.currentPage || 1;
@@ -17,6 +18,9 @@ export default class SubmissionsRenderer {
 
 		this.paginationDiv = document.createElement('div');
 		this.paginationDiv.className = 'submissions__pagination';
+
+		this.prevPageLabel = window?.petitionerSubmissionSettings?.labels?.prevPage || 'Previous page';
+		this.nextPageLabel = window?.petitionerSubmissionSettings?.labels?.nextPage || 'Next page';
 
 		if (!this.options.wrapper) {
 			throw new Error('Element not found');
@@ -137,27 +141,29 @@ export default class SubmissionsRenderer {
 
 		// Prev Button
 		if (currentPage > 1) {
-			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--prev" data-page="${currentPage - 1}">&lsaquo;</button>`;
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--prev" data-page="${currentPage - 1}" aria-label="${this.prevPageLabel}">&lsaquo;</button>`;
 		} else {
-			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--prev" disabled>&lsaquo;</button>`;
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--prev" disabled aria-label="${this.prevPageLabel}">&lsaquo;</button>`;
 		}
 
-		const rangeWithDots = this.getPaginationRange(totalPages, currentPage);
+		if (!this.options.hidePageNumbers) {
+			const rangeWithDots = this.getPaginationRange(totalPages, currentPage);
 
-		// Render the numbers and dots
-		for (const page of rangeWithDots) {
-			if (page === '...') {
-				paginationHTML += `<span class="ptr-pagination__dots">...</span>`;
-			} else {
-				paginationHTML += `<button class="ptr-pagination__item ${page === currentPage ? 'active' : ''}" data-page="${page}">${page}</button>`;
+			// Render the numbers and dots
+			for (const page of rangeWithDots) {
+				if (page === '...') {
+					paginationHTML += `<span class="ptr-pagination__dots">...</span>`;
+				} else {
+					paginationHTML += `<button class="ptr-pagination__item ${page === currentPage ? 'active' : ''}" data-page="${page}">${page}</button>`;
+				}
 			}
 		}
 
 		// Next Button
 		if (currentPage < totalPages) {
-			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--next" data-page="${currentPage + 1}">&rsaquo;</button>`;
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--next" data-page="${currentPage + 1}" aria-label="${this.nextPageLabel}">&rsaquo;</button>`;
 		} else {
-			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--next" disabled>&rsaquo;</button>`;
+			paginationHTML += `<button class="ptr-pagination__item ptr-pagination__item--next" disabled aria-label="${this.nextPageLabel}">&rsaquo;</button>`;
 		}
 
 		paginationHTML += '</div>';

@@ -158,5 +158,26 @@ describe('SubmissionsRenderer', () => {
 			expect(buttons.length).toBe(3); // Pages 1, 2, and 5
 			expect(buttons.map(b => b.textContent)).toEqual(['1', '2', '5']);
 		});
+
+		it('should only show prev/next buttons when hidePageNumbers is true', () => {
+			const renderer = new SubmissionsRenderer({ ...defaultOptions, total: 10, perPage: 2, hidePageNumbers: true });
+			renderer.render();
+
+			let pagination = wrapper.querySelector('.ptr-pagination');
+			
+			// Verify prev and next exist
+			const prevBtn = pagination?.querySelector('.ptr-pagination__item--prev');
+			const nextBtn = pagination?.querySelector('.ptr-pagination__item--next');
+			expect(prevBtn).not.toBeNull();
+			expect(nextBtn).not.toBeNull();
+
+			// Verify NO numeric buttons exist
+			const numericButtons = pagination?.querySelectorAll('button[data-page]:not(.ptr-pagination__item--prev):not(.ptr-pagination__item--next)');
+			expect(numericButtons?.length).toBe(0);
+
+			// Verify NO ellipses exist
+			const ellipses = pagination?.querySelectorAll('.ptr-pagination__dots');
+			expect(ellipses?.length).toBe(0);
+		});
 	});
 });

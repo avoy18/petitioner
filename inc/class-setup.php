@@ -197,7 +197,7 @@ class AV_Petitioner_Setup
             wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
         }
 
-        wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', ['wp-i18n'], AV_PETITIONER_PLUGIN_VERSION, true);
+        wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', [], AV_PETITIONER_PLUGIN_VERSION, true);
 
         wp_enqueue_script('petitioner-script');
 
@@ -214,6 +214,10 @@ class AV_Petitioner_Setup
         wp_localize_script('petitioner-script', 'petitionerSubmissionSettings', [
             'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_get_submissions',
             'nonce'         => wp_create_nonce('petitioner_submissions_nonce'),
+            'labels'        => [
+                'prevPage' => __('Previous page', 'petitioner'),
+                'nextPage' => __('Next page', 'petitioner'),
+            ],
         ]);
     }
 

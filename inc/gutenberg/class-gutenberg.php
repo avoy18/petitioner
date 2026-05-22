@@ -70,6 +70,10 @@ class AV_Petitioner_Gutenberg
                     'type'    => 'boolean',
                     'default' => true
                 ],
+                'hidePageNumbers' => [
+                    'type'    => 'boolean',
+                    'default' => false
+                ],
                 'availableStyles' => [
                     'type'    => 'array',
                     'default' => AV_Petitioner_Shortcodes::get_available_styles(),
@@ -91,6 +95,7 @@ class AV_Petitioner_Gutenberg
                 $style              = isset($attributes['style']) ? sanitize_text_field($attributes['style']) : 'simple';
                 $fields             = isset($attributes['fields']) ? array_map('sanitize_text_field', $attributes['fields']) : ['name', 'country', 'submitted_at'];
                 $show_pagination    = isset($attributes['showPagination']) ? filter_var($attributes['showPagination'], FILTER_VALIDATE_BOOLEAN) : true;
+                $hide_page_numbers  = isset($attributes['hidePageNumbers']) ? filter_var($attributes['hidePageNumbers'], FILTER_VALIDATE_BOOLEAN) : false;
                 $available_styles   = AV_Petitioner_Shortcodes::get_available_styles();
                 $available_fields   = AV_Petitioner_Shortcodes::get_available_fields();
 
@@ -99,7 +104,8 @@ class AV_Petitioner_Gutenberg
                     'per_page'          => isset($attributes['perPage']) ? absint($attributes['perPage']) : 10,
                     'style'             => in_array($style, $available_styles) ? $style : 'simple',
                     'fields'            => array_intersect($fields, $available_fields) ? implode(',', array_intersect($fields, $available_fields)) : 'name,country,submitted_at',
-                    'show_pagination'   => $show_pagination ? 'true' : 'false'
+                    'show_pagination'   => $show_pagination ? 'true' : 'false',
+                    'hide_page_numbers' => $hide_page_numbers ? 'true' : 'false'
                 ];
 
                 $shortcode_atts = array_map('esc_attr', $shortcode_atts);
