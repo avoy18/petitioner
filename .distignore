@@ -24,3 +24,10 @@ vitest.config.ts
 composer.json
 composer.lock
 phpunit.xml
+.editorconfig
+.prettierrc*
+.eslintrc*
+.vscode
+.idea
+.wp-env.json
+*.log
