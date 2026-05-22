@@ -156,8 +156,6 @@ class AV_Petitioner_Submissions_Controller
             }
         }
 
-
-
         $send_to_rep = $default_approval_status !== 'Email' && get_post_meta($form_id, '_petitioner_send_to_representative', true);
 
         $mailer_settings = array(
@@ -199,6 +197,10 @@ class AV_Petitioner_Submissions_Controller
                 'title'   => AV_Petitioner_Labels::get('could_not_submit'),
                 'message' => AV_Petitioner_Labels::get('error_generic'),
             ]);
+
+            av_ptr_error_log(
+                'Petitioner submission error: Failed to save submission with ID ' . $submission_id . ' or send emails.'
+            );
         } else {
             wp_send_json_success([
                 'title'     => AV_Petitioner_Labels::get('success_message_title', $form_id),
@@ -709,7 +711,6 @@ class AV_Petitioner_Submissions_Controller
     public static function check_admin_request($nonce_label)
     {
         if (!check_ajax_referer($nonce_label, 'petitioner_nonce', false)) {
-            av_ptr_error_log(['nonce', $nonce_label, $_REQUEST['petitioner_nonce']]);
             wp_send_json_error([
                 'title'     => AV_Petitioner_Labels::get('could_not_submit'),
                 'message'   => AV_Petitioner_Labels::get('invalid_nonce'),
