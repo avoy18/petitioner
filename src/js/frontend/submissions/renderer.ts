@@ -91,22 +91,24 @@ export default class SubmissionsRenderer {
 		totalPages: number,
 		currentPage: number
 	): (number | string)[] {
-		const initialPagesToShow = 1;
 		const adjacentPages = 1;
 		const range: number[] = [];
 		const rangeWithDots: (number | string)[] = [];
 		let lastNum = 0;
 
-		// Determine which page numbers to show
-		for (let i = 1; i <= totalPages; i++) {
-			if (
-				i <= initialPagesToShow ||
-				i === totalPages ||
-				(i >= currentPage - adjacentPages &&
-					i <= currentPage + adjacentPages)
-			) {
+		const start = Math.max(1, currentPage - adjacentPages);
+		const end = Math.min(totalPages, currentPage + adjacentPages);
+
+		range.push(1);
+
+		for (let i = start; i <= end; i++) {
+			if (i > 1 && i < totalPages) {
 				range.push(i);
 			}
+		}
+
+		if (totalPages > 1) {
+			range.push(totalPages);
 		}
 
 		// Insert ellipses where there are gaps
