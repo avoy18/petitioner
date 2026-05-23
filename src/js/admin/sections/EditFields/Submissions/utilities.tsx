@@ -242,6 +242,7 @@ export const getFieldLabels = (): Record<string, string> => {
 		...fieldMap,
 		name: __('First/Last name', 'petitioner'),
 		accept_tos: __('Consent', 'petitioner'),
+		is_featured: __('Featured', 'petitioner'),
 		submitted_at: __('Submitted at', 'petitioner'),
 		approval_status: __('Status', 'petitioner'),
 	};
@@ -292,6 +293,10 @@ export const getHumanValue = (val: string, type: string): string => {
 export const getSubmissionValType = (label: FieldKey): FieldType => {
 	if (label === 'submitted_at') {
 		return 'date';
+	}
+
+	if (label === 'is_featured') {
+		return 'checkbox';
 	}
 
 	const allPossibleFields = getAllPossibleFields();

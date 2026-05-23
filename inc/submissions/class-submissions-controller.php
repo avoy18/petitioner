@@ -310,6 +310,7 @@ class AV_Petitioner_Submissions_Controller
             'per_page'          => $per_page,
             'offset'            => $offset,
             'fields'            => $fields,
+            'featured_first'    => true,
             'query'             => [
                 [
                     'field'     => 'approval_status',
@@ -409,6 +410,9 @@ class AV_Petitioner_Submissions_Controller
                         // Handle nullable fields
                         $value = $_POST[$field];
                         $submission[$field] = ($value !== '' && $value !== null) ? sanitize_text_field(wp_unslash($value)) : null;
+                        break;
+                    case 'is_featured':
+                        $submission[$field] = absint($_POST[$field]);
                         break;
                     default:
                         // Default sanitization for text fields

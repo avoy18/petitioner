@@ -30,7 +30,8 @@ class AV_Petitioner_Submissions_Model
         'approval_status',
         'submitted_at',
         'confirmation_token',
-        'custom_properties'
+        'custom_properties',
+        'is_featured'
     ];
 
     /**
@@ -59,7 +60,8 @@ class AV_Petitioner_Submissions_Model
         'fname',
         'lname',
         'hide_name',
-        'custom_properties'
+        'custom_properties',
+        'is_featured'
     ];
 
     public static function table_name()
@@ -91,6 +93,7 @@ class AV_Petitioner_Submissions_Model
             newsletter tinyint(1) DEFAULT 0,
             hide_name tinyint(1) DEFAULT 0,
             accept_tos tinyint(1) DEFAULT 0,
+            is_featured tinyint(1) DEFAULT 0,
             approval_status varchar(255) DEFAULT 'Confirmed',
             submitted_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             confirmation_token varchar(64) DEFAULT NULL,
@@ -168,6 +171,7 @@ class AV_Petitioner_Submissions_Model
         $relation   = isset($settings['relation']) ? $settings['relation'] : 'AND';
         $order      = isset($settings['order']) ? $settings['order'] : 'DESC';
         $orderby    = isset($settings['orderby']) ? $settings['orderby'] : 'submitted_at';
+        $featured_first = isset($settings['featured_first']) ? (bool) $settings['featured_first'] : false;
 
         // Validate fields
         $allowed_fields = self::$ALLOWED_FIELDS;
@@ -188,11 +192,13 @@ class AV_Petitioner_Submissions_Model
         $orderby = in_array($orderby, $allowed_fields, true) ? $orderby : 'submitted_at';
         $order   = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
 
+        $order_by_sql = $featured_first ? "is_featured DESC, $orderby $order" : "$orderby $order";
+
         // Get submissions
         $sql = "SELECT $fields
                 FROM {$wpdb->prefix}av_petitioner_submissions 
                 WHERE $where_sql 
-                ORDER BY $orderby $order 
+                ORDER BY $order_by_sql 
                 LIMIT %d OFFSET %d";
 
         $params_with_limit = array_merge($params, [$per_page, $offset]);
@@ -418,6 +424,7 @@ class AV_Petitioner_Submissions_Model
             'newsletter'            => '%d',
             'hide_name'             => '%d',
             'accept_tos'            => '%d',
+            'is_featured'           => '%d',
             'approval_status'       => '%s',
             'submitted_at'          => '%s',
             'confirmation_token'    => '%s',
