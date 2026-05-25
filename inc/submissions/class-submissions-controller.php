@@ -239,8 +239,9 @@ class AV_Petitioner_Submissions_Controller
 
         // Fetch submissions and total count using the new method
         $fetch_settings = [
-            'per_page' => $per_page,
-            'offset'   => $offset,
+            'per_page'       => $per_page,
+            'offset'         => $offset,
+            'featured_first' => true,
         ];
 
         if ($order) {
