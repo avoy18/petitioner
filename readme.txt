@@ -153,6 +153,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Added a filter letting you adjust the anonymous display name
     * Submission UI: improved pagination (prev/next buttons and hiding inner page numbers)
     * Submission GB block and a shortcode: allow pagination buttons to be hidden
+    * Added an option to feature submission entries so they are pinned on the frontend
 
 = 0.8.1 =
 * Improvements
