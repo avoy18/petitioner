@@ -412,7 +412,7 @@ class AV_Petitioner_Submissions_Controller
                         $submission[$field] = ($value !== '' && $value !== null) ? sanitize_text_field(wp_unslash($value)) : null;
                         break;
                     case 'is_featured':
-                        $submission[$field] = absint($_POST[$field]);
+                        $submission[$field] = filter_var(wp_unslash($_POST[$field]), FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
                         break;
                     default:
                         // Default sanitization for text fields
