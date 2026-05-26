@@ -220,7 +220,7 @@ export default function SubmissionEditModal({
 				onToggle={() => {
 					setSubmissionDetails((prev) => ({
 						...prev,
-						is_featured: prev.is_featured === '0' ? '1' : '0',
+						is_featured: prev.is_featured === '1' ? '0' : '1',
 					}));
 				}}
 			/>
