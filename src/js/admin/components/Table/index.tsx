@@ -1,6 +1,7 @@
-import { TableHeading, HeadingLabel, StyledTable } from './styled';
+import { TableHeading, HeadingLabel, StyledTable, FeaturedIcon } from './styled';
 import type { TableProps, SortDirection, HeadingProps } from './consts';
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 export * from './hooks';
 
@@ -10,8 +11,8 @@ export default function Table({
 	emptyMessage = 'No data available',
 	className = '',
 	clickable = false,
-	onSort = () => {},
-	onItemSelect = () => {},
+	onSort = () => { },
+	onItemSelect = () => { },
 }: TableProps) {
 	const hasRows = rows.length > 0;
 
@@ -70,13 +71,21 @@ export default function Table({
 
 			{hasRows ? (
 				<tbody>
-					{rows.map(({ cells, id }, rowIdx) => (
-						<tr onClick={() => onItemSelect(id)} key={id}>
-							{cells.map((cell, cellIdx) => (
-								<td key={cellIdx}>{cell}</td>
-							))}
-						</tr>
-					))}
+					{rows.map(({ cells, id, isFeatured }) => {
+						const rowClasses = isFeatured ? 'is-featured' : undefined;
+						return (
+							<tr className={rowClasses} onClick={() => onItemSelect(id)} key={id}>
+								{cells.map((cell, cellIdx) => (
+									<td key={cellIdx}>
+										{cellIdx === 0 && isFeatured ? (
+											<FeaturedIcon aria-label={__('Featured', 'petitioner')} />
+										) : null}
+										{cell}
+									</td>
+								))}
+							</tr>
+						);
+					})}
 				</tbody>
 			) : (
 				<tbody>

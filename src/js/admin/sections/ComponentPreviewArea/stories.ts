@@ -3,11 +3,13 @@ import type { ComponentStories } from './consts';
 import * as TableHeadingEditorStories from '@admin/components/TableHeadingEditor/TableHeadingEditor.stories';
 import * as TabsStories from '@admin/components/Tabs/Tabs.stories';
 import * as GoalMilestonesStories from '@admin/components/GoalMilestones/GoalMilestones.stories';
+import * as TableStories from '@admin/components/Table/Table.stories';
 
 export const storyRegistry: Record<string, ComponentStories> = {
 	'table-heading-editor': TableHeadingEditorStories,
 	'tabs': TabsStories,
 	'goal-milestones': GoalMilestonesStories,
+	'table': TableStories,
 };
 
 export function getComponentList() {

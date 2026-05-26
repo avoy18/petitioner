@@ -239,8 +239,9 @@ class AV_Petitioner_Submissions_Controller
 
         // Fetch submissions and total count using the new method
         $fetch_settings = [
-            'per_page' => $per_page,
-            'offset'   => $offset,
+            'per_page'       => $per_page,
+            'offset'         => $offset,
+            'featured_first' => true,
         ];
 
         if ($order) {
@@ -310,6 +311,7 @@ class AV_Petitioner_Submissions_Controller
             'per_page'          => $per_page,
             'offset'            => $offset,
             'fields'            => $fields,
+            'featured_first'    => true,
             'query'             => [
                 [
                     'field'     => 'approval_status',
@@ -344,7 +346,8 @@ class AV_Petitioner_Submissions_Controller
             $submission = self::maybe_make_names_private($submission, $hide_last_name);
 
             $modified_submission = [
-                'name'          => $submission->name
+                'name'          => $submission->name,
+                'is_featured'   => !empty($submission->is_featured) && $submission->is_featured === '1' ? '1' : '0',
             ];
 
             foreach ($labels as $k => $v) {
@@ -409,6 +412,9 @@ class AV_Petitioner_Submissions_Controller
                         // Handle nullable fields
                         $value = $_POST[$field];
                         $submission[$field] = ($value !== '' && $value !== null) ? sanitize_text_field(wp_unslash($value)) : null;
+                        break;
+                    case 'is_featured':
+                        $submission[$field] = filter_var(wp_unslash($_POST[$field]), FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
                         break;
                     default:
                         // Default sanitization for text fields

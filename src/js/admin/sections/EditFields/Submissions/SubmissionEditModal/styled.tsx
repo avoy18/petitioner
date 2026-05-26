@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { SPACINGS } from '@admin/theme';
-import { CardBody } from '@wordpress/components';
+import { SPACINGS, COLORS } from '@admin/theme';
+import { CardBody, Button } from '@wordpress/components';
+import { Text } from '@admin/components/Experimental'
 
 export const ActionButtons = styled.div`
 	display: flex;
@@ -29,4 +30,22 @@ export const ActionButtonWrapper = styled.div`
 	align-items: center;
 	justify-content: flex-end;
 	gap: ${SPACINGS.sm};
+`;
+
+export const StyledFeaturedButtonWrapper = styled.div`
+	--feat-button-padding-x: ${SPACINGS.xs};
+	margin-bottom: ${SPACINGS.lg};
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: ${SPACINGS.sm};
+`;
+
+export const StyledFeatureButton = styled(Button)`
+	padding-left: var(--feat-button-padding-x) !important;
+	padding-right: var(--feat-button-padding-x) !important;
+`;
+
+export const HelpText = styled(Text)`
+	padding-inline: var(--feat-button-padding-x);
 `;

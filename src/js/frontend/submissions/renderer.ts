@@ -19,8 +19,12 @@ export default class SubmissionsRenderer {
 		this.paginationDiv = document.createElement('div');
 		this.paginationDiv.className = 'submissions__pagination';
 
-		this.prevPageLabel = window?.petitionerSubmissionSettings?.labels?.prevPage || 'Previous page';
-		this.nextPageLabel = window?.petitionerSubmissionSettings?.labels?.nextPage || 'Next page';
+		this.prevPageLabel =
+			window?.petitionerSubmissionSettings?.labels?.prevPage ||
+			'Previous page';
+		this.nextPageLabel =
+			window?.petitionerSubmissionSettings?.labels?.nextPage ||
+			'Next page';
 
 		if (!this.options.wrapper) {
 			throw new Error('Element not found');
@@ -149,7 +153,10 @@ export default class SubmissionsRenderer {
 		}
 
 		if (!this.options.hidePageNumbers) {
-			const rangeWithDots = this.getPaginationRange(totalPages, currentPage);
+			const rangeWithDots = this.getPaginationRange(
+				totalPages,
+				currentPage
+			);
 
 			// Render the numbers and dots
 			for (const page of rangeWithDots) {
@@ -247,7 +254,15 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 				this.options.fields.includes(key)
 		);
 
-		return `<div class="submissions__item">
+		const isFeatured = submission.is_featured === '1';
+
+		const finalClassNames = ['submissions__item'];
+
+		if (isFeatured) {
+			finalClassNames.push('submissions__item--featured');
+		}
+
+		return `<div class="${finalClassNames.join(' ')}">
 			${filteredKeys
 				.map((key) => {
 					const renderedValue =

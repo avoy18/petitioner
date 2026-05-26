@@ -17,6 +17,7 @@ export type SubmissionItem = {
 	newsletter?: '0' | '1';
 	hide_name?: '0' | '1';
 	accept_tos?: '0' | '1';
+	is_featured?: '0' | '1';
 	submitted_at: string;
 	approval_status: SubmissionStatus;
 	confirmation_token?: string;
