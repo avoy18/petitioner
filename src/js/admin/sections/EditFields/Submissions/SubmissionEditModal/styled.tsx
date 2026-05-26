@@ -39,11 +39,12 @@ export const StyledFeaturedButtonWrapper = styled.div`
 	flex-direction: column;
 	align-items: flex-start;
 	gap: ${SPACINGS.sm};
-`
+`;
+
 export const StyledFeatureButton = styled(Button)`
 	padding-left: var(--feat-button-padding-x) !important;
 	padding-right: var(--feat-button-padding-x) !important;
-`
+`;
 
 export const HelpText = styled(Text)`
 	padding-inline: var(--feat-button-padding-x);

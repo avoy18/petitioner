@@ -225,7 +225,8 @@ export default function SubmissionEditModal({
 				}}
 			/>
 			<Card>
-				{SubmissionDetails}</Card>
+				{SubmissionDetails}
+			</Card>
 		</Modal>
 	);
 }
