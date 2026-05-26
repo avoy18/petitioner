@@ -31,6 +31,26 @@ export default class SubmissionsRenderer {
 		}
 	}
 
+	/**
+	 * Format a MySQL datetime string (e.g. "2026-05-26 13:08:14") as a
+	 * human-readable date without time.
+	 */
+	public formatDate(val: string): string {
+		// Take just the date portion to avoid timezone shifts
+		const datePart = val.split(' ')[0];
+		const date = new Date(datePart + 'T00:00:00');
+
+		if (isNaN(date.getTime())) {
+			return val;
+		}
+
+		return date.toLocaleDateString(undefined, {
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric',
+		});
+	}
+
 	public attachEventListeners() {
 		if (!this.paginationDiv) return;
 
@@ -266,8 +286,8 @@ export class SubmissionsRendererTable extends SubmissionsRenderer {
 			${filteredKeys
 				.map((key) => {
 					const renderedValue =
-						key === 'fname'
-							? `${submission.fname} ${submission.lname}`
+						key === 'submitted_at'
+							? this.formatDate(String(submission[key]))
 							: submission?.[key];
 					return `<div class="submissions__item__inner">
 						<strong>${this.options.labels?.[key] || key}:</strong>
