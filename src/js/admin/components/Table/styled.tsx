@@ -1,5 +1,15 @@
 import styled, { css } from 'styled-components';
 import { COLORS, TRANSITIONS } from '@admin/theme';
+import { Icon } from '@wordpress/components';
+
+export const FeaturedIcon = styled(Icon).attrs({
+	icon: 'star-filled',
+	size: 10,
+})`
+	margin-right: 4px;
+	vertical-align: middle;
+	fill: currentColor;
+`;
 
 export const TableHeading = styled.th<{ $width?: string }>`
 	${({ $width }) => `width: ${$width};`}

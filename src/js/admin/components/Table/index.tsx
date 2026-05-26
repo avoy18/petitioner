@@ -1,4 +1,4 @@
-import { TableHeading, HeadingLabel, StyledTable } from './styled';
+import { TableHeading, HeadingLabel, StyledTable, FeaturedIcon } from './styled';
 import type { TableProps, SortDirection, HeadingProps } from './consts';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -78,7 +78,7 @@ export default function Table({
 								{cells.map((cell, cellIdx) => (
 									<td key={cellIdx}>
 										{cellIdx === 0 && isFeatured ? (
-											<span className="featured-star" aria-label={__('Featured', 'petitioner')} style={{ marginRight: '4px' }}>★</span>
+											<FeaturedIcon aria-label={__('Featured', 'petitioner')} />
 										) : null}
 										{cell}
 									</td>
