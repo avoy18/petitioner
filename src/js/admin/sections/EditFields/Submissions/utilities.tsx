@@ -240,6 +240,7 @@ export const getFieldLabels = (): Record<string, string> => {
 
 	return {
 		...fieldMap,
+		email: __('Email address', 'petitioner'),
 		name: __('First/Last name', 'petitioner'),
 		accept_tos: __('Consent', 'petitioner'),
 		is_featured: __('Featured', 'petitioner'),

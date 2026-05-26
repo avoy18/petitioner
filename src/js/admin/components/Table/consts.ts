@@ -14,6 +14,7 @@ export type OnSortArgs = {
 export type TableRow = {
 	cells: React.ReactNode[];
 	id: string | number;
+	isFeatured?: boolean;
 };
 
 export type TableProps = {

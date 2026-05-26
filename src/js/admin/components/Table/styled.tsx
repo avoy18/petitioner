@@ -32,5 +32,12 @@ export const StyledTable = styled.table<{ $clickable: boolean }>`
 					}
 				}
 			`}
+			
+		tr.is-featured td {
+			background-color: #f3f8fc !important;
+		}
+		tr.is-featured:nth-child(odd) td {
+			background-color: #e6f0f9 !important;
+		}
 	}
 `;

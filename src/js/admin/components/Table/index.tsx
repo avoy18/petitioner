@@ -70,13 +70,21 @@ export default function Table({
 
 			{hasRows ? (
 				<tbody>
-					{rows.map(({ cells, id }, rowIdx) => (
-						<tr onClick={() => onItemSelect(id)} key={id}>
-							{cells.map((cell, cellIdx) => (
-								<td key={cellIdx}>{cell}</td>
-							))}
-						</tr>
-					))}
+					{rows.map(({ cells, id, isFeatured }, rowIdx) => {
+						const rowClasses = isFeatured ? 'is-featured sticky' : undefined;
+						return (
+							<tr className={rowClasses} onClick={() => onItemSelect(id)} key={id}>
+								{cells.map((cell, cellIdx) => (
+									<td key={cellIdx}>
+										{cellIdx === 0 && isFeatured ? (
+											<span className="featured-star" aria-hidden="true" style={{ marginRight: '4px' }}>★</span>
+										) : null}
+										{cell}
+									</td>
+								))}
+							</tr>
+						);
+					})}
 				</tbody>
 			) : (
 				<tbody>
