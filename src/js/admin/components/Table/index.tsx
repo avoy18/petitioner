@@ -1,6 +1,7 @@
 import { TableHeading, HeadingLabel, StyledTable } from './styled';
 import type { TableProps, SortDirection, HeadingProps } from './consts';
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 export * from './hooks';
 
@@ -10,8 +11,8 @@ export default function Table({
 	emptyMessage = 'No data available',
 	className = '',
 	clickable = false,
-	onSort = () => {},
-	onItemSelect = () => {},
+	onSort = () => { },
+	onItemSelect = () => { },
 }: TableProps) {
 	const hasRows = rows.length > 0;
 
@@ -77,7 +78,7 @@ export default function Table({
 								{cells.map((cell, cellIdx) => (
 									<td key={cellIdx}>
 										{cellIdx === 0 && isFeatured ? (
-											<span className="featured-star" aria-hidden="true" style={{ marginRight: '4px' }}>★</span>
+											<span className="featured-star" aria-label={__('Featured', 'petitioner')} style={{ marginRight: '4px' }}>★</span>
 										) : null}
 										{cell}
 									</td>
