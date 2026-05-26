@@ -179,7 +179,7 @@ export default function Submissions() {
 		return (
 			<ExportButtonWrapper>
 				<ShortcodeElement
-					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
+					clipboardValue={`[petitioner-submissions id="${form_id}" style="table" show_pagination="true"]`}
 					label={__('Shortcode', 'petitioner')}
 					help={__(
 						'Use this shortcode to display submissions on any page or post.',
