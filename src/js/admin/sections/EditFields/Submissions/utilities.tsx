@@ -296,9 +296,6 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 		return 'date';
 	}
 
-	if (label === 'is_featured') {
-		return 'checkbox';
-	}
 
 	const allPossibleFields = getAllPossibleFields();
 
