@@ -347,7 +347,7 @@ class AV_Petitioner_Submissions_Controller
 
             $modified_submission = [
                 'name'          => $submission->name,
-                'is_featured'   => !empty($submission->is_featured) && $submission->is_featured === '1'? '1' : '0',
+                'is_featured'   => !empty($submission->is_featured) && $submission->is_featured === '1' ? '1' : '0',
             ];
 
             foreach ($labels as $k => $v) {
