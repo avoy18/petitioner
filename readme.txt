@@ -154,6 +154,12 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Submission UI: improved pagination (prev/next buttons and hiding inner page numbers)
     * Submission GB block and a shortcode: allow pagination buttons to be hidden
     * Added an option to feature submission entries so they are pinned on the frontend
+    * Submitted at dates are now properly formatted vs showing a raw timestamp
+* Bugfixes
+    * Fixed typo on the submission shortcode clipboard button (replaced form_id="" with id="")
+* Architecture
+    * Reworked settings & editing fields registration to make it a lot more extendable
+    * Increased the test coverage to cover the frontend
 
 = 0.8.1 =
 * Improvements
