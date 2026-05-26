@@ -70,8 +70,8 @@ export default function Table({
 
 			{hasRows ? (
 				<tbody>
-					{rows.map(({ cells, id, isFeatured }, rowIdx) => {
-						const rowClasses = isFeatured ? 'is-featured sticky' : undefined;
+					{rows.map(({ cells, id, isFeatured }) => {
+						const rowClasses = isFeatured ? 'is-featured' : undefined;
 						return (
 							<tr className={rowClasses} onClick={() => onItemSelect(id)} key={id}>
 								{cells.map((cell, cellIdx) => (
