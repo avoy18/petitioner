@@ -35,7 +35,7 @@ export default function FeaturedSubmission({
             >
                 {buttonProps.text}
             </StyledFeatureButton>
-            <HelpText variant="muted" size="12">
+            <HelpText variant="muted" size="12px">
                 {__('Featured submissions get pinned at the top', 'petitioner')}
             </HelpText>
         </StyledFeaturedButtonWrapper>
