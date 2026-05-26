@@ -131,6 +131,6 @@
 /* Featured */
 
 .petitioner-submissions--table .submissions__item.submissions__item--featured .submissions__item__inner {
-	background-color: var(--ptr-color-highlight);
-	border-color: var(--ptr-base-grey-400);
+	background-color: var(--ptr-base-grey-100);
+	border-color: var(--ptr-base-grey-300);
 }
