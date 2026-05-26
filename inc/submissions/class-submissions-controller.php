@@ -346,7 +346,8 @@ class AV_Petitioner_Submissions_Controller
             $submission = self::maybe_make_names_private($submission, $hide_last_name);
 
             $modified_submission = [
-                'name'          => $submission->name
+                'name'          => $submission->name,
+                'is_featured'   => !empty($submission->is_featured) && $submission->is_featured === '1'? '1' : '0',
             ];
 
             foreach ($labels as $k => $v) {

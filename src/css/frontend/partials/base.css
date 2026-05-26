@@ -8,9 +8,20 @@
     --ptr-spacer-xl: 32px;
 
     /* Colors */
+    --ptr-base-grey-100: #f8f9fa;
+    --ptr-base-grey-200: #e9ecef;
+    --ptr-base-grey-300: #dee2e6;
+    --ptr-base-grey-400: #ced4da;
+    --ptr-base-grey-500: #adb5bd;
+    --ptr-base-grey-600: #6c757d;
+    --ptr-base-grey-700: #495057;
+    --ptr-base-grey-800: #343a40;
+    --ptr-base-grey-900: #212529;
+
     --ptr-color-primary: #e01a2b;
     --ptr-color-dark: #000000;
     --ptr-color-grey: #efefef;
+    --ptr-color-highlight: #fdfed9;
 
     /* Font sizes */
     --ptr-fs-sm: 14px;
