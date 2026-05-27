@@ -137,18 +137,15 @@ describe('PetitionerForm', () => {
 		server.close();
 	});
 
-	// Reset handlers after each test for test isolation
 	afterEach(() => {
 		server.resetHandlers();
 		wrapper?.remove();
 	});
 
 	beforeEach(() => {
-		// Fresh DOM each test — prevents stacking event listeners
 		wrapper = document.createElement('div');
 		wrapper.className = 'petitioner';
 		wrapper.innerHTML = WRAPPER_HTML;
-		// Must be in the document for FormData to read input values
 		document.body.appendChild(wrapper);
 		new PetitionerForm(wrapper);
 	});
