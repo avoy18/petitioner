@@ -87,38 +87,36 @@ const PETITIONER_FORM_SETTINGS = {
 };
 
 const WRAPPER_HTML = `
-	<div class="petitioner">
-		<h2 class="petitioner__title">USA Tariffs</h2>
-		<button class="petitioner__btn petitioner__btn--letter">View the letter</button>
+	<h2 class="petitioner__title">USA Tariffs</h2>
+	<button class="petitioner__btn petitioner__btn--letter">View the letter</button>
 
-		<div class="petitioner-modal">
-			<span class="petitioner-modal__backdrop"></span>
-			<div class="petitioner-modal__letter">
-				<button class="petitioner-modal__close">× <span>Close modal</span></button>
-				<h3>To: Government of USA</h3>
-				<div class="petitioner-modal__inner">
-					<p>Some text here</p>
-				</div>
+	<div class="petitioner-modal">
+		<span class="petitioner-modal__backdrop"></span>
+		<div class="petitioner-modal__letter">
+			<button class="petitioner-modal__close">× <span>Close modal</span></button>
+			<h3>To: Government of USA</h3>
+			<div class="petitioner-modal__inner">
+				<p>Some text here</p>
 			</div>
 		</div>
-		<form id="petitioner-form-348" method="get" action="http://localhost:8337/wp-admin/admin-ajax.php?action=petitioner_form_submit">
+	</div>
+	<form id="petitioner-form-348" method="get" action="http://localhost:8337/wp-admin/admin-ajax.php?action=petitioner_form_submit">
 
-			<div class="petitioner__input">
-				<label for="petitioner_fname">First name</label>
-				<input type="text" id="petitioner_fname" required="" name="petitioner_fname">
-			</div>
-
-			<div class="petitioner__input">
-				<label for="petitioner_email">Your email</label>
-				<input type="email" id="petitioner_email" required="" name="petitioner_email">
-			</div>
-			<input type="hidden" name="form_id" value="348">
-			<input type="text" name="ptr_info" style="display:none">
-		</form>
-		<div class="petitioner__response">
-			<h3></h3>
-			<p></p>
+		<div class="petitioner__input">
+			<label for="petitioner_fname">First name</label>
+			<input type="text" id="petitioner_fname" required="" name="petitioner_fname">
 		</div>
+
+		<div class="petitioner__input">
+			<label for="petitioner_email">Your email</label>
+			<input type="email" id="petitioner_email" required="" name="petitioner_email">
+		</div>
+		<input type="hidden" name="form_id" value="348">
+		<input type="text" name="ptr_info" style="display:none">
+	</form>
+	<div class="petitioner__response">
+		<h3></h3>
+		<p></p>
 	</div>
 `;
 
