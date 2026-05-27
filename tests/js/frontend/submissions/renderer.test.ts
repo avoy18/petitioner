@@ -20,6 +20,7 @@ describe('SubmissionsRenderer', () => {
 			labels: {},
 			fields: ['name'],
 			pagination: true,
+			hidePageNumbers: false,
 			onPageChange: vi.fn().mockResolvedValue([
 				{ name: 'Charlie' },
 				{ name: 'David' }
