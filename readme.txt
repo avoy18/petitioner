@@ -159,7 +159,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Fixed typo on the submission shortcode clipboard button (replaced form_id="" with id="")
 * Architecture
     * Reworked settings & editing fields registration to make it a lot more extendable
-    * Increased the test coverage to cover the frontend
+    * Increased the test coverage (frontend)
 
 = 0.8.1 =
 * Improvements
