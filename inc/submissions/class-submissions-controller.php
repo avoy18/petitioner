@@ -156,8 +156,6 @@ class AV_Petitioner_Submissions_Controller
             }
         }
 
-        $send_to_rep = $default_approval_status !== 'Email' && get_post_meta($form_id, '_petitioner_send_to_representative', true);
-
         $mailer_settings = array(
             'target_email'              => get_post_meta($form_id, '_petitioner_email', true),
             'target_cc_emails'          => get_post_meta($form_id, '_petitioner_cc_emails', true),
@@ -167,7 +165,7 @@ class AV_Petitioner_Submissions_Controller
             'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
             'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc'                       => $bcc,
-            'send_to_representative'    => $send_to_rep,
+            'send_to_representative'    => $approval_status === 'Confirmed' && get_post_meta($form_id, '_petitioner_send_to_representative', true),
             'form_id'                   => $form_id,
             'confirm_emails'            => $default_approval_status === 'Email',
             'submission_id'             => $submission_id,
@@ -526,6 +524,12 @@ class AV_Petitioner_Submissions_Controller
         // so that CRMs and Webhooks recognize it's now ready for processing.
         if ($new_status === 'Confirmed' && $updated_rows > 0) {
             self::trigger_finalized_hook($id);
+
+            $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
+            if ($submission) {
+                // Send the representative email if enabled (skip TY and confirmation emails)
+                AV_Email_Confirmations::send_emails($submission, false, false);
+            }
         }
 
         wp_send_json_success([
