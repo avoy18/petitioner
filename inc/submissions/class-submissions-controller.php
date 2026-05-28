@@ -433,8 +433,15 @@ class AV_Petitioner_Submissions_Controller
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
+        $approval_status = isset($_POST['approval_status']) ? sanitize_text_field(wp_unslash($_POST['approval_status'])) : null;
+
         if ($updated_rows === 0) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        if ($approval_status === 'Confirmed') {
+            AV_Petitioner_Submissions_Controller::trigger_finalized_hook($id);
+            AV_Petitioner_Submissions_Controller::trigger_final_emails($id);
         }
 
         wp_send_json_success(['message' => AV_Petitioner_Labels::get('success_generic'), 'updated_rows' => $updated_rows]);
@@ -525,11 +532,7 @@ class AV_Petitioner_Submissions_Controller
         if ($new_status === 'Confirmed' && $updated_rows > 0) {
             self::trigger_finalized_hook($id);
 
-            $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
-            if ($submission) {
-                // Send the representative email if enabled (skip TY and confirmation emails)
-                AV_Email_Confirmations::send_emails($submission, false, false);
-            }
+            self::trigger_final_emails($id);
         }
 
         wp_send_json_success([
@@ -846,6 +849,22 @@ class AV_Petitioner_Submissions_Controller
              * @param int $form_id       The ID of the form associated with the submission.
              */
             do_action('petitioner_submission_finalized', $submission, $submission->form_id);
+        }
+    }
+
+    /**
+     * Helper method to uniformly trigger the representative email.
+     * 
+     * @param int $submission_id The submission ID
+     * @return void
+     * @since 0.8.2
+     */
+    public static function trigger_final_emails($submission_id)
+    {
+        $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
+        if ($submission) {
+            // Send the representative email if enabled (skip TY and confirmation emails)
+            AV_Email_Confirmations::send_emails($submission, false, false);
         }
     }
 }
