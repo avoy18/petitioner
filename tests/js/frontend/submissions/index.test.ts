@@ -237,8 +237,10 @@ describe('PetitionerSubmissions', () => {
 
 	describe('Empty submissions', () => {
 		it('should not render list items when submissions are empty', async () => {
+			let isResolved = false;
 			server.use(
 				http.get('http://localhost:1337/wp-admin/admin-ajax.php', () => {
+					isResolved = true;
 					return HttpResponse.json({
 						success: true,
 						data: {
@@ -254,8 +256,13 @@ describe('PetitionerSubmissions', () => {
 
 			new PetitionerSubmissions(wrapper);
 
-			// Give it time to fetch and see that nothing renders
-			await new Promise((r) => setTimeout(r, 100));
+			// Wait deterministically for the API request to complete
+			await vi.waitFor(() => {
+				expect(isResolved).toBe(true);
+			});
+
+			// Flush microtasks so the component's async init() chain finishes processing the response
+			await new Promise((resolve) => setTimeout(resolve, 0));
 
 			const list = wrapper.querySelector('.submissions__list');
 			// With empty submissions, the renderer is never created
