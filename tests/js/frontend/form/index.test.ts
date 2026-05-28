@@ -47,9 +47,6 @@ export const restHandlers = [
 		async ({ request }) => {
 			const formData = await request.formData();
 			capturedFormData = formData;
-			for (const item in formData.entries()) {
-				console.log(item);
-			}
 			// simulate an error with a specific email
 			if (formData.get('petitioner_email') === EMAIL_THAT_THROWS_ERROR) {
 				return HttpResponse.json({
