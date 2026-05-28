@@ -37,10 +37,7 @@ const VALID_SETTINGS = {
 };
 
 const restHandlers = [
-	http.get('http://localhost:1337/wp-admin/admin-ajax.php', ({ request }) => {
-		const url = new URL(request.url);
-		const page = url.searchParams.get('page') || '1';
-
+	http.get('http://localhost:1337/wp-admin/admin-ajax.php', () => {
 		return HttpResponse.json({
 			success: true,
 			data: {
