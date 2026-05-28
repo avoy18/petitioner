@@ -148,14 +148,6 @@ describe('PetitionerForm', () => {
 	describe('Modals', () => {
 		const modalOpenedClass = 'petitioner-modal--visible';
 
-		it('View letter button triggers a modal', async () => {
-			const modalBTN = wrapper.querySelector('.petitioner__btn--letter') as HTMLButtonElement;
-			const modal = wrapper.querySelector('.petitioner-modal');
-			await userEvent.click(modalBTN);
-
-			expect(modal?.classList).toContain(modalOpenedClass);
-		});
-
 		it('User can open the modal via the button', async () => {
 			const modalBTN = wrapper.querySelector('.petitioner__btn--letter') as HTMLButtonElement;
 			const modal = wrapper.querySelector('.petitioner-modal');
