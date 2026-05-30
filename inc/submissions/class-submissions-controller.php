@@ -157,7 +157,7 @@ class AV_Petitioner_Submissions_Controller
             'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
             'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc'                       => $bcc,
-            'send_to_representative'    => isset($data['approval_status']) && $data['approval_status'] === 'Confirmed' && get_post_meta($form_id, '_petitioner_send_to_representative', true),
+            'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
             'form_id'                   => $form_id,
             'confirm_emails'            => $default_approval_status === 'Email',
             'submission_id'             => $submission_id,

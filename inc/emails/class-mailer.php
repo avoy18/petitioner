@@ -103,7 +103,8 @@ class AV_Petitioner_Mailer
          * @param bool  $should_send_to_rep Whether to send the rep you email.
          * @param array $filter_args The arguments passed to the filter.
          */
-        $should_send_to_rep     = apply_filters('petitioner_send_to_representative', $this->send_to_representative, $filter_args);
+        $is_confirmed = !$submission || !isset($submission->approval_status) || $submission->approval_status === 'Confirmed';
+        $should_send_to_rep     = $is_confirmed && apply_filters('petitioner_send_to_representative', $this->send_to_representative, $filter_args);
         $conf_result            = false;
         $rep_result             = false;
 
