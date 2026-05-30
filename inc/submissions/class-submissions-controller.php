@@ -437,7 +437,7 @@ class AV_Petitioner_Submissions_Controller
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
-        $approval_status = isset($_POST['approval_status']) ? sanitize_text_field(wp_unslash($_POST['approval_status'])) : null;
+        $approval_status = isset($submission['approval_status']) ? $submission['approval_status'] : null;
 
         if ($updated_rows === false) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
