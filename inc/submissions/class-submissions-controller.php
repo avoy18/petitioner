@@ -424,7 +424,12 @@ class AV_Petitioner_Submissions_Controller
         $submission = apply_filters('av_petitioner_submission_data_pre_update', $submission, $_POST);
 
         $old_submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
-        $was_confirmed = $old_submission && $old_submission->approval_status === 'Confirmed';
+
+        if (!$old_submission) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        $was_confirmed = $old_submission->approval_status === 'Confirmed';
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
