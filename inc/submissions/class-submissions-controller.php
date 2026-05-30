@@ -151,7 +151,7 @@ class AV_Petitioner_Submissions_Controller
 
         if ($submission_id !== false) {
             // Only finalize if the starting state is fully confirmed (bypasses manual moderation and emails)
-            if ($approval_status === 'Confirmed') {
+            if (isset($data['approval_status']) && $data['approval_status'] === 'Confirmed') {
                 self::trigger_finalized_hook($submission_id);
             }
         }
@@ -165,7 +165,7 @@ class AV_Petitioner_Submissions_Controller
             'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
             'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc'                       => $bcc,
-            'send_to_representative'    => $approval_status === 'Confirmed' && get_post_meta($form_id, '_petitioner_send_to_representative', true),
+            'send_to_representative'    => isset($data['approval_status']) && $data['approval_status'] === 'Confirmed' && get_post_meta($form_id, '_petitioner_send_to_representative', true),
             'form_id'                   => $form_id,
             'confirm_emails'            => $default_approval_status === 'Email',
             'submission_id'             => $submission_id,
@@ -433,7 +433,6 @@ class AV_Petitioner_Submissions_Controller
 
         $old_submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
         $was_confirmed = $old_submission && $old_submission->approval_status === 'Confirmed';
-
 
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
