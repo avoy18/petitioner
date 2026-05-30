@@ -439,7 +439,7 @@ class AV_Petitioner_Submissions_Controller
 
         $approval_status = isset($_POST['approval_status']) ? sanitize_text_field(wp_unslash($_POST['approval_status'])) : null;
 
-        if ($updated_rows === false || $updated_rows === 0) {
+        if ($updated_rows === false) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
         }
         // Only trigger if it WAS NOT confirmed before, and IS confirmed now
