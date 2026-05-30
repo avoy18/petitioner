@@ -176,9 +176,9 @@ class Test_CSV_Exporter extends BaseTestCase
 
         $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission);
 
-        // custom_properties should be skipped (handled via filter)
-        // The row count should match allowed fields minus custom_properties
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 1;
+        // custom_properties and email_status should be skipped (handled via filter or internal)
+        // The row count should match allowed fields minus custom_properties and email_status
+        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2;
         $this->assertCount($expected_count, $row);
     }
 
