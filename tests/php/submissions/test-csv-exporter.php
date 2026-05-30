@@ -162,7 +162,7 @@ class Test_CSV_Exporter extends BaseTestCase
         $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission);
 
         // Should have values for all allowed fields (minus custom_properties)
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 1; // -1 for custom_properties
+        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2; // -1 for custom_properties, -1 for email_status
         $this->assertCount($expected_count, $row);
     }
 
@@ -227,7 +227,7 @@ class Test_CSV_Exporter extends BaseTestCase
         $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
         $headers = AV_Petitioner_CSV_Exporter::get_csv_headers(1, $resolved);
 
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2; // -custom_properties, -email
+        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 3; // -custom_properties, -email_status, -email
         $this->assertCount($expected_count, $headers);
         $this->assertContains('First Name', $headers);
     }
@@ -265,7 +265,7 @@ class Test_CSV_Exporter extends BaseTestCase
         $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission, $resolved);
         $newsletter_idx = array_search('newsletter', $resolved['visible_columns'], true);
 
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2; // -custom_properties, -email
+        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 3; // -custom_properties, -email_status, -email
         $this->assertCount($expected_count, $row);
         $this->assertNotFalse($newsletter_idx);
         $this->assertSame('No', $row[$newsletter_idx]);

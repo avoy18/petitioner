@@ -244,7 +244,7 @@ class AV_Petitioner_Column_Config
     public static function get_exportable_fields()
     {
         $fields = array_values(array_filter(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, static function ($field_id) {
-            return $field_id !== 'custom_properties';
+            return $field_id !== 'custom_properties' && $field_id !== 'email_status';
         }));
 
         /**

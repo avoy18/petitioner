@@ -31,7 +31,8 @@ class AV_Petitioner_Submissions_Model
         'submitted_at',
         'confirmation_token',
         'custom_properties',
-        'is_featured'
+        'is_featured',
+        'email_status'
     ];
 
     /**
@@ -61,7 +62,8 @@ class AV_Petitioner_Submissions_Model
         'lname',
         'hide_name',
         'custom_properties',
-        'is_featured'
+        'is_featured',
+        'email_status'
     ];
 
     public static function table_name()
@@ -98,6 +100,7 @@ class AV_Petitioner_Submissions_Model
             submitted_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             confirmation_token varchar(64) DEFAULT NULL,
             custom_properties LONGTEXT DEFAULT NULL,
+            email_status LONGTEXT DEFAULT NULL,
             PRIMARY KEY  (id),
             KEY form_id (form_id)
         )";
@@ -429,6 +432,7 @@ class AV_Petitioner_Submissions_Model
             'submitted_at'          => '%s',
             'confirmation_token'    => '%s',
             'custom_properties'     => '%s',
+            'email_status'          => '%s',
         ];
 
         $formats = [];

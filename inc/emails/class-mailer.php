@@ -75,6 +75,11 @@ class AV_Petitioner_Mailer
             'user_name'     => $this->user_name,
         ]; // what data to pass to the filter
 
+        $submission     = !empty($this->submission_id) ? AV_Petitioner_Submissions_Model::get_submission_by_id($this->submission_id) : null;
+        $status         = ($submission && !empty($submission->email_status)) ? json_decode($submission->email_status, true) : [];
+        $rep_email_sent = !empty($status['rep_email_sent']);
+        $ty_email_sent  = !empty($status['ty_email_sent']);
+
         /**
          * petitioner_send_ty_email
          * 
@@ -98,15 +103,32 @@ class AV_Petitioner_Mailer
          * @param array $filter_args The arguments passed to the filter.
          */
         $should_send_to_rep     = apply_filters('petitioner_send_to_representative', $this->send_to_representative, $filter_args);
+        $conf_result            = false;
+        $rep_result             = false;
 
-        if ($should_send_ty_email) {
-            $conf_result    = $this->ty_email();
-            $success        = $conf_result;
+        if ($should_send_ty_email && !$ty_email_sent) {
+            $conf_result = $this->ty_email();
+            $success = $success && $conf_result;
+
+            if ($conf_result && $submission) {
+                $status['ty_email_sent'] = true;
+            }
         }
 
-        if ($should_send_to_rep) {
+        if ($should_send_to_rep && !$rep_email_sent) {
             $rep_result = $this->representative_email();
-            $success = $rep_result && $conf_result;
+
+            $success = $success && $rep_result;
+
+            if ($rep_result && $submission) {
+                $status['rep_email_sent'] = true;
+            }
+        }
+
+        if ($submission && ($conf_result || $rep_result)) {
+            AV_Petitioner_Submissions_Model::update_submission($this->submission_id, [
+                'email_status' => wp_json_encode($status)
+            ]);
         }
 
         return $success;

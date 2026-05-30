@@ -431,6 +431,10 @@ class AV_Petitioner_Submissions_Controller
          */
         $submission = apply_filters('av_petitioner_submission_data_pre_update', $submission, $_POST);
 
+        $old_submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
+        $was_confirmed = $old_submission && $old_submission->approval_status === 'Confirmed';
+
+
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
         $approval_status = isset($_POST['approval_status']) ? sanitize_text_field(wp_unslash($_POST['approval_status'])) : null;
@@ -438,8 +442,8 @@ class AV_Petitioner_Submissions_Controller
         if ($updated_rows === 0) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
         }
-
-        if ($approval_status === 'Confirmed') {
+        // Only trigger if it WAS NOT confirmed before, and IS confirmed now
+        if (!$was_confirmed && $approval_status === 'Confirmed') {
             AV_Petitioner_Submissions_Controller::trigger_finalized_hook($id);
             AV_Petitioner_Submissions_Controller::trigger_final_emails($id);
         }
@@ -862,9 +866,8 @@ class AV_Petitioner_Submissions_Controller
     public static function trigger_final_emails($submission_id)
     {
         $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
-        if ($submission) {
-            // Send the representative email if enabled (skip TY and confirmation emails)
-            AV_Email_Confirmations::send_emails($submission, false, false);
-        }
+        if (!$submission) return;
+
+        AV_Email_Confirmations::send_emails($submission, false, false);
     }
 }
