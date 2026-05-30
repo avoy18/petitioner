@@ -44,17 +44,9 @@ class AV_Petitioner_Submissions_Controller
         $hide_name                  = !empty($_POST['petitioner_hide_name']) && sanitize_text_field(wp_unslash($_POST['petitioner_hide_name'])) === 'on';
         $newsletter                 = !empty($_POST['petitioner_newsletter']) && sanitize_text_field(wp_unslash($_POST['petitioner_newsletter'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
-        $approval_status            = 'Confirmed';
-        $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
+        $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true); // Kept for confirm_emails below
+        $approval_status            = self::get_default_status($require_approval, $default_approval_status);
         $accept_tos                 = !empty($_POST['petitioner_accept_tos']) && sanitize_text_field(wp_unslash($_POST['petitioner_accept_tos'])) === 'on';
-
-        if ($require_approval) {
-            if ($default_approval_status === 'Email') {
-                $approval_status = 'Declined';
-            } else {
-                $approval_status = $default_approval_status;
-            }
-        }
 
         // handle captcha
         AV_Petitioner_Captcha::validate_captcha($form_id);
@@ -868,5 +860,26 @@ class AV_Petitioner_Submissions_Controller
         if (!$submission) return;
 
         AV_Email_Confirmations::send_emails($submission, false, false);
+    }
+
+    /**
+     * Get the default approval status for a new submission based on form settings.
+     * 
+     * @since 0.8.2
+     * 
+     * @param bool   $require_approval        Whether approval is required.
+     * @param string $default_approval_status The default approval state setting.
+     * @return string The default approval status ('Confirmed', 'Declined', or 'Pending').
+     */
+    public static function get_default_status($require_approval, $default_approval_status)
+    {
+        if ($require_approval) {
+            if ($default_approval_status === 'Email') {
+                return 'Declined';
+            }
+            return $default_approval_status;
+        }
+
+        return 'Confirmed';
     }
 }
