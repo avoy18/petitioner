@@ -435,8 +435,8 @@ class AV_Petitioner_Submissions_Controller
         }
         // Only trigger if it WAS NOT confirmed before, and IS confirmed now
         if (!$was_confirmed && $approval_status === 'Confirmed') {
-            AV_Petitioner_Submissions_Controller::trigger_finalized_hook($id);
-            AV_Petitioner_Submissions_Controller::trigger_final_emails($id);
+            self::trigger_finalized_hook($id);
+            self::trigger_final_emails($id);
         }
 
         wp_send_json_success(['message' => AV_Petitioner_Labels::get('success_generic'), 'updated_rows' => $updated_rows]);
