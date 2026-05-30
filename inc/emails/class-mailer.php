@@ -76,7 +76,8 @@ class AV_Petitioner_Mailer
         ]; // what data to pass to the filter
 
         $submission     = !empty($this->submission_id) ? AV_Petitioner_Submissions_Model::get_submission_by_id($this->submission_id) : null;
-        $status         = ($submission && !empty($submission->email_status)) ? json_decode($submission->email_status, true) : [];
+        $status         = self::get_status($submission);
+
         $rep_email_sent = !empty($status['rep_email_sent']);
         $ty_email_sent  = !empty($status['ty_email_sent']);
 
@@ -256,5 +257,35 @@ class AV_Petitioner_Mailer
         }
 
         return $message;
+    }
+
+    /**
+     * Get email status from submission safely
+     *
+     * @since 0.8.2
+     *
+     * @param WP_Post|null $submission Submission
+     * @return array
+     */
+    public static function get_status($submission)
+    {
+        $status = ($submission && !empty($submission->email_status)) ? json_decode($submission->email_status, true) : [];
+        /**
+         * av_petitioner_submission_status
+         * 
+         * Filters the email status of a submission.
+         *
+         * @since 0.8.2
+         * 
+         * @param array $status The email status.
+         * @param WP_Post|null $submission The submission.
+         */
+        $status = apply_filters('av_petitioner_submission_status', $status, $submission);
+
+        if (!is_array($status)) {
+            $status = [];
+        }
+
+        return $status;
     }
 }
