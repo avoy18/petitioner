@@ -14,6 +14,13 @@ class Test_Admin_Settings_UI extends BaseTestCase
         parent::tear_down();
         // Clean up any filters we added during tests
         remove_all_filters('av_petitioner_settings_schema');
+        
+        // Clear static cache in AV_Petitioner_Labels via Reflection
+        // Note: As of PHP 8.1+, setAccessible() is no longer required and properties are accessible by default
+        $reflection = new ReflectionClass('AV_Petitioner_Labels');
+        
+        $reflection->getProperty('core_labels_cache')->setValue(null);
+        $reflection->getProperty('field_labels_cache')->setValue(null);
     }
 
     public function test_get_settings_schema_returns_valid_structure()
