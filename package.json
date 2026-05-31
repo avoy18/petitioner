@@ -1,6 +1,6 @@
 {
 	"name": "petitioner",
-	"version": "0.8.1",
+	"version": "0.8.2",
 	"description": "A WordPress plugin for collecting petitions",
 	"main": "index.js",
 	"scripts": {
@@ -13,7 +13,6 @@
 		"build:admin": "vite build --mode production --config vite.admin.config.ts",
 		"build:frontend": "vite build --mode production --config vite.frontend.config.ts",
 		"build:gutenberg": "wp-scripts build --output-path=dist-gutenberg",
-		"deploy": "pnpm build && node scripts/deploy.js",
 		"test": "vitest run",
 		"prepare": "husky"
 	},
@@ -58,6 +57,7 @@
 		"fs-extra": "^11.2.0",
 		"happy-dom": "^17.6.3",
 		"husky": "^9.1.7",
+		"msw": "^2.14.6",
 		"postcss-nested": "^6.0.1",
 		"prettier": "^3.4.2",
 		"react": "18.3.1",

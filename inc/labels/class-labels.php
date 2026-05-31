@@ -45,7 +45,7 @@ class AV_Petitioner_Labels
      * 
      * @return array Core labels with filters applied
      */
-    private static function get_core_labels()
+    public static function get_core_labels()
     {
         if (self::$core_labels_cache !== null) {
             return self::$core_labels_cache;
@@ -190,5 +190,14 @@ class AV_Petitioner_Labels
     public static function get_form_label($key, $form_id)
     {
         return get_post_meta('' . $form_id, '_petitioner_' . $key, true) ?: self::get($key, null, true);
+    }
+
+    /**
+     * Clear the internal cache.
+     */
+    public static function clear_cache()
+    {
+        self::$core_labels_cache = null;
+        self::$field_labels_cache = null;
     }
 }

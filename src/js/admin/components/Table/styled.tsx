@@ -1,5 +1,15 @@
 import styled, { css } from 'styled-components';
 import { COLORS, TRANSITIONS } from '@admin/theme';
+import { Icon } from '@wordpress/components';
+
+export const FeaturedIcon = styled(Icon).attrs({
+	icon: 'star-filled',
+	size: 10,
+})`
+	margin-right: 4px;
+	vertical-align: middle;
+	fill: currentColor;
+`;
 
 export const TableHeading = styled.th<{ $width?: string }>`
 	${({ $width }) => `width: ${$width};`}
@@ -21,6 +31,13 @@ export const StyledTable = styled.table<{ $clickable: boolean }>`
 			background-color: ${COLORS.light};
 		}
 
+		tr.is-featured td {
+			background-color: #f3f8fc !important;
+		}
+		tr.is-featured:nth-child(odd) td {
+			background-color: #e6f0f9 !important;
+		}
+
 		${({ $clickable }) =>
 			$clickable &&
 			css`
@@ -30,6 +47,10 @@ export const StyledTable = styled.table<{ $clickable: boolean }>`
 						cursor: pointer;
 						background: ${COLORS.grey} !important;
 					}
+				}
+				tr.is-featured:hover td {
+					cursor: pointer;
+					background-color: #dbeaf5 !important;
 				}
 			`}
 	}

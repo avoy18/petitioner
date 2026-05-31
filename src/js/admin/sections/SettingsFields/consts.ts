@@ -48,3 +48,8 @@ export type IntegrationBoxProps = {
 	enabled: boolean;
 	integrationFields: React.ReactNode | null;
 };
+
+export type IntegrationConfigItem = IntegrationBoxProps & {
+	name: string;
+	hiddenFields: React.ReactNode | null;
+};

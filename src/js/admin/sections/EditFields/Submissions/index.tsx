@@ -161,7 +161,7 @@ export default function Submissions() {
 		[
 			{ id: 'email', label: SUBMISSION_LABELS.email, width: '20%' },
 			{ id: 'name', label: SUBMISSION_LABELS.name },
-			{ id: 'consent', label: SUBMISSION_LABELS.consent, width: '80px' },
+			{ id: 'consent', label: SUBMISSION_LABELS.accept_tos, width: '80px' },
 			{ id: 'submitted_at', label: SUBMISSION_LABELS.submitted_at },
 		],
 		[
@@ -179,7 +179,7 @@ export default function Submissions() {
 		return (
 			<ExportButtonWrapper>
 				<ShortcodeElement
-					clipboardValue={`[petitioner-submissions form_id="${form_id}" style="table" show_pagination="true"]`}
+					clipboardValue={`[petitioner-submissions id="${form_id}" style="table" show_pagination="true"]`}
 					label={__('Shortcode', 'petitioner')}
 					help={__(
 						'Use this shortcode to display submissions on any page or post.',
@@ -217,6 +217,7 @@ export default function Submissions() {
 		return {
 			id: item.id,
 			cells,
+			isFeatured: item.is_featured === '1',
 		};
 	});
 

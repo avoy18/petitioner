@@ -240,8 +240,10 @@ export const getFieldLabels = (): Record<string, string> => {
 
 	return {
 		...fieldMap,
+		email: __('Email address', 'petitioner'),
 		name: __('First/Last name', 'petitioner'),
 		accept_tos: __('Consent', 'petitioner'),
+		is_featured: __('Featured', 'petitioner'),
 		submitted_at: __('Submitted at', 'petitioner'),
 		approval_status: __('Status', 'petitioner'),
 	};
@@ -293,6 +295,7 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 	if (label === 'submitted_at') {
 		return 'date';
 	}
+
 
 	const allPossibleFields = getAllPossibleFields();
 

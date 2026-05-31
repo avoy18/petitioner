@@ -17,6 +17,12 @@
 			"text": false
 		}
 	},
+	"attributes": {
+		"hidePageNumbers": {
+			"type": "boolean",
+			"default": false
+		}
+	},
 	"editorScript": "file:./index.js",
 	"editorStyle": "petitioner-form-style"
 }

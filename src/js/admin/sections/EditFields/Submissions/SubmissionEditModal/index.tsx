@@ -15,6 +15,7 @@ import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
 import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
 import EditField from '@admin/components/EditField';
+import FeaturedSubmission from './FeaturedSubmission';
 import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 
 const getSubmissionLabels = (() => {
@@ -30,6 +31,8 @@ const getSubmissionLabels = (() => {
 })();
 
 export const isValidFieldKey = (key: string): key is FieldKey => {
+	// is_featured has its own ui so skipping here
+	if (key === 'is_featured') return false;
 	return key in getSubmissionLabels();
 };
 
@@ -75,7 +78,7 @@ export default function SubmissionEditModal({
 	const allFields = getAllPossibleFields();
 	const SubmissionDetails = submissionEntries.map(([label, value], index) => {
 		if (!isValidFieldKey(label)) {
-			return;
+			return null;
 		}
 		const valueString = String(value);
 		const finalLabel = getSubmissionLabels()[label] ?? label;
@@ -92,7 +95,7 @@ export default function SubmissionEditModal({
 		);
 
 		const actionButtonProps = {
-			icon: 'edit',
+			icon: 'edit' as 'edit' | 'saved',
 			onClick: () => setIsEdit(label),
 			children: (
 				<span className="screen-reader-text">
@@ -108,9 +111,9 @@ export default function SubmissionEditModal({
 			const fieldOptions =
 				type === 'select' && fieldConfig && 'options' in fieldConfig
 					? (fieldConfig as any).options.map((o: string) => ({
-							label: o,
-							value: o,
-						}))
+						label: o,
+						value: o,
+					}))
 					: undefined;
 
 			ValueField = (
@@ -212,7 +215,18 @@ export default function SubmissionEditModal({
 				</ActionButtonWrapper>
 			}
 		>
-			<Card>{SubmissionDetails}</Card>
+			<FeaturedSubmission
+				isFeatured={submissionDetails.is_featured === '1'}
+				onToggle={() => {
+					setSubmissionDetails((prev) => ({
+						...prev,
+						is_featured: prev.is_featured === '1' ? '0' : '1',
+					}));
+				}}
+			/>
+			<Card>
+				{SubmissionDetails}
+			</Card>
 		</Modal>
 	);
 }

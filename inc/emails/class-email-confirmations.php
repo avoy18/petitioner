@@ -106,7 +106,14 @@ class AV_Email_Confirmations
                  * @param object $submission The submission object containing the petition data.
                  */
                 do_action('petitioner_email_confirmation_success', $submission);
-                // Optional: custom redirect on success
+
+                /**
+                 * Fire the finalized hook since the submission is now completely verified via double-opt-in.
+                 * We pass `$id` instead of `$submission` so that the hook re-fetches the object 
+                 * to include the newly updated 'Confirmed' status.
+                 */
+                AV_Petitioner_Submissions_Controller::trigger_finalized_hook($id);
+
                 $this->handle_redirect($form_id, '_petitioner_confirm_success_url', home_url('/?petitioner=confirmed'));
             }
         }

@@ -9,41 +9,16 @@ class AV_Petitioner_Admin_Edit_UI
     public static $ADMIN_EDIT_NONCE_LABEL = 'save_petition_details';
 
     /**
-     * List of meta fields used in the form.
+     * Get the meta schema for petition forms.
+     *
+     * @return array
      */
-    private const META_FIELDS = [
-        'title'                     => '_petitioner_title',
-        'send_to_representative'    => '_petitioner_send_to_representative',
-        'email'                     => '_petitioner_email',
-        'cc_emails'                 => '_petitioner_cc_emails',
-        'goal'                      => '_petitioner_goal',
-        'subject'                   => '_petitioner_subject',
-        'show_country'              => '_petitioner_show_country',
-        'show_goal'                 => '_petitioner_show_goal',
-        'require_approval'          => '_petitioner_require_approval',
-        'approval_state'            => '_petitioner_approval_state',
-        'letter'                    => '_petitioner_letter',
-        'add_consent_checkbox'      => '_petitioner_add_consent_checkbox',
-        'add_legal_text'            => '_petitioner_add_legal_text',
-        'consent_text'              => '_petitioner_consent_text',
-        'legal_text'                => '_petitioner_legal_text',
-        'override_ty_email'         => '_petitioner_override_ty_email',
-        'ty_email'                  => '_petitioner_ty_email',
-        'ty_email_subject'          => '_petitioner_ty_email_subject',
-        'override_success_message'  => '_petitioner_override_success_message',
-        'success_message'           => '_petitioner_success_message',
-        'success_message_title'     => '_petitioner_success_message_title',
-        'from_field'                => '_petitioner_from_field',
-        'from_name'                 => '_petitioner_from_name',
-        'add_honeypot'              => '_petitioner_add_honeypot',
-        'form_fields'               => '_petitioner_form_fields',
-        'field_order'               => '_petitioner_field_order',
-        'hide_last_names'           => '_petitioner_hide_last_names',
-        'csv_column_config'         => '_petitioner_csv_column_config',
-        'redirect_url'              => '_petitioner_redirect_url',
-        'confirm_success_url'       => '_petitioner_confirm_success_url',
-        'confirm_error_url'         => '_petitioner_confirm_error_url',
-    ];
+    public static function get_meta_schema()
+    {
+        $schema = require plugin_dir_path(__FILE__) . 'admin-edit-schema.php';
+
+        return apply_filters('av_petitioner_edit_meta_schema', $schema);
+    }
 
     public function __construct()
     {
@@ -74,8 +49,11 @@ class AV_Petitioner_Admin_Edit_UI
     private function get_meta_fields($post_id)
     {
         $meta_values = [];
-        foreach (self::META_FIELDS as $key => $meta_key) {
-            $meta_values[$key] = get_post_meta($post_id, $meta_key, true);
+        foreach (self::get_meta_schema() as $key => $config) {
+            if (empty($config['meta_key'])) {
+                continue;
+            }
+            $meta_values[$key] = get_post_meta($post_id, $config['meta_key'], true);
         }
         return $meta_values;
     }
@@ -90,39 +68,10 @@ class AV_Petitioner_Admin_Edit_UI
         wp_nonce_field(self::$ADMIN_EDIT_NONCE_LABEL, "petitioner_details_nonce");
         // Retrieve current meta values
         $meta_values     = $this->get_meta_fields($post->ID);
-        // Sanitize values for safe use in HTML attributes
+        // Base non-meta data for the React app
         $petitioner_info = [
             "form_id"                       => (int) $post->ID,
-            "title"                         => esc_html($meta_values['title']),
-            "send_to_representative"        => (bool) $meta_values['send_to_representative'],
-            "email"                         => sanitize_text_field($meta_values['email']),
-            "cc_emails"                     => sanitize_text_field($meta_values['cc_emails']),
-            "show_goal"                     => (bool) $meta_values['show_goal'],
-            "goal"                          => AV_Petitioner_Goal_Milestones::normalize($meta_values['goal']),
-            "show_country"                  => (bool) $meta_values['show_country'],
-            "subject"                       => esc_html($meta_values['subject']),
-            "require_approval"              => (bool) $meta_values['require_approval'],
-            "approval_state"                => esc_html($meta_values['approval_state']),
-            "letter"                        => wp_kses_post($meta_values['letter']),
-            "add_legal_text"                => (bool) $meta_values['add_legal_text'],
-            "add_consent_checkbox"          => (bool) $meta_values['add_consent_checkbox'],
-            "consent_text"                  => sanitize_text_field($meta_values['consent_text']),
-            "legal_text"                    => wp_kses_post($meta_values['legal_text']),
             "export_url"                    => esc_url_raw(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID)),
-            "override_ty_email"             => (bool) $meta_values['override_ty_email'],
-            "ty_email"                      => wp_kses_post($meta_values['ty_email']),
-            "ty_email_subject"              => sanitize_text_field($meta_values['ty_email_subject']),
-            "override_success_message"      => (bool) $meta_values['override_success_message'],
-            "success_message"               => wp_kses_post($meta_values['success_message']),
-            "success_message_title"         => sanitize_text_field($meta_values['success_message_title']),
-            "from_field"                    => sanitize_text_field($meta_values['from_field']),
-            "from_name"                     => sanitize_text_field($meta_values['from_name']),
-            "add_honeypot"                  => (bool) $meta_values['add_honeypot'],
-            "hide_last_names"               => (bool) $meta_values['hide_last_names'],
-            "redirect_url"                  => esc_url($meta_values['redirect_url']),
-            "confirm_success_url"           => esc_url($meta_values['confirm_success_url']),
-            "confirm_error_url"             => esc_url($meta_values['confirm_error_url']),
-            "csv_column_config"             => AV_Petitioner_Column_Config::decode_meta_json($meta_values['csv_column_config']),
             "default_values"                => [
                 "ty_email_subject"              => AV_Petitioner_Labels::get('ty_email_subject'),
                 "ty_email"                      => AV_Petitioner_Labels::get('ty_email'),
@@ -135,10 +84,40 @@ class AV_Petitioner_Admin_Edit_UI
                 "country_list"                  => av_petitioner_get_countries()
             ],
             "builder_config"                => AV_Petitioner_Field_Registry::get_all(),
-            "form_fields"                   =>  !empty($meta_values['form_fields']) ? $this->sanitize_form_fields($meta_values['form_fields'], false) : null,
-            "field_order"                   =>  !empty($meta_values['field_order']) ? $this->sanitize_array($meta_values['field_order'], false) : null,
-            "ajax_nonce"                    =>  $ajax_nonce
+            "ajax_nonce"                    => $ajax_nonce
         ];
+
+        // Hydrate all fields from the schema automatically based on their type
+        $schema = self::get_meta_schema();
+        foreach ($schema as $key => $config) {
+            $type  = $config['type'] ?? 'text';
+            $value = $meta_values[$key] ?? '';
+
+            if ($type === 'checkbox') {
+                $petitioner_info[$key] = (bool) $value;
+            } elseif ($type === 'wysiwyg') {
+                $petitioner_info[$key] = wp_kses_post($value);
+            } elseif ($type === 'emails' || $type === 'text') {
+                // When rendering for JSON, sanitize_text_field is sufficient and avoids double-encoding entities.
+                $petitioner_info[$key] = sanitize_text_field($value);
+            } elseif ($type === 'url') {
+                $petitioner_info[$key] = esc_url($value);
+            } elseif ($type === 'json_goal') {
+                $petitioner_info[$key] = AV_Petitioner_Goal_Milestones::normalize($value);
+            } elseif ($type === 'json_csv_config') {
+                $petitioner_info[$key] = AV_Petitioner_Column_Config::decode_meta_json($value);
+            } elseif ($type === 'json_form_fields') {
+                $petitioner_info[$key] = !empty($value) ? $this->sanitize_form_fields($value, false) : null;
+            } elseif ($type === 'json_array') {
+                $petitioner_info[$key] = !empty($value) ? $this->sanitize_array($value, false) : null;
+            } elseif (str_contains($type, 'json')) {
+                // Fallback for any other generic json types added by plugins
+                $decoded = !empty($value) ? json_decode($value, true) : null;
+                $petitioner_info[$key] = is_array($decoded) ? $decoded : [];
+            } else {
+                $petitioner_info[$key] = $value;
+            }
+        }
 
         /**
          * Filter to modify petitioner data that is sent to the edit screen
@@ -200,7 +179,7 @@ class AV_Petitioner_Admin_Edit_UI
 
         // Process meta fields
         $meta_values = [];
-        foreach (self::META_FIELDS as $key => $meta_key) {
+        foreach (self::get_meta_schema() as $key => $config) {
             $meta_values[$key] = isset($_POST["petitioner_$key"])
                 ? wp_unslash($_POST["petitioner_$key"])
                 : '';
@@ -215,47 +194,53 @@ class AV_Petitioner_Admin_Edit_UI
      */
     private function update_meta_fields($post_id, $meta_values)
     {
-        $checkboxes = [
-            'send_to_representative',
-            'show_country',
-            'require_approval',
-            'add_legal_text',
-            'add_consent_checkbox',
-            'show_goal',
-            'add_honeypot',
-            'override_ty_email',
-            'override_success_message',
-            'hide_last_names'
-        ];
-
-        $wysiwyg_fields = [
-            'letter',
-            'legal_text',
-            'ty_email',
-            'success_message',
-        ];
+        $schema = self::get_meta_schema();
 
         foreach ($meta_values as $key => $value) {
-            if (in_array($key, $wysiwyg_fields)) {
+            if (!isset($schema[$key]) || empty($schema[$key]['meta_key'])) {
+                continue;
+            }
+
+            $type = $schema[$key]['type'] ?? 'text';
+            $meta_key = $schema[$key]['meta_key'];
+
+            if ($type === 'wysiwyg') {
                 $value = wp_kses_post($value);
-            } elseif ($key === 'cc_emails' || $key === 'email') {
+            } elseif ($type === 'emails') {
                 $value = $this->sanitize_emails($value);
-            } elseif (in_array($key, $checkboxes)) {
-                $value = $value === "on" ? 1 : 0;
-            } elseif ($key === 'goal') {
+            } elseif ($type === 'checkbox') {
+                $value = $value === "on" || $value === "1" || $value === 1 || $value === true ? 1 : 0;
+            } elseif ($type === 'json_goal') {
                 $value = AV_Petitioner_Goal_Milestones::sanitize_json($value);
-            } elseif ($key === 'form_fields') {
+            } elseif ($type === 'json_form_fields') {
                 $value = $this->sanitize_form_fields($value);
-            } elseif ($key === 'field_order') {
+            } elseif ($type === 'json_array') {
                 $value = $this->sanitize_array($value);
-            } elseif ($key === 'csv_column_config') {
+            } elseif ($type === 'json_csv_config') {
                 $value = AV_Petitioner_Column_Config::sanitize_payload_json($value);
-            } elseif ($key === 'redirect_url' || $key === 'confirm_success_url' || $key === 'confirm_error_url') {
+            } elseif ($type === 'url') {
                 $value = esc_url_raw($value);
+            } elseif (str_contains($type, 'json')) {
+                if ($value === '' || $value === null) {
+                    $value = '';
+                } elseif (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $value = wp_slash(wp_json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+                    } else {
+                        av_ptr_error_log('Error sanitizing generic JSON meta field');
+                        $value = '';
+                    }
+                } elseif (is_array($value)) {
+                    $value = wp_slash(wp_json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+                } else {
+                    $value = '';
+                }
             } else {
                 $value = sanitize_text_field($value);
             }
-            update_post_meta($post_id, self::META_FIELDS[$key], $value);
+
+            update_post_meta($post_id, $meta_key, $value);
         }
     }
 

@@ -4,8 +4,8 @@
 	backupGlobals="false"
 	colors="true"
 	convertErrorsToExceptions="true"
-	convertNoticesToExceptions="false"
-	convertWarningsToExceptions="false"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
 	cacheResult="false"
 	>
 	<testsuites>
@@ -18,7 +18,7 @@
 			<directory suffix=".php">./inc</directory>
 		</include>
 		<exclude>
-			<directory>./inc/index.php</directory>
+			<file>./inc/index.php</file>
 		</exclude>
 	</coverage>
 </phpunit>

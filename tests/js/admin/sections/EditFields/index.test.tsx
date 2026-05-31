@@ -18,22 +18,28 @@ describe('EditFields', () => {
 		window.petitionerData = structuredClone(defaultPetitionerData);
 	});
 
-	it('renders all tabs', () => {
+	it('renders all base tabs by default', () => {
 		render(<EditFields />);
 
-		tabs.forEach((tabObject) => {
+		const baseTabs = tabs.filter(t => t.name !== 'integrations');
+
+		baseTabs.forEach((tabObject) => {
 			expect(
 				screen.getByTestId(`ptr-tab-${tabObject.name}`)
 			).toBeInTheDocument();
 		});
+
+		// Verify integrations tab is NOT rendered by default
+		expect(screen.queryByTestId('ptr-tab-integrations')).not.toBeInTheDocument();
 	});
 
-	it('renders tab buttons that are clickable', () => {
+	it('renders base tab buttons that are clickable', () => {
 		render(<EditFields />);
 
+		const baseTabs = tabs.filter(t => t.name !== 'integrations');
 		// The TabPanel from WP renders tab buttons with role="tab"
 		const tabButtons = screen.getAllByRole('tab');
-		expect(tabButtons.length).toBeGreaterThanOrEqual(tabs.length);
+		expect(tabButtons.length).toBeGreaterThanOrEqual(baseTabs.length);
 	});
 
 	it('renders first tab content by default', () => {
@@ -68,13 +74,30 @@ describe('EditFields', () => {
 	});
 
 
-	it('has exactly the expected number of tabs', () => {
-		expect(tabs).toHaveLength(4);
+	it('has exactly the expected number of total registered tabs', () => {
+		expect(tabs).toHaveLength(5);
 		expect(tabs.map((t) => t.name)).toEqual([
 			'petition-details',
 			'form-builder',
 			'advanced-settings',
+			'integrations',
 			'submissions',
 		]);
+	});
+
+	it('renders the integrations tab when the hook returns true', () => {
+		import('@wordpress/hooks').then(({ addFilter, removeFilter }) => {
+			// Add filter to enable the tab
+			addFilter('petitioner.admin.sections.edit_fields.show_integrations', 'test-namespace', () => true);
+
+			const { unmount } = render(<EditFields />);
+			
+			// Verify it now exists
+			expect(screen.getByTestId('ptr-tab-integrations')).toBeInTheDocument();
+			
+			// Clean up the filter for other tests
+			removeFilter('petitioner.admin.sections.edit_fields.show_integrations', 'test-namespace');
+			unmount();
+		});
 	});
 });

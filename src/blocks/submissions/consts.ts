@@ -9,6 +9,7 @@ export type PetitionFormBlockAttributes = {
 	style: 'simple' | 'table';
 	fields: FieldType[];
 	showPagination: boolean;
+	hidePageNumbers: boolean;
 	availableFields: string[];
 	availableStyles: string[];
 };

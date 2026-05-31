@@ -6,9 +6,10 @@ import { updateActiveTabURL } from '@admin/utilities';
 export default function Tabs(props: TabPanelProps) {
 	const {
 		tabs,
-		onTabSelect = () => {},
+		onTabSelect = () => { },
 		defaultTab = '',
 		updateURL = false,
+		...rest
 	} = props;
 	const tabKeys = tabs.map((tab) => tab.name);
 	const [activeTab, setActiveTab] = useState(() => {
@@ -31,6 +32,7 @@ export default function Tabs(props: TabPanelProps) {
 				// @ts-ignore: extra properties like `renderingEl` are safe but not part of Gutenberg TabPanel's type
 				tabs={tabs}
 				initialTabName={activeTab}
+				{...rest}
 			>
 				{(tab) => <></>}
 			</TabPanel>

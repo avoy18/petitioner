@@ -232,8 +232,8 @@ class AV_Petitioner_CSV_Exporter
         $used_headers = []; // Track used headers to prevent duplicates
 
         foreach ($allowed_fields as $field) {
-            // Skip custom_properties - handled separately via filter
-            if ($field === 'custom_properties') {
+            // Skip custom_properties and email_status - handled separately or strictly internal
+            if ($field === 'custom_properties' || $field === 'email_status') {
                 continue;
             }
 
@@ -300,8 +300,8 @@ class AV_Petitioner_CSV_Exporter
         $row = [];
 
         foreach (AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS as $field) {
-            // Skip custom_properties - handled separately via filter
-            if ($field === 'custom_properties') {
+            // Skip custom_properties and email_status - handled separately or strictly internal
+            if ($field === 'custom_properties' || $field === 'email_status') {
                 continue;
             }
 

@@ -24,6 +24,7 @@ export default function Edit({
 		style = 'simple',
 		fields = [],
 		showPagination = true,
+		hidePageNumbers = false,
 		availableFields = [],
 		// availableStyles,
 	} = attributes;
@@ -81,6 +82,16 @@ export default function Edit({
 							setAttributes({ showPagination: value })
 						}
 					/>
+					{showPagination && (
+						<ToggleControl
+							label={__('Hide Page Numbers', 'petitioner')}
+							help={__('Only show Prev/Next buttons', 'petitioner')}
+							checked={hidePageNumbers}
+							onChange={(value) =>
+								setAttributes({ hidePageNumbers: value })
+							}
+						/>
+					)}
 					<FormTokenField
 						label={__('Fields to show', 'petitioner')}
 						value={fields}
