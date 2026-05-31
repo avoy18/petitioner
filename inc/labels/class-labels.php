@@ -191,4 +191,13 @@ class AV_Petitioner_Labels
     {
         return get_post_meta('' . $form_id, '_petitioner_' . $key, true) ?: self::get($key, null, true);
     }
+
+    /**
+     * Clear the internal cache.
+     */
+    public static function clear_cache()
+    {
+        self::$core_labels_cache = null;
+        self::$field_labels_cache = null;
+    }
 }
