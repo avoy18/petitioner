@@ -3,7 +3,7 @@ Contributors: avoytenko
 Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 6.3
-Tested up to: 6.9
+Tested up to: 7.0
 Stable Tag: 0.8.2
 Requires PHP: 8.0
 License: GPLv2 or later 
@@ -157,6 +157,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Submitted at dates are now properly formatted vs showing a raw timestamp
 * Bugfixes
     * Fixed typo on the submission shortcode clipboard button (replaced form_id="" with id="")
+    * Fixed an issue where representative emails were not sent if the submission was manually approved
 * Architecture
     * Reworked settings & editing fields registration to make it a lot more extendable
     * Increased the test coverage (frontend)
