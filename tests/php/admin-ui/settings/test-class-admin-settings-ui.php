@@ -83,4 +83,25 @@ class Test_Admin_Settings_UI extends BaseTestCase
         $this->assertEquals('bad', $sanitized_array[0]['boldTag']);
         $this->assertEquals('', $sanitized_array[0]['xssTag']);
     }
+
+    public function test_get_default_labels_does_not_expose_form_fields()
+    {
+        $settings_ui = new AV_Petitioner_Admin_Settings_UI();
+        
+        $labels = $settings_ui->get_default_labels();
+        
+        $this->assertIsArray($labels);
+
+        // Ensure form field labels are NOT exposed in global settings
+        $this->assertArrayNotHasKey('fname', $labels);
+        $this->assertArrayNotHasKey('lname', $labels);
+        $this->assertArrayNotHasKey('email', $labels);
+        $this->assertArrayNotHasKey('country', $labels);
+        $this->assertArrayNotHasKey('date_of_birth_desc', $labels);
+
+        // Ensure expected core labels ARE present
+        $this->assertArrayHasKey('success_message', $labels);
+        $this->assertArrayHasKey('could_not_submit', $labels);
+        $this->assertArrayHasKey('error_generic', $labels);
+    }
 }
