@@ -44,17 +44,9 @@ class AV_Petitioner_Submissions_Controller
         $hide_name                  = !empty($_POST['petitioner_hide_name']) && sanitize_text_field(wp_unslash($_POST['petitioner_hide_name'])) === 'on';
         $newsletter                 = !empty($_POST['petitioner_newsletter']) && sanitize_text_field(wp_unslash($_POST['petitioner_newsletter'])) === 'on';
         $require_approval           = get_post_meta($form_id, '_petitioner_require_approval', true);
-        $approval_status            = 'Confirmed';
-        $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true);
+        $default_approval_status    = get_post_meta($form_id, '_petitioner_approval_state', true); // Kept for confirm_emails below
+        $approval_status            = self::get_default_status($require_approval, $default_approval_status);
         $accept_tos                 = !empty($_POST['petitioner_accept_tos']) && sanitize_text_field(wp_unslash($_POST['petitioner_accept_tos'])) === 'on';
-
-        if ($require_approval) {
-            if ($default_approval_status === 'Email') {
-                $approval_status = 'Declined';
-            } else {
-                $approval_status = $default_approval_status;
-            }
-        }
 
         // handle captcha
         AV_Petitioner_Captcha::validate_captcha($form_id);
@@ -151,12 +143,10 @@ class AV_Petitioner_Submissions_Controller
 
         if ($submission_id !== false) {
             // Only finalize if the starting state is fully confirmed (bypasses manual moderation and emails)
-            if ($approval_status === 'Confirmed') {
+            if (isset($data['approval_status']) && $data['approval_status'] === 'Confirmed') {
                 self::trigger_finalized_hook($submission_id);
             }
         }
-
-        $send_to_rep = $default_approval_status !== 'Email' && get_post_meta($form_id, '_petitioner_send_to_representative', true);
 
         $mailer_settings = array(
             'target_email'              => get_post_meta($form_id, '_petitioner_email', true),
@@ -167,7 +157,7 @@ class AV_Petitioner_Submissions_Controller
             'letter'                    => get_post_meta($form_id, '_petitioner_letter', true),
             'subject'                   => get_post_meta($form_id, '_petitioner_subject', true),
             'bcc'                       => $bcc,
-            'send_to_representative'    => $send_to_rep,
+            'send_to_representative'    => get_post_meta($form_id, '_petitioner_send_to_representative', true),
             'form_id'                   => $form_id,
             'confirm_emails'            => $default_approval_status === 'Email',
             'submission_id'             => $submission_id,
@@ -433,10 +423,25 @@ class AV_Petitioner_Submissions_Controller
          */
         $submission = apply_filters('av_petitioner_submission_data_pre_update', $submission, $_POST);
 
+        $old_submission = AV_Petitioner_Submissions_Model::get_submission_by_id($id);
+
+        if (!$old_submission) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+
+        $was_confirmed = $old_submission->approval_status === 'Confirmed';
+
         $updated_rows = AV_Petitioner_Submissions_Model::update_submission($id, $submission);
 
-        if ($updated_rows === 0) {
+        $approval_status = isset($submission['approval_status']) ? $submission['approval_status'] : null;
+
+        if ($updated_rows === false) {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('error_generic')]);
+        }
+        // Only trigger if it WAS NOT confirmed before, and IS confirmed now
+        if (!$was_confirmed && $approval_status === 'Confirmed') {
+            self::trigger_finalized_hook($id);
+            self::trigger_final_emails($id);
         }
 
         wp_send_json_success(['message' => AV_Petitioner_Labels::get('success_generic'), 'updated_rows' => $updated_rows]);
@@ -526,6 +531,8 @@ class AV_Petitioner_Submissions_Controller
         // so that CRMs and Webhooks recognize it's now ready for processing.
         if ($new_status === 'Confirmed' && $updated_rows > 0) {
             self::trigger_finalized_hook($id);
+
+            self::trigger_final_emails($id);
         }
 
         wp_send_json_success([
@@ -843,5 +850,41 @@ class AV_Petitioner_Submissions_Controller
              */
             do_action('petitioner_submission_finalized', $submission, $submission->form_id);
         }
+    }
+
+    /**
+     * Helper method to uniformly trigger the representative email.
+     * 
+     * @param int $submission_id The submission ID
+     * @return void
+     * @since 0.8.2
+     */
+    public static function trigger_final_emails($submission_id)
+    {
+        $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
+        if (!$submission) return;
+
+        AV_Email_Confirmations::send_emails($submission, false, false);
+    }
+
+    /**
+     * Get the default approval status for a new submission based on form settings.
+     * 
+     * @since 0.8.2
+     * 
+     * @param bool   $require_approval        Whether approval is required.
+     * @param string $default_approval_status The default approval state setting.
+     * @return string The default approval status ('Confirmed', 'Declined', or 'Pending').
+     */
+    public static function get_default_status($require_approval, $default_approval_status)
+    {
+        if ($require_approval) {
+            if ($default_approval_status === 'Email') {
+                return 'Declined';
+            }
+            return $default_approval_status;
+        }
+
+        return 'Confirmed';
     }
 }

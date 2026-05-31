@@ -191,4 +191,22 @@ class Test_Submissions_Controller extends BaseTestCase
 
         remove_filter('av_petitioner_hide_last_name', $filter_callback, 10);
     }
+
+    public function test_get_default_status_no_approval_required()
+    {
+        $status = AV_Petitioner_Submissions_Controller::get_default_status(false, 'Confirmed');
+        $this->assertEquals('Confirmed', $status);
+    }
+
+    public function test_get_default_status_approval_required_email()
+    {
+        $status = AV_Petitioner_Submissions_Controller::get_default_status(true, 'Email');
+        $this->assertEquals('Declined', $status);
+    }
+
+    public function test_get_default_status_approval_required_pending()
+    {
+        $status = AV_Petitioner_Submissions_Controller::get_default_status(true, 'Pending');
+        $this->assertEquals('Pending', $status);
+    }
 }
