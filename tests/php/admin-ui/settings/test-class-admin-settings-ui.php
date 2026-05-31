@@ -16,11 +16,19 @@ class Test_Admin_Settings_UI extends BaseTestCase
         remove_all_filters('av_petitioner_settings_schema');
         
         // Clear static cache in AV_Petitioner_Labels via Reflection
-        // Note: As of PHP 8.1+, setAccessible() is no longer required and properties are accessible by default
         $reflection = new ReflectionClass('AV_Petitioner_Labels');
         
-        $reflection->getProperty('core_labels_cache')->setValue(null);
-        $reflection->getProperty('field_labels_cache')->setValue(null);
+        $core_cache = $reflection->getProperty('core_labels_cache');
+        $field_cache = $reflection->getProperty('field_labels_cache');
+        
+        // setAccessible is required in PHP < 8.1, but has no effect (and triggers deprecations in some linters) in PHP 8.1+
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            $core_cache->setAccessible(true);
+            $field_cache->setAccessible(true);
+        }
+        
+        $core_cache->setValue(null);
+        $field_cache->setValue(null);
     }
 
     public function test_get_settings_schema_returns_valid_structure()
