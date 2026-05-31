@@ -263,7 +263,7 @@ class AV_Petitioner_Admin_Settings_UI
         ];
 
         // filter out the unwanted labels
-        $default_labels = array_filter(AV_Petitioner_Labels::get_all(), function ($v, $k) use ($do_not_include) {
+        $default_labels = array_filter(AV_Petitioner_Labels::get_core_labels(), function ($v, $k) use ($do_not_include) {
             return !in_array($k, $do_not_include);
         }, ARRAY_FILTER_USE_BOTH);
 

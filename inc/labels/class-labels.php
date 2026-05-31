@@ -45,7 +45,7 @@ class AV_Petitioner_Labels
      * 
      * @return array Core labels with filters applied
      */
-    private static function get_core_labels()
+    public static function get_core_labels()
     {
         if (self::$core_labels_cache !== null) {
             return self::$core_labels_cache;
