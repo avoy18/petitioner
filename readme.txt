@@ -155,9 +155,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Submission GB block and a shortcode: allow pagination buttons to be hidden
     * Added an option to feature submission entries so they are pinned on the frontend
     * Submitted at dates are now properly formatted vs showing a raw timestamp
+    * Tested up to WordPress 7.0
 * Bugfixes
     * Fixed typo on the submission shortcode clipboard button (replaced form_id="" with id="")
     * Fixed an issue where representative emails were not sent if the submission was manually approved
+    * Fixesd a bug where form labels would show up under label overrides but dont do anything (removed them)
 * Architecture
     * Reworked settings & editing fields registration to make it a lot more extendable
     * Increased the test coverage (frontend)
