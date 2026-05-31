@@ -159,7 +159,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 * Bugfixes
     * Fixed typo on the submission shortcode clipboard button (replaced form_id="" with id="")
     * Fixed an issue where representative emails were not sent if the submission was manually approved
-    * Fixesd a bug where form labels would show up under label overrides but dont do anything (removed them)
+    * Fixed a bug where form labels would show up under label overrides but dont do anything (removed them)
 * Architecture
     * Reworked settings & editing fields registration to make it a lot more extendable
     * Increased the test coverage (frontend)
