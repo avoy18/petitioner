@@ -64,11 +64,11 @@ class AV_Petitioner_Queue
      * Cancel the next occurrence of a scheduled action.
      *
      * @param string $hook The hook that the job will trigger.
-     * @param array|null  $args Args that would have been passed to the job. Null matches any args.
+     * @param array  $args Args that would have been passed to the job.
      * @param string $group The group the job is assigned to.
      * @return string|null The scheduled action ID if a scheduled action was found, or null if no matching action found.
      */
-    public static function cancel_action($hook, $args = null, $group = 'petitioner')
+    public static function cancel_action($hook, $args = [], $group = 'petitioner')
     {
         if (function_exists('as_unschedule_action')) {
             return as_unschedule_action($hook, $args, $group);
@@ -80,10 +80,10 @@ class AV_Petitioner_Queue
      * Cancel all occurrences of a scheduled action.
      *
      * @param string $hook The hook that the job will trigger.
-     * @param array|null  $args Args that would have been passed to the job. Null matches any args.
+     * @param array  $args Args that would have been passed to the job.
      * @param string $group The group the job is assigned to.
      */
-    public static function cancel_all_actions($hook, $args = null, $group = 'petitioner')
+    public static function cancel_all_actions($hook, $args = [], $group = 'petitioner')
     {
         if (function_exists('as_unschedule_all_actions')) {
             as_unschedule_all_actions($hook, $args, $group);
@@ -94,11 +94,11 @@ class AV_Petitioner_Queue
      * Return the timestamp for the next occurrence of a scheduled action.
      *
      * @param string $hook The hook that the job will trigger.
-     * @param array|null  $args Args that would have been passed to the job. Null matches any args.
+     * @param array  $args Args that would have been passed to the job.
      * @param string $group The group the job is assigned to.
      * @return int|bool The timestamp for the next occurrence, or false if nothing was found.
      */
-    public static function next_scheduled_action($hook, $args = null, $group = 'petitioner')
+    public static function next_scheduled_action($hook, $args = [], $group = 'petitioner')
     {
         if (function_exists('as_next_scheduled_action')) {
             return as_next_scheduled_action($hook, $args, $group);
