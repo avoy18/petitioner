@@ -7,9 +7,9 @@ This directory contains coding rules and guidelines for the Petitioner WordPress
 ```
 .rules/
 ├── README.md
-└── php.mdc        # PHP coding guidelines, WordPress integration
-└── general.mdc    # Component patterns, TypeScript, WordPress
-└── styles.mdc     # Styling guidelines and theme constants
+├── php.mdc        # PHP coding guidelines, WordPress integration
+├── general.mdc    # Component patterns, TypeScript, WordPress
+├── styles.mdc     # Styling guidelines and theme constants
 └── tests.mdc      # Testing patterns and best practices
 ```
 
