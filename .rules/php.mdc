@@ -1,0 +1,57 @@
+---
+description: PHP coding patterns, architecture, and WordPress integration for Petitioner plugin backend
+globs:
+  - "**/*.php"
+alwaysApply: true
+---
+
+# Petitioner WordPress Plugin - PHP Rules
+
+## Project Overview
+WordPress plugin built with PHP 8.0+. Emphasizes object-oriented programming, security, and WordPress best practices.
+
+## Architecture & Structure
+- **Object-Oriented**: Use classes for encapsulation. Avoid global functions unless necessary for specific hooks.
+- **Namespacing / Prefixing**: Since this is a WordPress plugin, use unique prefixes (e.g., `av_petitioner_`, `AV_Petitioner_`) for functions, classes, and options to prevent conflicts, or use proper PHP namespaces if established.
+- **Separation of Concerns**: Keep business logic separate from view/presentation logic.
+
+## Security & Data Handling
+- **Sanitization**: ALWAYS sanitize input data (e.g., `sanitize_text_field`, `sanitize_email`, `wp_kses_post`) before processing or saving.
+- **Validation**: Validate expected data types and values.
+- **Escaping**: ALWAYS escape output data (e.g., `esc_html`, `esc_attr`, `esc_url`) right before rendering.
+- **Nonces**: Use nonces (`wp_verify_nonce`, `wp_create_nonce`) for all form submissions and AJAX requests.
+- **Capabilities**: Always check user capabilities (`current_user_can`) before performing administrative actions or sensitive data retrieval.
+- **Unit Tests**: All code must be unit testable. Avoid dependencies on global state where possible, or make them injectable.
+
+## Database & Models
+- Use the `$wpdb` object for custom database queries.
+- Prepare all SQL queries to prevent SQL injection: `$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}table WHERE id = %d", $id )`.
+- Cache database results where appropriate using WordPress Transients or Object Cache (`wp_cache_set`, `wp_cache_get`).
+
+## Hook System (Actions & Filters)
+- Extensibility: Provide hooks (`apply_filters`, `do_action`) for developers to extend the plugin without modifying core files.
+- Document any custom hooks using standard WordPress DocBlock format.
+
+## Error Handling & Logging
+- Use standard PHP exceptions or `WP_Error` objects for returning structured errors.
+- Never expose sensitive error details to the frontend; use logging for backend debugging.
+- Use native `error_log` for debugging when WP_DEBUG is enabled.
+
+## Coding Style
+- Follow WordPress PHP Coding Standards (WordPress-Core).
+- Indentation: Use tabs, not spaces.
+- Naming Conventions:
+  - Classes: `Class_Name` (Title case with underscores)
+  - Functions/Methods: `function_name` (lowercase with underscores)
+  - Variables: `$variable_name` (lowercase with underscores)
+  - Constants: `CONSTANT_NAME` (uppercase with underscores)
+- Type Hinting: Do not use strict typing or PHP native type hints. Instead, use comprehensive PHPDoc blocks (`@param`, `@return`, `@var`) to define types.
+- Versioning: ALWAYS include `@since` tags in file headers, class DocBlocks, and function/method DocBlocks to track when code was introduced or modified.
+- Filters: When creating a new filter or action, ALWAYS prefix it with the plugin prefix `av_petitioner_` to prevent conflicts.
+
+## External API Integrations (e.g., Mailchimp, Brevo)
+- Wrap remote HTTP requests in robust error handling.
+- Use WordPress HTTP API (`wp_remote_post`, `wp_remote_get`).
+- Check `is_wp_error()` on HTTP responses.
+- Validate JSON responses safely to avoid TypeErrors (`json_decode` on non-strings).
+- Prefer asynchronous or queued processing for external API calls during form submissions to prevent blocking the user UI.
