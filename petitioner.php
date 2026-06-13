@@ -36,6 +36,11 @@ if (!function_exists('av_ptr_error_log')) {
     }
 }
 
+if (file_exists(AV_PETITIONER_PLUGIN_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php')) {
+    require_once AV_PETITIONER_PLUGIN_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
+}
+
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-queue.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-model.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-submissions-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/submissions/class-csv-column-config.php';
