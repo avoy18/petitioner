@@ -6,9 +6,29 @@ if (! defined('ABSPATH')) {
 
 /**
  * A wrapper for Action Scheduler to manage background tasks.
+ * 
+ * @note Pro tip: you can view your current queue here: `/wp-admin/admin.php?page=action-scheduler`
  */
 class AV_Petitioner_Queue
 {
+    /**
+     * Initializes the queue wrapper.
+     */
+    public static function init()
+    {
+        // Hide the "Scheduled Actions" menu link so it doesn't clutter the Tools menu
+        // Users can still access it directly via /wp-admin/tools.php?page=action-scheduler
+        add_action('admin_menu', [self::class, 'hide_admin_menu'], 999);
+    }
+
+    /**
+     * Hides the Action Scheduler menu item.
+     */
+    public static function hide_admin_menu()
+    {
+        // We only want to hide it if WooCommerce isn't active (WooCommerce moves it anyway)
+        remove_submenu_page('tools.php', 'action-scheduler');
+    }
     /**
      * Enqueue an action to run one time, as soon as possible.
      *

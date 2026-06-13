@@ -71,6 +71,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_Captcha')) {
                 new AV_Petitioner_Captcha();
             }
+
+            // initialize queue
+            if (class_exists('AV_Petitioner_Queue')) {
+                AV_Petitioner_Queue::init();
+            }
         });
 
         // api endpoints
