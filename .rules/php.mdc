@@ -27,6 +27,7 @@ WordPress plugin built with PHP 8.0+. Emphasizes object-oriented programming, se
 - Use the `$wpdb` object for custom database queries.
 - Prepare all SQL queries to prevent SQL injection: `$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}table WHERE id = %d", $id )`.
 - Cache database results where appropriate using WordPress Transients or Object Cache (`wp_cache_set`, `wp_cache_get`).
+- **Boolean Database Fields**: In WordPress backend development, boolean-like database fields (such as `is_featured`) are consistently returned as strings (`'1'` or `'0'`) by database queries. Consider using the native `wp_validate_boolean($value)` function to safely evaluate these database values into true/false.
 
 ## Hook System (Actions & Filters)
 - Extensibility: Provide hooks (`apply_filters`, `do_action`) for developers to extend the plugin without modifying core files.
@@ -45,7 +46,7 @@ WordPress plugin built with PHP 8.0+. Emphasizes object-oriented programming, se
   - Functions/Methods: `function_name` (lowercase with underscores)
   - Variables: `$variable_name` (lowercase with underscores)
   - Constants: `CONSTANT_NAME` (uppercase with underscores)
-- Type Hinting: Do not use strict typing or PHP native type hints. Instead, use comprehensive PHPDoc blocks (`@param`, `@return`, `@var`) to define types.
+- Type Hinting: Use comprehensive PHPDoc blocks (`@param`, `@return`, `@var`) to define types.
 - Versioning: ALWAYS include `@since` tags in file headers, class DocBlocks, and function/method DocBlocks to track when code was introduced or modified.
 - Filters: When creating a new filter or action, ALWAYS prefix it with the plugin prefix `av_petitioner_` to prevent conflicts.
 
