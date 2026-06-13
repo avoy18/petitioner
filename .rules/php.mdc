@@ -14,6 +14,7 @@ WordPress plugin built with PHP 8.0+. Emphasizes object-oriented programming, se
 - **Object-Oriented**: Use classes for encapsulation. Avoid global functions unless necessary for specific hooks.
 - **Namespacing / Prefixing**: Since this is a WordPress plugin, use unique prefixes (e.g., `av_petitioner_`, `AV_Petitioner_`) for functions, classes, and options to prevent conflicts, or use proper PHP namespaces if established.
 - **Separation of Concerns**: Keep business logic separate from view/presentation logic.
+- **Paths and URLs**: To retrieve the plugin's root URL from a file inside a subdirectory (e.g., `inc/`), use `plugin_dir_url(dirname(__FILE__))`. Do NOT use `dirname(dirname(__FILE__))` as `plugin_dir_url()` internally applies `dirname()`, meaning a double `dirname()` will incorrectly resolve to the global `plugins/` directory.
 
 ## Security & Data Handling
 - **Sanitization**: ALWAYS sanitize input data (e.g., `sanitize_text_field`, `sanitize_email`, `wp_kses_post`) before processing or saving.
