@@ -26,8 +26,17 @@ class AV_Petitioner_Queue
      */
     public static function hide_admin_menu()
     {
-        // We only want to hide it if WooCommerce isn't active (WooCommerce moves it anyway)
-        remove_submenu_page('tools.php', 'action-scheduler');
+        /**
+         * Filter whether to hide the Action Scheduler menu item.
+         *
+         * @param bool $hide Whether to hide the menu item. Default true.
+         */
+        $should_hide = apply_filters('av_petitioner_hide_action_scheduler', true);
+
+        if ($should_hide) {
+            // We only want to hide it if WooCommerce isn't active (WooCommerce moves it anyway)
+            remove_submenu_page('tools.php', 'action-scheduler');
+        }
     }
     /**
      * Enqueue an action to run one time, as soon as possible.
