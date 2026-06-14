@@ -120,6 +120,101 @@ class AV_Petitioner_Queue
     }
 
     /**
+     * Retrieve the recent Action Scheduler logs for a specific hook and optional search query.
+     *
+     * @param string $hook     The hook name to search for.
+     * @param string $search   An optional search string to filter logs by (e.g. JSON substring in args).
+     * @param int    $page     The current page of logs.
+     * @param int    $per_page How many logs to retrieve per page.
+     * @return array Array containing the 'status' and the 'logs' array.
+     */
+    public static function get_logs_by_hook($hook, $search = '', $page = 1, $per_page = 10)
+    {
+        if (!class_exists('\ActionScheduler')) {
+            return ['status' => 'disabled', 'logs' => []];
+        }
+
+        $page     = max(1, (int) $page);
+        $per_page = max(1, (int) $per_page);
+        $offset   = ($page - 1) * $per_page;
+
+        $query = [
+            'hook'     => $hook,
+            'search'   => $search,
+            'per_page' => $per_page,
+            'offset'   => $offset,
+            'orderby'  => 'date',
+            'order'    => 'DESC',
+        ];
+
+        $action_ids = \ActionScheduler::store()->query_actions($query);
+        $results = [];
+
+        foreach ($action_ids as $action_id) {
+            $action = \ActionScheduler::store()->fetch_action($action_id);
+            if ($action instanceof \ActionScheduler_NullAction) {
+                continue;
+            }
+
+            $status = \ActionScheduler::store()->get_status($action_id);
+            $logs = \ActionScheduler::logger()->get_logs($action_id);
+
+            $log_messages = array_map(function ($log) {
+                return [
+                    'message' => $log->get_message(),
+                    'date'    => $log->get_date()->format('Y-m-d H:i:s')
+                ];
+            }, $logs);
+
+            $args = $action->get_args();
+
+            $schedule = $action->get_schedule();
+            $scheduled_date = is_object($schedule) && method_exists($schedule, 'get_date') ? $schedule->get_date() : null;
+
+            $action_date = $scheduled_date ? $scheduled_date->format('Y-m-d H:i:s') : '';
+
+            if (empty($action_date) && !empty($log_messages)) {
+                $action_date = end($log_messages)['date'];
+            }
+
+            $results[] = [
+                'id'       => $action_id,
+                'status'   => $status,
+                'date'     => $action_date,
+                'logs'     => $log_messages,
+                'payload'  => $args
+            ];
+        }
+
+        return ['status' => 'enabled', 'logs' => $results];
+    }
+
+    /**
+     * Reschedules an identical action for a failed job.
+     *
+     * @param int $action_id The ID of the action to retry.
+     * @return int|bool The new action ID or false if it failed.
+     */
+    public static function retry_action($action_id)
+    {
+        if (!class_exists('\ActionScheduler')) {
+            return false;
+        }
+
+        $action = \ActionScheduler::store()->fetch_action($action_id);
+        if (!$action instanceof \ActionScheduler_NullAction) {
+            $hook  = $action->get_hook();
+            $args  = $action->get_args();
+            $group = $action->get_group();
+
+            // Re-enqueue the identical task as a brand new action
+            return self::schedule_action($hook, $args, $group);
+        }
+
+        return false;
+    }
+
+    /**
      * Return the timestamp for the next occurrence of a scheduled action.
      *
      * @param string $hook The hook that the job will trigger.
