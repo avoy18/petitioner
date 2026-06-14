@@ -105,6 +105,13 @@ class AV_Petitioner_Queue
         return null;
     }
 
+    /**
+     * Cancel all occurrences of a scheduled action.
+     *
+     * @param string $hook The hook that the job will trigger.
+     * @param array  $args Args that would have been passed to the job.
+     * @param string $group The group the job is assigned to.
+     */
     public static function cancel_all_actions($hook, $args = [], $group = 'petitioner')
     {
         if (function_exists('as_unschedule_all_actions')) {
@@ -149,8 +156,8 @@ class AV_Petitioner_Queue
 
             $status = \ActionScheduler::store()->get_status($action_id);
             $logs = \ActionScheduler::logger()->get_logs($action_id);
-            
-            $log_messages = array_map(function($log) {
+
+            $log_messages = array_map(function ($log) {
                 return [
                     'message' => $log->get_message(),
                     'date'    => $log->get_date()->format('Y-m-d H:i:s')
@@ -158,13 +165,20 @@ class AV_Petitioner_Queue
             }, $logs);
 
             $args = $action->get_args();
-            // ActionScheduler_Schedule::get_date returns a DateTime
-            $scheduled_date = $action->get_schedule()->get_date();
+
+            $schedule = $action->get_schedule();
+            $scheduled_date = method_exists($schedule, 'get_date') ? $schedule->get_date() : null;
+
+            $action_date = $scheduled_date ? $scheduled_date->format('Y-m-d H:i:s') : '';
+
+            if (empty($action_date) && !empty($log_messages)) {
+                $action_date = end($log_messages)['date'];
+            }
 
             $results[] = [
                 'id'       => $action_id,
                 'status'   => $status,
-                'date'     => $scheduled_date ? $scheduled_date->format('Y-m-d H:i:s') : '',
+                'date'     => $action_date,
                 'logs'     => $log_messages,
                 'payload'  => $args
             ];
@@ -189,7 +203,7 @@ class AV_Petitioner_Queue
         if (!$action instanceof \ActionScheduler_NullAction) {
             $hook = $action->get_hook();
             $args = $action->get_args();
-            
+
             // Re-enqueue the identical task as a brand new action
             return self::schedule_action($hook, $args, 'petitioner');
         }
