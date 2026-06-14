@@ -11,6 +11,7 @@ export default function Table({
 	emptyMessage = 'No data available',
 	className = '',
 	clickable = false,
+	sortable = true,
 	onSort = () => { },
 	onItemSelect = () => { },
 }: TableProps) {
@@ -45,24 +46,29 @@ export default function Table({
 							key={id}
 							$width={width}
 							className={
-								sort !== id ? '' : `sorted ${sortDirection}`
+								!sortable ? '' : (sort !== id ? '' : `sorted ${sortDirection}`)
 							}
 							onClick={() => {
-								handleSortChange(id);
+								if (sortable) {
+									handleSortChange(id);
+								}
 							}}
+							style={{ cursor: sortable ? 'pointer' : 'default' }}
 						>
 							<HeadingLabel>
 								{label}
-								<div className="sorting-indicators">
-									<span
-										className="sorting-indicator asc"
-										aria-hidden="true"
-									></span>
-									<span
-										className="sorting-indicator desc"
-										aria-hidden="true"
-									></span>
-								</div>
+								{sortable && (
+									<div className="sorting-indicators">
+										<span
+											className="sorting-indicator asc"
+											aria-hidden="true"
+										></span>
+										<span
+											className="sorting-indicator desc"
+											aria-hidden="true"
+										></span>
+									</div>
+								)}
 							</HeadingLabel>
 						</TableHeading>
 					))}

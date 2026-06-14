@@ -23,6 +23,7 @@ export type TableProps = {
 	emptyMessage?: string;
 	className?: string;
 	clickable?: boolean;
+	sortable?: boolean;
 	onSort?: (args: OnSortArgs) => void;
 	onItemSelect?: (id: TableRow['id']) => void;
 };
