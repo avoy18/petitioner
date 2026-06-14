@@ -169,7 +169,7 @@ class AV_Petitioner_Queue
             $args = $action->get_args();
 
             $schedule = $action->get_schedule();
-            $scheduled_date = method_exists($schedule, 'get_date') ? $schedule->get_date() : null;
+            $scheduled_date = is_object($schedule) && method_exists($schedule, 'get_date') ? $schedule->get_date() : null;
 
             $action_date = $scheduled_date ? $scheduled_date->format('Y-m-d H:i:s') : '';
 
