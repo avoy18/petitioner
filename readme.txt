@@ -150,7 +150,8 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 = 0.8.3 =
 * Improvements
-    * Add ActionScheduler as a dev dependency
+    * Add ActionScheduler as a dev dependency and a wrapper util class to work with it
+    * Export reusable components as a global window object
 
 = 0.8.2 =
 * Improvements
