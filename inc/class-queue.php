@@ -203,11 +203,12 @@ class AV_Petitioner_Queue
 
         $action = \ActionScheduler::store()->fetch_action($action_id);
         if (!$action instanceof \ActionScheduler_NullAction) {
-            $hook = $action->get_hook();
-            $args = $action->get_args();
+            $hook  = $action->get_hook();
+            $args  = $action->get_args();
+            $group = $action->get_group();
 
             // Re-enqueue the identical task as a brand new action
-            return self::schedule_action($hook, $args, 'petitioner');
+            return self::schedule_action($hook, $args, $group);
         }
 
         return false;
