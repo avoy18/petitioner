@@ -134,7 +134,9 @@ class AV_Petitioner_Queue
             return ['status' => 'disabled', 'logs' => []];
         }
 
-        $offset = ($page - 1) * $per_page;
+        $page     = max(1, (int) $page);
+        $per_page = max(1, (int) $per_page);
+        $offset   = ($page - 1) * $per_page;
 
         $query = [
             'hook'     => $hook,
