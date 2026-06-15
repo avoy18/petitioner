@@ -85,7 +85,7 @@ class AV_Petitioner_Form_UI
 ?>
         <form
             id="petitioner-form-<?php echo esc_attr($this->form_id); ?>"
-            method="get"
+            method="post"
             action="<?php echo esc_attr($action); ?>">
 
             <?php
