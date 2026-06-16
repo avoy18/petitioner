@@ -256,23 +256,34 @@ class AV_Petitioner_Submissions_Importer
      */
     private function process_csv($csv_content)
     {
-        $lines = explode("\n", trim($csv_content));
-        $headers = str_getcsv(array_shift($lines));
+        $stream = fopen('php://memory', 'r+');
+
+        fwrite($stream, trim($csv_content));
+        rewind($stream);
+
+        $headers = fgetcsv($stream);
+        
+        if (!$headers) {
+            fclose($stream);
+            return ['imported' => 0, 'skipped' => 0];
+        }
 
         $mapped_headers = $this->map_headers($headers);
 
         $imported = 0;
         $skipped = 0;
 
-        foreach ($lines as $line) {
-            if (empty(trim($line))) continue;
-
-            $row = str_getcsv($line);
-
-            if (count($row) !== count($headers)) continue;
+        while (($row = fgetcsv($stream)) !== false) {
+            // Skip empty rows
+            if (empty($row) || (count($row) === 1 && trim($row[0] ?? '') === '')) {
+                continue;
+            }
+            if (count($row) !== count($headers)) {
+                $skipped++;
+                continue;
+            }
 
             $record = [];
-
             foreach ($row as $index => $value) {
                 $key = $mapped_headers[$index];
                 if ($key !== null) {
@@ -294,6 +305,8 @@ class AV_Petitioner_Submissions_Importer
                 }
             }
         }
+
+        fclose($stream);
 
         return [
             'imported' => $imported,
