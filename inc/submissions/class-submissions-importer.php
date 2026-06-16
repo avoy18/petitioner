@@ -216,7 +216,7 @@ class AV_Petitioner_Submissions_Importer
         $header_lower = strtolower(trim($header));
 
         // Check if it strictly matches an allowed system field
-        if (in_array($header, AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS)) {
+        if (in_array($header, AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, true)) {
             return $header;
         }
 
