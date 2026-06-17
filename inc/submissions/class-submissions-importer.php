@@ -346,7 +346,7 @@ class AV_Petitioner_Submissions_Importer
     {
         $stream = fopen('php://memory', 'r+');
 
-        fwrite($stream, trim($csv_content));
+        fwrite($stream, $csv_content);
         rewind($stream);
 
         $headers = fgetcsv($stream);
