@@ -187,13 +187,7 @@ class AV_Petitioner_Submissions_Importer
         }
 
         // Handle local paths (prevent path traversal / LFI)
-        $local_path = $url_or_path;
-
-        if (!file_exists($local_path)) {
-            $local_path = ABSPATH . ltrim($url_or_path, '/');
-        }
-
-        $safe_path = $this->get_safe_local_file_path($local_path);
+        $safe_path = $this->get_safe_local_file_path($url_or_path);
 
         if ($safe_path) {
             return file_get_contents($safe_path);
@@ -203,14 +197,33 @@ class AV_Petitioner_Submissions_Importer
     }
 
     /**
-     * Verifies that a local file path is safe to read.
-     * Prevents LFI/path traversal and restricts to .csv files within ABSPATH.
+     * Resolves and verifies that a local file path is safe to read.
+     * Prevents LFI/path traversal and restricts to .csv files within ABSPATH or WP_CONTENT_DIR.
+     * Supports Bedrock compatibility by checking WP_CONTENT_DIR.
      * 
-     * @param string $local_path The local file path to check.
+     * @param string $url_or_path The local file path or relative wp-content path to check.
      * @return string|null The resolved real path if safe, null otherwise.
      */
-    private function get_safe_local_file_path(string $local_path): ?string
+    private function get_safe_local_file_path($url_or_path)
     {
+        $local_path = $url_or_path;
+
+        if (!file_exists($local_path)) {
+            // Check if it's a relative wp-content path and try resolving against WP_CONTENT_DIR for Bedrock compatibility
+            if (strpos($url_or_path, 'wp-content/') === 0 || strpos($url_or_path, '/wp-content/') === 0) {
+                $content_relative = preg_replace('#^/?wp-content/#', '', $url_or_path);
+                $content_path = trailingslashit(WP_CONTENT_DIR) . ltrim($content_relative, '/');
+                
+                if (file_exists($content_path)) {
+                    $local_path = $content_path;
+                } else {
+                    $local_path = ABSPATH . ltrim($url_or_path, '/');
+                }
+            } else {
+                $local_path = ABSPATH . ltrim($url_or_path, '/');
+            }
+        }
+
         $real_path = realpath($local_path);
 
         if (!$real_path || !is_file($real_path)) {
