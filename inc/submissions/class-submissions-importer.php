@@ -75,8 +75,12 @@ class AV_Petitioner_Submissions_Importer
 
     public function __construct($args = [])
     {
-        $this->form_id            = isset($args['form_id']) ? absint($args['form_id']) : 0;
-        $this->csv_url            = isset($args['csv_url']) ? esc_url_raw($args['csv_url']) : '';
+        $this->form_id = isset($args['form_id']) ? absint($args['form_id']) : 0;
+
+        $csv_input = isset($args['csv_url']) ? trim($args['csv_url']) : '';
+
+        $this->csv_url = $this->sanitize_csv_url($csv_input);
+
         $this->action             = isset($args['action']) && $args['action'] === 'remove' ? 'remove' : 'import';
         $this->trigger_finalized  = isset($args['trigger_finalized']) ? filter_var($args['trigger_finalized'], FILTER_VALIDATE_BOOLEAN) : false;
         $this->approve_submission = isset($args['approve_submission']) ? filter_var($args['approve_submission'], FILTER_VALIDATE_BOOLEAN) : true;
@@ -200,6 +204,20 @@ class AV_Petitioner_Submissions_Importer
     }
 
     /**
+     * Sanitizes the CSV URL based on whether it's an external URL or a local path.
+     * 
+     * @param string $url
+     * @return string
+     */
+    private function sanitize_csv_url(string $url): string
+    {
+        if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
+            return esc_url_raw($url);
+        }
+        return sanitize_text_field($url);
+    }
+
+    /**
      * Get the field key for a given header.
      * 
      * @param string $header The header name from the CSV file.
@@ -262,7 +280,7 @@ class AV_Petitioner_Submissions_Importer
         rewind($stream);
 
         $headers = fgetcsv($stream);
-        
+
         if (!$headers) {
             fclose($stream);
             return ['imported' => 0, 'skipped' => 0];
