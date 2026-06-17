@@ -396,12 +396,14 @@ class AV_Petitioner_Submissions_Importer
             return false;
         }
 
+        $dob_time = !empty($record['date_of_birth']) ? strtotime($record['date_of_birth']) : false;
+
         $data = [
             'form_id'           => $this->form_id,
             'fname'             => sanitize_text_field($record['fname'] ?? ''),
             'lname'             => sanitize_text_field($record['lname'] ?? ''),
             'email'             => $email,
-            'date_of_birth'     => sanitize_text_field($record['date_of_birth'] ?? ''),
+            'date_of_birth'     => $dob_time ? date('Y-m-d', $dob_time) : '',
             'country'           => sanitize_text_field($record['country'] ?? ''),
             'salutation'        => sanitize_text_field($record['salutation'] ?? ''),
             'phone'             => sanitize_text_field($record['phone'] ?? ''),
@@ -414,7 +416,7 @@ class AV_Petitioner_Submissions_Importer
             'hide_name'         => wp_validate_boolean($record['hide_name'] ?? false) ? '1' : '0',
             'is_featured'       => wp_validate_boolean($record['is_featured'] ?? false) ? '1' : '0',
             'approval_status'   => $this->approve_submission ? 'Confirmed' : 'Pending',
-            'submitted_at'      => !empty($record['submitted_at']) ? sanitize_text_field($record['submitted_at']) : current_time('mysql'),
+            'submitted_at'      => !empty($record['submitted_at']) && strtotime($record['submitted_at']) ? date('Y-m-d H:i:s', strtotime($record['submitted_at'])) : current_time('mysql'),
         ];
 
         if (empty($data['date_of_birth'])) {
