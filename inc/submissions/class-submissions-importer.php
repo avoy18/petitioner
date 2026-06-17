@@ -256,7 +256,23 @@ class AV_Petitioner_Submissions_Importer
      */
     private function map_headers($headers)
     {
-        $form_labels = av_petitioner_get_form_labels($this->form_id, AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS);
+        $form_labels = [];
+
+        if (class_exists('AV_Petitioner_Labels')) {
+            $form_labels = AV_Petitioner_Labels::get_field_labels();
+        }
+
+        $form_fields = get_post_meta($this->form_id, '_petitioner_form_fields', true);
+        $fields_parsed = json_decode($form_fields, true);
+
+        if (is_array($fields_parsed)) {
+            foreach ($fields_parsed as $key => $field_config) {
+                if (!empty($field_config['label'])) {
+                    $form_labels[$key] = $field_config['label'];
+                }
+            }
+        }
+
         $mapped = [];
 
         foreach ($headers as $index => $header) {
