@@ -274,6 +274,10 @@ class AV_Petitioner_Submissions_Importer
      */
     private function get_field_key($header, $form_labels)
     {
+        if (!is_string($header) || trim($header) === '') {
+            return null;
+        }
+
         // Check explicit overrides
         if (isset($this->field_overrides[$header])) {
             return $this->field_overrides[$header];
