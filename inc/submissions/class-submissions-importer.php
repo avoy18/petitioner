@@ -195,9 +195,15 @@ class AV_Petitioner_Submissions_Importer
 
         $real_path = realpath($local_path);
 
-        // Security Check: Ensure the file exists, is a file (not a directory), and is within the WordPress installation directory
-        if ($real_path && is_file($real_path) && strpos($real_path, ABSPATH) === 0) {
-            return file_get_contents($real_path);
+        if ($real_path && is_file($real_path)) {
+            $normalized_real_path = wp_normalize_path($real_path);
+            $normalized_abs_path  = trailingslashit(wp_normalize_path(ABSPATH));
+
+            // Security Check: Ensure the file is within the WordPress installation directory
+            // We enforce trailing slash on ABSPATH to prevent matching adjacent directories (e.g. /html-backup vs /html)
+            if (strpos($normalized_real_path, $normalized_abs_path) === 0) {
+                return file_get_contents($real_path);
+            }
         }
 
         return false;
