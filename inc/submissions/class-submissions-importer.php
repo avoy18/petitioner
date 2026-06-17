@@ -177,7 +177,7 @@ class AV_Petitioner_Submissions_Importer
 
             $response = wp_safe_remote_get($url_or_path, ['sslverify' => $sslverify, 'timeout' => $timeout]);
 
-            if (is_wp_error($response)) {
+            if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
                 return false;
             }
 
