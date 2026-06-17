@@ -109,7 +109,9 @@ class AV_Petitioner_Submissions_Importer
         }
 
         // Strip UTF-8 BOM if present
-        $csv_content = preg_replace('/^\xEF\xBB\xBF/', '', $csv_content);
+        if (strpos($csv_content, "\xEF\xBB\xBF") === 0) {
+            $csv_content = substr($csv_content, 3);
+        }
 
         $result = $this->process_csv($csv_content);
 
