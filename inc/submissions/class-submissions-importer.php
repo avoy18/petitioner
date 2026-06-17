@@ -420,6 +420,7 @@ class AV_Petitioner_Submissions_Importer
         }
 
         $dob_time = !empty($record['date_of_birth']) ? strtotime($record['date_of_birth']) : false;
+        $submitted_time = !empty($record['submitted_at']) ? strtotime($record['submitted_at']) : false;
 
         $data = [
             'form_id'           => $this->form_id,
@@ -439,7 +440,7 @@ class AV_Petitioner_Submissions_Importer
             'hide_name'         => wp_validate_boolean($record['hide_name'] ?? false) ? '1' : '0',
             'is_featured'       => wp_validate_boolean($record['is_featured'] ?? false) ? '1' : '0',
             'approval_status'   => $this->approve_submission ? 'Confirmed' : 'Pending',
-            'submitted_at'      => !empty($record['submitted_at']) && strtotime($record['submitted_at']) ? date('Y-m-d H:i:s', strtotime($record['submitted_at'])) : current_time('mysql'),
+            'submitted_at'      => $submitted_time ? date('Y-m-d H:i:s', $submitted_time) : current_time('mysql'),
         ];
 
         if (empty($data['date_of_birth'])) {
