@@ -196,6 +196,11 @@ class AV_Petitioner_Submissions_Importer
         $real_path = realpath($local_path);
 
         if ($real_path && is_file($real_path)) {
+            // only allow .csv files
+            if (strtolower(pathinfo($real_path, PATHINFO_EXTENSION)) !== 'csv') {
+                return false;
+            }
+
             $normalized_real_path = wp_normalize_path($real_path);
             $normalized_abs_path  = trailingslashit(wp_normalize_path(ABSPATH));
 
