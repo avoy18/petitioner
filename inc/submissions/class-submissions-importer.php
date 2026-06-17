@@ -388,7 +388,7 @@ class AV_Petitioner_Submissions_Importer
     private function insert_record($record)
     {
         $email = isset($record['email']) ? sanitize_email($record['email']) : '';
-        if (empty($email)) {
+        if (empty($email) && !is_email($email)) {
             return false;
         }
 
