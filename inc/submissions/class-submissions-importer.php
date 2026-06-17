@@ -427,7 +427,7 @@ class AV_Petitioner_Submissions_Importer
         }
 
         global $wpdb;
-        $table = $wpdb->prefix . 'av_petitioner_submissions';
+        $table = AV_Petitioner_Submissions_Model::table_name();
 
         $deleted = $wpdb->delete($table, [
             'email'   => $email,
