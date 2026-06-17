@@ -223,11 +223,15 @@ class AV_Petitioner_Submissions_Importer
         }
 
         $normalized_real_path = wp_normalize_path($real_path);
-        $normalized_abs_path  = trailingslashit(wp_normalize_path(ABSPATH));
+        $normalized_abs_path  = trailingslashit(wp_normalize_path(realpath(ABSPATH) ?: ABSPATH));
+        $normalized_content_path = trailingslashit(wp_normalize_path(realpath(WP_CONTENT_DIR) ?: WP_CONTENT_DIR));
 
-        // Security Check: Ensure the file is within the WordPress installation directory
-        // We enforce trailing slash on ABSPATH to prevent matching adjacent directories (e.g. /html-backup vs /html)
-        if (strpos($normalized_real_path, $normalized_abs_path) === 0) {
+        // Security Check: Ensure the file is within the WordPress installation directory OR WP_CONTENT_DIR
+        // We enforce trailing slash to prevent matching adjacent directories (e.g. /html-backup vs /html)
+        if (
+            strpos($normalized_real_path, $normalized_abs_path) === 0 ||
+            strpos($normalized_real_path, $normalized_content_path) === 0
+        ) {
             return $real_path;
         }
 
