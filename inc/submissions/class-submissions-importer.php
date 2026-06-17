@@ -234,8 +234,8 @@ class AV_Petitioner_Submissions_Importer
         $header_lower = strtolower(trim($header));
 
         // Check if it strictly matches an allowed system field
-        if (in_array($header, AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, true)) {
-            return $header;
+        if (in_array($header_lower, AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS, true)) {
+            return $header_lower;
         }
 
         // Match against the form's human-readable labels
