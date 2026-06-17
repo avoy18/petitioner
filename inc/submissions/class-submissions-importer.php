@@ -193,25 +193,45 @@ class AV_Petitioner_Submissions_Importer
             $local_path = ABSPATH . ltrim($url_or_path, '/');
         }
 
-        $real_path = realpath($local_path);
+        $safe_path = $this->get_safe_local_file_path($local_path);
 
-        if ($real_path && is_file($real_path)) {
-            // only allow .csv files
-            if (strtolower(pathinfo($real_path, PATHINFO_EXTENSION)) !== 'csv') {
-                return false;
-            }
-
-            $normalized_real_path = wp_normalize_path($real_path);
-            $normalized_abs_path  = trailingslashit(wp_normalize_path(ABSPATH));
-
-            // Security Check: Ensure the file is within the WordPress installation directory
-            // We enforce trailing slash on ABSPATH to prevent matching adjacent directories (e.g. /html-backup vs /html)
-            if (strpos($normalized_real_path, $normalized_abs_path) === 0) {
-                return file_get_contents($real_path);
-            }
+        if ($safe_path) {
+            return file_get_contents($safe_path);
         }
 
         return false;
+    }
+
+    /**
+     * Verifies that a local file path is safe to read.
+     * Prevents LFI/path traversal and restricts to .csv files within ABSPATH.
+     * 
+     * @param string $local_path The local file path to check.
+     * @return string|null The resolved real path if safe, null otherwise.
+     */
+    private function get_safe_local_file_path(string $local_path): ?string
+    {
+        $real_path = realpath($local_path);
+
+        if (!$real_path || !is_file($real_path)) {
+            return null;
+        }
+
+        // only allow .csv files
+        if (strtolower(pathinfo($real_path, PATHINFO_EXTENSION)) !== 'csv') {
+            return null;
+        }
+
+        $normalized_real_path = wp_normalize_path($real_path);
+        $normalized_abs_path  = trailingslashit(wp_normalize_path(ABSPATH));
+
+        // Security Check: Ensure the file is within the WordPress installation directory
+        // We enforce trailing slash on ABSPATH to prevent matching adjacent directories (e.g. /html-backup vs /html)
+        if (strpos($normalized_real_path, $normalized_abs_path) === 0) {
+            return $real_path;
+        }
+
+        return null;
     }
 
     /**
