@@ -412,7 +412,7 @@ class AV_Petitioner_Submissions_Importer
             'fname'             => sanitize_text_field($record['fname'] ?? ''),
             'lname'             => sanitize_text_field($record['lname'] ?? ''),
             'email'             => $email,
-            'date_of_birth'     => $dob_time ? wp_date('Y-m-d', $dob_time) : '',
+            'date_of_birth'     => $dob_time ? gmdate('Y-m-d', $dob_time) : '',
             'country'           => sanitize_text_field($record['country'] ?? ''),
             'salutation'        => sanitize_text_field($record['salutation'] ?? ''),
             'phone'             => sanitize_text_field($record['phone'] ?? ''),
