@@ -464,7 +464,7 @@ class AV_Petitioner_Submissions_Importer
     private function remove_record($record)
     {
         $email = isset($record['email']) ? sanitize_email($record['email']) : '';
-        if (empty($email)) {
+        if (!is_email($email)) {
             return false;
         }
 
