@@ -15,7 +15,7 @@
 
 To get started:
 1. Clone the repository into your WordPress plugins folder.
-2. Run `pnpm install` in the `petitioner-pro` directory (or root if configured) to install dependencies.
+2. Run `pnpm install` in the `petitioner` directory (or root if configured) to install dependencies.
 3. Run `composer install` for PHP dependencies.
 4. Run `pnpm dev` to start the development server for frontend assets.
 
