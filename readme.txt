@@ -150,8 +150,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 = 0.8.3 =
 * Improvements
-    * Add ActionScheduler as a dev dependency and a wrapper util class to work with it
-    * Export reusable components as a global window object
+    * Added ActionScheduler as a dev dependency and a wrapper util class to work with it
+    * Exported reusable components as a global window object
+    * Added a programmatic CSV importer utility for submissions
+* Bugfixes
+    * Security fix: form submission method changed from GET to POST to prevent potential PII exposure in URLs if JS is disabled
 
 = 0.8.2 =
 * Improvements
