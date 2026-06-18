@@ -259,7 +259,7 @@ class AV_Petitioner_CSV_Importer
         if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
             return esc_url_raw($url);
         }
-        return sanitize_text_field($url);
+        return trim($url);
     }
 
     /**
