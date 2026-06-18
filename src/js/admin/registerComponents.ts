@@ -13,7 +13,7 @@ const petitionerComponents = {
 	TextInput,
 	Tabs,
 	OptionList,
-}
+};
 
 export type PetitionerComponents = typeof petitionerComponents;
 export function registerComponents() {
