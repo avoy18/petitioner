@@ -435,8 +435,6 @@ class AV_Petitioner_Submissions_Importer
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
 
         if ($submission_id) {
-            do_action('petitioner_after_submission', $submission_id, $this->form_id);
-
             return true;
         }
 
