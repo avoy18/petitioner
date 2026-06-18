@@ -18,6 +18,7 @@ if (!defined('ABSPATH')) {
  *     'csv_url'            => '/wp-content/uploads/2026-06-15/01/to-import.csv', 
  *     'action'             => 'import', // 'import' or 'remove'
  *     'approve_submission' => true,
+ *     'allow_remote'       => false, // Set to true to allow downloading CSVs from external HTTP/HTTPS URLs
  *     'field_overrides'    => ['Email address' => 'email', 'Tel' => 'phone'] // Map CSV headers to Petitioner's field ids
  * ]);
  * 
@@ -63,6 +64,12 @@ class AV_Petitioner_Submissions_Importer
      */
     private $field_overrides;
 
+    /**
+     * Whether to allow remote HTTP/HTTPS downloads.
+     * @var bool $allow_remote
+     */
+    private $allow_remote;
+
     public function __construct($args = [])
     {
         $this->form_id = isset($args['form_id']) ? absint($args['form_id']) : 0;
@@ -73,6 +80,7 @@ class AV_Petitioner_Submissions_Importer
 
         $this->action             = isset($args['action']) && $args['action'] === 'remove' ? 'remove' : 'import';
         $this->approve_submission = isset($args['approve_submission']) ? filter_var($args['approve_submission'], FILTER_VALIDATE_BOOLEAN) : true;
+        $this->allow_remote       = isset($args['allow_remote']) ? filter_var($args['allow_remote'], FILTER_VALIDATE_BOOLEAN) : false;
         $this->field_overrides    = isset($args['field_overrides']) && is_array($args['field_overrides']) ? $args['field_overrides'] : [];
     }
 
@@ -151,6 +159,10 @@ class AV_Petitioner_Submissions_Importer
     private function fetch_csv($url_or_path)
     {
         if (str_starts_with($url_or_path, 'http://') || str_starts_with($url_or_path, 'https://')) {
+            if (!$this->allow_remote) {
+                return false;
+            }
+
             if (!function_exists('download_url')) {
                 require_once ABSPATH . 'wp-admin/includes/file.php';
             }
