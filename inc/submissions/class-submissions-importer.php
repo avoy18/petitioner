@@ -196,7 +196,8 @@ class AV_Petitioner_Submissions_Importer
      */
     private function get_safe_local_file_path($url_or_path)
     {
-        $local_path = $url_or_path;
+        $url_or_path = wp_normalize_path($url_or_path);
+        $local_path  = $url_or_path;
 
         if (!file_exists($local_path)) {
             // Check if it's a relative wp-content path and try resolving against WP_CONTENT_DIR for Bedrock compatibility
