@@ -237,7 +237,7 @@ class AV_Petitioner_Submissions_Importer
      */
     private function sanitize_csv_url(string $url): string
     {
-        if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
             return esc_url_raw($url);
         }
         return sanitize_text_field($url);
