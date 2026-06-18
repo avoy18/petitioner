@@ -427,7 +427,7 @@ class AV_Petitioner_Submissions_Importer
             'fname'             => sanitize_text_field($record['fname'] ?? ''),
             'lname'             => sanitize_text_field($record['lname'] ?? ''),
             'email'             => $email,
-            'date_of_birth'     => $dob_time ? date('Y-m-d', $dob_time) : '',
+            'date_of_birth'     => $dob_time ? wp_date('Y-m-d', $dob_time) : '',
             'country'           => sanitize_text_field($record['country'] ?? ''),
             'salutation'        => sanitize_text_field($record['salutation'] ?? ''),
             'phone'             => sanitize_text_field($record['phone'] ?? ''),
@@ -440,7 +440,7 @@ class AV_Petitioner_Submissions_Importer
             'hide_name'         => wp_validate_boolean($record['hide_name'] ?? false) ? '1' : '0',
             'is_featured'       => wp_validate_boolean($record['is_featured'] ?? false) ? '1' : '0',
             'approval_status'   => $this->approve_submission ? 'Confirmed' : 'Pending',
-            'submitted_at'      => $submitted_time ? date('Y-m-d H:i:s', $submitted_time) : current_time('mysql'),
+            'submitted_at'      => $submitted_time ? wp_date('Y-m-d H:i:s', $submitted_time) : current_time('mysql'),
         ];
 
         if (empty($data['date_of_birth'])) {
