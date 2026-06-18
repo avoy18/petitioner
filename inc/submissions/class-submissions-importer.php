@@ -17,7 +17,6 @@ if (!defined('ABSPATH')) {
  *     'form_id'            => 123,
  *     'csv_url'            => '/wp-content/uploads/2026-06-15/01/to-import.csv', 
  *     'action'             => 'import', // 'import' or 'remove'
- *     'trigger_finalized'  => false,
  *     'approve_submission' => true,
  *     'field_overrides'    => ['Email address' => 'email', 'Tel' => 'phone'] // Map CSV headers to Petitioner's field ids
  * ]);
@@ -50,12 +49,6 @@ class AV_Petitioner_Submissions_Importer
     private $action;
 
     /**
-     * Whether to trigger the finalized action.
-     * @var bool $trigger_finalized
-     */
-    private $trigger_finalized;
-
-    /**
      * Whether to approve the submission.
      * @var bool $approve_submission
      */
@@ -79,7 +72,6 @@ class AV_Petitioner_Submissions_Importer
         $this->csv_url = $this->sanitize_csv_url($csv_input);
 
         $this->action             = isset($args['action']) && $args['action'] === 'remove' ? 'remove' : 'import';
-        $this->trigger_finalized  = isset($args['trigger_finalized']) ? filter_var($args['trigger_finalized'], FILTER_VALIDATE_BOOLEAN) : false;
         $this->approve_submission = isset($args['approve_submission']) ? filter_var($args['approve_submission'], FILTER_VALIDATE_BOOLEAN) : true;
         $this->field_overrides    = isset($args['field_overrides']) && is_array($args['field_overrides']) ? $args['field_overrides'] : [];
     }
@@ -444,12 +436,6 @@ class AV_Petitioner_Submissions_Importer
 
         if ($submission_id) {
             do_action('petitioner_after_submission', $submission_id, $this->form_id);
-
-            if ($this->trigger_finalized) {
-                if (class_exists('AV_Petitioner_Submissions_Controller') && method_exists('AV_Petitioner_Submissions_Controller', 'trigger_finalized_hook')) {
-                    AV_Petitioner_Submissions_Controller::trigger_finalized_hook($submission_id);
-                }
-            }
 
             return true;
         }
