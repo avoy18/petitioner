@@ -109,7 +109,7 @@ class AV_Petitioner_CSV_Importer
 
         // Clean up temporary file if downloaded
         if (str_starts_with($this->csv_url, 'http://') || str_starts_with($this->csv_url, 'https://')) {
-            if (file_exists($csv_file)) {
+            if (file_exists($csv_file) && is_writable($csv_file)) {
                 unlink($csv_file);
             }
         }
