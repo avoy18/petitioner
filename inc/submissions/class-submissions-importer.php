@@ -100,7 +100,7 @@ class AV_Petitioner_Submissions_Importer
         $result = $this->process_csv($csv_file);
 
         // Clean up temporary file if downloaded
-        if (strpos($this->csv_url, 'http://') === 0 || strpos($this->csv_url, 'https://') === 0) {
+        if (str_starts_with($this->csv_url, 'http://') || str_starts_with($this->csv_url, 'https://')) {
             @unlink($csv_file);
         }
 
@@ -188,7 +188,7 @@ class AV_Petitioner_Submissions_Importer
 
         if (!file_exists($local_path)) {
             // Check if it's a relative wp-content path and try resolving against WP_CONTENT_DIR for Bedrock compatibility
-            if (strpos($url_or_path, 'wp-content/') === 0 || strpos($url_or_path, '/wp-content/') === 0) {
+            if (str_starts_with($url_or_path, 'wp-content/') || str_starts_with($url_or_path, '/wp-content/')) {
                 $content_relative = preg_replace('#^/?wp-content/#', '', $url_or_path);
                 $content_path = trailingslashit(WP_CONTENT_DIR) . ltrim($content_relative, '/');
 
@@ -220,8 +220,8 @@ class AV_Petitioner_Submissions_Importer
         // Security Check: Ensure the file is within the WordPress installation directory OR WP_CONTENT_DIR
         // We enforce trailing slash to prevent matching adjacent directories (e.g. /html-backup vs /html)
         if (
-            strpos($normalized_real_path, $normalized_abs_path) === 0 ||
-            strpos($normalized_real_path, $normalized_content_path) === 0
+            str_starts_with($normalized_real_path, $normalized_abs_path) ||
+            str_starts_with($normalized_real_path, $normalized_content_path)
         ) {
             return $real_path;
         }
