@@ -5,12 +5,12 @@ This directory contains coding rules and guidelines for the Petitioner WordPress
 ## Structure
 
 ```
-.cursor/
+.rules/
 ├── README.md
-└── rules/
-    ├── general.mdc    # Component patterns, TypeScript, WordPress
-    ├── styles.mdc     # Styling guidelines and theme constants
-    └── tests.mdc      # Testing patterns and best practices
+├── php.mdc        # PHP coding guidelines, WordPress integration
+├── general.mdc    # Component patterns, TypeScript, WordPress
+├── styles.mdc     # Styling guidelines and theme constants
+└── tests.mdc      # Testing patterns and best practices
 ```
 
 ## MDC Format

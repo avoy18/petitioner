@@ -6,6 +6,8 @@ import ComponentPreview from '@admin/sections/ComponentPreviewArea';
 
 import '../css/admin/index.css';
 import { safelyParseJSON } from '@js/utilities';
+import { registerComponents } from '@admin/registerComponents';
+
 
 const jsonContainer = document.getElementById('petitioner-json-data');
 const rawJson = jsonContainer?.textContent || '{}';
@@ -13,6 +15,8 @@ const rawJson = jsonContainer?.textContent || '{}';
 window.petitionerData = jsonContainer
 	? safelyParseJSON(rawJson)
 	: {};
+
+registerComponents();
 
 function EditUI() {
 	function FormArea() {

@@ -1,35 +1,40 @@
-declare const ajaxurl: string;
+import type { PetitionerComponents } from "@admin/registerComponents";
 
-declare const tinymce: {
-	init: (options: {
-		selector: string;
-		menubar?: boolean;
-		plugins?: string;
-		toolbar?: string;
-		relative_urls?: boolean;
-		remove_script_host?: boolean;
-		block_formats?: string;
-		height?: number;
-		setup?: (editor: tinymce.Editor) => void;
-	}) => void;
-};
+declare global {
+	const ajaxurl: string;
 
-declare namespace tinymce {
-	interface Editor {
-		on: (event: string, callback: () => void) => void;
-		getContent: () => string;
-		setContent: (content: string) => void;
-		remove: () => void;
-	}
-}
-
-interface Window {
-	petitionerData: Record<string, unknown> & {
-		form_fields?: Record<string, unknown>;
-		field_order?: string[];
-		builder_config?: {
-			defaults: Record<string, unknown>;
-			draggable: unknown[];
-		};
+	const tinymce: {
+		init: (options: {
+			selector: string;
+			menubar?: boolean;
+			plugins?: string;
+			toolbar?: string;
+			relative_urls?: boolean;
+			remove_script_host?: boolean;
+			block_formats?: string;
+			height?: number;
+			setup?: (editor: tinymce.Editor) => void;
+		}) => void;
 	};
+
+	namespace tinymce {
+		interface Editor {
+			on: (event: string, callback: () => void) => void;
+			getContent: () => string;
+			setContent: (content: string) => void;
+			remove: () => void;
+		}
+	}
+
+	interface Window {
+		petitionerData: Record<string, unknown> & {
+			form_fields?: Record<string, unknown>;
+			field_order?: string[];
+			builder_config?: {
+				defaults: Record<string, unknown>;
+				draggable: unknown[];
+			};
+		};
+		petitionerComponents?: PetitionerComponents;
+	}
 }
