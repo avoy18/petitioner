@@ -339,6 +339,10 @@ class AV_Petitioner_CSV_Importer
      */
     private function process_csv($csv_file)
     {
+        if (!is_readable($csv_file)) {
+            return false;
+        }
+
         $stream = fopen($csv_file, 'r');
 
         if (!$stream) {
