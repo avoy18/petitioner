@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
  * 
  * Usage:
  * ```php
- * $importer = new AV_Petitioner_Submissions_Importer([
+ * $importer = new AV_Petitioner_CSV_Importer([
  *     'form_id'            => 123,
  *     'csv_url'            => '/wp-content/uploads/2026-06-15/01/to-import.csv', 
  *     'action'             => 'import', // 'import' or 'remove'
@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
  * For local testing, place your CSV file in a path like `/wp-content/uploads/test-import.csv` and ensure the path is relative to your WordPress root or absolute within it.
  * 
  */
-class AV_Petitioner_Submissions_Importer
+class AV_Petitioner_CSV_Importer
 {
     /**
      * The ID of the form.

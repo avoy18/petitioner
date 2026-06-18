@@ -22,7 +22,7 @@ class Test_Submissions_Importer extends BaseTestCase
 
     public function test_constructor_assigns_properties_correctly()
     {
-        $importer = new AV_Petitioner_Submissions_Importer([
+        $importer = new AV_Petitioner_CSV_Importer([
             'form_id'            => 123,
             'csv_url'            => 'https://example.com/test.csv',
             'action'             => 'remove',
@@ -51,7 +51,7 @@ class Test_Submissions_Importer extends BaseTestCase
 
     public function test_get_safe_local_file_path_allows_valid_csv()
     {
-        $importer = new AV_Petitioner_Submissions_Importer();
+        $importer = new AV_Petitioner_CSV_Importer();
         $reflection = new ReflectionClass($importer);
         $method = $reflection->getMethod('get_safe_local_file_path');
         $method->setAccessible(true);
@@ -68,7 +68,7 @@ class Test_Submissions_Importer extends BaseTestCase
 
     public function test_get_safe_local_file_path_rejects_non_csv()
     {
-        $importer = new AV_Petitioner_Submissions_Importer();
+        $importer = new AV_Petitioner_CSV_Importer();
         $reflection = new ReflectionClass($importer);
         $method = $reflection->getMethod('get_safe_local_file_path');
         $method->setAccessible(true);
@@ -85,7 +85,7 @@ class Test_Submissions_Importer extends BaseTestCase
 
     public function test_get_safe_local_file_path_rejects_path_traversal()
     {
-        $importer = new AV_Petitioner_Submissions_Importer();
+        $importer = new AV_Petitioner_CSV_Importer();
         $reflection = new ReflectionClass($importer);
         $method = $reflection->getMethod('get_safe_local_file_path');
         $method->setAccessible(true);
@@ -106,7 +106,7 @@ class Test_Submissions_Importer extends BaseTestCase
 
     public function test_get_field_key_with_explicit_overrides()
     {
-        $importer = new AV_Petitioner_Submissions_Importer([
+        $importer = new AV_Petitioner_CSV_Importer([
             'field_overrides' => ['E-mail Address' => 'email']
         ]);
 
@@ -120,7 +120,7 @@ class Test_Submissions_Importer extends BaseTestCase
 
     public function test_get_field_key_matches_allowed_system_fields()
     {
-        $importer = new AV_Petitioner_Submissions_Importer();
+        $importer = new AV_Petitioner_CSV_Importer();
         $reflection = new ReflectionClass($importer);
         $method = $reflection->getMethod('get_field_key');
         $method->setAccessible(true);
