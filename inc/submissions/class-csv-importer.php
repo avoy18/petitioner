@@ -112,6 +112,10 @@ class AV_Petitioner_CSV_Importer
             @unlink($csv_file);
         }
 
+        if ($result === false) {
+            return $this->error_result(__('Failed to open or read the CSV file.', 'petitioner'));
+        }
+
         if ($this->action === 'remove') {
             /* translators: 1: number of records removed, 2: number of records skipped */
             $message = sprintf(
@@ -329,14 +333,14 @@ class AV_Petitioner_CSV_Importer
      * Process the CSV content.
      * 
      * @param string $csv_file The local CSV file path.
-     * @return array The result of the import/removal process.
+     * @return array|false The result of the import/removal process, or false on failure.
      */
     private function process_csv($csv_file)
     {
         $stream = fopen($csv_file, 'r');
 
         if (!$stream) {
-            return ['imported' => 0, 'skipped' => 0];
+            return false;
         }
 
         // Strip UTF-8 BOM if present
@@ -349,7 +353,7 @@ class AV_Petitioner_CSV_Importer
 
         if (!$headers) {
             fclose($stream);
-            return ['imported' => 0, 'skipped' => 0];
+            return false;
         }
 
         $mapped_headers = $this->map_headers($headers);
@@ -358,8 +362,8 @@ class AV_Petitioner_CSV_Importer
         $skipped = 0;
 
         while (($row = fgetcsv($stream)) !== false) {
-            // Skip empty rows
-            if (empty($row) || (count($row) === 1 && trim($row[0] ?? '') === '')) {
+            // Skip empty rows (e.g., rows with multiple empty commas like ",,,")
+            if (empty($row) || !array_filter(array_map(fn($val) => trim($val ?? ''), $row))) {
                 continue;
             }
 
@@ -444,6 +448,14 @@ class AV_Petitioner_CSV_Importer
 
         if (empty($data['date_of_birth'])) {
             unset($data['date_of_birth']);
+        }
+
+
+        if (class_exists('AV_Petitioner_Custom_Properties')) {
+            $custom_properties = AV_Petitioner_Custom_Properties::get_custom_properties($record, false);
+            if (!empty($custom_properties)) {
+                $data['custom_properties'] = wp_json_encode($custom_properties);
+            }
         }
 
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
