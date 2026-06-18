@@ -476,6 +476,20 @@ class AV_Petitioner_CSV_Importer
             }
         }
 
+        /**
+         * Filter the submission data immediately before it is inserted during a CSV import.
+         * 
+         * Return false to skip inserting this specific record.
+         * 
+         * @param array|false $data   The parsed and sanitized data ready for insertion.
+         * @param array       $record The raw mapped CSV row.
+         */
+        $data = apply_filters('av_petitioner_import_pre_insert', $data, $record);
+
+        if ($data === false) {
+            return false;
+        }
+
         $submission_id = AV_Petitioner_Submissions_Model::create_submission($data);
 
         if ($submission_id) {
