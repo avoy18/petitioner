@@ -7,6 +7,8 @@ if (! defined('ABSPATH')) {
 /**
  * A wrapper for Action Scheduler to manage background tasks.
  * 
+ * @since 0.8.3
+ * 
  * @note Pro tip: you can view your current queue here: `/wp-admin/admin.php?page=action-scheduler`
  */
 class AV_Petitioner_Queue

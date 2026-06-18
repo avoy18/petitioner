@@ -7,6 +7,8 @@ if (!defined('ABSPATH')) {
 /**
  * Dynamic Bulk CSV Importer for Petitioner
  * 
+ * @since 0.8.3
+ * 
  * This class provides a flexible utility to batch import or remove submissions via a CSV file.
  * It dynamically maps CSV headers to system field keys by matching them against form labels 
  * and a predefined list of fallback synonyms, with support for manual overrides.
