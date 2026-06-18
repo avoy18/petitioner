@@ -25,11 +25,8 @@ if (!defined('ABSPATH')) {
  * $result = $importer->run();
  * ```
  * 
- * Note: for local testing, use absolute paths like `/Users/yourusername/path/to/your/csv/test-import.csv`
- * 
- * You will also need to change sslverify to false via:
- * 
- * `add_filter('av_petitioner_submissions_importer_sslverify', '__return_false');`
+ * Note: For security reasons, local CSV files must reside within the WordPress installation directory (`ABSPATH` or `WP_CONTENT_DIR`).
+ * For local testing, place your CSV file in a path like `/wp-content/uploads/test-import.csv` and ensure the path is relative to your WordPress root or absolute within it.
  * 
  */
 class AV_Petitioner_Submissions_Importer
