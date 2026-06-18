@@ -102,18 +102,18 @@ class AV_Petitioner_Submissions_Importer
             return $this->error_result(__('Petitioner plugin is not active.', 'petitioner'));
         }
 
-        $csv_content = $this->fetch_csv($this->csv_url);
+        $csv_file = $this->fetch_csv($this->csv_url);
 
-        if (!$csv_content) {
+        if (!$csv_file) {
             return $this->error_result(__('Failed to download or read CSV from the provided URL.', 'petitioner'));
         }
 
-        // Strip UTF-8 BOM if present
-        if (strpos($csv_content, "\xEF\xBB\xBF") === 0) {
-            $csv_content = substr($csv_content, 3);
-        }
+        $result = $this->process_csv($csv_file);
 
-        $result = $this->process_csv($csv_content);
+        // Clean up temporary file if downloaded
+        if (strpos($this->csv_url, 'http://') === 0 || strpos($this->csv_url, 'https://') === 0) {
+            @unlink($csv_file);
+        }
 
         if ($this->action === 'remove') {
             /* translators: 1: number of records removed, 2: number of records skipped */
@@ -155,47 +155,34 @@ class AV_Petitioner_Submissions_Importer
     }
 
     /**
-     * Summary of fetch_csv
-     * @param mixed $url_or_path
-     * @return false|string
+     * Fetch the CSV file contents
+     * @param string $url_or_path
+     * @return string|false
      */
     private function fetch_csv($url_or_path)
     {
-        // Handle HTTP/HTTPS URLs
-        if (strpos($url_or_path, 'http://') === 0 || strpos($url_or_path, 'https://') === 0) {
-
-            /**
-             * Whether to verify SSL certificates for external CSV files.
-             * Default is true for maximum security.
-             * @var bool $sslverify
-             */
-            $sslverify = apply_filters('av_petitioner_submissions_importer_sslverify', true);
+        if (str_starts_with($url_or_path, 'http://') || str_starts_with($url_or_path, 'https://')) {
+            if (!function_exists('download_url')) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+            }
 
             /**
              * Timeout for external CSV file download in seconds.
              * @var int $timeout
              */
-            $timeout = apply_filters('av_petitioner_submissions_importer_timeout', 15);
+            $timeout = apply_filters('av_petitioner_submissions_importer_timeout', 300);
 
-            $response = wp_safe_remote_get($url_or_path, ['sslverify' => $sslverify, 'timeout' => $timeout]);
+            $temp_file = download_url($url_or_path, $timeout);
 
-            if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            if (is_wp_error($temp_file)) {
                 return false;
             }
 
-            $body = wp_remote_retrieve_body($response);
-
-            return empty($body) ? false : $body;
+            return $temp_file;
         }
 
         // Handle local paths (prevent path traversal / LFI)
-        $safe_path = $this->get_safe_local_file_path($url_or_path);
-
-        if ($safe_path) {
-            return file_get_contents($safe_path);
-        }
-
-        return false;
+        return $this->get_safe_local_file_path($url_or_path);
     }
 
     /**
@@ -215,7 +202,7 @@ class AV_Petitioner_Submissions_Importer
             if (strpos($url_or_path, 'wp-content/') === 0 || strpos($url_or_path, '/wp-content/') === 0) {
                 $content_relative = preg_replace('#^/?wp-content/#', '', $url_or_path);
                 $content_path = trailingslashit(WP_CONTENT_DIR) . ltrim($content_relative, '/');
-                
+
                 if (file_exists($content_path)) {
                     $local_path = $content_path;
                 } else {
@@ -339,15 +326,22 @@ class AV_Petitioner_Submissions_Importer
     /**
      * Process the CSV content.
      * 
-     * @param string $csv_content The CSV content.
+     * @param string $csv_file The local CSV file path.
      * @return array The result of the import/removal process.
      */
-    private function process_csv($csv_content)
+    private function process_csv($csv_file)
     {
-        $stream = fopen('php://memory', 'r+');
+        $stream = fopen($csv_file, 'r');
 
-        fwrite($stream, $csv_content);
-        rewind($stream);
+        if (!$stream) {
+            return ['imported' => 0, 'skipped' => 0];
+        }
+
+        // Strip UTF-8 BOM if present
+        $bom = fread($stream, 3);
+        if ($bom !== "\xEF\xBB\xBF") {
+            rewind($stream);
+        }
 
         $headers = fgetcsv($stream);
 
@@ -366,12 +360,14 @@ class AV_Petitioner_Submissions_Importer
             if (empty($row) || (count($row) === 1 && trim($row[0] ?? '') === '')) {
                 continue;
             }
+
             if (count($row) !== count($headers)) {
                 $skipped++;
                 continue;
             }
 
             $record = [];
+
             foreach ($row as $index => $value) {
                 $key = $mapped_headers[$index];
                 if ($key !== null) {
