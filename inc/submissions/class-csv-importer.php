@@ -363,7 +363,7 @@ class AV_Petitioner_CSV_Importer
 
         while (($row = fgetcsv($stream)) !== false) {
             // Skip empty rows (e.g., rows with multiple empty commas like ",,,")
-            if (empty($row) || !array_filter(array_map(fn($val) => trim($val ?? ''), $row))) {
+            if (empty($row) || !array_filter(array_map(fn($val) => trim($val ?? ''), $row), fn($val) => $val !== '')) {
                 continue;
             }
 
