@@ -56,7 +56,7 @@ class Test_Submissions_Importer extends BaseTestCase
         $method = $reflection->getMethod('get_safe_local_file_path');
         $method->setAccessible(true);
 
-        $temp_file = wp_normalize_path(ABSPATH) . '/temp_test.csv';
+        $temp_file = wp_normalize_path(WP_CONTENT_DIR) . '/temp_test.csv';
         file_put_contents($temp_file, "email\ntest@example.com");
 
         $result = $method->invokeArgs($importer, [$temp_file]);
@@ -73,7 +73,7 @@ class Test_Submissions_Importer extends BaseTestCase
         $method = $reflection->getMethod('get_safe_local_file_path');
         $method->setAccessible(true);
 
-        $temp_file = wp_normalize_path(ABSPATH) . '/temp_test.txt';
+        $temp_file = wp_normalize_path(WP_CONTENT_DIR) . '/temp_test.txt';
         file_put_contents($temp_file, "some content");
 
         $result = $method->invokeArgs($importer, [$temp_file]);
