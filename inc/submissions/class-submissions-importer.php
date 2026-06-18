@@ -438,7 +438,7 @@ class AV_Petitioner_Submissions_Importer
             'is_featured'       => wp_validate_boolean($record['is_featured'] ?? false) ? '1' : '0',
             'accept_tos'        => wp_validate_boolean($record['accept_tos'] ?? false) ? '1' : '0',
             'approval_status'   => $this->approve_submission ? 'Confirmed' : 'Pending',
-            'submitted_at'      => $submitted_time ? wp_date('Y-m-d H:i:s', $submitted_time) : current_time('mysql'),
+            'submitted_at'      => $submitted_time ? gmdate('Y-m-d H:i:s', $submitted_time) : current_time('mysql'),
         ];
 
         if (empty($data['date_of_birth'])) {
