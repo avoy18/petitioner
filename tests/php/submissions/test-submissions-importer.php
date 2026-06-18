@@ -26,7 +26,6 @@ class Test_Submissions_Importer extends BaseTestCase
             'form_id'            => 123,
             'csv_url'            => 'https://example.com/test.csv',
             'action'             => 'remove',
-            'trigger_finalized'  => true,
             'approve_submission' => false,
             'field_overrides'    => ['Email' => 'email']
         ]);
