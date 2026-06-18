@@ -427,8 +427,20 @@ class AV_Petitioner_CSV_Importer
             return false;
         }
 
-        $dob_time = !empty($record['date_of_birth']) ? strtotime($record['date_of_birth']) : false;
-        $submitted_time = !empty($record['submitted_at']) ? strtotime($record['submitted_at']) : false;
+        /**
+         * Filter to allow custom parsing of CSV date strings (e.g., handling non-US formats like d/m/Y).
+         * 
+         * @param int|false $timestamp   The parsed UNIX timestamp, or false on failure.
+         * @param string    $date_string The raw date string from the CSV.
+         * @param string    $field_key   The field being parsed ('date_of_birth' or 'submitted_at').
+         */
+        $dob_time = !empty($record['date_of_birth'])
+            ? apply_filters('av_petitioner_import_parse_date', strtotime($record['date_of_birth']), $record['date_of_birth'], 'date_of_birth')
+            : false;
+
+        $submitted_time = !empty($record['submitted_at'])
+            ? apply_filters('av_petitioner_import_parse_date', strtotime($record['submitted_at']), $record['submitted_at'], 'submitted_at')
+            : false;
 
         $data = [
             'form_id'           => $this->form_id,
