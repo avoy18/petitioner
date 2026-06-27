@@ -39,8 +39,14 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 				'.petitioner-submissions:not([data-ptr-initialized])'
 			);
 			if (submissionsDiv instanceof HTMLElement) {
-				submissionsDiv.dataset.ptrInitialized = 'true';
-				new PetitionerSubmissions(submissionsDiv);
+				try {
+					new PetitionerSubmissions(submissionsDiv);
+					// Only mark as initialized if construction succeeds
+					submissionsDiv.dataset.ptrInitialized = 'true';
+				} catch (err) {
+					// If data isn't ready, let it fail silently.
+					// The next DOM mutation tick will retry this node.
+				}
 			}
 		};
 
