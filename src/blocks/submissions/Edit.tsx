@@ -26,10 +26,9 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 		hidePageNumbers = false,
 		availableFields = [],
 	} = attributes;
-	
+
 	const blockAtts = useBlockProps();
 	const wrapperRef = useRef<HTMLDivElement>(null);
-	// @ts-ignore
 	const { selectBlock } = useDispatch('core/block-editor');
 
 	useEffect(() => {
