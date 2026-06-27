@@ -28,9 +28,9 @@ class AV_Petitioner_Admin_Shared
         
         if ($referer) {
             $parsed = wp_parse_url($referer);
-            if (!empty($parsed['query'])) {
+            if (is_array($parsed) && !empty($parsed['query'])) {
                 wp_parse_str($parsed['query'], $query_args);
-                if (!empty($query_args['ptr_active_tab'])) {
+                if (!empty($query_args['ptr_active_tab']) && is_string($query_args['ptr_active_tab'])) {
                     $location = add_query_arg('ptr_active_tab', sanitize_key($query_args['ptr_active_tab']), $location);
                 }
             }
