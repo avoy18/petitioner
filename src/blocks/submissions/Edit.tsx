@@ -6,18 +6,17 @@ import {
 	ToggleControl,
 	SelectControl,
 } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
-import { useCallback } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { useCallback, useEffect, useRef } from '@wordpress/element';
 import PetitionSelect from '../components/PetitionSelect';
 import ServerComponent from '../components/ServerComponent';
+import PetitionerSubmissions from '@js/frontend/submissions/index';
 import type { PetitionerSubmissionsProps, FieldType } from './consts';
 import { __ } from '@wordpress/i18n';
 import { FormTokenField } from '@wordpress/components';
 
-export default function Edit({
-	attributes,
-	setAttributes,
-}: PetitionerSubmissionsProps) {
+export default function Edit(props: PetitionerSubmissionsProps) {
+	const { attributes, setAttributes, clientId } = props;
 	const {
 		formId,
 		perPage = 10,
@@ -26,9 +25,37 @@ export default function Edit({
 		showPagination = true,
 		hidePageNumbers = false,
 		availableFields = [],
-		// availableStyles,
 	} = attributes;
+	
 	const blockAtts = useBlockProps();
+	const wrapperRef = useRef<HTMLDivElement>(null);
+	// @ts-ignore
+	const { selectBlock } = useDispatch('core/block-editor');
+
+	useEffect(() => {
+		if (!wrapperRef.current) return;
+
+		const initBlock = () => {
+			const submissionsDiv = wrapperRef.current?.querySelector(
+				'.petitioner-submissions:not([data-ptr-initialized])'
+			);
+			if (submissionsDiv instanceof HTMLElement) {
+				submissionsDiv.dataset.ptrInitialized = 'true';
+				new PetitionerSubmissions(submissionsDiv);
+			}
+		};
+
+		// Initial check in case it's already rendered
+		initBlock();
+
+		const observer = new MutationObserver(() => {
+			initBlock();
+		});
+
+		observer.observe(wrapperRef.current, { childList: true, subtree: true });
+
+		return () => observer.disconnect();
+	}, []);
 
 	const fetchPetitions = useCallback(() => {
 		return useSelect((select) => {
@@ -46,18 +73,17 @@ export default function Edit({
 
 	const allPetitions = fetchPetitions() || [];
 
+	const handleSelect = () => {
+		selectBlock(clientId);
+	};
+
 	return (
-		<div {...blockAtts}>
+		<div {...blockAtts} ref={wrapperRef} onClickCapture={handleSelect} style={{ minHeight: '150px' }}>
 			<ServerComponent
 				title={__('Petitioner Submissions', 'petitioner')}
 				blockName="petitioner/submissions"
 				attributes={attributes}
 				allPetitions={allPetitions}
-				noPreview={true}
-				customPreviewMessage={__(
-					'Submissions will load on the frontend',
-					'petitioner'
-				)}
 			/>
 			<InspectorControls>
 				<PanelBody>
@@ -96,8 +122,8 @@ export default function Edit({
 						label={__('Fields to show', 'petitioner')}
 						value={fields}
 						suggestions={availableFields}
-						onChange={(value ) => {
-							setAttributes({ fields: value});
+						onChange={(value) => {
+							setAttributes({ fields: value });
 						}}
 						__experimentalExpandOnFocus={true}
 						placeholder={__(
