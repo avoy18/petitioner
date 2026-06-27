@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 6.3
 Tested up to: 7.0
-Stable Tag: 0.8.3
+Stable Tag: 0.8.4
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -148,6 +148,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.8.4 =
+* Bugfixes
+    * Security: fixed a potential XSS vulnerability by removing unsanitized use of `ptr_active_tab` param in the URL
 = 0.8.3 =
 * Improvements
     * Added ActionScheduler as a dev dependency and a wrapper util class to work with it
