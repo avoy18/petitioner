@@ -29,6 +29,9 @@ const wpGlobals: Record<string, string> = {
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 	return {
+		esbuild: {
+			jsx: 'transform',
+		},
 		build: {
 			emptyOutDir: false,
 			minify: mode !== 'development',
