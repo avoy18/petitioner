@@ -24,7 +24,7 @@ class AV_Petitioner_Admin_Shared
      */
     public function preserve_active_tab_on_redirect($location)
     {
-        $referer = wp_get_raw_referer();
+        $referer = wp_get_referer();
         
         if ($referer) {
             $parsed = wp_parse_url($referer);
