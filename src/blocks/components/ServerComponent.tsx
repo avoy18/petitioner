@@ -67,7 +67,8 @@ export default function ServerComponent({
 	}
 
 	return (
-		<div style={{ pointerEvents: 'none' }}>
+		// @ts-expect-error inert is valid in React 18 and standard HTML
+		<div style={{ pointerEvents: 'none' }} inert="true">
 			{!noPreview ? (
 				<ServerSideRender block={blockName} attributes={attributes} />
 			) : (
