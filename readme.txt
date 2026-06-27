@@ -149,8 +149,13 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 == Changelog ==
 
 = 0.8.4 =
+* Improvements
+    * Submissions Gutenberg block now has a proper preview in the admin UI (instead of a grey placeholder box)
 * Bugfixes
     * Security: fixed a potential XSS vulnerability by removing unsanitized use of `ptr_active_tab` param in the URL
+    * Security: Updated composer and NPM dependencies, resolving multiple critical/high Dependabot vulnerabilities
+    * Compatibility: Fixed a composer installation crash on PHP 8.0-8.3 by strictly enforcing the platform PHP requirement
+
 = 0.8.3 =
 * Improvements
     * Added ActionScheduler as a dev dependency and a wrapper util class to work with it
