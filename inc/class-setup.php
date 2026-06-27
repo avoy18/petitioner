@@ -15,7 +15,7 @@ class AV_Petitioner_Setup
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
-        add_action('enqueue_block_editor_assets', array($this, 'enqueue_frontend_assets'));
+        add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
 
         add_filter('wp_script_attributes', function ($attributes) {
             if ('petitioner-script-js' === $attributes['id'] || 'petitioner-admin-script-js' === $attributes['id'] || 'petitioner-form-block-js' === $attributes['id']) {
@@ -202,11 +202,6 @@ class AV_Petitioner_Setup
             wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
         }
 
-        // admin shares the CSS but doesnt need any JS so exiting early
-        if (is_admin()) {
-            return;
-        }
-
         wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', [], AV_PETITIONER_PLUGIN_VERSION, true);
 
         wp_enqueue_script('petitioner-script');
@@ -229,6 +224,21 @@ class AV_Petitioner_Setup
                 'nextPage' => __('Next page', 'petitioner'),
             ],
         ]);
+    }
+
+    /**
+     * Enqueue block editor specific assets.
+     */
+    public function enqueue_block_editor_assets()
+    {
+        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_PLUGIN_VERSION);
+
+        // Custom CSS styles
+        $custom_css = $this->generate_custom_css();
+
+        if (!empty($custom_css)) {
+            wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
+        }
     }
 
     public function generate_custom_css()
@@ -283,6 +293,25 @@ class AV_Petitioner_Setup
 
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', ['wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-i18n', 'wp-hooks'], AV_PETITIONER_PLUGIN_VERSION, true);
+
+        wp_localize_script('petitioner-admin-script', 'petitionerFormSettings', [
+            'actionPath' => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
+            'nonce' => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
+            'nonceEndpoint' => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
+            'labels' => [
+                'emailConfirmedSuccess' => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_success')),
+                'emailConfirmedError' => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_error')),
+            ],
+        ]);
+
+        wp_localize_script('petitioner-admin-script', 'petitionerSubmissionSettings', [
+            'actionPath' => admin_url('admin-ajax.php') . '?action=petitioner_get_submissions',
+            'nonce' => wp_create_nonce('petitioner_submissions_nonce'),
+            'labels' => [
+                'prevPage' => __('Previous page', 'petitioner'),
+                'nextPage' => __('Next page', 'petitioner'),
+            ],
+        ]);
     }
 
     /**
