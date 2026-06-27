@@ -202,6 +202,11 @@ class AV_Petitioner_Setup
             wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
         }
 
+        // admin shares the CSS but doesnt need any JS so exiting early
+        if (is_admin()) {
+            return;
+        }
+
         wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', [], AV_PETITIONER_PLUGIN_VERSION, true);
 
         wp_enqueue_script('petitioner-script');
