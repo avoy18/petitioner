@@ -13,7 +13,7 @@ class AV_Petitioner_Admin_Shared
     {
         add_action('av_petitioner_info_settings', array($this, 'set_active_tabs'), 10, 1);
         add_action('av_petitioner_info_edit', array($this, 'set_active_tabs'), 10, 1);
-        add_filter('redirect_post_location', array($this, 'preserve_active_tab_on_redirect'), 10, 2);
+        add_filter('redirect_post_location', array($this, 'preserve_active_tab_on_redirect'), 10, 1);
     }
 
     /**
