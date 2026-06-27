@@ -1,6 +1,12 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
+declare global {
+	interface Window {
+		ajaxurl: string;
+	}
+}
+
 globalThis.window ??= {} as typeof window;
 
 window.ajaxurl = 'https://petitions.local/wp-admin/admin-ajax.php';
