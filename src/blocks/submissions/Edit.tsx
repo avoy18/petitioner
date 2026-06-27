@@ -40,9 +40,9 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 			);
 			if (submissionsDiv instanceof HTMLElement) {
 				try {
-					new PetitionerSubmissions(submissionsDiv);
-					// Only mark as initialized if construction succeeds
+					// Mark as initialized before construction to prevent infinite loop on failure
 					submissionsDiv.dataset.ptrInitialized = 'true';
+					new PetitionerSubmissions(submissionsDiv);
 				} catch (err) {
 					// If data isn't ready, let it fail silently.
 					// The next DOM mutation tick will retry this node.
