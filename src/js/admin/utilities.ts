@@ -46,10 +46,17 @@ export const updateSearchParams = (key: string, value?: string) => {
 export const updateActiveTabURL = (newTab: string, tabKeys: string[]) => {
 	if (tabKeys.indexOf(newTab) == -1 || tabKeys[0] == newTab) {
 		updateSearchParams('ptr_active_tab');
-		return;
+	} else {
+		updateSearchParams('ptr_active_tab', newTab);
 	}
 
-	updateSearchParams('ptr_active_tab', newTab);
+	// Fix Petition Edit page (Classic Editor): Update ALL _wp_http_referer hidden inputs
+	const refererInputs = document.querySelectorAll<HTMLInputElement>(
+		'input[name="_wp_http_referer"]'
+	);
+	refererInputs.forEach((input) => {
+		input.value = DOMPurify.sanitize(window.location.href);
+	});
 };
 
 export const sanitizeField = (html: string) => {

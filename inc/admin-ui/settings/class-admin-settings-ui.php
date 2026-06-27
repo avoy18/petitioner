@@ -23,7 +23,14 @@ class AV_Petitioner_Admin_Settings_UI
         add_action('admin_menu', array($this, 'add_settings_submenu'));
         add_action('admin_init', function () {
             if (!empty($_POST)) {
-                $this->save_meta_box_data();
+                $saved = $this->save_meta_box_data();
+                if ($saved) {
+                    $referer = wp_get_referer();
+                    if ($referer) {
+                        wp_safe_redirect($referer);
+                        exit;
+                    }
+                }
             }
         });
 
@@ -182,7 +189,7 @@ class AV_Petitioner_Admin_Settings_UI
             (defined("DOING_AUTOSAVE") && DOING_AUTOSAVE) ||
             !current_user_can("manage_options")
         ) {
-            return;
+            return false;
         }
 
         $schema = self::get_settings_schema();
@@ -195,6 +202,7 @@ class AV_Petitioner_Admin_Settings_UI
         }
 
         $this->update_meta_fields($meta_values);
+        return true;
     }
 
     /**

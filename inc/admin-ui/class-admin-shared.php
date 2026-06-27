@@ -13,7 +13,7 @@ class AV_Petitioner_Admin_Shared
     {
         add_filter('av_petitioner_info_settings', array($this, 'set_active_tabs'), 10, 1);
         add_filter('av_petitioner_info_edit', array($this, 'set_active_tabs'), 10, 1);
-        add_filter('redirect_post_location', array($this, 'preserve_active_tab_on_redirect'), 10, 1);
+        add_filter('redirect_post_location', array($this, 'preserve_active_tab_on_redirect'), 20, 1);
     }
 
     /**
@@ -25,7 +25,7 @@ class AV_Petitioner_Admin_Shared
     public function preserve_active_tab_on_redirect($location)
     {
         $referer = wp_get_referer();
-        
+
         if ($referer) {
             $parsed = wp_parse_url($referer);
             if (is_array($parsed) && !empty($parsed['query'])) {
@@ -35,7 +35,6 @@ class AV_Petitioner_Admin_Shared
                 }
             }
         }
-        
         return $location;
     }
 
