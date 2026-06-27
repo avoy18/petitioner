@@ -78,7 +78,7 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 	};
 
 	return (
-		<div {...blockAtts} ref={wrapperRef} onClickCapture={handleSelect} style={{ minHeight: '150px' }}>
+		<div {...blockAtts} ref={wrapperRef} onClickCapture={handleSelect}>
 			<ServerComponent
 				title={__('Petitioner Submissions', 'petitioner')}
 				blockName="petitioner/submissions"
