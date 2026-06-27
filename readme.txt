@@ -151,6 +151,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 = 0.8.4 =
 * Improvements
     * Submissions Gutenberg block now has a proper preview in the admin UI (instead of a grey placeholder box)
+    * Preserve active tab state on save on petition edit screen and settings
 * Bugfixes
     * Security: fixed a potential XSS vulnerability by removing unsanitized use of `ptr_active_tab` param in the URL
     * Security: Updated composer and NPM dependencies, resolving multiple critical/high Dependabot vulnerabilities
