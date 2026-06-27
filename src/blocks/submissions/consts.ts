@@ -17,5 +17,5 @@ export type PetitionFormBlockAttributes = {
 export type PetitionerSubmissionsProps = {
 	attributes: PetitionFormBlockAttributes;
 	setAttributes: (attrs: Partial<PetitionFormBlockAttributes>) => void;
-	clientId: string
+	clientId: string;
 };
