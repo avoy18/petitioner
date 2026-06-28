@@ -55,7 +55,7 @@ export const updateActiveTabURL = (newTab: string, tabKeys: string[]) => {
 		'input[name="_wp_http_referer"]'
 	);
 	refererInputs.forEach((input) => {
-		input.value = DOMPurify.sanitize(window.location.href);
+		input.value = window.location.href;
 	});
 };
 
