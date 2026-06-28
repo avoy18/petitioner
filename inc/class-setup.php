@@ -15,7 +15,6 @@ class AV_Petitioner_Setup
         // assets
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
-        add_action('enqueue_block_editor_assets', array($this, 'enqueue_block_editor_assets'));
 
         add_filter('wp_script_attributes', function ($attributes) {
             if ('petitioner-script-js' === $attributes['id'] || 'petitioner-admin-script-js' === $attributes['id'] || 'petitioner-form-block-js' === $attributes['id']) {
@@ -226,20 +225,6 @@ class AV_Petitioner_Setup
         ]);
     }
 
-    /**
-     * Enqueue block editor specific assets.
-     */
-    public function enqueue_block_editor_assets()
-    {
-        wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_PLUGIN_VERSION);
-
-        // Custom CSS styles
-        $custom_css = $this->generate_custom_css();
-
-        if (!empty($custom_css)) {
-            wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
-        }
-    }
 
     public function generate_custom_css()
     {
