@@ -9,6 +9,9 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_Admin_Settings_UI
 {
+    const NONCE_NAME = 'petitioner_settings_nonce';
+    const NONCE_ACTION = 'save_petition_settings';
+
     public $default_colors;
 
     function __construct()
@@ -22,7 +25,7 @@ class AV_Petitioner_Admin_Settings_UI
 
         add_action('admin_menu', array($this, 'add_settings_submenu'));
         add_action('admin_init', function () {
-            if (!empty($_POST)) {
+            if (isset($_POST[self::NONCE_NAME])) {
                 $saved = $this->save_meta_box_data();
                 if ($saved) {
                     $referer = wp_get_referer();
@@ -138,7 +141,7 @@ class AV_Petitioner_Admin_Settings_UI
      */
     public function render_form_fields()
     {
-        wp_nonce_field("save_petition_settings", "petitioner_settings_nonce");
+        wp_nonce_field(self::NONCE_ACTION, self::NONCE_NAME);
 
         $option_values = $this->get_option_fields();
         $schema = self::get_settings_schema();
@@ -188,8 +191,8 @@ class AV_Petitioner_Admin_Settings_UI
     public function save_meta_box_data()
     {
         if (
-            !isset($_POST["petitioner_settings_nonce"]) ||
-            !wp_verify_nonce($_POST["petitioner_settings_nonce"], "save_petition_settings") ||
+            !isset($_POST[self::NONCE_NAME]) ||
+            !wp_verify_nonce($_POST[self::NONCE_NAME], self::NONCE_ACTION) ||
             (defined("DOING_AUTOSAVE") && DOING_AUTOSAVE) ||
             !current_user_can("manage_options")
         ) {
