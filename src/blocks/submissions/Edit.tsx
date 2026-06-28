@@ -45,7 +45,7 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 					new PetitionerSubmissions(submissionsDiv);
 				} catch (err) {
 					// If data isn't ready, let it fail silently.
-					// The next DOM mutation tick will retry this node.
+					// Note: This node will not be retried to prevent infinite loops.
 				}
 			}
 		};
