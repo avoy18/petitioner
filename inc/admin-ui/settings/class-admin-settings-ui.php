@@ -192,7 +192,7 @@ class AV_Petitioner_Admin_Settings_UI
     {
         if (
             !isset($_POST[self::NONCE_NAME]) ||
-            !wp_verify_nonce($_POST[self::NONCE_NAME], self::NONCE_ACTION) ||
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[self::NONCE_NAME])), self::NONCE_ACTION) ||
             (defined("DOING_AUTOSAVE") && DOING_AUTOSAVE) ||
             !current_user_can("manage_options")
         ) {
