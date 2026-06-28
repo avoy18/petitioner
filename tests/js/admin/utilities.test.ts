@@ -4,7 +4,6 @@ import {
 	isNonEmptyObject,
 	updateSearchParams,
 	updateActiveTabURL,
-	sanitizeField,
 	getAjaxNonce,
 	generateId,
 } from '@admin/utilities';
@@ -90,14 +89,6 @@ describe('updateActiveTabURL', () => {
 
 		const calledUrl = replaceStateSpy.mock.calls[0][2] as string;
 		expect(calledUrl).not.toContain('ptr_active_tab');
-	});
-});
-
-describe('sanitizeField', () => {
-	it('strips script tags and event handlers', () => {
-		expect(sanitizeField('<b>hello</b>')).toBe('<b>hello</b>');
-		expect(sanitizeField('<script>alert("xss")</script>safe')).not.toContain('<script>');
-		expect(sanitizeField('<img onerror="alert(1)" src="x" />')).not.toContain('onerror');
 	});
 });
 

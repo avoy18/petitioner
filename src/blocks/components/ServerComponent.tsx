@@ -1,5 +1,4 @@
-// @ts-expect-error WordPress block types are provided at runtime (bundled as externals)
-import ServerSideRender from '@wordpress/server-side-render';
+import { ServerSideRender } from '@wordpress/server-side-render';
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import type { Petition, Attributes } from '../form/consts';
@@ -67,7 +66,8 @@ export default function ServerComponent({
 	}
 
 	return (
-		<div style={{ pointerEvents: 'none' }}>
+		// @ts-expect-error inert is valid in React 18 and standard HTML
+		<div style={{ pointerEvents: 'none' }} inert="true">
 			{!noPreview ? (
 				<ServerSideRender block={blockName} attributes={attributes} />
 			) : (

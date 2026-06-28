@@ -191,7 +191,6 @@ class AV_Petitioner_Setup
      */
     public function enqueue_frontend_assets()
     {
-        if (is_admin()) return;
 
         wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_PLUGIN_VERSION);
 
@@ -225,6 +224,7 @@ class AV_Petitioner_Setup
             ],
         ]);
     }
+
 
     public function generate_custom_css()
     {
@@ -278,6 +278,25 @@ class AV_Petitioner_Setup
 
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', ['wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-i18n', 'wp-hooks'], AV_PETITIONER_PLUGIN_VERSION, true);
+
+        wp_localize_script('petitioner-admin-script', 'petitionerFormSettings', [
+            'actionPath' => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
+            'nonce' => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
+            'nonceEndpoint' => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
+            'labels' => [
+                'emailConfirmedSuccess' => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_success')),
+                'emailConfirmedError' => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_error')),
+            ],
+        ]);
+
+        wp_localize_script('petitioner-admin-script', 'petitionerSubmissionSettings', [
+            'actionPath' => admin_url('admin-ajax.php') . '?action=petitioner_get_submissions',
+            'nonce' => wp_create_nonce('petitioner_submissions_nonce'),
+            'labels' => [
+                'prevPage' => __('Previous page', 'petitioner'),
+                'nextPage' => __('Next page', 'petitioner'),
+            ],
+        ]);
     }
 
     /**

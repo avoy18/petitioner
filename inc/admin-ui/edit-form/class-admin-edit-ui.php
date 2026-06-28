@@ -140,8 +140,6 @@ class AV_Petitioner_Admin_Edit_UI
          */
         $petitioner_info['form_fields'] = apply_filters('av_petitioner_form_fields_admin', $petitioner_info['form_fields'], $post->ID);
 
-        $petitioner_info['active_tab']  = !empty($_GET['ptr_active_tab']) ? $_GET['ptr_active_tab'] : 'default';
-
         $data_attributes = wp_json_encode($petitioner_info, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 ?>
         <div class="petitioner-admin__form ptr-is-loading">

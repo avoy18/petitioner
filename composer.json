@@ -26,6 +26,9 @@
 		"wordpress-install-dir": "wordpress"
 	},
 	"config": {
+		"platform": {
+			"php": "8.0.0"
+		},
 		"allow-plugins": {
 			"roots/wordpress-core-installer": true,
 			"automattic/wordbless": true
