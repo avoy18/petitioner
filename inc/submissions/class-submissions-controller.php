@@ -834,6 +834,9 @@ class AV_Petitioner_Submissions_Controller
         $submission = AV_Petitioner_Submissions_Model::get_submission_by_id($submission_id);
 
         if ($submission) {
+            // ensure we pass custom properties correctly here
+            $submission = AV_Petitioner_Custom_Properties::hydrate_submission($submission);
+
             /**
              * petitioner_submission_finalized
              *
