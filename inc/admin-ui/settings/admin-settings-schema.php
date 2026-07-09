@@ -21,6 +21,30 @@ return [
         'meta_key' => 'petitioner_custom_css',
         'type'     => 'textarea'
     ],
+    'border_radius'        => [
+        'meta_key' => 'petitioner_border_radius',
+        'type'     => 'text'
+    ],
+    'base_font_size'       => [
+        'meta_key' => 'petitioner_base_font_size',
+        'type'     => 'text'
+    ],
+    'button_font_size'     => [
+        'meta_key' => 'petitioner_button_font_size',
+        'type'     => 'text'
+    ],
+    'field_spacing'        => [
+        'meta_key' => 'petitioner_field_spacing',
+        'type'     => 'text'
+    ],
+    'input_border_width'   => [
+        'meta_key' => 'petitioner_input_border_width',
+        'type'     => 'text'
+    ],
+    'input_size'           => [
+        'meta_key' => 'petitioner_input_size',
+        'type'     => 'text'
+    ],
     'primary_color'        => [
         'meta_key' => 'petitioner_primary_color',
         'type'     => 'text'

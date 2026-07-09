@@ -1,3 +1,5 @@
+export type TShirtSize = '' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+
 export interface SettingsFormData {
 	show_letter: boolean;
 	show_title: boolean;
@@ -18,6 +20,12 @@ export interface SettingsFormData {
 	enable_akismet: boolean;
 	label_overrides: Record<string, string>;
 	active_tab?: string;
+	border_radius: Exclude<TShirtSize, 'xl'>;
+	base_font_size: Extract<TShirtSize, '' | 'xs' | 'sm' | 'md'>;
+	button_font_size: Extract<TShirtSize, '' | 'xs' | 'sm' | 'md' | 'lg'>;
+	field_spacing: Extract<TShirtSize, '' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'>;
+	input_border_width: '' | '0px' | '1px' | '2px' | '3px';
+	input_size: Extract<TShirtSize, '' | 'sm' | 'md' | 'lg' | 'xl'>;
 }
 
 export type DefaultValues = {

@@ -233,22 +233,75 @@ class AV_Petitioner_Setup
         $dark_color = get_option('petitioner_dark_color', '');
         $grey_color = get_option('petitioner_grey_color', '');
 
-        $default_colors = '';
+        $border_radius = get_option('petitioner_border_radius', '');
+        $base_font_size = get_option('petitioner_base_font_size', '');
+        $button_font_size = get_option('petitioner_button_font_size', '');
+        $field_spacing = get_option('petitioner_field_spacing', '');
+        $input_border_width = get_option('petitioner_input_border_width', '');
+        $input_size = get_option('petitioner_input_size', '');
+
+        $dynamic_styles = '';
 
         if (!empty($primary_color)) {
-            $default_colors .= '--ptr-color-primary: ' . $primary_color . '!important;';
+            $dynamic_styles .= '--ptr-color-primary: ' . $primary_color . '!important;';
         }
 
         if (!empty($dark_color)) {
-            $default_colors .= '--ptr-color-dark: ' . $dark_color . '!important;';
+            $dynamic_styles .= '--ptr-color-dark: ' . $dark_color . '!important;';
         }
 
         if (!empty($grey_color)) {
-            $default_colors .= '--ptr-color-grey: ' . $grey_color . '!important;';
+            $dynamic_styles .= '--ptr-color-grey: ' . $grey_color . '!important;';
         }
 
-        if (!empty($default_colors)) {
-            $custom_css .= '.petitioner {' . $default_colors . ' } ';
+        if (!empty($border_radius)) {
+            $dynamic_styles .= '--ptr-input-border-radius: var(--ptr-border-radius-' . $border_radius . ')!important;';
+            $dynamic_styles .= '--ptr-button-border-radius: var(--ptr-border-radius-' . $border_radius . ')!important;';
+            
+            // Limit wrapper radius to 'lg' so it doesn't become a pill
+            $wrapper_radius = $border_radius === 'full' ? 'lg' : $border_radius;
+            $dynamic_styles .= '--ptr-wrapper-radius: var(--ptr-border-radius-' . $wrapper_radius . ')!important;';
+        }
+
+        if (!empty($base_font_size)) {
+            $dynamic_styles .= '--ptr-label-font-size: var(--ptr-fs-' . $base_font_size . ')!important;';
+        }
+
+        if (!empty($button_font_size)) {
+            $dynamic_styles .= '--ptr-btn-font-size: var(--ptr-fs-' . $button_font_size . ')!important;';
+        }
+
+        if (!empty($field_spacing)) {
+            $dynamic_styles .= '--ptr-input-margin-bottom: var(--ptr-spacer-' . $field_spacing . ')!important;';
+        }
+
+        if (!empty($input_border_width)) {
+            $dynamic_styles .= '--ptr-input-border-width: ' . $input_border_width . '!important;';
+        }
+
+        if ($input_size === 'sm') {
+            $dynamic_styles .= '--ptr-input-line-height: 24px !important;';
+            $dynamic_styles .= '--ptr-input-spacing-y: 4px !important;';
+            $dynamic_styles .= '--ptr-label-line-height: 1.4 !important;';
+        }
+
+        if ($input_size === 'md') {
+            $dynamic_styles .= '--ptr-input-line-height: 24px !important;';
+            $dynamic_styles .= '--ptr-input-spacing-y: 8px !important;';
+        }
+
+        if ($input_size === 'lg') {
+            $dynamic_styles .= '--ptr-input-line-height: 32px !important;';
+            $dynamic_styles .= '--ptr-input-spacing-y: 8px !important;';
+        }
+
+        if ($input_size === 'xl') {
+            $dynamic_styles .= '--ptr-input-line-height: 40px !important;';
+            $dynamic_styles .= '--ptr-input-spacing-y: 0.7rem !important;';
+        }
+
+        if (!empty($dynamic_styles)) {
+            $custom_css .= '.petitioner {' . $dynamic_styles . ' } ';
         }
 
         $custom_css .= get_option('petitioner_custom_css', '');
