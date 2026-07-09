@@ -35,6 +35,7 @@ export type DefaultValues = {
 		grey: string;
 	};
 	labels: Record<string, string>;
+	visual_options?: Record<string, Record<string, string>>;
 };
 
 export interface WindowSettingsData extends SettingsFormData {

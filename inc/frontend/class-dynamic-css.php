@@ -14,9 +14,105 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_Dynamic_CSS
 {
-    const ALLOWED_SIZES = ['xs', 'sm', 'md', 'lg', 'xl', 'full'];
-    const ALLOWED_BORDER_WIDTHS = ['0px', '1px', '2px', '3px'];
+    /**
+     * Initializes the class and hooks into WordPress.
+     *
+     * @return void
+     */
+    public static function init()
+    {
+        add_filter('av_petitioner_info_settings', [self::class, 'inject_schema_options']);
+    }
 
+    /**
+     * Injects the visual options schema into the localized settings array.
+     *
+     * @param array $settings The frontend settings array.
+     * @return array Modified settings array.
+     */
+    public static function inject_schema_options($settings)
+    {
+        if (!isset($settings['default_values'])) {
+            $settings['default_values'] = [];
+        }
+        $settings['default_values']['visual_options'] = self::get_schema_options();
+        return $settings;
+    }
+
+    /**
+     * Retrieves the schema for available visual options.
+     *
+     * @return array List of available options for dropdowns.
+     */
+    public static function get_schema_options()
+    {
+        static $schema = null;
+
+        if ($schema !== null) {
+            return $schema;
+        }
+
+        $schema = [
+            'border_radius' => [
+                ''     => __('Default (8px)', 'petitioner'),
+                'xs'   => __('Sharp (2px)', 'petitioner'),
+                'sm'   => __('Slightly Rounded (4px)', 'petitioner'),
+                'md'   => __('Rounded (8px)', 'petitioner'),
+                'lg'   => __('Very Rounded (16px)', 'petitioner'),
+                'full' => __('Pill (999px)', 'petitioner'),
+            ],
+            'base_font_size' => [
+                ''   => __('Default (14px)', 'petitioner'),
+                'xs' => __('Extra Small (12px)', 'petitioner'),
+                'sm' => __('Small (14px)', 'petitioner'),
+                'md' => __('Medium (16px)', 'petitioner'),
+            ],
+            'button_font_size' => [
+                ''   => __('Default (18px)', 'petitioner'),
+                'xs' => __('Extra Small (12px)', 'petitioner'),
+                'sm' => __('Small (14px)', 'petitioner'),
+                'md' => __('Medium (16px)', 'petitioner'),
+                'lg' => __('Large (18px)', 'petitioner'),
+            ],
+            'input_border_width' => [
+                ''    => __('Default', 'petitioner'),
+                '0px' => __('0px (None)', 'petitioner'),
+                '1px' => __('1px', 'petitioner'),
+                '2px' => __('2px', 'petitioner'),
+                '3px' => __('3px', 'petitioner'),
+            ],
+            'field_spacing' => [
+                ''   => __('Default (8px)', 'petitioner'),
+                'xs' => __('Extra Small (4px)', 'petitioner'),
+                'sm' => __('Small (8px)', 'petitioner'),
+                'md' => __('Medium (16px)', 'petitioner'),
+                'lg' => __('Large (24px)', 'petitioner'),
+                'xl' => __('Extra Large (32px)', 'petitioner'),
+            ],
+            'input_size' => [
+                ''   => __('Default (~62px)', 'petitioner'),
+                'sm' => __('Small (32px)', 'petitioner'),
+                'md' => __('Regular (40px)', 'petitioner'),
+                'lg' => __('Large (48px)', 'petitioner'),
+                'xl' => __('Extra Large (~62px)', 'petitioner'),
+            ],
+        ];
+
+        /**
+         * Filters the schema for visual options.
+         *
+         * @param array $schema The default schema options.
+         */
+        $schema = apply_filters('av_petitioner_visual_options_schema', $schema);
+
+        return $schema;
+    }
+
+    /**
+     * Generates all dynamic CSS styles based on saved options.
+     *
+     * @return string The generated CSS string.
+     */
     public static function generate_css()
     {
         $dynamic_styles = '';
@@ -37,10 +133,15 @@ class AV_Petitioner_Dynamic_CSS
         return $custom_css;
     }
 
+    /**
+     * Generates CSS variables for color settings.
+     *
+     * @return string The color CSS styles.
+     */
     private static function get_color_styles()
     {
         $styles = '';
-        
+
         $primary = sanitize_hex_color(get_option('petitioner_primary_color', ''));
         if (!empty($primary)) {
             $styles .= '--ptr-color-primary: ' . $primary . '!important;';
@@ -59,15 +160,21 @@ class AV_Petitioner_Dynamic_CSS
         return $styles;
     }
 
+    /**
+     * Generates CSS variables for border radius settings.
+     *
+     * @return string The border radius CSS styles.
+     */
     private static function get_border_radius_styles()
     {
         $styles = '';
         $radius = get_option('petitioner_border_radius', '');
 
-        if (!empty($radius) && in_array($radius, self::ALLOWED_SIZES, true)) {
+        $schema = self::get_schema_options();
+        if (!empty($radius) && array_key_exists($radius, $schema['border_radius'])) {
             $styles .= '--ptr-input-border-radius: var(--ptr-border-radius-' . $radius . ')!important;';
             $styles .= '--ptr-button-border-radius: var(--ptr-border-radius-' . $radius . ')!important;';
-            
+
             // Limit wrapper radius to 'lg' so it doesn't become a pill
             $wrapper = $radius === 'full' ? 'lg' : $radius;
             $styles .= '--ptr-wrapper-radius: var(--ptr-border-radius-' . $wrapper . ')!important;';
@@ -76,51 +183,79 @@ class AV_Petitioner_Dynamic_CSS
         return $styles;
     }
 
+    /**
+     * Generates CSS variables for font size settings.
+     *
+     * @return string The font size CSS styles.
+     */
     private static function get_font_styles()
     {
         $styles = '';
-        
+
         $base = get_option('petitioner_base_font_size', '');
-        if (!empty($base) && in_array($base, self::ALLOWED_SIZES, true)) {
+        $schema = self::get_schema_options();
+        if (!empty($base) && array_key_exists($base, $schema['base_font_size'])) {
             $styles .= '--ptr-label-font-size: var(--ptr-fs-' . $base . ')!important;';
         }
 
         $btn = get_option('petitioner_button_font_size', '');
-        if (!empty($btn) && in_array($btn, self::ALLOWED_SIZES, true)) {
+        if (!empty($btn) && array_key_exists($btn, $schema['button_font_size'])) {
             $styles .= '--ptr-btn-font-size: var(--ptr-fs-' . $btn . ')!important;';
         }
 
         return $styles;
     }
 
+    /**
+     * Generates CSS variables for field spacing settings.
+     *
+     * @return string The field spacing CSS styles.
+     */
     private static function get_spacing_styles()
     {
         $styles = '';
         $spacing = get_option('petitioner_field_spacing', '');
 
-        if (!empty($spacing) && in_array($spacing, self::ALLOWED_SIZES, true)) {
+        $schema = self::get_schema_options();
+        if (!empty($spacing) && array_key_exists($spacing, $schema['field_spacing'])) {
             $styles .= '--ptr-input-margin-bottom: var(--ptr-spacer-' . $spacing . ')!important;';
         }
 
         return $styles;
     }
 
+    /**
+     * Generates CSS variables for input border width settings.
+     *
+     * @return string The input border width CSS styles.
+     */
     private static function get_border_styles()
     {
         $styles = '';
         $width = get_option('petitioner_input_border_width', '');
 
-        if (!empty($width) && in_array($width, self::ALLOWED_BORDER_WIDTHS, true)) {
+        $schema = self::get_schema_options();
+        if (!empty($width) && array_key_exists($width, $schema['input_border_width'])) {
             $styles .= '--ptr-input-border-width: ' . $width . '!important;';
         }
 
         return $styles;
     }
 
+    /**
+     * Generates CSS variables for input size settings.
+     *
+     * @return string The input size CSS styles.
+     */
     private static function get_input_size_styles()
     {
         $styles = '';
         $size = get_option('petitioner_input_size', '');
+
+        $schema = self::get_schema_options();
+        if (!empty($size) && !array_key_exists($size, $schema['input_size'])) {
+            return $styles;
+        }
 
         switch ($size) {
             case 'sm':
