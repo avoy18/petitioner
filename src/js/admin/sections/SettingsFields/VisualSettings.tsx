@@ -2,6 +2,7 @@ import CodeEditor from '@admin/components/CodeEditor';
 import ColorField from '@admin/components/ColorField';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 import { SelectControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 export default function VisualSettings() {
 	const { formState, updateFormState, windowPetitionerData } = useSettingsFormContext();
@@ -26,7 +27,7 @@ export default function VisualSettings() {
 					}}
 				/>
 				<label htmlFor="petitioner_show_letter">
-					Show letter on the frontend?
+					{__('Show letter on the frontend?', 'petitioner')}
 				</label>
 			</p>
 			<p>
@@ -41,7 +42,7 @@ export default function VisualSettings() {
 					}}
 				/>
 				<label htmlFor="petitioner_show_title">
-					Show petition title?
+					{__('Show petition title?', 'petitioner')}
 				</label>
 			</p>
 			<p>
@@ -56,16 +57,16 @@ export default function VisualSettings() {
 					}}
 				/>
 				<label htmlFor="petitioner_show_goal">
-					Show petition goal?
+					{__('Show petition goal?', 'petitioner')}
 				</label>
 			</p>
 
 			<hr />
 
-			<h3 style={{ marginBottom: '0' }}>Colors</h3>
+			<h3 style={{ marginBottom: '0' }}>{__('Colors', 'petitioner')}</h3>
 			<div className="ptr-field-panel">
 				<div>
-					<label>Primary color</label>
+					<label>{__('Primary color', 'petitioner')}</label>
 				</div>
 				<ColorField
 					id={'petitioner_primary_color'}
@@ -79,7 +80,7 @@ export default function VisualSettings() {
 
 			<div className="ptr-field-panel">
 				<div>
-					<label>Dark color</label>
+					<label>{__('Dark color', 'petitioner')}</label>
 				</div>
 				<ColorField
 					id={'petitioner_dark_color'}
@@ -93,7 +94,7 @@ export default function VisualSettings() {
 
 			<div className="ptr-field-panel">
 				<div>
-					<label>Grey color</label>
+					<label>{__('Grey color', 'petitioner')}</label>
 				</div>
 				<ColorField
 					id={'petitioner_grey_color'}
@@ -107,18 +108,18 @@ export default function VisualSettings() {
 
 			<hr />
 
-			<h3 style={{ marginBottom: '10px' }}>Layout & Sizing</h3>
+			<h3 style={{ marginBottom: '0' }}>{__('Layout & Sizing', 'petitioner')}</h3>
 			<div className="ptr-field-panel">
 				<SelectControl
-					label="Border Radius"
+					label={__('Border Radius', 'petitioner')}
 					value={formState?.border_radius || ''}
 					options={[
-						{ label: 'Default (8px)', value: '' },
-						{ label: 'Sharp (2px)', value: 'xs' },
-						{ label: 'Slightly Rounded (4px)', value: 'sm' },
-						{ label: 'Rounded (8px)', value: 'md' },
-						{ label: 'Very Rounded (16px)', value: 'lg' },
-						{ label: 'Pill (999px)', value: 'full' },
+						{ label: __('Default (8px)', 'petitioner'), value: '' },
+						{ label: __('Sharp (2px)', 'petitioner'), value: 'xs' },
+						{ label: __('Slightly Rounded (4px)', 'petitioner'), value: 'sm' },
+						{ label: __('Rounded (8px)', 'petitioner'), value: 'md' },
+						{ label: __('Very Rounded (16px)', 'petitioner'), value: 'lg' },
+						{ label: __('Pill (999px)', 'petitioner'), value: 'full' },
 					]}
 					onChange={(val) => updateFormState('border_radius', val)}
 				/>
@@ -127,13 +128,13 @@ export default function VisualSettings() {
 
 			<div className="ptr-field-panel">
 				<SelectControl
-					label="Form Font Size"
+					label={__('Form Font Size', 'petitioner')}
 					value={formState?.base_font_size || ''}
 					options={[
-						{ label: 'Default (14px)', value: '' },
-						{ label: 'Extra Small (12px)', value: 'xs' },
-						{ label: 'Small (14px)', value: 'sm' },
-						{ label: 'Medium (16px)', value: 'md' },
+						{ label: __('Default (14px)', 'petitioner'), value: '' },
+						{ label: __('Extra Small (12px)', 'petitioner'), value: 'xs' },
+						{ label: __('Small (14px)', 'petitioner'), value: 'sm' },
+						{ label: __('Medium (16px)', 'petitioner'), value: 'md' },
 					]}
 					onChange={(val) => updateFormState('base_font_size', val)}
 				/>
@@ -142,14 +143,14 @@ export default function VisualSettings() {
 
 			<div className="ptr-field-panel">
 				<SelectControl
-					label="Button Font Size"
+					label={__('Button Font Size', 'petitioner')}
 					value={formState?.button_font_size || ''}
 					options={[
-						{ label: 'Default (18px)', value: '' },
-						{ label: 'Extra Small (12px)', value: 'xs' },
-						{ label: 'Small (14px)', value: 'sm' },
-						{ label: 'Medium (16px)', value: 'md' },
-						{ label: 'Large (18px)', value: 'lg' },
+						{ label: __('Default (18px)', 'petitioner'), value: '' },
+						{ label: __('Extra Small (12px)', 'petitioner'), value: 'xs' },
+						{ label: __('Small (14px)', 'petitioner'), value: 'sm' },
+						{ label: __('Medium (16px)', 'petitioner'), value: 'md' },
+						{ label: __('Large (18px)', 'petitioner'), value: 'lg' },
 					]}
 					onChange={(val) => updateFormState('button_font_size', val)}
 				/>
@@ -158,14 +159,14 @@ export default function VisualSettings() {
 
 			<div className="ptr-field-panel">
 				<SelectControl
-					label="Input Border Thickness"
+					label={__('Input Border Thickness', 'petitioner')}
 					value={formState?.input_border_width || ''}
 					options={[
-						{ label: 'Default', value: '' },
-						{ label: '0px (None)', value: '0px' },
-						{ label: '1px', value: '1px' },
-						{ label: '2px', value: '2px' },
-						{ label: '3px', value: '3px' },
+						{ label: __('Default', 'petitioner'), value: '' },
+						{ label: __('0px (None)', 'petitioner'), value: '0px' },
+						{ label: __('1px', 'petitioner'), value: '1px' },
+						{ label: __('2px', 'petitioner'), value: '2px' },
+						{ label: __('3px', 'petitioner'), value: '3px' },
 					]}
 					onChange={(val) => updateFormState('input_border_width', val)}
 				/>
@@ -174,15 +175,15 @@ export default function VisualSettings() {
 
 			<div className="ptr-field-panel">
 				<SelectControl
-					label="Field Spacing"
+					label={__('Field Spacing', 'petitioner')}
 					value={formState?.field_spacing || ''}
 					options={[
-						{ label: 'Default (8px)', value: '' },
-						{ label: 'Extra Small (4px)', value: 'xs' },
-						{ label: 'Small (8px)', value: 'sm' },
-						{ label: 'Medium (16px)', value: 'md' },
-						{ label: 'Large (24px)', value: 'lg' },
-						{ label: 'Extra Large (32px)', value: 'xl' },
+						{ label: __('Default (8px)', 'petitioner'), value: '' },
+						{ label: __('Extra Small (4px)', 'petitioner'), value: 'xs' },
+						{ label: __('Small (8px)', 'petitioner'), value: 'sm' },
+						{ label: __('Medium (16px)', 'petitioner'), value: 'md' },
+						{ label: __('Large (24px)', 'petitioner'), value: 'lg' },
+						{ label: __('Extra Large (32px)', 'petitioner'), value: 'xl' },
 					]}
 					onChange={(val) => updateFormState('field_spacing', val)}
 				/>
@@ -191,14 +192,14 @@ export default function VisualSettings() {
 
 			<div className="ptr-field-panel">
 				<SelectControl
-					label="Input Size"
+					label={__('Input Size', 'petitioner')}
 					value={formState?.input_size || ''}
 					options={[
-						{ label: 'Default (~62px)', value: '' },
-						{ label: 'Small (32px)', value: 'sm' },
-						{ label: 'Regular (40px)', value: 'md' },
-						{ label: 'Large (48px)', value: 'lg' },
-						{ label: 'Extra Large (~62px)', value: 'xl' },
+						{ label: __('Default (~62px)', 'petitioner'), value: '' },
+						{ label: __('Small (32px)', 'petitioner'), value: 'sm' },
+						{ label: __('Regular (40px)', 'petitioner'), value: 'md' },
+						{ label: __('Large (48px)', 'petitioner'), value: 'lg' },
+						{ label: __('Extra Large (~62px)', 'petitioner'), value: 'xl' },
 					]}
 					onChange={(val) => updateFormState('input_size', val)}
 				/>
@@ -207,8 +208,8 @@ export default function VisualSettings() {
 
 			<CodeEditor
 				code={formState?.custom_css || ''}
-				title="Custom CSS"
-				help="Add your custom CSS here."
+				title={__('Custom CSS', 'petitioner')}
+				help={__('Add your custom CSS here.', 'petitioner')}
 			/>
 		</>
 	);
