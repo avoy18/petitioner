@@ -39,6 +39,8 @@ class AV_Petitioner_Admin_Live_Preview
             wp_send_json_error('Unauthorized');
         }
 
+        check_ajax_referer('petitioner_nonce', 'petitioner_nonce');
+
         $payload = isset($_POST['payload']) ? (array) $_POST['payload'] : [];
         
         // Pass payload as overrides to the dynamic CSS generator

@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState, useCallback } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import { Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
+import { getAjaxNonce } from '@admin/utilities';
 import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe } from './styled';
 
 export default function FormPreview() {
 	const { formState } = useSettingsFormContext();
 	const iframeRef = useRef<HTMLIFrameElement>(null);
 	const [iframeLoaded, setIframeLoaded] = useState(false);
-	const [isSyncing, setIsSyncing] = useState(false);
 
 	const petitions = useSelect((select) => {
 		// @ts-ignore - core-data types might not be fully available
@@ -35,27 +34,31 @@ export default function FormPreview() {
 			'*'
 		);
 
-		setIsSyncing(true);
-
 		// 2. Fetch compiled CSS via AJAX
 		try {
-			const formData = new URLSearchParams();
-			formData.append('action', 'petitioner_generate_preview_css');
+			const finalQuery = new URLSearchParams();
+			finalQuery.set('action', 'petitioner_generate_preview_css');
+
+			const finalData = new FormData();
 			// serialize formState as payload
 			Object.entries(formState).forEach(([key, value]) => {
 				if (value !== undefined && value !== null) {
-					formData.append(`payload[${key}]`, String(value));
+					finalData.append(`payload[${key}]`, String(value));
 				}
 			});
+			finalData.append('petitioner_nonce', getAjaxNonce());
 
-			const response = await fetch(ajaxurl, {
+			const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 				method: 'POST',
-				body: formData,
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
+				body: finalData,
 			});
-			const result = await response.json();
+			
+			if (!request.ok) {
+				console.error('HTTP error: ', request.status);
+				return;
+			}
+			
+			const result = await request.json();
 
 			if (result.success && result.data?.css) {
 				iframeRef.current.contentWindow.postMessage(
@@ -65,8 +68,6 @@ export default function FormPreview() {
 			}
 		} catch (e) {
 			console.error('Failed to update live preview CSS', e);
-		} finally {
-			setIsSyncing(false);
 		}
 	}, [formState]);
 
@@ -87,10 +88,7 @@ export default function FormPreview() {
 	return (
 		<PreviewCard>
 			<PreviewHeader>
-				<span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-					{__('Live Preview', 'petitioner')}
-					{(isSyncing || !iframeLoaded) && <Spinner />}
-				</span>
+				<span>{__('Live Preview', 'petitioner')}</span>
 				{petitions && petitions.length > 0 && (
 					<PreviewSelect 
 						value={selectedFormId} 
