@@ -59,9 +59,6 @@ class AV_Petitioner_Admin_Settings_UI
                 wp_enqueue_code_editor(array('type' => 'text/css'));
                 wp_enqueue_script('wp-theme-plugin-editor');
                 wp_enqueue_style('wp-codemirror');
-                wp_add_inline_script('wp-theme-plugin-editor', "jQuery(document).ready(function($) {
-                    wp.codeEditor.initialize($('#petitionerCode'), {type: 'text/css'});
-                });", true);
 
                 wp_enqueue_style('wp-color-picker');
                 wp_enqueue_script('wp-color-picker');

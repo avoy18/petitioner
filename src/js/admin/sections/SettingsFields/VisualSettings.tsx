@@ -186,6 +186,7 @@ export default function VisualSettings() {
 				code={formState?.custom_css || ''}
 				title={__('Custom CSS', 'petitioner')}
 				help={__('Add your custom CSS here.', 'petitioner')}
+				onChange={(val) => updateFormState('custom_css', val)}
 			/>
 			</MainContent>
 			<SidebarContent>

@@ -37,6 +37,11 @@ declare global {
 			home_url?: string;
 			petitions?: Array<{ id: number; title: string; [key: string]: any }>;
 		};
+		wp?: {
+			codeEditor?: {
+				initialize: (el: HTMLElement | string, config: any) => any;
+			};
+		};
 		petitionerComponents?: PetitionerComponents;
 	}
 }
