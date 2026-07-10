@@ -4,13 +4,35 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Class AV_Petitioner_Admin_Live_Preview
+ * 
+ * Handles the rendering of the live preview iframe on the Visual Settings page.
+ * Uses a bare frontend template via `template_redirect` to ensure active theme 
+ * styles are loaded accurately.
+ *
+ * @since 0.8.5
+ */
 class AV_Petitioner_Admin_Live_Preview
 {
+    /**
+     * Initializes the class and hooks into WordPress.
+     *
+     * @since 0.8.5
+     * @return void
+     */
     public static function init()
     {
         add_action('template_redirect', [self::class, 'render_preview']);
     }
 
+    /**
+     * Renders the bare HTML shell for the live preview iframe.
+     * Triggers via `template_redirect` when `petitioner_live_preview` is set.
+     *
+     * @since 0.8.5
+     * @return void
+     */
     public static function render_preview()
     {
         if (!isset($_GET['petitioner_live_preview'])) {
@@ -65,6 +87,13 @@ class AV_Petitioner_Admin_Live_Preview
         exit;
     }
 
+    /**
+     * Renders the inline JavaScript that listens for `postMessage` events 
+     * to update the form styles and visibility in real-time.
+     *
+     * @since 0.8.5
+     * @return void
+     */
     public static function render_preview_script()
     {
         ?>
