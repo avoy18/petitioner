@@ -24,6 +24,27 @@ class AV_Petitioner_Admin_Live_Preview
     public static function init()
     {
         add_action('template_redirect', [self::class, 'render_preview']);
+        add_action('wp_ajax_petitioner_generate_preview_css', [self::class, 'generate_preview_css']);
+    }
+
+    /**
+     * AJAX handler to generate CSS for the live preview.
+     *
+     * @since 0.8.5
+     * @return void
+     */
+    public static function generate_preview_css()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized');
+        }
+
+        $payload = isset($_POST['payload']) ? (array) $_POST['payload'] : [];
+        
+        // Pass payload as overrides to the dynamic CSS generator
+        $css = AV_Petitioner_Dynamic_CSS::generate_css($payload);
+        
+        wp_send_json_success(['css' => $css]);
     }
 
     /**
@@ -100,7 +121,7 @@ class AV_Petitioner_Admin_Live_Preview
         <script>
             // Listen for messages from the parent window
             window.addEventListener('message', function(event) {
-                if (event.data && event.data.type === 'UPDATE_SETTINGS') {
+                if (event.data && event.data.type === 'UPDATE_VISIBILITY') {
                     const payload = event.data.payload;
                     const root = document.querySelector('.petitioner');
                     if (!root) return;
@@ -114,99 +135,19 @@ class AV_Petitioner_Admin_Live_Preview
 
                     const goalEl = document.querySelector('.petitioner__goal');
                     if (goalEl) goalEl.style.display = payload.show_goal ? 'flex' : 'none';
+                }
 
-                    // Apply custom CSS
-                    let customStyleEl = document.getElementById('preview-custom-css');
+                if (event.data && event.data.type === 'UPDATE_CSS') {
+                    const cssString = event.data.payload;
+                    
+                    // Apply custom CSS string
+                    let customStyleEl = document.getElementById('petitioner-dynamic-css');
                     if (!customStyleEl) {
                         customStyleEl = document.createElement('style');
-                        customStyleEl.id = 'preview-custom-css';
+                        customStyleEl.id = 'petitioner-dynamic-css';
                         document.head.appendChild(customStyleEl);
                     }
-                    customStyleEl.textContent = payload.custom_css || '';
-
-                    const setVar = (name, val) => {
-                        if (val) {
-                            root.style.setProperty(name, val, 'important');
-                        } else {
-                            root.style.removeProperty(name);
-                        }
-                    };
-
-                    // Colors
-                    setVar('--ptr-color-primary', payload.primary_color);
-                    setVar('--ptr-color-dark', payload.dark_color);
-                    setVar('--ptr-color-grey', payload.grey_color);
-
-                    // Border Radius
-                    if (payload.border_radius) {
-                        setVar('--ptr-input-border-radius', `var(--ptr-border-radius-${payload.border_radius})`);
-                        setVar('--ptr-button-border-radius', `var(--ptr-border-radius-${payload.border_radius})`);
-                        
-                        let wrapperRadius = payload.border_radius === 'full' ? 'lg' : payload.border_radius;
-                        setVar('--ptr-wrapper-radius', `var(--ptr-border-radius-${wrapperRadius})`);
-                    } else {
-                        root.style.removeProperty('--ptr-input-border-radius');
-                        root.style.removeProperty('--ptr-button-border-radius');
-                        root.style.removeProperty('--ptr-wrapper-radius');
-                    }
-
-                    // Base Font Size
-                    if (payload.base_font_size) {
-                        setVar('--ptr-label-font-size', `var(--ptr-fs-${payload.base_font_size})`);
-                    } else {
-                        root.style.removeProperty('--ptr-label-font-size');
-                    }
-
-                    // Button Font Size
-                    if (payload.button_font_size) {
-                        setVar('--ptr-btn-font-size', `var(--ptr-fs-${payload.button_font_size})`);
-                    } else {
-                        root.style.removeProperty('--ptr-btn-font-size');
-                    }
-
-                    // Spacing
-                    if (payload.field_spacing) {
-                        setVar('--ptr-input-margin-bottom', `var(--ptr-spacer-${payload.field_spacing})`);
-                    } else {
-                        root.style.removeProperty('--ptr-input-margin-bottom');
-                    }
-
-                    // Border width
-                    if (payload.input_border_width) {
-                        setVar('--ptr-input-border-width', payload.input_border_width);
-                    } else {
-                        root.style.removeProperty('--ptr-input-border-width');
-                    }
-
-                    // Input Size
-                    if (payload.input_size) {
-                        switch(payload.input_size) {
-                            case 'sm':
-                                setVar('--ptr-input-line-height', '24px');
-                                setVar('--ptr-input-spacing-y', '4px');
-                                setVar('--ptr-label-line-height', '1.4');
-                                break;
-                            case 'md':
-                                setVar('--ptr-input-line-height', '24px');
-                                setVar('--ptr-input-spacing-y', '8px');
-                                root.style.removeProperty('--ptr-label-line-height');
-                                break;
-                            case 'lg':
-                                setVar('--ptr-input-line-height', '32px');
-                                setVar('--ptr-input-spacing-y', '8px');
-                                root.style.removeProperty('--ptr-label-line-height');
-                                break;
-                            case 'xl':
-                                setVar('--ptr-input-line-height', '40px');
-                                setVar('--ptr-input-spacing-y', '0.7rem');
-                                root.style.removeProperty('--ptr-label-line-height');
-                                break;
-                        }
-                    } else {
-                        root.style.removeProperty('--ptr-input-line-height');
-                        root.style.removeProperty('--ptr-input-spacing-y');
-                        root.style.removeProperty('--ptr-label-line-height');
-                    }
+                    customStyleEl.textContent = cssString || '';
                 }
             });
         </script>
