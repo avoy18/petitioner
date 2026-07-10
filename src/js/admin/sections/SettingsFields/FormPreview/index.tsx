@@ -20,7 +20,7 @@ export default function FormPreview() {
 	const [selectedFormId, setSelectedFormId] = useState(0);
 
 	useEffect(() => {
-		if (petitions && petitions.length > 0 && selectedFormId === 0) {
+		if (Array.isArray(petitions) && petitions.length > 0 && selectedFormId === 0) {
 			setSelectedFormId(petitions[0].id);
 		}
 	}, [petitions, selectedFormId]);
@@ -72,7 +72,7 @@ export default function FormPreview() {
 		<PreviewCard>
 			<PreviewHeader>
 				<span>{__('Live Preview', 'petitioner')}</span>
-				{petitions && petitions.length > 0 && (
+				{Array.isArray(petitions) && petitions.length > 0 && (
 					<PreviewSelect 
 						value={selectedFormId} 
 						onChange={(e) => {
