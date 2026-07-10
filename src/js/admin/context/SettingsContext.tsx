@@ -47,6 +47,12 @@ const normalizeSettingsData = (
 			labels: {},
 		},
 		active_tab: raw?.active_tab ?? '',
+		border_radius: raw?.border_radius ?? '',
+		base_font_size: raw?.base_font_size ?? '',
+		button_font_size: raw?.button_font_size ?? '',
+		field_spacing: raw?.field_spacing ?? '',
+		input_border_width: raw?.input_border_width ?? '',
+		input_size: raw?.input_size ?? '',
 	};
 
 	return applyFilters(

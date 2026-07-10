@@ -23,14 +23,17 @@
     --ptr-color-grey: #efefef;
 
     /* Font sizes */
+    --ptr-fs-xs: 12px;
     --ptr-fs-sm: 14px;
-    --ptr-fs-md: 18px;
+    --ptr-fs-md: 16px;
+    --ptr-fs-lg: 18px;
 
     /* Border radius */
     --ptr-border-radius-xs: 2px;
     --ptr-border-radius-sm: 4px;
     --ptr-border-radius-md: 8px;
     --ptr-border-radius-lg: 16px;
+    --ptr-border-radius-full: 999px;
 
 }
 
@@ -48,13 +51,15 @@
     --ptr-input-border-radius: var(--ptr-border-radius-md);
     --ptr-input-spacing-y: 0.7rem;
     --ptr-input-spacing-x: var(--ptr-spacer-md);
+    --ptr-input-margin-bottom: var(--ptr-spacer-sm);
     --ptr-input-line-height: 40px;
 
     /* label related */
     --ptr-label-font-size: var(--ptr-fs-sm);
+    --ptr-label-line-height: 1.5;
 
     /* button */
-    --ptr-btn-font-size: var(--ptr-fs-md);
+    --ptr-btn-font-size: var(--ptr-fs-lg);
     --ptr-btn-bg: var(--ptr-color-primary);
     --ptr-btn-bg-hover: var(--ptr-color-dark);
     --ptr-button-border-width: var(--ptr-input-border-width);
@@ -81,11 +86,12 @@
     display: flex;
     flex-direction: column;
     gap: var(--ptr-spacer-xs);
-    margin-bottom: var(--ptr-spacer-sm);
+    margin-bottom: var(--ptr-input-margin-bottom);
 }
 
 .petitioner__input label {
     font-size: var(--ptr-label-font-size);
+    line-height: var(--ptr-label-line-height);
 }
 
 .petitioner__input input:not([type="checkbox"]),
@@ -203,7 +209,7 @@
 }
 
 .petitioner__btn--submit {
-    font-size: var(--ptr-fs-md);
+    font-size: var(--ptr-btn-font-size);
     background-color: var(--ptr-color-primary);
     color: white;
 }

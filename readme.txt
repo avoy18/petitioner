@@ -148,6 +148,11 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.8.5 =
+* Improvements
+    * Additional controls in the styles customizer and a preview
+    * Improved the `petitioner_submission_finalized` hook: it now hydrates the submission data that it sends. Good for working with the custom fields.
+
 = 0.8.4 =
 * Improvements
     * Submissions Gutenberg block now has a proper preview in the admin UI (instead of a grey placeholder box)

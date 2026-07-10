@@ -57,6 +57,11 @@ class AV_Petitioner_Setup
                 new AV_Petitioner_Label_Overrides();
             }
 
+            // dynamic css
+            if (class_exists('AV_Petitioner_Dynamic_CSS')) {
+                AV_Petitioner_Dynamic_CSS::init();
+            }
+
             // custom properties
             if (class_exists('AV_Petitioner_Custom_Properties')) {
                 new AV_Petitioner_Custom_Properties();
@@ -195,10 +200,10 @@ class AV_Petitioner_Setup
         wp_enqueue_style('petitioner-style', plugin_dir_url(dirname(__FILE__)) . 'dist/main.css', array(), AV_PETITIONER_PLUGIN_VERSION);
 
         // Custom CSS styles
-        $custom_css = $this->generate_custom_css();
+        $custom_css = AV_Petitioner_Dynamic_CSS::generate_css();
 
         if (!empty($custom_css)) {
-            wp_add_inline_style('petitioner-style', esc_html(wp_strip_all_tags($custom_css)));
+            wp_add_inline_style('petitioner-style', wp_strip_all_tags($custom_css));
         }
 
         wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', [], AV_PETITIONER_PLUGIN_VERSION, true);
@@ -226,35 +231,6 @@ class AV_Petitioner_Setup
     }
 
 
-    public function generate_custom_css()
-    {
-        $custom_css = '';
-        $primary_color = get_option('petitioner_primary_color', '');
-        $dark_color = get_option('petitioner_dark_color', '');
-        $grey_color = get_option('petitioner_grey_color', '');
-
-        $default_colors = '';
-
-        if (!empty($primary_color)) {
-            $default_colors .= '--ptr-color-primary: ' . $primary_color . '!important;';
-        }
-
-        if (!empty($dark_color)) {
-            $default_colors .= '--ptr-color-dark: ' . $dark_color . '!important;';
-        }
-
-        if (!empty($grey_color)) {
-            $default_colors .= '--ptr-color-grey: ' . $grey_color . '!important;';
-        }
-
-        if (!empty($default_colors)) {
-            $custom_css .= '.petitioner {' . $default_colors . ' } ';
-        }
-
-        $custom_css .= get_option('petitioner_custom_css', '');
-
-        return $custom_css;
-    }
 
     /**
      * Enqueue admin scripts and styles.
