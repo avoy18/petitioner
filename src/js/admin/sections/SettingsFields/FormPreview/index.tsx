@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
-import { getAjaxNonce } from '@admin/utilities';
+import { fetchPreviewCSS } from './utilities';
 import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe } from './styled';
 
 export default function FormPreview() {
@@ -35,40 +35,18 @@ export default function FormPreview() {
 		);
 
 		// 2. Fetch compiled CSS via AJAX
-		try {
-			const finalQuery = new URLSearchParams();
-			finalQuery.set('action', 'petitioner_generate_preview_css');
-
-			const finalData = new FormData();
-			// serialize formState as payload
-			Object.entries(formState).forEach(([key, value]) => {
-				if (value !== undefined && value !== null) {
-					finalData.append(`payload[${key}]`, String(value));
-				}
-			});
-			finalData.append('petitioner_nonce', getAjaxNonce());
-
-			const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
-				method: 'POST',
-				body: finalData,
-			});
-			
-			if (!request.ok) {
-				console.error('HTTP error: ', request.status);
-				return;
-			}
-			
-			const result = await request.json();
-
-			if (result.success && result.data?.css) {
-				iframeRef.current.contentWindow.postMessage(
-					{ type: 'UPDATE_CSS', payload: result.data.css },
+		fetchPreviewCSS({
+			formState,
+			onSuccess: (css) => {
+				iframeRef.current?.contentWindow?.postMessage(
+					{ type: 'UPDATE_CSS', payload: css },
 					'*'
 				);
-			}
-		} catch (e) {
-			console.error('Failed to update live preview CSS', e);
-		}
+			},
+			onError: (msg) => {
+				console.error(msg);
+			},
+		});
 	}, [formState]);
 
 	// Sync settings to the iframe via AJAX + postMessage
