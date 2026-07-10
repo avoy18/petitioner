@@ -24,7 +24,7 @@ export const PreviewSelect = styled.select`
 
 export const PreviewIframe = styled.iframe`
 	width: 100%;
-	height: 700px;
+	min-height: 800px;
 	border: none;
 	display: block;
 `;

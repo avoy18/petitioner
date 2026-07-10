@@ -34,7 +34,7 @@ export default function FormPreview() {
 		}
 	}, [formState]);
 
-	const previewUrl = `${ajaxurl}?action=petitioner_live_preview&form_id=${selectedFormId}`;
+	const previewUrl = `${window.petitionerData?.home_url || '/'}?petitioner_live_preview=1&form_id=${selectedFormId}`;
 
 	return (
 		<PreviewCard>

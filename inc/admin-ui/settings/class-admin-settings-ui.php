@@ -163,6 +163,8 @@ class AV_Petitioner_Admin_Settings_UI
             "colors" => $this->default_colors,
             "labels" => $this->get_default_labels()
         ];
+        
+        $petitioner_info['home_url'] = home_url('/');
 
         /**
          * Filter to modify petitioner data that is sent to the edit screen
