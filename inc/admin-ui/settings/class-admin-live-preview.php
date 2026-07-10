@@ -60,6 +60,11 @@ class AV_Petitioner_Admin_Live_Preview
         if (!is_array($payload)) {
             $payload = [];
         }
+
+        // Sanitize custom CSS to prevent XSS/HTML injection
+        if (isset($payload['custom_css'])) {
+            $payload['custom_css'] = wp_strip_all_tags($payload['custom_css']);
+        }
         
         // Pass payload as overrides to the dynamic CSS generator
         $css = AV_Petitioner_Dynamic_CSS::generate_css($payload);

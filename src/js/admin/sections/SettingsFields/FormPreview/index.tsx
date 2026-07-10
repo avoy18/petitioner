@@ -5,6 +5,13 @@ import { useSettingsFormContext } from '@admin/context/SettingsContext';
 import { fetchPreviewCSS } from './utilities';
 import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe } from './styled';
 
+interface PetitionRecord {
+	id: number;
+	title?: {
+		rendered: string;
+	};
+}
+
 export default function FormPreview() {
 	const { formState } = useSettingsFormContext();
 	const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -14,7 +21,7 @@ export default function FormPreview() {
 	const petitions = useSelect((select) => {
 		// @ts-ignore - core-data types might not be fully available
 		return select('core').getEntityRecords('postType', 'petitioner-petition', {
-			per_page: 10,
+			per_page: -1,
 		});
 	}, []);
 
@@ -88,7 +95,7 @@ export default function FormPreview() {
 							setSelectedFormId(Number(e.target.value));
 						}}
 					>
-						{petitions.map((p: any) => (
+						{petitions.map((p: PetitionRecord) => (
 							<option key={p.id} value={p.id}>{p.title?.rendered || __('(No Title)', 'petitioner')}</option>
 						))}
 					</PreviewSelect>
