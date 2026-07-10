@@ -57,6 +57,11 @@ class AV_Petitioner_Setup
                 new AV_Petitioner_Label_Overrides();
             }
 
+            // dynamic css
+            if (class_exists('AV_Petitioner_Dynamic_CSS')) {
+                AV_Petitioner_Dynamic_CSS::init();
+            }
+
             // custom properties
             if (class_exists('AV_Petitioner_Custom_Properties')) {
                 new AV_Petitioner_Custom_Properties();
