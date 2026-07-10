@@ -58,7 +58,7 @@ class AV_Petitioner_Admin_Live_Preview
         <head>
             <meta charset="<?php bloginfo('charset'); ?>">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Petitioner Live Preview</title>
+            <title><?php esc_html_e('Petitioner Live Preview', 'petitioner'); ?></title>
             <?php wp_head(); ?>
             <style>
                 body {
