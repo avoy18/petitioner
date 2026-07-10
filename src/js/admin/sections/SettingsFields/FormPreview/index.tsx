@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe } from './styled';
@@ -7,8 +8,21 @@ import { PREVIEW_UPDATE_EVENT } from './consts';
 export default function FormPreview() {
 	const { formState } = useSettingsFormContext();
 	const iframeRef = useRef<HTMLIFrameElement>(null);
-	const petitions = window.petitionerData?.petitions || [];
-	const [selectedFormId, setSelectedFormId] = useState(petitions.length > 0 ? petitions[0].id : 0);
+
+	const petitions = useSelect((select) => {
+		// @ts-ignore - core-data types might not be fully available
+		return select('core').getEntityRecords('postType', 'petitioner-petition', {
+			per_page: 10,
+		});
+	}, []);
+
+	const [selectedFormId, setSelectedFormId] = useState(0);
+
+	useEffect(() => {
+		if (petitions && petitions.length > 0 && selectedFormId === 0) {
+			setSelectedFormId(petitions[0].id);
+		}
+	}, [petitions, selectedFormId]);
 
 	// Sync settings to the iframe via postMessage
 	useEffect(() => {
@@ -26,13 +40,13 @@ export default function FormPreview() {
 		<PreviewCard>
 			<PreviewHeader>
 				<span>{__('Live Preview', 'petitioner')}</span>
-				{petitions.length > 0 && (
+				{petitions && petitions.length > 0 && (
 					<PreviewSelect 
 						value={selectedFormId} 
 						onChange={(e) => setSelectedFormId(Number(e.target.value))}
 					>
-						{petitions.map((p) => (
-							<option key={p.id} value={p.id}>{p.title}</option>
+						{petitions.map((p: any) => (
+							<option key={p.id} value={p.id}>{p.title?.rendered || __('(No Title)', 'petitioner')}</option>
 						))}
 					</PreviewSelect>
 				)}
