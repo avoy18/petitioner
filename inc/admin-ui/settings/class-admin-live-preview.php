@@ -56,7 +56,10 @@ class AV_Petitioner_Admin_Live_Preview
 
         check_ajax_referer(self::NONCE_ACTION, 'petitioner_nonce');
 
-        $payload = isset($_POST['payload']) ? (array) $_POST['payload'] : [];
+        $payload = isset($_POST['payload']) ? json_decode(wp_unslash($_POST['payload']), true) : [];
+        if (!is_array($payload)) {
+            $payload = [];
+        }
         
         // Pass payload as overrides to the dynamic CSS generator
         $css = AV_Petitioner_Dynamic_CSS::generate_css($payload);

@@ -16,12 +16,7 @@ export const fetchPreviewCSS = async ({
 		finalQuery.set('action', 'petitioner_generate_preview_css');
 
 		const finalData = new FormData();
-		// serialize formState as payload
-		Object.entries(formState).forEach(([key, value]) => {
-			if (value !== undefined && value !== null) {
-				finalData.append(`payload[${key}]`, String(value));
-			}
-		});
+		finalData.append('payload', JSON.stringify(formState));
 		finalData.append('petitioner_nonce', String(window.petitionerData.preview_nonce));
 
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
