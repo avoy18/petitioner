@@ -28,10 +28,15 @@ export default function FormPreview() {
 	const syncPreview = useCallback(async () => {
 		if (!iframeRef.current?.contentWindow) return;
 
+		const targetOrigin = new URL(
+			window.petitionerData?.home_url || '/',
+			window.location.href
+		).origin;
+
 		// 1. Send visibility updates instantly
 		iframeRef.current.contentWindow.postMessage(
 			{ type: 'UPDATE_VISIBILITY', payload: formState },
-			'*'
+			targetOrigin
 		);
 
 		// 2. Fetch compiled CSS via AJAX
@@ -40,7 +45,7 @@ export default function FormPreview() {
 			onSuccess: (css) => {
 				iframeRef.current?.contentWindow?.postMessage(
 					{ type: 'UPDATE_CSS', payload: css },
-					'*'
+					targetOrigin
 				);
 			},
 			onError: (msg) => {
