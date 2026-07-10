@@ -1,4 +1,3 @@
-import { getAjaxNonce } from '@admin/utilities';
 import type { SettingsFormData } from '@admin/sections/SettingsFields/consts';
 
 interface FetchPreviewCSSSettings {
@@ -23,7 +22,7 @@ export const fetchPreviewCSS = async ({
 				finalData.append(`payload[${key}]`, String(value));
 			}
 		});
-		finalData.append('petitioner_nonce', getAjaxNonce());
+		finalData.append('petitioner_nonce', String(window.petitionerData.preview_nonce));
 
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',

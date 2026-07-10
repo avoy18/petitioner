@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_Admin_Live_Preview
 {
+    const NONCE_ACTION = 'petitioner_generate_preview_css';
+
     /**
      * Initializes the class and hooks into WordPress.
      *
@@ -25,6 +27,19 @@ class AV_Petitioner_Admin_Live_Preview
     {
         add_action('template_redirect', [self::class, 'render_preview']);
         add_action('wp_ajax_petitioner_generate_preview_css', [self::class, 'generate_preview_css']);
+        add_filter('av_petitioner_info_settings', [self::class, 'add_preview_nonce']);
+    }
+
+    /**
+     * Injects the dedicated preview nonce into the localized settings data.
+     *
+     * @param array $petitioner_info
+     * @return array
+     */
+    public static function add_preview_nonce($petitioner_info)
+    {
+        $petitioner_info['preview_nonce'] = wp_create_nonce(self::NONCE_ACTION);
+        return $petitioner_info;
     }
 
     /**
@@ -39,7 +54,7 @@ class AV_Petitioner_Admin_Live_Preview
             wp_send_json_error('Unauthorized');
         }
 
-        check_ajax_referer('petitioner_nonce', 'petitioner_nonce');
+        check_ajax_referer(self::NONCE_ACTION, 'petitioner_nonce');
 
         $payload = isset($_POST['payload']) ? (array) $_POST['payload'] : [];
         
