@@ -16,7 +16,7 @@ export default function VisualSettings() {
 	const visualOptions = windowPetitionerData?.default_values?.visual_options || {};
 	
 	const formatOptions = (optionsObj: Record<string, string> = {}) => {
-		return Object.entries(optionsObj).map(([value, label]) => ({
+		return Object.entries(optionsObj || {}).map(([value, label]) => ({
 			label,
 			value,
 		}));

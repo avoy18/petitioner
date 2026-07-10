@@ -122,7 +122,7 @@ class AV_Petitioner_Dynamic_CSS
      */
     private static function is_valid_option($value, $schema_key)
     {
-        if (empty($value)) {
+        if (!is_string($value) || $value === '') {
             return false;
         }
 
