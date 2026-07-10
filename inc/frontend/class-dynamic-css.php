@@ -32,9 +32,14 @@ class AV_Petitioner_Dynamic_CSS
      */
     public static function inject_schema_options($settings)
     {
-        if (!isset($settings['default_values'])) {
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
+        if (!isset($settings['default_values']) || !is_array($settings['default_values'])) {
             $settings['default_values'] = [];
         }
+
         $settings['default_values']['visual_options'] = self::get_schema_options();
         return $settings;
     }
@@ -109,6 +114,28 @@ class AV_Petitioner_Dynamic_CSS
     }
 
     /**
+     * Safely validates a visual option against the schema.
+     *
+     * @param string $value      The value to validate.
+     * @param string $schema_key The schema category key (e.g. 'border_radius').
+     * @return bool True if valid, false otherwise.
+     */
+    private static function is_valid_option($value, $schema_key)
+    {
+        if (empty($value)) {
+            return false;
+        }
+
+        $schema = self::get_schema_options();
+
+        if (!isset($schema[$schema_key]) || !is_array($schema[$schema_key])) {
+            return false;
+        }
+
+        return array_key_exists($value, $schema[$schema_key]);
+    }
+
+    /**
      * Generates all dynamic CSS styles based on saved options.
      *
      * @return string The generated CSS string.
@@ -170,8 +197,7 @@ class AV_Petitioner_Dynamic_CSS
         $styles = '';
         $radius = get_option('petitioner_border_radius', '');
 
-        $schema = self::get_schema_options();
-        if (!empty($radius) && array_key_exists($radius, $schema['border_radius'])) {
+        if (self::is_valid_option($radius, 'border_radius')) {
             $styles .= '--ptr-input-border-radius: var(--ptr-border-radius-' . $radius . ')!important;';
             $styles .= '--ptr-button-border-radius: var(--ptr-border-radius-' . $radius . ')!important;';
 
@@ -193,13 +219,12 @@ class AV_Petitioner_Dynamic_CSS
         $styles = '';
 
         $base = get_option('petitioner_base_font_size', '');
-        $schema = self::get_schema_options();
-        if (!empty($base) && array_key_exists($base, $schema['base_font_size'])) {
+        if (self::is_valid_option($base, 'base_font_size')) {
             $styles .= '--ptr-label-font-size: var(--ptr-fs-' . $base . ')!important;';
         }
 
         $btn = get_option('petitioner_button_font_size', '');
-        if (!empty($btn) && array_key_exists($btn, $schema['button_font_size'])) {
+        if (self::is_valid_option($btn, 'button_font_size')) {
             $styles .= '--ptr-btn-font-size: var(--ptr-fs-' . $btn . ')!important;';
         }
 
@@ -216,8 +241,7 @@ class AV_Petitioner_Dynamic_CSS
         $styles = '';
         $spacing = get_option('petitioner_field_spacing', '');
 
-        $schema = self::get_schema_options();
-        if (!empty($spacing) && array_key_exists($spacing, $schema['field_spacing'])) {
+        if (self::is_valid_option($spacing, 'field_spacing')) {
             $styles .= '--ptr-input-margin-bottom: var(--ptr-spacer-' . $spacing . ')!important;';
         }
 
@@ -234,8 +258,7 @@ class AV_Petitioner_Dynamic_CSS
         $styles = '';
         $width = get_option('petitioner_input_border_width', '');
 
-        $schema = self::get_schema_options();
-        if (!empty($width) && array_key_exists($width, $schema['input_border_width'])) {
+        if (self::is_valid_option($width, 'input_border_width')) {
             $styles .= '--ptr-input-border-width: ' . $width . '!important;';
         }
 
@@ -252,8 +275,7 @@ class AV_Petitioner_Dynamic_CSS
         $styles = '';
         $size = get_option('petitioner_input_size', '');
 
-        $schema = self::get_schema_options();
-        if (!empty($size) && !array_key_exists($size, $schema['input_size'])) {
+        if (empty($size) || !self::is_valid_option($size, 'input_size')) {
             return $styles;
         }
 
