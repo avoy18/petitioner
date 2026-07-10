@@ -1,17 +1,16 @@
 import styled from 'styled-components';
 
 export const PreviewCard = styled.div`
-	border: 1px solid #ddd;
-	border-radius: 4px;
+	border: 1px solid var(--ptr-admin-color-grey);
+	border-radius: var(--ptr-admin-wrapper-radius);
 	background: #fff;
 	overflow: hidden;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 `;
 
 export const PreviewHeader = styled.div`
-	padding: 10px 15px;
-	background: #f6f7f7;
-	border-bottom: 1px solid #ddd;
+	padding: var(--ptr-admin-spacing-md) var(--ptr-admin-spacing-lg);
+	background: var(--ptr-admin-color-light);
+	border-bottom: 1px solid var(--ptr-admin-color-grey);
 	font-weight: 600;
 	display: flex;
 	justify-content: space-between;
