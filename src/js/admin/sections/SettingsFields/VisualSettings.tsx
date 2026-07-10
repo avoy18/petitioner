@@ -3,6 +3,7 @@ import ColorField from '@admin/components/ColorField';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 import { SelectControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import type { SettingsFormData } from './consts';
 
 export default function VisualSettings() {
 	const { formState, updateFormState, windowPetitionerData } = useSettingsFormContext();
@@ -123,7 +124,7 @@ export default function VisualSettings() {
 					label={__('Border Radius', 'petitioner')}
 					value={formState?.border_radius || ''}
 					options={formatOptions(visualOptions.border_radius)}
-					onChange={(val) => updateFormState('border_radius', val)}
+					onChange={(val) => updateFormState('border_radius', val as SettingsFormData['border_radius'])}
 				/>
 				<input type="hidden" name="petitioner_border_radius" value={formState?.border_radius || ''} />
 			</div>
@@ -133,7 +134,7 @@ export default function VisualSettings() {
 					label={__('Form Font Size', 'petitioner')}
 					value={formState?.base_font_size || ''}
 					options={formatOptions(visualOptions.base_font_size)}
-					onChange={(val) => updateFormState('base_font_size', val)}
+					onChange={(val) => updateFormState('base_font_size', val as SettingsFormData['base_font_size'])}
 				/>
 				<input type="hidden" name="petitioner_base_font_size" value={formState?.base_font_size || ''} />
 			</div>
@@ -143,7 +144,7 @@ export default function VisualSettings() {
 					label={__('Button Font Size', 'petitioner')}
 					value={formState?.button_font_size || ''}
 					options={formatOptions(visualOptions.button_font_size)}
-					onChange={(val) => updateFormState('button_font_size', val)}
+					onChange={(val) => updateFormState('button_font_size', val as SettingsFormData['button_font_size'])}
 				/>
 				<input type="hidden" name="petitioner_button_font_size" value={formState?.button_font_size || ''} />
 			</div>
@@ -153,7 +154,7 @@ export default function VisualSettings() {
 					label={__('Input Border Thickness', 'petitioner')}
 					value={formState?.input_border_width || ''}
 					options={formatOptions(visualOptions.input_border_width)}
-					onChange={(val) => updateFormState('input_border_width', val)}
+					onChange={(val) => updateFormState('input_border_width', val as SettingsFormData['input_border_width'])}
 				/>
 				<input type="hidden" name="petitioner_input_border_width" value={formState?.input_border_width || ''} />
 			</div>
@@ -163,7 +164,7 @@ export default function VisualSettings() {
 					label={__('Field Spacing', 'petitioner')}
 					value={formState?.field_spacing || ''}
 					options={formatOptions(visualOptions.field_spacing)}
-					onChange={(val) => updateFormState('field_spacing', val)}
+					onChange={(val) => updateFormState('field_spacing', val as SettingsFormData['field_spacing'])}
 				/>
 				<input type="hidden" name="petitioner_field_spacing" value={formState?.field_spacing || ''} />
 			</div>
@@ -173,7 +174,7 @@ export default function VisualSettings() {
 					label={__('Input Size', 'petitioner')}
 					value={formState?.input_size || ''}
 					options={formatOptions(visualOptions.input_size)}
-					onChange={(val) => updateFormState('input_size', val)}
+					onChange={(val) => updateFormState('input_size', val as SettingsFormData['input_size'])}
 				/>
 				<input type="hidden" name="petitioner_input_size" value={formState?.input_size || ''} />
 			</div>
