@@ -8,6 +8,7 @@ import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe } from './styl
 export default function FormPreview() {
 	const { formState } = useSettingsFormContext();
 	const iframeRef = useRef<HTMLIFrameElement>(null);
+	const abortControllerRef = useRef<AbortController | null>(null);
 	const [iframeLoaded, setIframeLoaded] = useState(false);
 
 	const petitions = useSelect((select) => {
@@ -39,9 +40,16 @@ export default function FormPreview() {
 			targetOrigin
 		);
 
+		// Cancel any pending CSS generation requests
+		if (abortControllerRef.current) {
+			abortControllerRef.current.abort();
+		}
+		abortControllerRef.current = new AbortController();
+
 		// 2. Fetch compiled CSS via AJAX
 		fetchPreviewCSS({
 			formState,
+			abortSignal: abortControllerRef.current.signal,
 			onSuccess: (css) => {
 				iframeRef.current?.contentWindow?.postMessage(
 					{ type: 'UPDATE_CSS', payload: css },

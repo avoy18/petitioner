@@ -4,12 +4,14 @@ interface FetchPreviewCSSSettings {
 	formState: SettingsFormData;
 	onSuccess?: (css: string) => void;
 	onError?: (msg: string) => void;
+	abortSignal?: AbortSignal;
 }
 
 export const fetchPreviewCSS = async ({
 	formState,
 	onSuccess = () => {},
 	onError = () => {},
+	abortSignal,
 }: FetchPreviewCSSSettings) => {
 	try {
 		const finalQuery = new URLSearchParams();
@@ -22,6 +24,7 @@ export const fetchPreviewCSS = async ({
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',
 			body: finalData,
+			signal: abortSignal,
 		});
 
 		if (!request.ok) {
@@ -37,6 +40,9 @@ export const fetchPreviewCSS = async ({
 			onError('Failed to generate preview CSS');
 		}
 	} catch (error) {
+		if (error instanceof DOMException && error.name === 'AbortError') {
+			return; // Silently ignore aborted requests
+		}
 		onError('Error generating preview CSS: ' + error);
 	}
 };
