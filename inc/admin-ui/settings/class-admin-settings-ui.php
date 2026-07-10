@@ -158,8 +158,6 @@ class AV_Petitioner_Admin_Settings_UI
             } else {
                 $petitioner_info[$key] = $option_values[$key];
             }
-        }
-
         $petitioner_info['default_values'] = [
             "colors" => $this->default_colors,
             "labels" => $this->get_default_labels()
