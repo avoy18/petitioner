@@ -73,8 +73,6 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-label-overrides.php';
 
 $petitioner_setup = new AV_Petitioner_Setup();
 
-AV_Petitioner_Dynamic_CSS::init();
-AV_Petitioner_Admin_Live_Preview::init();
 new AV_Email_Confirmations();
 
 register_activation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_activation'));

@@ -158,10 +158,27 @@ class AV_Petitioner_Admin_Settings_UI
             } else {
                 $petitioner_info[$key] = $option_values[$key];
             }
+        }
+        
+        $petitions = get_posts([
+            'post_type' => 'petitioner-petition',
+            'posts_per_page' => -1,
+            'post_status' => 'any'
+        ]);
+        $petition_list = [];
+        foreach ($petitions as $p) {
+            $petition_list[] = [
+                'id' => $p->ID,
+                'title' => !empty($p->post_title) ? $p->post_title : __('(No Title)', 'petitioner')
+            ];
+        }
+
         $petitioner_info['default_values'] = [
             "colors" => $this->default_colors,
             "labels" => $this->get_default_labels()
         ];
+        
+        $petitioner_info['petitions'] = $petition_list;
 
         /**
          * Filter to modify petitioner data that is sent to the edit screen

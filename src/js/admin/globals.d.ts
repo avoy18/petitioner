@@ -34,6 +34,7 @@ declare global {
 				defaults: Record<string, unknown>;
 				draggable: unknown[];
 			};
+			petitions?: Array<{ id: number; title: string; [key: string]: any }>;
 		};
 		petitionerComponents?: PetitionerComponents;
 	}

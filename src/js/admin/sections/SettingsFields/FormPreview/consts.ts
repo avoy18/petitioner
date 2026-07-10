@@ -1,0 +1,1 @@
+export const PREVIEW_UPDATE_EVENT = 'UPDATE_SETTINGS';

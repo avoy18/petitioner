@@ -50,13 +50,20 @@ class AV_Petitioner_Admin_Live_Preview
         </head>
         <body>
             <?php
-            $petitions = get_posts([
-                'post_type' => 'petitioner-petition',
-                'posts_per_page' => 1,
-                'post_status' => 'any'
-            ]);
+            $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
+            $petitions = [];
 
-            if (!empty($petitions)) {
+            if ($form_id) {
+                $petitions = [get_post($form_id)];
+            } else {
+                $petitions = get_posts([
+                    'post_type' => 'petitioner-petition',
+                    'posts_per_page' => 1,
+                    'post_status' => 'any'
+                ]);
+            }
+
+            if (!empty($petitions) && $petitions[0]) {
                 $frontend_ui = new AV_Petitioner_Frontend_UI();
                 echo $frontend_ui->display_form(['id' => $petitions[0]->ID]);
             } else {

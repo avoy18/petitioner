@@ -4,6 +4,8 @@ import { useSettingsFormContext } from '@admin/context/SettingsContext';
 import { SelectControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import type { SettingsFormData } from './consts';
+import { VisualSettingsLayout, MainContent, SidebarContent } from './styled';
+import FormPreview from './FormPreview';
 
 export default function VisualSettings() {
 	const { formState, updateFormState, windowPetitionerData } = useSettingsFormContext();
@@ -24,7 +26,8 @@ export default function VisualSettings() {
 	};
 
 	return (
-		<>
+		<VisualSettingsLayout>
+			<MainContent>
 			<p>
 				<input
 					checked={formState.show_letter}
@@ -184,6 +187,10 @@ export default function VisualSettings() {
 				title={__('Custom CSS', 'petitioner')}
 				help={__('Add your custom CSS here.', 'petitioner')}
 			/>
-		</>
+			</MainContent>
+			<SidebarContent>
+				<FormPreview />
+			</SidebarContent>
+		</VisualSettingsLayout>
 	);
 }
