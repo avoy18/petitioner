@@ -192,7 +192,7 @@ export default function VisualSettings({ isActive }: { isActive?: boolean }) {
 					onChange={(val) => updateFormState('custom_css', val)}
 					isActive={isActive}
 				/>
-				{formState?.custom_css?.match(/<\s*\/?\s*style[^>]*>/i) && (
+				{formState?.custom_css?.match(/<\s*\/?\s*style\b[^>]*>?/i) && (
 					<SecurityWarning>
 						<strong>{__('Note:', 'petitioner')}</strong> {__('<style> tags are automatically stripped from output for security reasons. Please write pure CSS.', 'petitioner')}
 					</SecurityWarning>

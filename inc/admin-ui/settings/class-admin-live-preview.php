@@ -65,7 +65,7 @@ class AV_Petitioner_Admin_Live_Preview
         $css = AV_Petitioner_Dynamic_CSS::generate_css($payload);
 
         // Sanitize the final CSS to prevent XSS/HTML injection while preserving valid CSS chars like <
-        $css = preg_replace('#<\s*/?\s*style[^>]*>#is', '', $css);
+        $css = preg_replace('#<\s*/?\s*style\b[^>]*>?#is', '', $css);
 
         wp_send_json_success(['css' => $css]);
     }
