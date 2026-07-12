@@ -83,9 +83,11 @@ class AV_Petitioner_Admin_Live_Preview
             return;
         }
 
-        // Only allow admins
+        // Only allow admins to see the preview. 
+        // If unauthorized, we simply return and let the normal homepage load. 
+        // This prevents a 403 from being accidentally cached as the homepage by aggressive caching plugins.
         if (!current_user_can('manage_options')) {
-            wp_die('Unauthorized', 403);
+            return;
         }
 
         // Prevent clickjacking by ensuring this can only be framed by the same origin
