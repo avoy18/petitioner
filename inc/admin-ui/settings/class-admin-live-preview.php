@@ -155,6 +155,12 @@ class AV_Petitioner_Admin_Live_Preview
     ?>
         <script>
             const adminOrigin = new URL(<?php echo wp_json_encode($admin_url); ?>, window.location.href).origin;
+            // Prevent actual form submission inside the live preview
+            document.addEventListener('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }, true); // Use capture phase to intercept before frontend JS
+
             // Listen for messages from the parent window
             window.addEventListener('message', function(event) {
                 // Verify the message comes from the WordPress admin dashboard
