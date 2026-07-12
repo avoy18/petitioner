@@ -69,7 +69,13 @@ export const useFormPreview = () => {
             syncPreview();
         }, 300);
 
-        return () => clearTimeout(timeout);
+        return () => {
+            clearTimeout(timeout);
+            // Abort any in-flight request when unmounting OR when dependencies change
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        }
     }, [syncPreview, iframeLoaded]);
 
     const previewUrl = `${window.petitionerData?.home_url || '/'}?petitioner_live_preview=1&form_id=${selectedFormId}`;
