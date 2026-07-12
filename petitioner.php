@@ -5,7 +5,7 @@
  * Description:       A WordPress plugin for collecting petitions.
  * Requires at least: 5.9
  * Requires PHP:      8.0
- * Version:           0.8.4
+ * Version:           0.8.5
  * Author:            Anton Voytenko
  * License:           GPLv2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('AV_PETITIONER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-define('AV_PETITIONER_PLUGIN_VERSION', '0.8.4');
+define('AV_PETITIONER_PLUGIN_VERSION', '0.8.5');
 
 if (!function_exists('av_ptr_error_log')) {
 
@@ -58,9 +58,11 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-template.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-mailer.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-frontend-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-form-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-dynamic-css.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-shortcodes.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/edit-form/class-admin-edit-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/settings/class-admin-settings-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/settings/class-admin-live-preview.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-component-preview-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-shared.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/gutenberg/class-gutenberg.php';

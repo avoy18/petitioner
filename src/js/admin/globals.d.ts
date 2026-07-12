@@ -34,6 +34,13 @@ declare global {
 				defaults: Record<string, unknown>;
 				draggable: unknown[];
 			};
+			home_url?: string;
+			petitions?: Array<{ id: number; title: string; [key: string]: any }>;
+		};
+		wp?: {
+			codeEditor?: {
+				initialize: (el: HTMLElement | string, config: any) => any;
+			};
 		};
 		petitionerComponents?: PetitionerComponents;
 	}

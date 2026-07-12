@@ -59,9 +59,6 @@ class AV_Petitioner_Admin_Settings_UI
                 wp_enqueue_code_editor(array('type' => 'text/css'));
                 wp_enqueue_script('wp-theme-plugin-editor');
                 wp_enqueue_style('wp-codemirror');
-                wp_add_inline_script('wp-theme-plugin-editor', "jQuery(document).ready(function($) {
-                    wp.codeEditor.initialize($('#petitionerCode'), {type: 'text/css'});
-                });", true);
 
                 wp_enqueue_style('wp-color-picker');
                 wp_enqueue_script('wp-color-picker');
@@ -159,11 +156,12 @@ class AV_Petitioner_Admin_Settings_UI
                 $petitioner_info[$key] = $option_values[$key];
             }
         }
-
         $petitioner_info['default_values'] = [
             "colors" => $this->default_colors,
             "labels" => $this->get_default_labels()
         ];
+        
+        $petitioner_info['home_url'] = home_url('/');
 
         /**
          * Filter to modify petitioner data that is sent to the edit screen

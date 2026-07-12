@@ -20,6 +20,8 @@ const normalizeSettingsData = (
 ): WindowSettingsData => {
 	const data = {
 		...(raw || {}),
+		home_url: raw?.home_url ?? '/',
+		preview_nonce: raw?.preview_nonce ?? '',
 		show_letter: raw?.show_letter ?? true,
 		show_title: raw?.show_title ?? true,
 		show_goal: raw?.show_goal ?? true,
@@ -47,6 +49,12 @@ const normalizeSettingsData = (
 			labels: {},
 		},
 		active_tab: raw?.active_tab ?? '',
+		border_radius: raw?.border_radius ?? '',
+		base_font_size: raw?.base_font_size ?? '',
+		button_font_size: raw?.button_font_size ?? '',
+		field_spacing: raw?.field_spacing ?? '',
+		input_border_width: raw?.input_border_width ?? '',
+		input_size: raw?.input_size ?? '',
 	};
 
 	return applyFilters(
