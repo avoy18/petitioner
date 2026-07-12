@@ -90,6 +90,9 @@ class AV_Petitioner_Admin_Live_Preview
         // Prevent clickjacking by ensuring this can only be framed by the same origin
         send_frame_options_header();
 
+        // Prevent aggressive caching plugins/CDNs from caching this admin-only view
+        nocache_headers();
+
         $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
 
         // Remove admin bar for the preview
