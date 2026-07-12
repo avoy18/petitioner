@@ -33,7 +33,11 @@ export const useFormPreview = () => {
     const syncPreview = useCallback(async () => {
         if (!iframeRef.current?.contentWindow) return;
 
-        const targetOrigin = window.location.origin;
+        /** We use the provided home_url here instead of the window.location.origin because some setups (like multisites) might have a different frontend URL than admin */
+        const targetOrigin = new URL(
+            windowPetitionerData.home_url || '/',
+            window.location.href
+        ).origin;
 
         // 1. Send visibility updates instantly
         iframeRef.current.contentWindow.postMessage(
