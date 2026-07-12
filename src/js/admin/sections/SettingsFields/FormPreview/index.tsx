@@ -27,7 +27,7 @@ export default function FormPreview() {
 			<PreviewHeader>
 				<PreviewTitleWrapper>
 					<p>{__('Live Preview', 'petitioner')}</p>
-					<small>{__('Note: this is not a perfect representation of your frontend, but its close', 'petitioner')}</small>
+					<small>{__('Note: this is not a perfect representation of your frontend, but it\'s close', 'petitioner')}</small>
 				</PreviewTitleWrapper>
 				{Array.isArray(petitions) && petitions.length > 0 && (
 					<PreviewSelect
