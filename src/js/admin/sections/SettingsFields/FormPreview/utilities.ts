@@ -1,26 +1,26 @@
 import type { SettingsFormData } from '@admin/sections/SettingsFields/consts';
 import { LOCAL_STORAGE_KEY } from './consts';
 
-type FetchPreviewCSSSettings = {
-	formState: SettingsFormData;
-	onSuccess?: (css: string) => void;
-	onError?: (msg: string) => void;
-	abortSignal?: AbortSignal;
-}
-
 export const fetchPreviewCSS = async ({
 	formState,
+	previewNonce,
 	onSuccess = () => { },
 	onError = () => { },
 	abortSignal,
-}: FetchPreviewCSSSettings) => {
+}: {
+	formState: SettingsFormData;
+	previewNonce: string;
+	onSuccess?: (css: string) => void;
+	onError?: (msg: string) => void;
+	abortSignal?: AbortSignal;
+}) => {
 	try {
 		const finalQuery = new URLSearchParams();
 		finalQuery.set('action', 'petitioner_generate_preview_css');
 
 		const finalData = new FormData();
 		finalData.append('payload', JSON.stringify(formState));
-		finalData.append('petitioner_nonce', String(window.petitionerData.preview_nonce));
+		finalData.append('petitioner_nonce', previewNonce);
 
 		const request = await fetch(`${ajaxurl}?${finalQuery.toString()}`, {
 			method: 'POST',

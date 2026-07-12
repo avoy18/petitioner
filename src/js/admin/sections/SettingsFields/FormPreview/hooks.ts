@@ -50,6 +50,7 @@ export const useFormPreview = () => {
         // 2. Fetch compiled CSS via AJAX
         fetchPreviewCSS({
             formState,
+            previewNonce: String(windowPetitionerData.preview_nonce),
             abortSignal: abortControllerRef.current.signal,
             onSuccess: (css) => {
                 iframeRef.current?.contentWindow?.postMessage(

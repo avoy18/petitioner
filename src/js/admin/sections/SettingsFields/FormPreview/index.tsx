@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe, PreviewTitleWrapper } from './styled';
 import { useFormPreview } from './hooks'
 
-interface PetitionRecord {
+type PetitionRecord = {
 	id: number;
 	title?: {
 		rendered: string;
