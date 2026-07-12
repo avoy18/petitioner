@@ -19,15 +19,17 @@ export default function CodeEditor({ title = '', help = '', code = '', onChange,
 	}, [onChange]);
 
 	useEffect(() => {
+		let debounceTimeout: ReturnType<typeof setTimeout>;
+		let refreshTimeout: ReturnType<typeof setTimeout>;
+
 		if (isActive && window.wp?.codeEditor && textareaRef.current && !editorRef.current) {
 			const editorConfig = { type: 'text/css' };
 			editorRef.current = window.wp.codeEditor.initialize(textareaRef.current, editorConfig);
 
 			if (editorRef.current?.codemirror) {
-				let timeout: ReturnType<typeof setTimeout>;
 				editorRef.current.codemirror.on('change', () => {
-					clearTimeout(timeout);
-					timeout = setTimeout(() => {
+					clearTimeout(debounceTimeout);
+					debounceTimeout = setTimeout(() => {
 						if (onChangeRef.current) {
 							onChangeRef.current(editorRef.current.codemirror.getValue());
 						}
@@ -36,12 +38,14 @@ export default function CodeEditor({ title = '', help = '', code = '', onChange,
 			}
 		} else if (isActive && editorRef.current?.codemirror) {
 			// A small delay ensures the container has finished rendering as visible
-			setTimeout(() => {
+			refreshTimeout = setTimeout(() => {
 				editorRef.current.codemirror.refresh();
 			}, 0);
 		}
 
 		return () => {
+			clearTimeout(debounceTimeout);
+			clearTimeout(refreshTimeout);
 			if (editorRef.current?.codemirror) {
 				editorRef.current.codemirror.toTextArea();
 				editorRef.current = null;
