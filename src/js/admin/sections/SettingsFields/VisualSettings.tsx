@@ -4,7 +4,7 @@ import { useSettingsFormContext } from '@admin/context/SettingsContext';
 import { SelectControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import type { SettingsFormData } from './consts';
-import { VisualSettingsLayout, MainContent, SidebarContent, SizingGrid } from './styled';
+import { VisualSettingsLayout, MainContent, SidebarContent, SizingGrid, SecurityWarning } from './styled';
 import FormPreview from './FormPreview';
 
 export default function VisualSettings({ isActive }: { isActive?: boolean }) {
@@ -188,10 +188,15 @@ export default function VisualSettings({ isActive }: { isActive?: boolean }) {
 				<CodeEditor
 					code={formState?.custom_css || ''}
 					title={__('Custom CSS', 'petitioner')}
-					help={__('Add your custom CSS here.', 'petitioner')}
+					help={__('Add your custom CSS here. Note: <style> tags are not needed.', 'petitioner')}
 					onChange={(val) => updateFormState('custom_css', val)}
 					isActive={isActive}
 				/>
+				{formState?.custom_css?.match(/<\s*\/?\s*style[^>]*>/i) && (
+					<SecurityWarning>
+						<strong>{__('Note:', 'petitioner')}</strong> {__('<style> tags are automatically stripped from output for security reasons. Please write pure CSS.', 'petitioner')}
+					</SecurityWarning>
+				)}
 			</MainContent>
 			<SidebarContent>
 				<FormPreview />

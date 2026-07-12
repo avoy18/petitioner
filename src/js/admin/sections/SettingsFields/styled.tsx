@@ -42,3 +42,13 @@ export const SizingGrid = styled.div`
 		flex-grow: 1;
 	}
 `
+
+export const SecurityWarning = styled.p`
+	color: #d63638;
+	margin-top: 4px;
+	font-size: 13px;
+
+	strong {
+		font-weight: 600;
+	}
+`
