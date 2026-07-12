@@ -8,6 +8,7 @@ import {
 	useSettingsFormContext,
 } from '@admin/context/SettingsContext';
 import { __ } from '@wordpress/i18n';
+import { SettingsContainer } from './styled';
 
 const tabs = [
 	{
@@ -50,9 +51,9 @@ function SettingsFieldsComponent() {
 	const { active_tab } = formState;
 
 	return (
-		<div className="petitioner-settings-box">
+		<SettingsContainer>
 			<Tabs tabs={tabs} updateURL={true} defaultTab={active_tab} />
-		</div>
+		</SettingsContainer>
 	);
 }
 

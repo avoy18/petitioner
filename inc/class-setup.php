@@ -47,6 +47,10 @@ class AV_Petitioner_Setup
                 new AV_Petitioner_Admin_Component_Preview_UI();
             }
 
+            if (class_exists('AV_Petitioner_Admin_Live_Preview')) {
+                AV_Petitioner_Admin_Live_Preview::init();
+            }
+
             // shared admin settings
             if (class_exists('AV_Petitioner_Admin_Shared')) {
                 new AV_Petitioner_Admin_Shared();
@@ -253,7 +257,7 @@ class AV_Petitioner_Setup
         }
 
         wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
-        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', ['wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-i18n', 'wp-hooks'], AV_PETITIONER_PLUGIN_VERSION, true);
+        wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', ['wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-i18n', 'wp-hooks'], AV_PETITIONER_PLUGIN_VERSION, true);
 
         wp_localize_script('petitioner-admin-script', 'petitionerFormSettings', [
             'actionPath' => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',

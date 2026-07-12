@@ -40,6 +40,7 @@ export type DefaultValues = {
 
 export interface WindowSettingsData extends SettingsFormData {
 	default_values?: DefaultValues;
+	preview_nonce?: string;
 }
 
 export type SettingsFormContextValue = {

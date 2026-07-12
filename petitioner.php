@@ -62,6 +62,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-dynamic-css.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-shortcodes.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/edit-form/class-admin-edit-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/settings/class-admin-settings-ui.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/settings/class-admin-live-preview.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-component-preview-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/admin-ui/class-admin-shared.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/gutenberg/class-gutenberg.php';

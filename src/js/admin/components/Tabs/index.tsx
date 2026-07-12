@@ -1,5 +1,5 @@
 import { TabPanel } from '@wordpress/components';
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, isValidElement, cloneElement } from '@wordpress/element';
 import type { TabPanelProps, Tab } from './consts';
 import { updateActiveTabURL } from '@admin/utilities';
 
@@ -44,7 +44,7 @@ export default function Tabs(props: TabPanelProps) {
 							data-testid={`ptr-tab-${el.name}`}
 							className={`petitioner-tab petitioner-tab ${activeTab === el.name ? 'active' : ''}`}
 						>
-							{el.renderingEl}
+							{isValidElement(el.renderingEl) ? cloneElement(el.renderingEl, { isActive: activeTab === el.name } as any) : el.renderingEl}
 						</div>
 					);
 				})}

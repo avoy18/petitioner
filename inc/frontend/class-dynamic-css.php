@@ -136,26 +136,43 @@ class AV_Petitioner_Dynamic_CSS
     }
 
     /**
-     * Generates all dynamic CSS styles based on saved options.
+     * Helper to get a setting either from overrides or the database.
      *
+     * @param string $key The database option key.
+     * @param array $overrides Optional array of values keyed without the petitioner_ prefix.
+     * @return mixed
+     */
+    private static function get_setting($key, $overrides = [])
+    {
+        $override_key = str_replace('petitioner_', '', $key);
+        if (isset($overrides[$override_key])) {
+            return $overrides[$override_key];
+        }
+        return get_option($key, '');
+    }
+
+    /**
+     * Generates all dynamic CSS styles based on saved options or overrides.
+     *
+     * @param array $overrides Optional overrides for live preview.
      * @return string The generated CSS string.
      */
-    public static function generate_css()
+    public static function generate_css($overrides = [])
     {
         $dynamic_styles = '';
-        $dynamic_styles .= self::get_color_styles();
-        $dynamic_styles .= self::get_border_radius_styles();
-        $dynamic_styles .= self::get_font_styles();
-        $dynamic_styles .= self::get_spacing_styles();
-        $dynamic_styles .= self::get_border_styles();
-        $dynamic_styles .= self::get_input_size_styles();
+        $dynamic_styles .= self::get_color_styles($overrides);
+        $dynamic_styles .= self::get_border_radius_styles($overrides);
+        $dynamic_styles .= self::get_font_styles($overrides);
+        $dynamic_styles .= self::get_spacing_styles($overrides);
+        $dynamic_styles .= self::get_border_styles($overrides);
+        $dynamic_styles .= self::get_input_size_styles($overrides);
 
         $custom_css = '';
         if (!empty($dynamic_styles)) {
             $custom_css .= '.petitioner {' . $dynamic_styles . ' } ';
         }
 
-        $custom_css .= get_option('petitioner_custom_css', '');
+        $custom_css .= self::get_setting('petitioner_custom_css', $overrides);
 
         return $custom_css;
     }
@@ -163,23 +180,24 @@ class AV_Petitioner_Dynamic_CSS
     /**
      * Generates CSS variables for color settings.
      *
+     * @param array $overrides Optional overrides.
      * @return string The color CSS styles.
      */
-    private static function get_color_styles()
+    private static function get_color_styles($overrides = [])
     {
         $styles = '';
 
-        $primary = sanitize_hex_color(get_option('petitioner_primary_color', ''));
+        $primary = sanitize_hex_color(self::get_setting('petitioner_primary_color', $overrides));
         if (!empty($primary)) {
             $styles .= '--ptr-color-primary: ' . $primary . '!important;';
         }
 
-        $dark = sanitize_hex_color(get_option('petitioner_dark_color', ''));
+        $dark = sanitize_hex_color(self::get_setting('petitioner_dark_color', $overrides));
         if (!empty($dark)) {
             $styles .= '--ptr-color-dark: ' . $dark . '!important;';
         }
 
-        $grey = sanitize_hex_color(get_option('petitioner_grey_color', ''));
+        $grey = sanitize_hex_color(self::get_setting('petitioner_grey_color', $overrides));
         if (!empty($grey)) {
             $styles .= '--ptr-color-grey: ' . $grey . '!important;';
         }
@@ -190,12 +208,13 @@ class AV_Petitioner_Dynamic_CSS
     /**
      * Generates CSS variables for border radius settings.
      *
+     * @param array $overrides Optional overrides.
      * @return string The border radius CSS styles.
      */
-    private static function get_border_radius_styles()
+    private static function get_border_radius_styles($overrides = [])
     {
         $styles = '';
-        $radius = get_option('petitioner_border_radius', '');
+        $radius = self::get_setting('petitioner_border_radius', $overrides);
 
         if (self::is_valid_option($radius, 'border_radius')) {
             $styles .= '--ptr-input-border-radius: var(--ptr-border-radius-' . $radius . ')!important;';
@@ -212,18 +231,19 @@ class AV_Petitioner_Dynamic_CSS
     /**
      * Generates CSS variables for font size settings.
      *
+     * @param array $overrides Optional overrides.
      * @return string The font size CSS styles.
      */
-    private static function get_font_styles()
+    private static function get_font_styles($overrides = [])
     {
         $styles = '';
 
-        $base = get_option('petitioner_base_font_size', '');
+        $base = self::get_setting('petitioner_base_font_size', $overrides);
         if (self::is_valid_option($base, 'base_font_size')) {
             $styles .= '--ptr-label-font-size: var(--ptr-fs-' . $base . ')!important;';
         }
 
-        $btn = get_option('petitioner_button_font_size', '');
+        $btn = self::get_setting('petitioner_button_font_size', $overrides);
         if (self::is_valid_option($btn, 'button_font_size')) {
             $styles .= '--ptr-btn-font-size: var(--ptr-fs-' . $btn . ')!important;';
         }
@@ -234,12 +254,13 @@ class AV_Petitioner_Dynamic_CSS
     /**
      * Generates CSS variables for field spacing settings.
      *
+     * @param array $overrides Optional overrides.
      * @return string The field spacing CSS styles.
      */
-    private static function get_spacing_styles()
+    private static function get_spacing_styles($overrides = [])
     {
         $styles = '';
-        $spacing = get_option('petitioner_field_spacing', '');
+        $spacing = self::get_setting('petitioner_field_spacing', $overrides);
 
         if (self::is_valid_option($spacing, 'field_spacing')) {
             $styles .= '--ptr-input-margin-bottom: var(--ptr-spacer-' . $spacing . ')!important;';
@@ -251,12 +272,13 @@ class AV_Petitioner_Dynamic_CSS
     /**
      * Generates CSS variables for input border width settings.
      *
+     * @param array $overrides Optional overrides.
      * @return string The input border width CSS styles.
      */
-    private static function get_border_styles()
+    private static function get_border_styles($overrides = [])
     {
         $styles = '';
-        $width = get_option('petitioner_input_border_width', '');
+        $width = self::get_setting('petitioner_input_border_width', $overrides);
 
         if (self::is_valid_option($width, 'input_border_width')) {
             $styles .= '--ptr-input-border-width: ' . $width . '!important;';
@@ -268,12 +290,13 @@ class AV_Petitioner_Dynamic_CSS
     /**
      * Generates CSS variables for input size settings.
      *
+     * @param array $overrides Optional overrides.
      * @return string The input size CSS styles.
      */
-    private static function get_input_size_styles()
+    private static function get_input_size_styles($overrides = [])
     {
         $styles = '';
-        $size = get_option('petitioner_input_size', '');
+        $size = self::get_setting('petitioner_input_size', $overrides);
 
         if (empty($size) || !self::is_valid_option($size, 'input_size')) {
             return $styles;
