@@ -256,7 +256,6 @@ class AV_Petitioner_Setup
             wp_enqueue_style('wp-components');
         }
 
-        wp_enqueue_style('petitioner-admin-style', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.css', array(), AV_PETITIONER_PLUGIN_VERSION);
         wp_enqueue_script('petitioner-admin-script', plugin_dir_url(dirname(__FILE__)) . 'dist/admin.js', ['wp-blocks', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-i18n', 'wp-hooks'], AV_PETITIONER_PLUGIN_VERSION, true);
 
         wp_localize_script('petitioner-admin-script', 'petitionerFormSettings', [
