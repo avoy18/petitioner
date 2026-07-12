@@ -40,6 +40,13 @@ export default function CodeEditor({ title = '', help = '', code = '', onChange,
 				editorRef.current.codemirror.refresh();
 			}, 0);
 		}
+
+		return () => {
+			if (editorRef.current?.codemirror) {
+				editorRef.current.codemirror.toTextArea();
+				editorRef.current = null;
+			}
+		};
 	}, [isActive]);
 
 	return (
