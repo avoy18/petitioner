@@ -207,8 +207,6 @@ class AV_Petitioner_Setup
         $custom_css = AV_Petitioner_Dynamic_CSS::generate_css();
 
         if (!empty($custom_css)) {
-            // Sanitize the final CSS to prevent XSS/HTML injection while preserving valid CSS chars like <
-            $custom_css = preg_replace('#<\s*/?\s*style\b[^>]*>?#is', '', $custom_css);
             wp_add_inline_style('petitioner-style', $custom_css);
         }
 

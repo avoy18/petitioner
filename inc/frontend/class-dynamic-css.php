@@ -174,6 +174,9 @@ class AV_Petitioner_Dynamic_CSS
 
         $custom_css .= self::get_setting('petitioner_custom_css', $overrides);
 
+        // Sanitize the final CSS to prevent XSS/HTML injection while preserving valid CSS chars like <
+        $custom_css = preg_replace('#<\s*/?\s*style\b[^>]*>?#is', '', $custom_css);
+
         return $custom_css;
     }
 
