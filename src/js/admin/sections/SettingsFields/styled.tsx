@@ -10,24 +10,35 @@ export const VisualSettingsLayout = styled.div`
 `;
 
 export const MainContent = styled.div`
-	flex: 1 1 60%;
-	max-width: 800px;
+	@media (min-width: ${BREAKPOINTS.lg}px) {
+		flex: 1 1 60%;
+		max-width: 800px;
+	}
 `;
 
 export const SidebarContent = styled.div`
-	flex: 1 1 40%;
-	min-width: 400px;
-	position: sticky;
-	top: 40px;
+	display: none;
+
+	@media (min-width: ${BREAKPOINTS.xl}px) {
+		display: block;
+		flex: 1 1 40%;
+		min-width: 400px;
+		position: sticky;
+		top: 40px;
+	}
 `;
 
 export const SizingGrid = styled.div`
 	display: grid;
-	gap: ${SPACINGS.lg};
+	gap: ${SPACINGS['2xl']};
 	grid-template-columns: 1fr;
 	grid-auto-rows: min-content;
 
 	@media (min-width: ${BREAKPOINTS.xl}px) {
 		grid-template-columns: repeat(2, 250px);
+	}
+
+	.ptr-field-panel > * {
+		flex-grow: 1;
 	}
 `
