@@ -65,10 +65,10 @@ class AV_Petitioner_Admin_Live_Preview
         if (isset($payload['custom_css'])) {
             $payload['custom_css'] = wp_strip_all_tags($payload['custom_css']);
         }
-        
+
         // Pass payload as overrides to the dynamic CSS generator
         $css = AV_Petitioner_Dynamic_CSS::generate_css($payload);
-        
+
         wp_send_json_success(['css' => $css]);
     }
 
@@ -94,16 +94,17 @@ class AV_Petitioner_Admin_Live_Preview
         send_frame_options_header();
 
         $form_id = isset($_GET['form_id']) ? intval($_GET['form_id']) : 0;
-        
+
         // Remove admin bar for the preview
         add_filter('show_admin_bar', '__return_false');
-        
+
         // Add the postMessage listener script to the footer
         add_action('wp_footer', [self::class, 'render_preview_script'], 999);
 
-        ?>
+?>
         <!DOCTYPE html>
         <html <?php language_attributes(); ?>>
+
         <head>
             <meta charset="<?php bloginfo('charset'); ?>">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,13 +112,17 @@ class AV_Petitioner_Admin_Live_Preview
             <?php wp_head(); ?>
             <style>
                 body {
-                    background: transparent; 
+                    background: transparent;
                     margin: 0;
                     padding: 20px;
                 }
-                html { margin-top: 0 !important; }
+
+                html {
+                    margin-top: 0 !important;
+                }
             </style>
         </head>
+
         <body <?php body_class(); ?>>
             <div class="petitioner-preview-wrapper petitioner-preview" style="max-width: 800px; margin: 40px auto; padding: 20px;">
                 <?php
@@ -131,8 +136,9 @@ class AV_Petitioner_Admin_Live_Preview
             </div>
             <?php wp_footer(); ?>
         </body>
+
         </html>
-        <?php
+    <?php
         exit;
     }
 
@@ -146,7 +152,7 @@ class AV_Petitioner_Admin_Live_Preview
     public static function render_preview_script()
     {
         $admin_url = admin_url();
-        ?>
+    ?>
         <script>
             const adminOrigin = new URL('<?php echo esc_js($admin_url); ?>', window.location.href).origin;
 
@@ -157,13 +163,14 @@ class AV_Petitioner_Admin_Live_Preview
 
                 if (event.data && event.data.type === 'UPDATE_VISIBILITY') {
                     const payload = event.data.payload;
+                    if (!payload) return;
                     const root = document.querySelector('.petitioner');
                     if (!root) return;
-                    
+
                     // Toggle elements based on settings
                     const titleEl = document.querySelector('.petitioner__title');
                     if (titleEl) titleEl.style.display = payload.show_title ? 'block' : 'none';
-                    
+
                     const letterEl = document.querySelector('.petitioner__btn--letter');
                     if (letterEl) letterEl.style.display = payload.show_letter ? 'block' : 'none';
 
@@ -173,7 +180,7 @@ class AV_Petitioner_Admin_Live_Preview
 
                 if (event.data && event.data.type === 'UPDATE_CSS') {
                     const cssString = event.data.payload;
-                    
+
                     // Apply custom CSS string
                     let customStyleEl = document.getElementById('petitioner-dynamic-css');
                     if (!customStyleEl) {
@@ -185,6 +192,6 @@ class AV_Petitioner_Admin_Live_Preview
                 }
             });
         </script>
-        <?php
+<?php
     }
 }
