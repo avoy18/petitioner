@@ -11,6 +11,7 @@ const wpExternals = [
 	'@wordpress/element',
 	'@wordpress/hooks',
 	'@wordpress/i18n',
+	'@wordpress/html-entities',
 	'react',
 	'react-dom',
 ];
@@ -23,6 +24,7 @@ const wpGlobals: Record<string, string> = {
 	'@wordpress/element': 'wp.element',
 	'@wordpress/hooks': 'wp.hooks',
 	'@wordpress/i18n': 'wp.i18n',
+	'@wordpress/html-entities': 'wp.htmlEntities',
 	react: 'React',
 	'react-dom': 'ReactDOM',
 };

@@ -1,10 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe, PreviewTitleWrapper } from './styled';
 import { useFormPreview } from './hooks'
+import { decodeEntities } from '@wordpress/html-entities';
+
 
 type PetitionRecord = {
 	id: number;
-	title?: {
+	title: {
 		rendered: string;
 	};
 }
@@ -35,7 +37,7 @@ export default function FormPreview() {
 						}}
 					>
 						{petitions.map((p: PetitionRecord) => (
-							<option key={p.id} value={p.id}>{p.title?.rendered || __('(No Title)', 'petitioner')}</option>
+							<option key={p.id} value={p.id}>{decodeEntities(p.title.rendered) || __('(No Title)', 'petitioner')}</option>
 						))}
 					</PreviewSelect>
 				)}
