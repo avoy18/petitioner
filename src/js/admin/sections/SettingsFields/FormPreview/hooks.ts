@@ -6,7 +6,7 @@ import { fetchPreviewCSS, localSaveFormID, localGetSavedFormId } from "./utiliti
 export const useFormPreview = () => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
-    const { formState } = useSettingsFormContext();
+    const { formState, windowPetitionerData } = useSettingsFormContext();
     const [iframeLoaded, setIframeLoaded] = useState(false);
 
     const petitions = useSelect((select) => {
@@ -33,10 +33,7 @@ export const useFormPreview = () => {
     const syncPreview = useCallback(async () => {
         if (!iframeRef.current?.contentWindow) return;
 
-        const targetOrigin = new URL(
-            window.petitionerData?.home_url || '/',
-            window.location.href
-        ).origin;
+        const targetOrigin = window.location.origin;
 
         // 1. Send visibility updates instantly
         iframeRef.current.contentWindow.postMessage(
@@ -84,7 +81,7 @@ export const useFormPreview = () => {
         }
     }, [syncPreview, iframeLoaded]);
 
-    const previewUrl = `${window.petitionerData?.home_url || '/'}?petitioner_live_preview=1&form_id=${selectedFormId}`;
+    const previewUrl = `${windowPetitionerData.home_url || '/'}?petitioner_live_preview=1&form_id=${selectedFormId}`;
 
     return {
         iframeRef,
