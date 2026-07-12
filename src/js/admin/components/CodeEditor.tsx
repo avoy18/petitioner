@@ -10,25 +10,32 @@ interface CodeEditorProps {
 export default function CodeEditor({ title = '', help = '', code = '', onChange }: CodeEditorProps) {
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const initializedRef = useRef(false);
+	const onChangeRef = useRef(onChange);
+
+	useEffect(() => {
+		onChangeRef.current = onChange;
+	}, [onChange]);
 
 	useEffect(() => {
 		if (window.wp?.codeEditor && textareaRef.current && !initializedRef.current) {
 			initializedRef.current = true;
-			
+
 			const editorConfig = { type: 'text/css' };
 			const editorInstance = window.wp.codeEditor.initialize(textareaRef.current, editorConfig);
-			
-			if (onChange && editorInstance?.codemirror) {
+
+			if (editorInstance?.codemirror) {
 				let timeout: NodeJS.Timeout;
 				editorInstance.codemirror.on('change', () => {
 					clearTimeout(timeout);
 					timeout = setTimeout(() => {
-						onChange(editorInstance.codemirror.getValue());
+						if (onChangeRef.current) {
+							onChangeRef.current(editorInstance.codemirror.getValue());
+						}
 					}, 500);
 				});
 			}
 		}
-	}, [onChange]);
+	}, []);
 
 	return (
 		<div>
