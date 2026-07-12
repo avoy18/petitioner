@@ -1,4 +1,4 @@
-import { SPACINGS, COLORS } from '@admin/theme';
+import { SPACINGS, COLORS, BREAKPOINTS } from '@admin/theme';
 import styled from 'styled-components';
 
 export const PreviewCard = styled.div`
@@ -6,6 +6,11 @@ export const PreviewCard = styled.div`
 	border-radius: var(--ptr-admin-wrapper-radius);
 	background: #fff;
 	overflow: hidden;
+	display: none;
+
+	@media (min-width: ${BREAKPOINTS.lg}px) {
+		display: block;
+	}
 `;
 
 export const PreviewHeader = styled.div`

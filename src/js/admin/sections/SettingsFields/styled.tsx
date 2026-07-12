@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { SPACINGS, BREAKPOINTS } from '@admin/theme';
 
 export const SettingsContainer = styled.div.attrs({ className: 'petitioner-settings-box' })``;
 
@@ -19,3 +20,14 @@ export const SidebarContent = styled.div`
 	position: sticky;
 	top: 40px;
 `;
+
+export const SizingGrid = styled.div`
+	display: grid;
+	gap: ${SPACINGS.lg};
+	grid-template-columns: 1fr;
+	grid-auto-rows: min-content;
+
+	@media (min-width: ${BREAKPOINTS.xl}px) {
+		grid-template-columns: repeat(2, 250px);
+	}
+`
