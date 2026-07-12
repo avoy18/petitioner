@@ -24,7 +24,7 @@ export default function CodeEditor({ title = '', help = '', code = '', onChange,
 			editorRef.current = window.wp.codeEditor.initialize(textareaRef.current, editorConfig);
 
 			if (editorRef.current?.codemirror) {
-				let timeout: NodeJS.Timeout;
+				let timeout: ReturnType<typeof setTimeout>;;
 				editorRef.current.codemirror.on('change', () => {
 					clearTimeout(timeout);
 					timeout = setTimeout(() => {
