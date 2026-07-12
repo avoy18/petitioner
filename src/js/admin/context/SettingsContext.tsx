@@ -20,6 +20,8 @@ const normalizeSettingsData = (
 ): WindowSettingsData => {
 	const data = {
 		...(raw || {}),
+		home_url: raw?.home_url ?? '/',
+		preview_nonce: raw?.preview_nonce ?? '',
 		show_letter: raw?.show_letter ?? true,
 		show_title: raw?.show_title ?? true,
 		show_goal: raw?.show_goal ?? true,

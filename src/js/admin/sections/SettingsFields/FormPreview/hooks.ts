@@ -33,9 +33,9 @@ export const useFormPreview = () => {
     const syncPreview = useCallback(async () => {
         if (!iframeRef.current?.contentWindow) return;
 
-        /** We use the provided home_url here instead of the window.location.origin because some setups (like multisites) might have a different frontend URL than admin */
+        /** We use the provided homeUrl here instead of the window.location.origin because some setups (like multisites) might have a different frontend URL than admin */
         const targetOrigin = new URL(
-            windowPetitionerData.home_url || '/',
+            windowPetitionerData.home_url,
             window.location.href
         ).origin;
 
@@ -54,7 +54,7 @@ export const useFormPreview = () => {
         // 2. Fetch compiled CSS via AJAX
         fetchPreviewCSS({
             formState,
-            previewNonce: String(windowPetitionerData.preview_nonce),
+            previewNonce: windowPetitionerData.preview_nonce,
             abortSignal: abortControllerRef.current.signal,
             onSuccess: (css) => {
                 iframeRef.current?.contentWindow?.postMessage(
@@ -86,7 +86,7 @@ export const useFormPreview = () => {
         }
     }, [syncPreview, iframeLoaded]);
 
-    const previewUrl = `${windowPetitionerData.home_url || '/'}?petitioner_live_preview=1&form_id=${selectedFormId}`;
+    const previewUrl = `${windowPetitionerData.home_url}?petitioner_live_preview=1&form_id=${selectedFormId}`;
 
     return {
         iframeRef,
