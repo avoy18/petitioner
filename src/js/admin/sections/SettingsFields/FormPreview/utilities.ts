@@ -56,7 +56,3 @@ export const localGetSavedFormId = (): number | null => {
 export const localSaveFormID = (id: number) => {
 	window.localStorage.setItem(LOCAL_STORAGE_KEY, String(id));
 }
-
-export const localClearSavedFormID = () => {
-	window.localStorage.removeItem(LOCAL_STORAGE_KEY);
-}

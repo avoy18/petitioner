@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from "@wordpress/element";
 import { useSelect } from "@wordpress/data";
 import { useSettingsFormContext } from "@admin/context/SettingsContext";
-import { fetchPreviewCSS, localClearSavedFormID, localSaveFormID, localGetSavedFormId } from "./utilities";
+import { fetchPreviewCSS, localSaveFormID, localGetSavedFormId } from "./utilities";
 
 export const useFormPreview = () => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -19,7 +19,6 @@ export const useFormPreview = () => {
     const [selectedFormId, setSelectedFormId] = useState(localGetSavedFormId() ?? 0);
 
     const onFormSelect = (id: number) => {
-        localClearSavedFormID();
         setIframeLoaded(false);
         setSelectedFormId(id);
         localSaveFormID(id);
