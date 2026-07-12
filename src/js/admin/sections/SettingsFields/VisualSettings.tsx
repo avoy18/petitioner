@@ -7,7 +7,7 @@ import type { SettingsFormData } from './consts';
 import { VisualSettingsLayout, MainContent, SidebarContent } from './styled';
 import FormPreview from './FormPreview';
 
-export default function VisualSettings() {
+export default function VisualSettings({ isActive }: { isActive?: boolean }) {
 	const { formState, updateFormState, windowPetitionerData } = useSettingsFormContext();
 
 	const defaultColors = windowPetitionerData?.default_values?.colors || {
@@ -187,6 +187,7 @@ export default function VisualSettings() {
 				title={__('Custom CSS', 'petitioner')}
 				help={__('Add your custom CSS here.', 'petitioner')}
 				onChange={(val) => updateFormState('custom_css', val)}
+				isActive={isActive}
 			/>
 			</MainContent>
 			<SidebarContent>
