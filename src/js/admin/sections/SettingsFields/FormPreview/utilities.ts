@@ -57,5 +57,7 @@ export const localGetSavedFormId = () => {
 }
 
 export const localSaveFormID = (id: number) => {
+	if (Number.isNaN(id) || id <= 0) return;
+
 	window.localStorage.setItem(LOCAL_STORAGE_KEY, String(id));
 }
