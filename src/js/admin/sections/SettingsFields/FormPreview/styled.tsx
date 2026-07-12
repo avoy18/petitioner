@@ -1,20 +1,21 @@
+import { SPACINGS, COLORS } from '@admin/theme';
 import styled from 'styled-components';
 
 export const PreviewCard = styled.div`
-	border: 1px solid var(--ptr-admin-color-grey);
+	border: 1px solid ${COLORS.grey};
 	border-radius: var(--ptr-admin-wrapper-radius);
 	background: #fff;
 	overflow: hidden;
 `;
 
 export const PreviewHeader = styled.div`
-	padding: var(--ptr-admin-spacing-md) var(--ptr-admin-spacing-lg);
-	background: var(--ptr-admin-color-light);
-	border-bottom: 1px solid var(--ptr-admin-color-grey);
+	padding: ${SPACINGS.md} ${SPACINGS.lg};
+	background: ${COLORS.light};
+	border-bottom: 1px solid ${COLORS.grey};
 	font-weight: 600;
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: flex-end;
 `;
 
 export const PreviewSelect = styled.select`
@@ -27,4 +28,11 @@ export const PreviewIframe = styled.iframe`
 	min-height: 800px;
 	border: none;
 	display: block;
+`;
+
+export const PreviewTitleWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	color: ${COLORS.dark};
 `;

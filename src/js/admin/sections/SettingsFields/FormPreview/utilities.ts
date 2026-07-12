@@ -1,4 +1,5 @@
 import type { SettingsFormData } from '@admin/sections/SettingsFields/consts';
+import { LOCAL_STORAGE_KEY } from './consts';
 
 interface FetchPreviewCSSSettings {
 	formState: SettingsFormData;
@@ -9,8 +10,8 @@ interface FetchPreviewCSSSettings {
 
 export const fetchPreviewCSS = async ({
 	formState,
-	onSuccess = () => {},
-	onError = () => {},
+	onSuccess = () => { },
+	onError = () => { },
 	abortSignal,
 }: FetchPreviewCSSSettings) => {
 	try {
@@ -46,3 +47,16 @@ export const fetchPreviewCSS = async ({
 		onError('Error generating preview CSS: ' + error);
 	}
 };
+
+export const localGetSavedFormId = (): number | null => {
+	const saved = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+	return saved ? Number(saved) : null;
+}
+
+export const localSaveFormID = (id: number) => {
+	window.localStorage.setItem(LOCAL_STORAGE_KEY, String(id));
+}
+
+export const localClearSavedFormID = () => {
+	window.localStorage.removeItem(LOCAL_STORAGE_KEY);
+}

@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe } from './styled';
+import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe, PreviewTitleWrapper } from './styled';
 import { useFormPreview } from './hooks'
 
 interface PetitionRecord {
@@ -16,20 +16,22 @@ export default function FormPreview() {
 		selectedFormId,
 		petitions,
 		setIframeLoaded,
-		setSelectedFormId,
+		onFormSelect,
 		syncPreview,
 	} = useFormPreview();
 
 	return (
 		<PreviewCard>
 			<PreviewHeader>
-				<span>{__('Live Preview', 'petitioner')}</span>
+				<PreviewTitleWrapper>
+					<p>{__('Live Preview', 'petitioner')}</p>
+					<small>{__('Note: this is not a perfect representation of your frontend, but its close', 'petitioner')}</small>
+				</PreviewTitleWrapper>
 				{Array.isArray(petitions) && petitions.length > 0 && (
 					<PreviewSelect
 						value={selectedFormId}
 						onChange={(e) => {
-							setIframeLoaded(false);
-							setSelectedFormId(Number(e.target.value));
+							onFormSelect(Number(e.target.value));
 						}}
 					>
 						{petitions.map((p: PetitionRecord) => (
