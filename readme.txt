@@ -150,7 +150,8 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 = 0.8.5 =
 * Improvements
-    * Additional controls in the styles customizer and a preview
+    * Additional spacing and font size controls in the styles customizer
+    * A new visual preview in the customizer
     * Improved the `petitioner_submission_finalized` hook: it now hydrates the submission data that it sends. Good for working with the custom fields.
 
 = 0.8.4 =
