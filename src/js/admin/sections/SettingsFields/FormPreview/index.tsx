@@ -37,7 +37,7 @@ export default function FormPreview() {
 						}}
 					>
 						{petitions.map((p: PetitionRecord) => (
-							<option key={p.id} value={p.id}>{decodeEntities(p.title.rendered) || __('(No Title)', 'petitioner')}</option>
+							<option key={p.id} value={p.id}>{decodeEntities(p.title?.rendered || '') || __('(No Title)', 'petitioner')}</option>
 						))}
 					</PreviewSelect>
 				)}
