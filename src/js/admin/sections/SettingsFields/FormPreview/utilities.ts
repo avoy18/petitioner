@@ -48,9 +48,12 @@ export const fetchPreviewCSS = async ({
 	}
 };
 
-export const localGetSavedFormId = (): number | null => {
+export const localGetSavedFormId = () => {
 	const saved = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-	return saved ? Number(saved) : null;
+	if (!saved) return null;
+
+	const parsed = Number(saved);
+	return Number.isNaN(parsed) ? null : parsed;
 }
 
 export const localSaveFormID = (id: number) => {
