@@ -124,7 +124,7 @@ class AV_Petitioner_Admin_Live_Preview
         </head>
 
         <body <?php body_class(); ?>>
-            <div class="petitioner-preview-wrapper petitioner-preview" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+            <div class="petitioner-preview-wrapper petitioner-preview" style="max-width: 800px; margin: 8px auto; padding: 12px;">
                 <?php
                 if ($form_id) {
                     $frontend_ui = new AV_Petitioner_Frontend_UI();
