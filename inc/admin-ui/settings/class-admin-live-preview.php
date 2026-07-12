@@ -154,7 +154,7 @@ class AV_Petitioner_Admin_Live_Preview
         $admin_url = admin_url();
     ?>
         <script>
-            const adminOrigin = new URL('<?php echo esc_js($admin_url); ?>', window.location.href).origin;
+            const adminOrigin = new URL(<?php echo wp_json_encode($admin_url); ?>, window.location.href).origin;
             // Listen for messages from the parent window
             window.addEventListener('message', function(event) {
                 // Verify the message comes from the WordPress admin dashboard

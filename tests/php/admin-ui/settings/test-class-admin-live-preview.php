@@ -11,7 +11,7 @@ class Test_Class_Admin_Live_Preview extends BaseTestCase
         $output = ob_get_clean();
 
         // Verify that the script dynamically calculates the admin origin
-        $this->assertStringContainsString("const adminOrigin = new URL('", $output);
+        $this->assertStringContainsString('const adminOrigin = new URL(' . wp_json_encode(admin_url()) . ', window.location.href).origin;', $output);
         
         // Verify that it enforces the strict check against the admin origin
         $this->assertStringContainsString("if (event.origin !== adminOrigin) return;", $output);
