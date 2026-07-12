@@ -19,7 +19,7 @@ export default function CodeEditor({ title = '', help = '', code = '', onChange,
 	}, [onChange]);
 
 	useEffect(() => {
-		if (window.wp?.codeEditor && textareaRef.current && !editorRef.current) {
+		if (isActive && window.wp?.codeEditor && textareaRef.current && !editorRef.current) {
 			const editorConfig = { type: 'text/css' };
 			editorRef.current = window.wp.codeEditor.initialize(textareaRef.current, editorConfig);
 
@@ -34,11 +34,7 @@ export default function CodeEditor({ title = '', help = '', code = '', onChange,
 					}, 500);
 				});
 			}
-		}
-	}, []);
-
-	useEffect(() => {
-		if (isActive && editorRef.current?.codemirror) {
+		} else if (isActive && editorRef.current?.codemirror) {
 			// A small delay ensures the container has finished rendering as visible
 			setTimeout(() => {
 				editorRef.current.codemirror.refresh();
