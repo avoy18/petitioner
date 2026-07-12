@@ -151,15 +151,12 @@ class AV_Petitioner_Admin_Live_Preview
      */
     public static function render_preview_script()
     {
-        $admin_url = admin_url();
     ?>
         <script>
-            const adminOrigin = new URL('<?php echo esc_js($admin_url); ?>', window.location.href).origin;
-
             // Listen for messages from the parent window
             window.addEventListener('message', function(event) {
                 // Verify the message comes from the WordPress admin dashboard
-                if (event.origin !== adminOrigin) return;
+                if (event.origin !== window.location.origin) return;
 
                 if (event.data && event.data.type === 'UPDATE_VISIBILITY') {
                     const payload = event.data.payload;
