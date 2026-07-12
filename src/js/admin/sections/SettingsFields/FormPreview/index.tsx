@@ -1,9 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { useSettingsFormContext } from '@admin/context/SettingsContext';
-import { fetchPreviewCSS } from './utilities';
 import { PreviewCard, PreviewHeader, PreviewSelect, PreviewIframe } from './styled';
+import { useFormPreview } from './hooks'
 
 interface PetitionRecord {
 	id: number;
@@ -13,83 +10,23 @@ interface PetitionRecord {
 }
 
 export default function FormPreview() {
-	const { formState } = useSettingsFormContext();
-	const iframeRef = useRef<HTMLIFrameElement>(null);
-	const abortControllerRef = useRef<AbortController | null>(null);
-	const [iframeLoaded, setIframeLoaded] = useState(false);
-
-	const petitions = useSelect((select) => {
-		// @ts-ignore - core-data types might not be fully available
-		return select('core').getEntityRecords('postType', 'petitioner-petition', {
-			per_page: -1,
-		});
-	}, []);
-
-	const [selectedFormId, setSelectedFormId] = useState(0);
-
-	useEffect(() => {
-		if (Array.isArray(petitions) && petitions.length > 0 && selectedFormId === 0) {
-			setSelectedFormId(petitions[0].id);
-		}
-	}, [petitions, selectedFormId]);
-
-	const syncPreview = useCallback(async () => {
-		if (!iframeRef.current?.contentWindow) return;
-
-		const targetOrigin = new URL(
-			window.petitionerData?.home_url || '/',
-			window.location.href
-		).origin;
-
-		// 1. Send visibility updates instantly
-		iframeRef.current.contentWindow.postMessage(
-			{ type: 'UPDATE_VISIBILITY', payload: formState },
-			targetOrigin
-		);
-
-		// Cancel any pending CSS generation requests
-		if (abortControllerRef.current) {
-			abortControllerRef.current.abort();
-		}
-		abortControllerRef.current = new AbortController();
-
-		// 2. Fetch compiled CSS via AJAX
-		fetchPreviewCSS({
-			formState,
-			abortSignal: abortControllerRef.current.signal,
-			onSuccess: (css) => {
-				iframeRef.current?.contentWindow?.postMessage(
-					{ type: 'UPDATE_CSS', payload: css },
-					targetOrigin
-				);
-			},
-			onError: (msg) => {
-				console.error(msg);
-			},
-		});
-	}, [formState]);
-
-	// Sync settings to the iframe via AJAX + postMessage
-	useEffect(() => {
-		if (!iframeLoaded) return;
-
-		// Debounce the AJAX call
-		const timeout = setTimeout(() => {
-			syncPreview();
-		}, 300);
-
-		return () => clearTimeout(timeout);
-	}, [syncPreview, iframeLoaded]);
-
-	const previewUrl = `${window.petitionerData?.home_url || '/'}?petitioner_live_preview=1&form_id=${selectedFormId}`;
+	const {
+		iframeRef,
+		previewUrl,
+		selectedFormId,
+		petitions,
+		setIframeLoaded,
+		setSelectedFormId,
+		syncPreview,
+	} = useFormPreview();
 
 	return (
 		<PreviewCard>
 			<PreviewHeader>
 				<span>{__('Live Preview', 'petitioner')}</span>
 				{Array.isArray(petitions) && petitions.length > 0 && (
-					<PreviewSelect 
-						value={selectedFormId} 
+					<PreviewSelect
+						value={selectedFormId}
 						onChange={(e) => {
 							setIframeLoaded(false);
 							setSelectedFormId(Number(e.target.value));
@@ -101,9 +38,9 @@ export default function FormPreview() {
 					</PreviewSelect>
 				)}
 			</PreviewHeader>
-			<PreviewIframe 
+			<PreviewIframe
 				ref={iframeRef}
-				src={previewUrl} 
+				src={previewUrl}
 				onLoad={() => {
 					setIframeLoaded(true);
 					syncPreview();
