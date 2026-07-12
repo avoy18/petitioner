@@ -61,9 +61,9 @@ class AV_Petitioner_Admin_Live_Preview
             $payload = [];
         }
 
-        // Sanitize custom CSS to prevent XSS/HTML injection
+        // Sanitize custom CSS to prevent XSS/HTML injection while preserving valid CSS chars like <
         if (isset($payload['custom_css'])) {
-            $payload['custom_css'] = wp_strip_all_tags($payload['custom_css']);
+            $payload['custom_css'] = str_ireplace(['<style', '</style>'], '', $payload['custom_css']);
         }
 
         // Pass payload as overrides to the dynamic CSS generator

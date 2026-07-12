@@ -207,7 +207,7 @@ class AV_Petitioner_Setup
         $custom_css = AV_Petitioner_Dynamic_CSS::generate_css();
 
         if (!empty($custom_css)) {
-            wp_add_inline_style('petitioner-style', wp_strip_all_tags($custom_css));
+            wp_add_inline_style('petitioner-style', str_ireplace( [ '<style', '</style>' ], '', $custom_css ));
         }
 
         wp_register_script('petitioner-script', plugin_dir_url(dirname(__FILE__)) . 'dist/main.js', [], AV_PETITIONER_PLUGIN_VERSION, true);
