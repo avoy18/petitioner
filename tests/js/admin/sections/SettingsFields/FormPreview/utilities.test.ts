@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { localGetSavedFormId, localSaveFormID } from '@admin/sections/SettingsFields/FormPreview/utilities';
+import { LOCAL_STORAGE_KEY } from '@admin/sections/SettingsFields/FormPreview/consts';
 
-const LOCAL_STORAGE_KEY = 'petitioner_preview_form_id'; // We hardcode it here since it's not exported
 
 describe('FormPreview utilities', () => {
     beforeEach(() => {
