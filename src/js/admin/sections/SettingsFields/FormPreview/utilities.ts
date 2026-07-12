@@ -1,7 +1,7 @@
 import type { SettingsFormData } from '@admin/sections/SettingsFields/consts';
 import { LOCAL_STORAGE_KEY } from './consts';
 
-interface FetchPreviewCSSSettings {
+type FetchPreviewCSSSettings = {
 	formState: SettingsFormData;
 	onSuccess?: (css: string) => void;
 	onError?: (msg: string) => void;
