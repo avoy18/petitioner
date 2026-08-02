@@ -243,7 +243,7 @@ class AV_Petitioner_Queue
      * @param string $context The context of the action.
      * @return bool True if processing was started, false if Action Scheduler was unavailable.
      */
-    public static function process_action($action_id, $context = 'Petitioner Immediate')
+    public static function process_action($action_id, $context = 'Petitioner action')
     {
         if (!$action_id || !class_exists('\ActionScheduler_QueueRunner')) {
             return false;
