@@ -231,4 +231,25 @@ class AV_Petitioner_Queue
         }
         return false;
     }
+
+    /**
+     * Immediately run an action.
+     * 
+     * Used for setups where you can't trigger a cron job in any way.
+     * 
+     * @since 0.8.6
+     *
+     * @param int    $action_id The ID of the action to run.
+     * @param string $context The context of the action.
+     * @return bool True if processing was started, false if Action Scheduler was unavailable.
+     */
+    public static function process_action($action_id, $context = 'Petitioner Immediate')
+    {
+        if (!$action_id || !class_exists('\ActionScheduler_QueueRunner')) {
+            return false;
+        }
+
+        \ActionScheduler_QueueRunner::instance()->process_action((int) $action_id, $context);
+        return true;
+    }
 }
