@@ -148,6 +148,9 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.8.6 =
+* Improvements
+    * New util for triggering scheduled actions immediately. Useful when bypassing scheduler.
 = 0.8.5 =
 * Improvements
     * Petitioner Queue: added a new method for executing items immediately
