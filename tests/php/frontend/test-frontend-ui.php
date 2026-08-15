@@ -21,6 +21,7 @@ class Test_Frontend_UI extends BaseTestCase
     {
         // Clean up the mock post so it doesn't pollute the database
         wp_delete_post($this->form_id, true);
+        AV_Petitioner_Labels::clear_cache();
         parent::tear_down();
     }
 
@@ -171,6 +172,39 @@ class Test_Frontend_UI extends BaseTestCase
         $output = ob_get_clean();
 
         delete_option('petitioner_show_letter');
+
+        $this->assertEmpty(trim($output));
+    }
+
+    // ============================================
+    // RENDER GOAL TESTS
+    // ============================================
+
+    public function test_render_goal_outputs_progress_data()
+    {
+        update_post_meta($this->form_id, '_petitioner_goal', wp_json_encode([
+            ['value' => 100, 'count_start' => 0],
+        ]));
+
+        $frontend_ui = new AV_Petitioner_Frontend_UI();
+
+        ob_start();
+        $frontend_ui->render_goal($this->form_id);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('petitioner__goal', $output);
+        $this->assertStringContainsString('width: 0% !important', $output);
+        $this->assertStringContainsString('(0%)', $output);
+        $this->assertStringContainsString('100', $output);
+    }
+
+    public function test_render_goal_is_hidden_when_disabled()
+    {
+        $frontend_ui = new AV_Petitioner_Frontend_UI();
+
+        ob_start();
+        $frontend_ui->render_goal($this->form_id, false);
+        $output = ob_get_clean();
 
         $this->assertEmpty(trim($output));
     }

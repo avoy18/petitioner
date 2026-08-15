@@ -100,6 +100,8 @@ class AV_Petitioner_Setup
         add_action('wp_ajax_petitioner_update_submission', ['AV_Petitioner_Submissions_Controller', 'api_update_form_submission']);
         add_action('wp_ajax_petitioner_delete_submission', ['AV_Petitioner_Submissions_Controller', 'api_delete_form_submission']);
         add_action('wp_ajax_petitioner_get_submission_count', ['AV_Petitioner_Submissions_Controller', 'api_get_submission_count']);
+        add_action('wp_ajax_petitioner_get_goal_progress', ['AV_Petitioner_Submissions_Controller', 'api_get_goal_progress']);
+        add_action('wp_ajax_nopriv_petitioner_get_goal_progress', ['AV_Petitioner_Submissions_Controller', 'api_get_goal_progress']);
         add_action('wp_ajax_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
         add_action('wp_ajax_nopriv_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
         add_action('wp_ajax_petitioner_get_csv_example', ['AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_get_csv_example']);

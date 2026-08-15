@@ -144,13 +144,10 @@ class AV_Petitioner_Frontend_UI
 
         if (!$show_goal) return;
 
-        $goal                   = AV_Petitioner_Goal_Milestones::get_active_goal($form_id);
-        $total_submissions      = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
-        $progress               = 0;
-
-        if ($goal > 0 && $total_submissions > 0) {
-            $progress = round($total_submissions / $goal * 100);
-        }
+        $progress_data     = AV_Petitioner_Goal_Milestones::get_progress_data($form_id);
+        $goal              = $progress_data['goal'];
+        $total_submissions = $progress_data['count'];
+        $progress          = $progress_data['progress'];
     ?>
         <div class="petitioner__goal">
             <div class="petitioner__progress">
