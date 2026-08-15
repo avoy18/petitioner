@@ -73,7 +73,7 @@ class AV_Petitioner_Shortcodes
         }
 
         ob_start();
-        echo '<div class="petitioner">';
+        echo '<div ' . $this->frontend->get_form_attributes($form_id) . '>';
         $this->frontend->render_goal($form_id);
         echo '</div>';
 
@@ -96,7 +96,7 @@ class AV_Petitioner_Shortcodes
         }
 
         ob_start();
-        echo '<div class="petitioner">';
+        echo '<div ' . $this->frontend->get_form_attributes($form_id) . '>';
         $this->frontend->render_modal($form_id);
         echo '</div>';
 
