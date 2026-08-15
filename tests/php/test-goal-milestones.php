@@ -193,6 +193,55 @@ class Test_Goal_Milestones extends BaseTestCase
     }
 
     // ============================================
+    // CALCULATE_PROGRESS / GET_PROGRESS_DATA TESTS
+    // ============================================
+
+    public function test_calculate_progress_rounds_percent()
+    {
+        $this->assertEquals(0, AV_Petitioner_Goal_Milestones::calculate_progress(0, 100));
+        $this->assertEquals(0, AV_Petitioner_Goal_Milestones::calculate_progress(50, 0));
+        $this->assertEquals(50, AV_Petitioner_Goal_Milestones::calculate_progress(50, 100));
+        $this->assertEquals(67, AV_Petitioner_Goal_Milestones::calculate_progress(2, 3));
+        $this->assertEquals(150, AV_Petitioner_Goal_Milestones::calculate_progress(150, 100));
+    }
+
+    public function test_get_progress_data_uses_goal_meta_when_count_is_zero()
+    {
+        $form_id = wp_insert_post([
+            'post_type'   => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        update_post_meta($form_id, '_petitioner_goal', wp_json_encode([
+            ['value' => 1000, 'count_start' => 0],
+        ]));
+
+        $data = AV_Petitioner_Goal_Milestones::get_progress_data($form_id);
+
+        $this->assertEquals(0, $data['count']);
+        $this->assertEquals(1000, $data['goal']);
+        $this->assertEquals(0, $data['progress']);
+
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_get_active_goal_uses_progress_data()
+    {
+        $form_id = wp_insert_post([
+            'post_type'   => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        update_post_meta($form_id, '_petitioner_goal', wp_json_encode([
+            ['value' => 100, 'count_start' => 0],
+        ]));
+
+        $this->assertEquals(100, AV_Petitioner_Goal_Milestones::get_active_goal($form_id));
+
+        wp_delete_post($form_id, true);
+    }
+
+    // ============================================
     // SANITIZE_JSON TESTS
     // ============================================
 

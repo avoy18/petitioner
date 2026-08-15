@@ -9,6 +9,7 @@ class Test_Captcha extends BaseTestCase
     {
         parent::set_up();
         do_action('init');
+        AV_Petitioner_Labels::clear_cache();
 
         // Set REMOTE_ADDR to prevent undefined index errors
         if (!isset($_SERVER['REMOTE_ADDR'])) {

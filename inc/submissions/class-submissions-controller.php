@@ -640,6 +640,40 @@ class AV_Petitioner_Submissions_Controller
     }
 
     /**
+     * Public endpoint: live submission count + active goal for progress UI hydration.
+     *
+     * @since 0.8.6
+     */
+    public static function api_get_goal_progress()
+    {
+        if (!check_ajax_referer(AV_Petitioner_Setup::$FRONTEND_FORM_NONCE_LABEL, 'petitioner_nonce', false)) {
+            wp_send_json_error([
+                'message' => AV_Petitioner_Labels::get('invalid_nonce'),
+            ]);
+        }
+
+        $form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : 0;
+
+        if (!$form_id) {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('invalid_form_id')]);
+        }
+
+        $post = get_post($form_id);
+        if (!$post || $post->post_type !== 'petitioner-petition' || $post->post_status !== 'publish') {
+            wp_send_json_error(['message' => AV_Petitioner_Labels::get('invalid_form_id')]);
+        }
+
+        $progress_data = AV_Petitioner_Goal_Milestones::get_progress_data($form_id);
+
+        wp_send_json_success([
+            'form_id'  => $form_id,
+            'count'    => $progress_data['count'],
+            'goal'     => $progress_data['goal'],
+            'progress' => $progress_data['progress'],
+        ]);
+    }
+
+    /**
      * Verify the CAPTCHA response (Supports both Google reCAPTCHA v3 & hCaptcha).
      *
      * @param string $captcha_response The CAPTCHA response token from the form.
