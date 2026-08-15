@@ -56,7 +56,8 @@ class AV_Petitioner_Frontend_UI
     public function get_form_attributes($form_id): string
     {
         $attrs = [
-            'class' => 'petitioner',
+            'class'         => 'petitioner',
+            'data-form-id'  => (string) absint($form_id),
         ];
 
         $redirect_url = get_post_meta($form_id, '_petitioner_redirect_url', true);
@@ -149,7 +150,12 @@ class AV_Petitioner_Frontend_UI
         $total_submissions = $progress_data['count'];
         $progress          = $progress_data['progress'];
     ?>
-        <div class="petitioner__goal">
+        <div
+            class="petitioner__goal"
+            data-form-id="<?php echo esc_attr((string) absint($form_id)); ?>"
+            data-count="<?php echo esc_attr((string) $total_submissions); ?>"
+            data-goal="<?php echo esc_attr((string) $goal); ?>"
+            data-progress="<?php echo esc_attr((string) $progress); ?>">
             <div class="petitioner__progress">
                 <div
                     class="petitioner__progress-bar"

@@ -35,6 +35,15 @@ class Test_Frontend_UI extends BaseTestCase
         $html_attrs = $frontend_ui->get_form_attributes(1);
 
         $this->assertStringContainsString('class="petitioner"', $html_attrs);
+        $this->assertStringContainsString('data-form-id="1"', $html_attrs);
+    }
+
+    public function test_form_attributes_include_form_id()
+    {
+        $frontend_ui = new AV_Petitioner_Frontend_UI();
+        $html_attrs = $frontend_ui->get_form_attributes($this->form_id);
+
+        $this->assertStringContainsString('data-form-id="' . $this->form_id . '"', $html_attrs);
     }
 
     public function test_form_attributes_pass_redirects()
@@ -193,6 +202,10 @@ class Test_Frontend_UI extends BaseTestCase
         $output = ob_get_clean();
 
         $this->assertStringContainsString('petitioner__goal', $output);
+        $this->assertStringContainsString('data-form-id="' . $this->form_id . '"', $output);
+        $this->assertStringContainsString('data-count="0"', $output);
+        $this->assertStringContainsString('data-goal="100"', $output);
+        $this->assertStringContainsString('data-progress="0"', $output);
         $this->assertStringContainsString('width: 0% !important', $output);
         $this->assertStringContainsString('(0%)', $output);
         $this->assertStringContainsString('100', $output);
