@@ -4,6 +4,7 @@ export type PetitionerWrapperElement = HTMLElement | null;
 
 export type PetitionerFormSettings = {
 	actionPath?: string;
+	goalProgressPath?: string;
 	nonceEndpoint?: string;
 	nonce?: string;
 	labels?: {
