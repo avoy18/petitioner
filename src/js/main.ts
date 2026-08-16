@@ -1,5 +1,6 @@
 import PetitionerForm from '@js/frontend/form';
 import PetitionerSubmissions from '@js/frontend/submissions';
+import PetitionerGoal from '@js/frontend/goal';
 import '../css/frontend/index.css';
 
 const allPetitions = document.querySelectorAll('.petitioner');
@@ -11,6 +12,7 @@ allPetitions.forEach((petition) => {
 	}
 
 	new PetitionerForm(petition);
+	new PetitionerGoal(petition);
 });
 
 const allSubmissions = document.querySelectorAll('.petitioner-submissions');
