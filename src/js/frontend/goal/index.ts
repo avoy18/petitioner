@@ -1,3 +1,4 @@
+import { fetchFreshNonce } from '@js/frontend/utilities';
 import type { GoalProgressData } from './consts';
 
 /**
@@ -39,7 +40,11 @@ export default class PetitionerGoal {
 		}
 
 		try {
-			const nonce = await this.getFreshNonce();
+			const nonce = await fetchFreshNonce({
+				nonceEndpoint: this.nonceEndpoint,
+				fallbackNonce: this.nonce,
+			});
+			this.nonce = nonce;
 			const data = await this.fetchProgress(nonce);
 
 			if (!data) {
@@ -49,36 +54,6 @@ export default class PetitionerGoal {
 			this.apply(data);
 		} catch (error) {
 			console.error('Error:', error);
-		}
-	}
-
-	private async getFreshNonce(): Promise<string> {
-		try {
-			const response = await fetch(this.nonceEndpoint, {
-				method: 'GET',
-				credentials: 'same-origin',
-			});
-
-			if (!response.ok) {
-				throw new Error('Failed to fetch nonce');
-			}
-
-			const data = await response.json();
-
-			if (data.success && data.data?.nonce) {
-				this.nonce = data.data.nonce;
-				return data.data.nonce;
-			}
-
-			throw new Error('Invalid nonce response');
-		} catch (error) {
-			console.warn('Could not fetch fresh nonce:', error);
-
-			if (this.nonce) {
-				return this.nonce;
-			}
-
-			throw new Error('No nonce available');
 		}
 	}
 

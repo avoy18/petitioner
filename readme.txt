@@ -151,6 +151,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 = 0.8.6 =
 * Improvements
     * New util for triggering scheduled actions immediately. Useful when bypassing scheduler.
+    * Reworked how the goals get updated on the frontend, ensuring its not cached by static html output
 = 0.8.5 =
 * Improvements
     * Petitioner Queue: added a new method for executing items immediately
