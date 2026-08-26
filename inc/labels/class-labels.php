@@ -117,6 +117,8 @@ class AV_Petitioner_Labels
             'ty_email_confirm'               => AV_Petitioner_Email_Template::get_default_ty_email(true),
             'from_field'                     => AV_Petitioner_Email_Template::get_default_from_field(),
             'from_name'                      => AV_Petitioner_Email_Template::get_default_from_name(),
+            // Translators: %s is the user's name.
+            'sincerely'                      => __('Sincerely, %s', 'petitioner'),
             'confirmation_resent'            => __('Confirmation email resent.', 'petitioner'),
 
             // UI labels

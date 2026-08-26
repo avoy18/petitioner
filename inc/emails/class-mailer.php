@@ -159,8 +159,7 @@ class AV_Petitioner_Mailer
                 $message .=  '<hr/>';
                 $message .= $this->letter;
 
-                // Translators: %s is the user's name
-                $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
+                $message .=  '<p>' . sprintf(AV_Petitioner_Labels::get('sincerely', $this->form_id), $this->user_name) . '</p>';
             }
         }
 
@@ -183,8 +182,7 @@ class AV_Petitioner_Mailer
         $subject = $this->subject;
         $message =  $this->letter;
 
-        // Translators: %s is the user's name
-        $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
+        $message .=  '<p>' . sprintf(AV_Petitioner_Labels::get('sincerely', $this->form_id), $this->user_name) . '</p>';
 
         $headers = AV_Petitioner_Email_Controller::build_headers($this->final_from_field, $this->target_cc_emails, ($this->bcc ? $this->user_email : ''));
 
