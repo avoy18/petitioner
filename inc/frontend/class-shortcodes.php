@@ -68,7 +68,8 @@ class AV_Petitioner_Shortcodes
 
         $form_id = absint($atts['id']);
 
-        if (!$form_id) {
+        $post = get_post($form_id);
+        if (!$post || $post->post_type !== 'petitioner-petition') {
             return '';
         }
 
