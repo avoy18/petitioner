@@ -156,6 +156,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Make "Sincerely" and "Below is a copy of your letter:" translatable via the labels system instead of hardcoded strings.
     * Fix malformed HTML in the default thank-you email greeting ("Dear {{user_name}},").
     * Regenerate and update translation files (.pot, .po, .mo) to match corrected email strings and new label keys.
+    * Fixed select dropdowns showing the first option instead of the "Select" placeholder on load
 = 0.8.5 =
 * Improvements
     * Petitioner Queue: added a new method for executing items immediately
