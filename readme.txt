@@ -152,6 +152,10 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 * Improvements
     * New util for triggering scheduled actions immediately. Useful when bypassing scheduler.
     * Reworked how the goals get updated on the frontend, ensuring its not cached by static html output
+* Bugfixes
+    * Make "Sincerely" and "Below is a copy of your letter:" translatable via the labels system instead of hardcoded strings.
+    * Fix malformed HTML in the default thank-you email greeting ("Dear {{user_name}},").
+    * Regenerate and update translation files (.pot, .po, .mo) to match corrected email strings and new label keys.
 = 0.8.5 =
 * Improvements
     * Petitioner Queue: added a new method for executing items immediately

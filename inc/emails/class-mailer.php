@@ -155,7 +155,7 @@ class AV_Petitioner_Mailer
         } else {
             // // Add the letter if the emails are being sent to rep
             if ($this->send_to_representative) {
-                $message .=  '<p>' . __('Below is a copy of your letter:', 'petitioner') . '</p>';
+                $message .=  '<p>' . AV_Petitioner_Labels::get('letter_copy_intro', $this->form_id) . '</p>';
                 $message .=  '<hr/>';
                 $message .= $this->letter;
 
