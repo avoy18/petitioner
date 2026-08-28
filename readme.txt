@@ -159,9 +159,6 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Fixed select dropdowns showing the first option instead of the "Select" placeholder on load
 = 0.8.5 =
 * Improvements
-    * Petitioner Queue: added a new method for executing items immediately
-= 0.8.5 =
-* Improvements
     * Additional spacing and font size controls in the styles customizer
     * A new visual preview in the customizer
     * Improved the `petitioner_submission_finalized` hook: it now hydrates the submission data that it sends. Good for working with the custom fields.
