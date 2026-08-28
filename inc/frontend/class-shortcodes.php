@@ -68,12 +68,13 @@ class AV_Petitioner_Shortcodes
 
         $form_id = absint($atts['id']);
 
-        if (!$form_id) {
+        $post = get_post($form_id);
+        if (!$post || $post->post_type !== 'petitioner-petition') {
             return '';
         }
 
         ob_start();
-        echo '<div class="petitioner">';
+        echo '<div ' . $this->frontend->get_form_attributes($form_id) . '>';
         $this->frontend->render_goal($form_id);
         echo '</div>';
 
@@ -96,7 +97,7 @@ class AV_Petitioner_Shortcodes
         }
 
         ob_start();
-        echo '<div class="petitioner">';
+        echo '<div ' . $this->frontend->get_form_attributes($form_id) . '>';
         $this->frontend->render_modal($form_id);
         echo '</div>';
 

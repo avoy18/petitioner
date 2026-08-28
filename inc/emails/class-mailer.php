@@ -155,12 +155,11 @@ class AV_Petitioner_Mailer
         } else {
             // // Add the letter if the emails are being sent to rep
             if ($this->send_to_representative) {
-                $message .=  '<p>' . __('Below is a copy of your letter:', 'petitioner') . '</p>';
+                $message .=  '<p>' . AV_Petitioner_Labels::get('letter_copy_intro', $this->form_id) . '</p>';
                 $message .=  '<hr/>';
                 $message .= $this->letter;
 
-                // Translators: %s is the user's name
-                $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
+                $message .= $this->get_signature_html();
             }
         }
 
@@ -183,8 +182,7 @@ class AV_Petitioner_Mailer
         $subject = $this->subject;
         $message =  $this->letter;
 
-        // Translators: %s is the user's name
-        $message .=  '<p>' . sprintf(__('Sincerely, %s'), $this->user_name) . '</p>';
+        $message .= $this->get_signature_html();
 
         $headers = AV_Petitioner_Email_Controller::build_headers($this->final_from_field, $this->target_cc_emails, ($this->bcc ? $this->user_email : ''));
 
@@ -212,6 +210,30 @@ class AV_Petitioner_Mailer
 
 
         return AV_Petitioner_Email_Controller::send($this->target_email, $subject, $message, $headers);
+    }
+
+    /**
+     * Build the signature paragraph that closes the petition emails.
+     *
+     * The "sincerely" label is editable in the settings screen, so the name is
+     * substituted literally rather than through sprintf(): a stray "%" in a
+     * custom label would raise a ValueError and abort the send.
+     *
+     * @since 0.8.6
+     *
+     * @return string The signature paragraph, or an empty string if the label is blank.
+     */
+    public function get_signature_html()
+    {
+        $label = AV_Petitioner_Labels::get('sincerely', $this->form_id);
+
+        if (empty($label)) {
+            return '';
+        }
+
+        $name = sanitize_text_field($this->user_name);
+
+        return '<p>' . str_replace(['{{user_name}}', '%1$s', '%s'], $name, $label) . '</p>';
     }
 
     public function convert_email_variables($message)

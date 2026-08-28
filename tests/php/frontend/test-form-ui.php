@@ -78,4 +78,27 @@ class Test_Form_UI extends BaseTestCase
 
         $this->assertEmpty($result);
     }
+
+    // ============================================
+    // RENDER_SELECT_FIELD TESTS
+    // ============================================
+
+    public function test_render_select_field_placeholder_is_selected_and_disabled()
+    {
+        $form_ui = new AV_Petitioner_Form_UI(1);
+        $field = [
+            'label'   => 'Organization',
+            'options' => ['Org A', 'Org B'],
+        ];
+
+        ob_start();
+        $form_ui->render_select_field('organization', $field);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('<option value="" selected disabled>', $output);
+        $this->assertStringNotContainsString('default disabled', $output);
+        $this->assertStringContainsString('Select', $output);
+        $this->assertStringContainsString('value="Org A"', $output);
+        $this->assertStringContainsString('value="Org B"', $output);
+    }
 }

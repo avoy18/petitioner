@@ -2,6 +2,7 @@ import ReCaptcha from './recaptcha';
 import HCaptcha from './hcaptcha';
 import Turnstile from './turnstile';
 import type { PetitionerWrapperElement, ApiResponse } from './consts';
+import { fetchFreshNonce } from '@js/frontend/utilities';
 
 /**
  * @class PetitionerForm
@@ -218,7 +219,11 @@ export default class PetitionerForm {
 
 		try {
 			const formData = new FormData(this.formEl as HTMLFormElement);
-			const freshNonce = await this.getFreshNonce();
+			const freshNonce = await fetchFreshNonce({
+				nonceEndpoint: this.nonceEndpoint,
+				fallbackNonce: this.nonce,
+			});
+			this.nonce = freshNonce;
 			formData.append('petitioner_nonce', freshNonce);
 			const response = await fetch(this.actionPath, {
 				method: 'POST',
@@ -261,41 +266,6 @@ export default class PetitionerForm {
 				},
 			});
 			document.dispatchEvent(event);
-		}
-	}
-
-	/**
-	 * Fetches a fresh nonce from the server to avoid stale cached nonces.
-	 * Falls back to the inline nonce if the endpoint is unavailable.
-	 */
-	private async getFreshNonce(): Promise<string> {
-		try {
-			const response = await fetch(this.nonceEndpoint, {
-				method: 'GET',
-				credentials: 'same-origin',
-			});
-
-			if (!response.ok) {
-				throw new Error('Failed to fetch nonce');
-			}
-
-			const data = await response.json();
-
-			if (data.success && data.data?.nonce) {
-				this.nonce = data.data.nonce;
-				return data.data.nonce;
-			}
-
-			throw new Error('Invalid nonce response');
-		} catch (error) {
-			console.warn('Could not fetch fresh nonce:', error);
-
-			// Fallback to cached nonce, or bubble up if none exists
-			if (this.nonce) {
-				return this.nonce;
-			}
-
-			throw new Error('No nonce available');
 		}
 	}
 }

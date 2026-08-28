@@ -20,7 +20,7 @@ class AV_Petitioner_Email_Template
     {
         $message = '';
         // Translators: {{user_name}} is the user's name
-        $message =  '<p>' . __('Dear {{user_name}},</p>', 'petitioner') . '</p>';
+        $message =  '<p>' . __('Dear {{user_name}},', 'petitioner') . '</p>';
         $message .=  '<p>' . __('Thank you for signing the petition.', 'petitioner') . '</p>';
 
         if ($confirm_emails) {

@@ -199,7 +199,7 @@ class AV_Petitioner_Form_UI
                 name="<?php echo $field_name; ?>"
                 <?php echo $extra_attributes; ?>>
 
-                <option value="" default disabled><?php esc_html_e('Select', 'petitioner'); ?></option>
+                <option value="" selected disabled><?php esc_html_e('Select', 'petitioner'); ?></option>
 
                 <?php foreach ($options as $option): ?>
                     <option value="<?php echo esc_attr($option); ?>">

@@ -52,6 +52,47 @@ class AV_Petitioner_Goal_Milestones
     }
 
     /**
+     * Get live progress data for a petition: confirmed count, active goal, and percent.
+     *
+     * Fetches the submission count once and resolves the active milestone from it.
+     * 
+     * Used by the frontend UI to display the progress bar and goal.
+     *
+     * @param int $form_id The petition post ID.
+     * @return array{count: int, goal: int, progress: int}
+     * @since 0.8.6
+     */
+    public static function get_progress_data($form_id)
+    {
+        $count      = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
+        $raw        = get_post_meta($form_id, '_petitioner_goal', true);
+        $milestones = self::normalize($raw);
+        $goal       = self::resolve_active_goal($milestones, $count);
+
+        return [
+            'count'    => (int) $count,
+            'goal'     => $goal,
+            'progress' => self::calculate_progress($count, $goal),
+        ];
+    }
+
+    /**
+     * Calculate progress percent from a count and goal.
+     *
+     * @param int $count Confirmed submission count.
+     * @param int $goal  Active goal value.
+     * @return int Progress percent, rounded.
+     */
+    public static function calculate_progress($count, $goal)
+    {
+        if ($goal > 0 && $count > 0) {
+            return (int) round($count / $goal * 100);
+        }
+
+        return 0;
+    }
+
+    /**
      * Get the currently active goal for a given petition based on submission count.
      *
      * Finds the milestone with the highest count_start that the current
@@ -62,11 +103,9 @@ class AV_Petitioner_Goal_Milestones
      */
     public static function get_active_goal($form_id)
     {
-        $raw        = get_post_meta($form_id, '_petitioner_goal', true);
-        $milestones = self::normalize($raw);
-        $count      = AV_Petitioner_Submissions_Model::get_submission_count($form_id);
+        $data = self::get_progress_data($form_id);
 
-        return self::resolve_active_goal($milestones, $count);
+        return $data['goal'];
     }
 
     /**

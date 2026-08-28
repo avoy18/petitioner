@@ -100,6 +100,8 @@ class AV_Petitioner_Setup
         add_action('wp_ajax_petitioner_update_submission', ['AV_Petitioner_Submissions_Controller', 'api_update_form_submission']);
         add_action('wp_ajax_petitioner_delete_submission', ['AV_Petitioner_Submissions_Controller', 'api_delete_form_submission']);
         add_action('wp_ajax_petitioner_get_submission_count', ['AV_Petitioner_Submissions_Controller', 'api_get_submission_count']);
+        add_action('wp_ajax_petitioner_get_goal_progress', ['AV_Petitioner_Submissions_Controller', 'api_get_goal_progress']);
+        add_action('wp_ajax_nopriv_petitioner_get_goal_progress', ['AV_Petitioner_Submissions_Controller', 'api_get_goal_progress']);
         add_action('wp_ajax_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
         add_action('wp_ajax_nopriv_petitioner_get_nonce', [$this, 'api_get_frontend_nonce']);
         add_action('wp_ajax_petitioner_get_csv_example', ['AV_Petitioner_CSV_Exporter', 'api_admin_petitioner_get_csv_example']);
@@ -215,10 +217,11 @@ class AV_Petitioner_Setup
         wp_enqueue_script('petitioner-script');
 
         wp_localize_script('petitioner-script', 'petitionerFormSettings', [
-            'actionPath'    => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
-            'nonce'         => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
-            'nonceEndpoint' => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
-            'labels'        => [
+            'actionPath'         => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
+            'goalProgressPath'   => admin_url('admin-ajax.php') . '?action=petitioner_get_goal_progress',
+            'nonce'              => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
+            'nonceEndpoint'      => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
+            'labels'             => [
                 'emailConfirmedSuccess' => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_success')),
                 'emailConfirmedError'   => sanitize_text_field(AV_Petitioner_Labels::get('email_confirmed_error')),
             ],
@@ -260,6 +263,7 @@ class AV_Petitioner_Setup
 
         wp_localize_script('petitioner-admin-script', 'petitionerFormSettings', [
             'actionPath' => admin_url('admin-ajax.php') . '?action=petitioner_form_submit',
+            'goalProgressPath' => admin_url('admin-ajax.php') . '?action=petitioner_get_goal_progress',
             'nonce' => wp_create_nonce(self::$FRONTEND_FORM_NONCE_LABEL),
             'nonceEndpoint' => admin_url('admin-ajax.php') . '?action=petitioner_get_nonce',
             'labels' => [

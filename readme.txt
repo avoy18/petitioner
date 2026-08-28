@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 6.3
 Tested up to: 7.0
-Stable Tag: 0.8.5
+Stable Tag: 0.8.6
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -148,6 +148,15 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.8.6 =
+* Improvements
+    * New util for triggering scheduled actions immediately. Useful when bypassing scheduler.
+    * Reworked how the goals get updated on the frontend, ensuring its not cached by static html output
+* Bugfixes
+    * Make "Sincerely" and "Below is a copy of your letter:" translatable via the labels system instead of hardcoded strings.
+    * Fix malformed HTML in the default thank-you email greeting ("Dear {{user_name}},").
+    * Regenerate and update translation files (.pot, .po, .mo) to match corrected email strings and new label keys.
+    * Fixed select dropdowns showing the first option instead of the "Select" placeholder on load
 = 0.8.5 =
 * Improvements
     * Additional spacing and font size controls in the styles customizer
