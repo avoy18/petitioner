@@ -159,4 +159,82 @@ class Test_Mailer extends BaseTestCase
 
         remove_filter('av_petitioner_submission_status', $filter_callback, 10);
     }
+
+    /**
+     * Build a mailer whose "sincerely" label is overridden for its form.
+     *
+     * @param string|null $sincerely_label Label to store, or null to keep the default.
+     * @return array{0: AV_Petitioner_Mailer, 1: int} The mailer and its form ID.
+     */
+    private function make_mailer_with_label($sincerely_label = null)
+    {
+        AV_Petitioner_Labels::clear_cache();
+
+        $form_id = wp_insert_post([
+            'post_type'   => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        if ($sincerely_label !== null) {
+            update_post_meta($form_id, '_petitioner_sincerely', $sincerely_label);
+        }
+
+        $mailer = new AV_Petitioner_Mailer([
+            'target_email' => 'test@test.com',
+            'target_cc_emails' => '',
+            'user_email' => 'user@test.com',
+            'user_name' => 'John Doe',
+            'user_country' => 'US',
+            'subject' => 'Test',
+            'letter' => 'Test letter',
+            'bcc' => false,
+            'send_to_representative' => true,
+            'confirm_emails' => false,
+            'send_ty_email' => true,
+            'form_id' => $form_id,
+            'submission_id' => 1,
+        ]);
+
+        return [$mailer, $form_id];
+    }
+
+    public function test_get_signature_html_fills_the_default_placeholder()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+
+        $this->assertSame('<p>Sincerely, John Doe</p>', $mailer->get_signature_html());
+
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_get_signature_html_handles_a_stray_percent_in_a_custom_label()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label('Sincerely, %s - 100% committed');
+
+        $this->assertSame(
+            '<p>Sincerely, John Doe - 100% committed</p>',
+            $mailer->get_signature_html(),
+            'A literal % in a custom label must not break the signature'
+        );
+
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_get_signature_html_supports_the_user_name_token()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label('Kind regards, {{user_name}}');
+
+        $this->assertSame('<p>Kind regards, John Doe</p>', $mailer->get_signature_html());
+
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_get_signature_html_leaves_a_placeholderless_label_untouched()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label('Sincerely,');
+
+        $this->assertSame('<p>Sincerely,</p>', $mailer->get_signature_html());
+
+        wp_delete_post($form_id, true);
+    }
 }
