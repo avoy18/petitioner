@@ -165,7 +165,15 @@ class AV_Petitioner_Shortcodes
 
     static public function get_available_styles()
     {
-        return ['simple', 'table'];
+        $styles = ['simple', 'table'];
+
+        /**
+         * Filter the available styles that are displayed in the submissions list
+         * 
+         * @param array $styles The available styles that are displayed in the submissions list
+         * @return array The available styles that are displayed in the submissions list
+         */
+        return apply_filters('av_petitioner_submissions_styles', $styles);
     }
 
     static public function get_available_fields()
