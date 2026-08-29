@@ -1,9 +1,7 @@
-export type SubmissionsStyle = 'simple' | 'table';
-
 export type SubmissionSettings = {
 	form_id: number;
 	per_page: number;
-	style: SubmissionsStyle;
+	style: string;
 	fields: string;
 	show_pagination: boolean;
 	hide_page_numbers: boolean;
@@ -27,3 +25,11 @@ export type SubmissionRendererOptions = {
 	hidePageNumbers: boolean;
 	onPageChange: (page: number) => Promise<Submissions>;
 };
+
+export interface SubmissionRendererInstance {
+	render(): void;
+}
+
+export type SubmissionRendererConstructor = new (
+	options: SubmissionRendererOptions
+) => SubmissionRendererInstance;

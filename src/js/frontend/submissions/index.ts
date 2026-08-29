@@ -2,7 +2,8 @@ import { safelyParseJSON } from '@js/utilities';
 import SubmissionsRenderer, {
 	SubmissionsRendererTable,
 } from '@js/frontend/submissions/renderer';
-import type { SubmissionSettings, Submissions } from './consts';
+import type { SubmissionSettings, Submissions, SubmissionRendererInstance } from './consts';
+import { submissionRegistry } from './registry';
 
 declare global {
 	interface Window {
@@ -17,10 +18,13 @@ declare global {
 	}
 }
 
+submissionRegistry.add('simple', SubmissionsRenderer);
+submissionRegistry.add('table', SubmissionsRendererTable);
+
 export default class PetitionerSubmissions {
 	private settings?: SubmissionSettings;
 	private submissions: Submissions | undefined;
-	private renderer?: SubmissionsRenderer;
+	private renderer?: SubmissionRendererInstance;
 	private ajaxurl: string;
 	private nonce: string;
 	private currentPage: number = 1;
@@ -75,10 +79,12 @@ export default class PetitionerSubmissions {
 			typeof this.submissions === 'object' &&
 			this.submissions?.length > 0
 		) {
-			const RenderClass =
-				this.settings.style === 'simple'
-					? SubmissionsRenderer
-					: SubmissionsRendererTable;
+
+			const RenderClass = submissionRegistry.get(this.settings.style);
+
+			if (!RenderClass) {
+				throw new Error('Renderer not found for style: ' + this.settings.style);
+			}
 
 			this.renderer = new RenderClass({
 				wrapper: this.wrapper,
