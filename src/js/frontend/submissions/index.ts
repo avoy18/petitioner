@@ -82,8 +82,15 @@ export default class PetitionerSubmissions {
 
 			const RenderClass = submissionRegistry.get(this.settings.style);
 
+			// An add-on may register the style from a separate bundle that
+			// failed to load, so bail out instead of rejecting the init promise.
 			if (!RenderClass) {
-				throw new Error('Renderer not found for style: ' + this.settings.style);
+				console.warn(
+					'Petitioner: no renderer registered for style "' +
+						this.settings.style +
+						'".'
+				);
+				return;
 			}
 
 			this.renderer = new RenderClass({
