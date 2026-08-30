@@ -17,7 +17,26 @@ class AV_Petitioner_Setup
         add_action('wp_enqueue_scripts',  array($this, 'enqueue_frontend_assets'));
 
         add_filter('wp_script_attributes', function ($attributes) {
-            if ('petitioner-script-js' === $attributes['id'] || 'petitioner-admin-script-js' === $attributes['id'] || 'petitioner-form-block-js' === $attributes['id']) {
+            if (empty($attributes['id'])) {
+                return $attributes;
+            }
+
+            /**
+             * Filter the script tag IDs that are loaded as ES modules.
+             *
+             * Add-ons that extend a Petitioner bundle must opt in here, otherwise
+             * their classic script runs before the deferred core module.
+             *
+             * @param array $ids Script tag IDs, e.g. 'petitioner-script-js'.
+             * @return array Modified list of script tag IDs.
+             */
+            $module_ids = apply_filters('petitioner_scripts_with_module', [
+                'petitioner-script-js',
+                'petitioner-admin-script-js',
+                'petitioner-form-block-js',
+            ]);
+
+            if (in_array($attributes['id'], $module_ids, true)) {
                 $attributes['type'] = 'module';
             }
 
