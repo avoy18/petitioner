@@ -2,16 +2,23 @@ import { TokenItem } from '@wordpress/components/build-types/form-token-field/ty
 
 export type FieldType = string | TokenItem;
 
+export type StyleChoice = {
+	label: string;
+	value: string;
+};
+
 export type PetitionFormBlockAttributes = {
 	formId: string;
 	newPetitionLink?: string;
 	perPage: number;
-	style: 'simple' | 'table';
+	/** Free ships `simple` and `table`; add-ons register more. */
+	style: string;
 	fields: FieldType[];
 	showPagination: boolean;
 	hidePageNumbers: boolean;
 	availableFields: string[];
-	availableStyles: string[];
+	availableStyles: StyleChoice[];
+	styleEditorHints?: Record<string, string>;
 };
 
 export type PetitionerSubmissionsProps = {
