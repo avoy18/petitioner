@@ -10,8 +10,9 @@ if (! defined('ABSPATH')) {
  */
 class AV_Petitioner_Labels
 {
-    private static $core_labels_cache = null;
-    private static $field_labels_cache = null;
+    private static ?array $core_labels_cache = null;
+    private static ?array $field_labels_cache = null;
+    private static ?array $submission_style_labels_cache = null;
 
     /**
      * Get a label by key
@@ -139,6 +140,39 @@ class AV_Petitioner_Labels
     }
 
     /**
+     * Get submission style labels (separate from core labels)
+     *
+     * Keyed by the style slug registered through `av_petitioner_submissions_styles`.
+     * These name the choices in the block editor style picker, so they are kept out
+     * of the core labels the site owner can override.
+     *
+     * Filtered and cached, unlike get_all() and get_field_labels().
+     *
+     * @return array An array of style labels
+     */
+    public static function get_submission_style_labels()
+    {
+        if (self::$submission_style_labels_cache !== null) {
+            return self::$submission_style_labels_cache;
+        }
+
+        $labels = [
+            'simple' => __('Simple', 'petitioner'),
+            'table'  => __('Table', 'petitioner'),
+        ];
+
+        /**
+         * Filter the labels used for submission styles in the editor.
+         *
+         * @param array $labels Map of style slug => label.
+         * @return array Modified style labels.
+         */
+        self::$submission_style_labels_cache = apply_filters('av_petitioner_submission_style_labels', $labels);
+
+        return self::$submission_style_labels_cache;
+    }
+
+    /**
      * Get form field labels (separate from core labels)
      *
      * @return array An array of field labels
@@ -202,5 +236,6 @@ class AV_Petitioner_Labels
     {
         self::$core_labels_cache = null;
         self::$field_labels_cache = null;
+        self::$submission_style_labels_cache = null;
     }
 }
