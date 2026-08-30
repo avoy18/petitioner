@@ -18,6 +18,7 @@ export type PetitionFormBlockAttributes = {
 	hidePageNumbers: boolean;
 	availableFields: string[];
 	availableStyles: StyleChoice[];
+	styleEditorHints?: Record<string, string>;
 };
 
 export type PetitionerSubmissionsProps = {

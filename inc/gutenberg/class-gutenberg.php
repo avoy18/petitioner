@@ -89,6 +89,10 @@ class AV_Petitioner_Gutenberg
                     'items'   => [
                         'type' => 'string'
                     ]
+                ],
+                'styleEditorHints' => [
+                    'type'    => 'object',
+                    'default' => AV_Petitioner_Submissions_UI::get_style_editor_hints(),
                 ]
             ],
             'render_callback' => function ($attributes) {

@@ -148,4 +148,8 @@ export default class PetitionerSubmissions {
 		this.submissions = response.data.submissions || [];
 		this.labels = response.data.labels || [];
 	}
+
+	public destroy(): void {
+		this.renderer?.destroy?.();
+	}
 }

@@ -5,6 +5,7 @@ import {
 	TextControl,
 	ToggleControl,
 	SelectControl,
+	Notice,
 } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useCallback, useEffect, useRef } from '@wordpress/element';
@@ -14,6 +15,8 @@ import PetitionerSubmissions from '@js/frontend/submissions/index';
 import type { PetitionerSubmissionsProps, FieldType } from './consts';
 import { __ } from '@wordpress/i18n';
 import { FormTokenField } from '@wordpress/components';
+
+const instanceMap = new WeakMap<HTMLElement, PetitionerSubmissions>();
 
 export default function Edit(props: PetitionerSubmissionsProps) {
 	const { attributes, setAttributes, clientId } = props;
@@ -26,6 +29,7 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 		hidePageNumbers = false,
 		availableFields = [],
 		availableStyles = [],
+		styleEditorHints = {},
 	} = attributes;
 
 	const blockAtts = useBlockProps();
@@ -43,7 +47,8 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 				try {
 					// Mark as initialized before construction to prevent infinite loop on failure
 					submissionsDiv.dataset.ptrInitialized = 'true';
-					new PetitionerSubmissions(submissionsDiv);
+					const instance = new PetitionerSubmissions(submissionsDiv);
+					instanceMap.set(submissionsDiv, instance);
 				} catch (err) {
 					// If data isn't ready, let it fail silently.
 					// Note: This node will not be retried to prevent infinite loops.
@@ -54,7 +59,22 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 		// Initial check in case it's already rendered
 		initBlock();
 
-		const observer = new MutationObserver(() => {
+		const observer = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				mutation.removedNodes.forEach((node) => {
+					if (node instanceof HTMLElement) {
+						if (node.classList.contains('petitioner-submissions')) {
+							instanceMap.get(node)?.destroy();
+							instanceMap.delete(node);
+						}
+						const instances = node.querySelectorAll<HTMLElement>('.petitioner-submissions');
+						instances.forEach(inst => {
+							instanceMap.get(inst)?.destroy();
+							instanceMap.delete(inst);
+						});
+					}
+				});
+			});
 			initBlock();
 		});
 
@@ -78,6 +98,7 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 	}, []);
 
 	const allPetitions = fetchPetitions() || [];
+	const styleHint = styleEditorHints?.[style];
 
 	const handleSelect = () => {
 		selectBlock(clientId);
@@ -142,7 +163,16 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 						value={style}
 						options={availableStyles}
 						onChange={(value) => setAttributes({ style: value })}
+						help={__(
+							'Some settings below only apply to certain styles.',
+							'petitioner'
+						)}
 					/>
+					{styleHint ? (
+						<Notice status="info" isDismissible={false}>
+							{styleHint}
+						</Notice>
+					) : null}
 				</PanelBody>
 			</InspectorControls>
 		</div>

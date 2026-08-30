@@ -17,6 +17,7 @@ class Test_Submissions_UI extends BaseTestCase
     {
         remove_all_filters('av_petitioner_submissions_styles');
         remove_all_filters('av_petitioner_submission_style_labels');
+        remove_all_filters('av_petitioner_submission_style_editor_hints');
         remove_all_filters('av_petitioner_available_fields_shortcode');
         remove_all_filters('av_petitioner_public_fields');
         AV_Petitioner_Labels::clear_cache();
@@ -257,6 +258,24 @@ class Test_Submissions_UI extends BaseTestCase
         $this->assertContains(
             ['label' => 'Pro Ticker', 'value' => 'pro-ticker'],
             AV_Petitioner_Submissions_UI::get_style_choices()
+        );
+    }
+
+    public function test_style_editor_hints_default_to_empty()
+    {
+        $this->assertSame([], AV_Petitioner_Submissions_UI::get_style_editor_hints());
+    }
+
+    public function test_style_editor_hints_can_be_registered_by_addons()
+    {
+        add_filter('av_petitioner_submission_style_editor_hints', function ($hints) {
+            $hints['pro-ticker'] = 'Ticker hint';
+            return $hints;
+        });
+
+        $this->assertSame(
+            ['pro-ticker' => 'Ticker hint'],
+            AV_Petitioner_Submissions_UI::get_style_editor_hints()
         );
     }
 

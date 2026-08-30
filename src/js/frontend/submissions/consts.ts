@@ -28,6 +28,7 @@ export type SubmissionRendererOptions = {
 
 export interface SubmissionRendererInstance {
 	render(): void;
+	destroy?(): void;
 }
 
 export type SubmissionRendererConstructor = new (

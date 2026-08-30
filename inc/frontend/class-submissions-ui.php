@@ -125,6 +125,25 @@ class AV_Petitioner_Submissions_UI
     }
 
     /**
+     * Editor hints keyed by style slug. Shown in the submissions block sidebar
+     * when a style is selected. Add-ons register hints for settings that style
+     * ignores or overrides.
+     *
+     * @since 0.8.7
+     * 
+     * @return array<string, string>
+     */
+    static public function get_style_editor_hints()
+    {
+        /**
+         * Filter editor hints for submission display styles.
+         *
+         * @param array<string, string> $hints Style slug => hint text.
+         */
+        return apply_filters('av_petitioner_submission_style_editor_hints', []);
+    }
+
+    /**
      * Get the available fields
      * 
      * @return array The available fields
