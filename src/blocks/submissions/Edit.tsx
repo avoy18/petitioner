@@ -25,6 +25,7 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 		showPagination = true,
 		hidePageNumbers = false,
 		availableFields = [],
+		availableStyles = [],
 	} = attributes;
 
 	const blockAtts = useBlockProps();
@@ -139,21 +140,8 @@ export default function Edit(props: PetitionerSubmissionsProps) {
 					<SelectControl
 						label={__('Style', 'petitioner')}
 						value={style}
-						options={[
-							{
-								label: __('Simple', 'petitioner'),
-								value: 'simple',
-							},
-							{
-								label: __('Table', 'petitioner'),
-								value: 'table',
-							},
-						]}
-						onChange={(value) =>
-							setAttributes({
-								style: value as 'simple' | 'table',
-							})
-						}
+						options={availableStyles}
+						onChange={(value) => setAttributes({ style: value })}
 					/>
 				</PanelBody>
 			</InspectorControls>

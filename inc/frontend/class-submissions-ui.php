@@ -46,13 +46,14 @@ class AV_Petitioner_Submissions_UI
             return '';
         }
 
-        $atts = array_merge(self::get_defaults(), $atts);
+        $defaults = self::get_defaults();
+        $atts     = array_merge($defaults, $atts);
 
         $available_styles = self::get_available_styles();
         $available_fields = self::get_available_fields();
 
         $per_page   = absint($atts['per_page']);
-        $style      = in_array($atts['style'], $available_styles, true) ? $atts['style'] : 'simple';
+        $style      = in_array($atts['style'], $available_styles, true) ? $atts['style'] : $defaults['style'];
 
         // Remove spaces and split fields
         $fields_raw = str_replace(' ', '', $atts['fields']);
@@ -98,6 +99,29 @@ class AV_Petitioner_Submissions_UI
          * @return array The available styles that are displayed in the submissions list
          */
         return apply_filters('av_petitioner_submissions_styles', $styles);
+    }
+
+    /**
+     * Get the available styles as label/value pairs for a select control.
+     *
+     * Labels come from AV_Petitioner_Labels::get_submission_style_labels(). Styles
+     * without a registered label fall back to a humanised slug.
+     *
+     * @return array List of ['label' => string, 'value' => string]
+     */
+    static public function get_style_choices()
+    {
+        $labels  = AV_Petitioner_Labels::get_submission_style_labels();
+        $choices = [];
+
+        foreach (self::get_available_styles() as $style) {
+            $choices[] = [
+                'label' => isset($labels[$style]) ? $labels[$style] : ucwords(str_replace(['-', '_'], ' ', $style)),
+                'value' => $style,
+            ];
+        }
+
+        return $choices;
     }
 
     /**

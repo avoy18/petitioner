@@ -40,6 +40,8 @@ class AV_Petitioner_Gutenberg
             }
         ]);
 
+        $submission_defaults = AV_Petitioner_Submissions_UI::get_defaults();
+
         register_block_type(AV_PETITIONER_PLUGIN_DIR . '/dist-gutenberg/blocks/submissions', [
             'attributes' => [
                 'formId' => [
@@ -52,33 +54,33 @@ class AV_Petitioner_Gutenberg
                 ],
                 'perPage' => [
                     'type'    => 'number',
-                    'default' => 10
+                    'default' => absint($submission_defaults['per_page'])
                 ],
                 'style' => [
                     'type'    => 'string',
-                    'default' => 'simple',
+                    'default' => $submission_defaults['style'],
                     'enum'    => AV_Petitioner_Submissions_UI::get_available_styles()
                 ],
                 'fields' => [
                     'type'    => 'array',
-                    'default' => ['name', 'country', 'submitted_at'],
+                    'default' => explode(',', $submission_defaults['fields']),
                     'items'   => [
                         'type' => 'string'
                     ]
                 ],
                 'showPagination' => [
                     'type'    => 'boolean',
-                    'default' => true
+                    'default' => (bool) $submission_defaults['show_pagination']
                 ],
                 'hidePageNumbers' => [
                     'type'    => 'boolean',
-                    'default' => false
+                    'default' => (bool) $submission_defaults['hide_page_numbers']
                 ],
                 'availableStyles' => [
                     'type'    => 'array',
-                    'default' => AV_Petitioner_Submissions_UI::get_available_styles(),
+                    'default' => AV_Petitioner_Submissions_UI::get_style_choices(),
                     'items'   => [
-                        'type' => 'string'
+                        'type' => 'object'
                     ]
                 ],
                 'availableFields' => [
