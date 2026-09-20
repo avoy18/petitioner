@@ -33,13 +33,13 @@ class Test_Translations extends BaseTestCase
         parent::tear_down();
     }
 
-    public function test_translate_string_returns_empty_unchanged()
+    public function test_maybe_translate_returns_empty_unchanged()
     {
-        $this->assertSame('', $this->translations->translate_string($this->form_id, 'title', ''));
-        $this->assertNull($this->translations->translate_string($this->form_id, 'title', null));
+        $this->assertSame('', $this->translations->maybe_translate($this->form_id, 'title', ''));
+        $this->assertNull($this->translations->maybe_translate($this->form_id, 'title', null));
     }
 
-    public function test_translate_string_uses_filter()
+    public function test_maybe_translate_uses_filter()
     {
         add_filter('av_petitioner_translate_string', function ($value, $name, $form_id) {
             $this->assertSame('title', $name);
@@ -47,16 +47,16 @@ class Test_Translations extends BaseTestCase
             return 'Bonjour';
         }, 10, 3);
 
-        $this->assertSame('Bonjour', $this->translations->translate_string($this->form_id, 'title', 'Hello'));
+        $this->assertSame('Bonjour', $this->translations->maybe_translate($this->form_id, 'title', 'Hello'));
     }
 
-    public function test_translate_string_keeps_original_if_filter_returns_non_string()
+    public function test_maybe_translate_keeps_original_if_filter_returns_non_string()
     {
         add_filter('av_petitioner_translate_string', function () {
             return ['nope'];
         });
 
-        $this->assertSame('Hello', $this->translations->translate_string($this->form_id, 'title', 'Hello'));
+        $this->assertSame('Hello', $this->translations->maybe_translate($this->form_id, 'title', 'Hello'));
     }
 
     public function test_translate_field_swaps_label_placeholder_and_wysiwyg()

@@ -13,9 +13,15 @@ class AV_Petitioner_Translations
 {
     public function __construct()
     {
+        /**
+         * This part registers strings for the future translation by the translator plugins.
+         */
         add_action('save_post_petitioner-petition', [$this, 'register_form'], 20);
-        add_filter('av_petitioner_form_field', [$this, 'translate_field'], 20, 3);
 
+        /**
+         * These filters translate the fields on the frontend.
+         */
+        add_filter('av_petitioner_form_field', [$this, 'translate_field'], 20, 3);
         add_filter('av_petitioner_title', [$this, 'translate_title'], 10, 2);
         add_filter('av_petitioner_subject', [$this, 'translate_subject'], 10, 2);
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
@@ -89,7 +95,7 @@ class AV_Petitioner_Translations
      */
     public function translate_title($title, $form_id)
     {
-        return $this->translate_string($form_id, 'title', $title);
+        return $this->maybe_translate($form_id, 'title', $title);
     }
 
     /**
@@ -101,7 +107,7 @@ class AV_Petitioner_Translations
      */
     public function translate_subject($subject, $form_id)
     {
-        return $this->translate_string($form_id, 'subject', $subject);
+        return $this->maybe_translate($form_id, 'subject', $subject);
     }
 
     /**
@@ -113,7 +119,7 @@ class AV_Petitioner_Translations
      */
     public function translate_letter($letter, $form_id)
     {
-        return $this->translate_string($form_id, 'letter', $letter);
+        return $this->maybe_translate($form_id, 'letter', $letter);
     }
 
     /**
@@ -131,27 +137,27 @@ class AV_Petitioner_Translations
         }
 
         if (!empty($field['label'])) {
-            $field['label'] = $this->translate_string($form_id, "field.{$key}.label", $field['label']);
+            $field['label'] = $this->maybe_translate($form_id, "field.{$key}.label", $field['label']);
         }
         if (!empty($field['placeholder'])) {
-            $field['placeholder'] = $this->translate_string($form_id, "field.{$key}.placeholder", $field['placeholder']);
+            $field['placeholder'] = $this->maybe_translate($form_id, "field.{$key}.placeholder", $field['placeholder']);
         }
         if (($field['type'] ?? '') === 'wysiwyg' && !empty($field['value'])) {
-            $field['value'] = $this->translate_string($form_id, "field.{$key}.value", $field['value']);
+            $field['value'] = $this->maybe_translate($form_id, "field.{$key}.value", $field['value']);
         }
 
         return $field;
     }
 
     /**
-     * Translate a string with the translator plugin.
+     * Prepare the string for translation. "Maybe" because relies on a translation plugin.
      * 
      * @param int $form_id
      * @param string $name
      * @param string $value
      * @return string
      */
-    public function translate_string($form_id, $name, $value)
+    public function maybe_translate($form_id, $name, $value)
     {
         if ($value === '' || $value === null) {
             return $value;
