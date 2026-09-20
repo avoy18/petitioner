@@ -97,13 +97,29 @@ class AV_Petitioner_Frontend_UI
         return implode(' ', $parts);
     }
 
+    /**
+     * Render the petition title.
+     * 
+     * @param int $form_id
+     */
     public function render_title($form_id)
     {
         $petitioner_title = get_post_meta($form_id, '_petitioner_title', true);
-
         $petitioner_show_title = get_option('petitioner_show_title', true);
 
         if (!$petitioner_show_title) return;
+
+        /**
+         * Filter to modify the petition title.
+         * @param string $petitioner_title The petition title.
+         * @param int $form_id The form ID.
+         * @return string The modified petition title.
+         */
+        $petitioner_title = apply_filters('av_petitioner_title', $petitioner_title, $form_id);
+
+        if (!is_string($petitioner_title)) {
+            $petitioner_title = '';
+        }
     ?>
         <h2 class="petitioner__title">
             <?php echo !empty($petitioner_title) ? esc_html($petitioner_title) : esc_html__('Sign this petition', 'petitioner'); ?>
@@ -115,11 +131,35 @@ class AV_Petitioner_Frontend_UI
     {
         if (!$form_id) return;
 
-        $petitioner_letter = get_post_meta($form_id, '_petitioner_letter', true);
-        $petitioner_subject = get_post_meta($form_id, '_petitioner_subject', true);
+        $petitioner_letter      = get_post_meta($form_id, '_petitioner_letter', true);
+        $petitioner_subject     = get_post_meta($form_id, '_petitioner_subject', true);
         $petitioner_show_letter = get_option('petitioner_show_letter', true);
 
         if (!$petitioner_show_letter) return;
+
+        /**
+         * Filter to modify the letter.
+         * @param string $petitioner_letter The raw letter.
+         * @param int $form_id The form ID.
+         * @return string The modified letter.
+         */
+        $petitioner_letter = apply_filters('av_petitioner_letter', $petitioner_letter, $form_id);
+
+        if (!is_string($petitioner_letter)) {
+            $petitioner_letter = '';
+        }
+
+        /**
+         * Filter to modify the subject.
+         * @param string $petitioner_subject The raw subject.
+         * @param int $form_id The form ID.
+         * @return string The modified subject.
+         */
+        $petitioner_subject = apply_filters('av_petitioner_subject', $petitioner_subject, $form_id);
+
+        if (!is_string($petitioner_subject)) {
+            $petitioner_subject = '';
+        }
     ?>
         <button class="petitioner__btn petitioner__btn--letter"><?php echo esc_html(AV_Petitioner_Labels::get('view_the_letter')); ?></button>
 
@@ -129,9 +169,7 @@ class AV_Petitioner_Frontend_UI
                 <button class="petitioner-modal__close">&times; <span><?php echo esc_html(AV_Petitioner_Labels::get('close_modal')); ?></span></button>
                 <h3><?php echo esc_html($petitioner_subject); ?></h3>
                 <div class="petitioner-modal__inner">
-                    <?php
-                    $parsed_letter = wpautop($petitioner_letter);
-                    echo wp_kses_post($parsed_letter); ?>
+                    <?php echo wp_kses_post(wpautop($petitioner_letter)); ?>
                 </div>
                 <hr />
                 <p><?php echo esc_html(AV_Petitioner_Labels::get('your_name_here')); ?></p>
