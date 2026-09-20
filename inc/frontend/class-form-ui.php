@@ -91,7 +91,22 @@ class AV_Petitioner_Form_UI
             <?php
             if (is_array($form_fields) && is_array($field_order)) {
                 foreach ($field_order as $key) {
-                    $field      = $form_fields[$key] ?? [];
+                    $field = $form_fields[$key] ?? [];
+
+                    /**
+                     * Filter to modify the form field before rendering.
+                     * 
+                     * @param array $field The form field array.
+                     * @param string $key The field key.
+                     * @param int $form_id The form ID.
+                     * @return array The modified form field array.
+                     */
+                    $field = apply_filters('av_petitioner_form_field', $field, $key, $this->form_id);
+
+                    if (!is_array($field) || $field === []) {
+                        continue;
+                    }
+
                     $field_type = !empty($field['type']) ? esc_html($field['type']) : '';
 
                     if ($field_type === 'checkbox') {
