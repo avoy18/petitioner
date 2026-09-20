@@ -26,6 +26,8 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_title', [$this->translations, 'translate_title']);
         remove_filter('av_petitioner_subject', [$this->translations, 'translate_subject']);
         remove_filter('av_petitioner_letter', [$this->translations, 'translate_letter']);
+        remove_filter('av_petitioner_success_message_title', [$this->translations, 'translate_success_message_title']);
+        remove_filter('av_petitioner_success_message', [$this->translations, 'translate_success_message']);
 
         remove_all_filters('av_petitioner_translate_string');
         remove_all_actions('av_petitioner_register_translation');
@@ -82,11 +84,29 @@ class Test_Translations extends BaseTestCase
         $this->assertSame('x', $this->translations->translate_field('x', 'fname', $this->form_id));
     }
 
+    public function test_translate_success_overrides()
+    {
+        add_filter('av_petitioner_translate_string', function ($value, $name) {
+            return $name . ':' . $value;
+        }, 10, 2);
+
+        $this->assertSame(
+            'success_message_title:Merci!',
+            $this->translations->translate_success_message_title('Merci!', $this->form_id)
+        );
+        $this->assertSame(
+            'success_message:<p>We got it.</p>',
+            $this->translations->translate_success_message('<p>We got it.</p>', $this->form_id)
+        );
+    }
+
     public function test_register_form_fires_action_for_meta_and_fields()
     {
         update_post_meta($this->form_id, '_petitioner_title', 'Save the bees');
         update_post_meta($this->form_id, '_petitioner_subject', 'Please help');
         update_post_meta($this->form_id, '_petitioner_letter', 'Dear minister');
+        update_post_meta($this->form_id, '_petitioner_success_message_title', 'Merci!');
+        update_post_meta($this->form_id, '_petitioner_success_message', '<p>We got it.</p>');
         update_post_meta($this->form_id, '_petitioner_form_fields', wp_json_encode([
             'fname' => [
                 'type'        => 'text',
@@ -116,6 +136,10 @@ class Test_Translations extends BaseTestCase
         $this->assertSame('Please help', $by_name['subject']['value']);
         $this->assertSame('Dear minister', $by_name['letter']['value']);
         $this->assertTrue($by_name['letter']['multiline']);
+        $this->assertSame('Merci!', $by_name['success_message_title']['value']);
+        $this->assertFalse($by_name['success_message_title']['multiline']);
+        $this->assertSame('<p>We got it.</p>', $by_name['success_message']['value']);
+        $this->assertTrue($by_name['success_message']['multiline']);
         $this->assertSame('First name', $by_name['field.fname.label']['value']);
         $this->assertSame('Jane', $by_name['field.fname.placeholder']['value']);
         $this->assertSame('<p>Terms</p>', $by_name['field.legal.value']['value']);

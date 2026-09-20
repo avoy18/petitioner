@@ -25,6 +25,8 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_title', [$this, 'translate_title'], 10, 2);
         add_filter('av_petitioner_subject', [$this, 'translate_subject'], 10, 2);
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
+        add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
+        add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
     }
 
     /**
@@ -43,6 +45,8 @@ class AV_Petitioner_Translations
         $this->register_string($form_id, 'title', get_post_meta($form_id, '_petitioner_title', true));
         $this->register_string($form_id, 'subject', get_post_meta($form_id, '_petitioner_subject', true));
         $this->register_string($form_id, 'letter', get_post_meta($form_id, '_petitioner_letter', true), true);
+        $this->register_string($form_id, 'success_message_title', get_post_meta($form_id, '_petitioner_success_message_title', true));
+        $this->register_string($form_id, 'success_message', get_post_meta($form_id, '_petitioner_success_message', true), true);
 
         $fields = get_post_meta($form_id, '_petitioner_form_fields', true);
         $fields = is_string($fields) ? json_decode($fields, true) : $fields;
@@ -120,6 +124,30 @@ class AV_Petitioner_Translations
     public function translate_letter($letter, $form_id)
     {
         return $this->maybe_translate($form_id, 'letter', $letter);
+    }
+
+    /**
+     * Translate the custom success message title.
+     *
+     * @param string $title
+     * @param int    $form_id
+     * @return string
+     */
+    public function translate_success_message_title($title, $form_id)
+    {
+        return $this->maybe_translate($form_id, 'success_message_title', $title);
+    }
+
+    /**
+     * Translate the custom success message.
+     *
+     * @param string $message
+     * @param int    $form_id
+     * @return string
+     */
+    public function translate_success_message($message, $form_id)
+    {
+        return $this->maybe_translate($form_id, 'success_message', $message);
     }
 
     /**
