@@ -104,6 +104,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_Queue')) {
                 AV_Petitioner_Queue::init();
             }
+
+            // translations
+            if (class_exists('AV_Petitioner_Translations')) {
+                new AV_Petitioner_Translations();
+            }
         });
 
         // api endpoints

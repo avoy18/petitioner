@@ -1,0 +1,172 @@
+<?php
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Base translation logic for Petitioner.
+ * 
+ * Doesnt actually do the translation, just registers the strings and hooks into the right places.
+ */
+class AV_Petitioner_Translations
+{
+    public function __construct()
+    {
+        add_action('save_post_petitioner-petition', [$this, 'register_form'], 20);
+        add_filter('av_petitioner_form_field', [$this, 'translate_field'], 20, 3);
+
+        add_filter('av_petitioner_title', [$this, 'translate_title'], 10, 2);
+        add_filter('av_petitioner_subject', [$this, 'translate_subject'], 10, 2);
+        add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
+    }
+
+    /**
+     * Register the form fields with the translator plugin.
+     * 
+     * @param int $form_id
+     */
+    public function register_form($form_id)
+    {
+        if (wp_is_post_revision($form_id) || wp_is_post_autosave($form_id)) {
+            return;
+        }
+
+        $form_id = absint($form_id);
+
+        $this->register_string($form_id, 'title', get_post_meta($form_id, '_petitioner_title', true));
+        $this->register_string($form_id, 'subject', get_post_meta($form_id, '_petitioner_subject', true));
+        $this->register_string($form_id, 'letter', get_post_meta($form_id, '_petitioner_letter', true), true);
+
+        $fields = get_post_meta($form_id, '_petitioner_form_fields', true);
+        $fields = is_string($fields) ? json_decode($fields, true) : $fields;
+
+        if (!is_array($fields)) {
+            return;
+        }
+
+        foreach ($fields as $key => $field) {
+
+            if (!is_array($field)) {
+                continue;
+            }
+
+            if (!empty($field['label'])) {
+                $this->register_string($form_id, "field.{$key}.label", $field['label']);
+            }
+            if (!empty($field['placeholder'])) {
+                $this->register_string($form_id, "field.{$key}.placeholder", $field['placeholder']);
+            }
+            if (($field['type'] ?? '') === 'wysiwyg' && !empty($field['value'])) {
+                $this->register_string($form_id, "field.{$key}.value", $field['value'], true);
+            }
+        }
+    }
+
+    /**
+     * Register a translation string with the translator plugin.
+     * 
+     * @param int $form_id
+     * @param string $name
+     * @param string $value
+     * @param boolean $multiline
+     */
+    public function register_string($form_id, $name, $value, $multiline = false)
+    {
+        if ($value === '' || $value === null) {
+            return;
+        }
+
+        do_action('av_petitioner_register_translation', $form_id, $name, $value, $multiline); // hook to be implemented by translator plugins
+    }
+
+    /**
+     * Translate the petition title.
+     *
+     * @param string $title
+     * @param int    $form_id
+     * @return string
+     */
+    public function translate_title($title, $form_id)
+    {
+        return $this->translate_string($form_id, 'title', $title);
+    }
+
+    /**
+     * Translate the petition subject.
+     *
+     * @param string $subject
+     * @param int    $form_id
+     * @return string
+     */
+    public function translate_subject($subject, $form_id)
+    {
+        return $this->translate_string($form_id, 'subject', $subject);
+    }
+
+    /**
+     * Translate the petition letter.
+     *
+     * @param string $letter
+     * @param int    $form_id
+     * @return string
+     */
+    public function translate_letter($letter, $form_id)
+    {
+        return $this->translate_string($form_id, 'letter', $letter);
+    }
+
+    /**
+     * Translate the field right before it renders.
+     *
+     * @param array  $field
+     * @param string $key
+     * @param int    $form_id
+     * @return array
+     */
+    public function translate_field($field, $key, $form_id)
+    {
+        if (!is_array($field)) {
+            return $field;
+        }
+
+        if (!empty($field['label'])) {
+            $field['label'] = $this->translate_string($form_id, "field.{$key}.label", $field['label']);
+        }
+        if (!empty($field['placeholder'])) {
+            $field['placeholder'] = $this->translate_string($form_id, "field.{$key}.placeholder", $field['placeholder']);
+        }
+        if (($field['type'] ?? '') === 'wysiwyg' && !empty($field['value'])) {
+            $field['value'] = $this->translate_string($form_id, "field.{$key}.value", $field['value']);
+        }
+
+        return $field;
+    }
+
+    /**
+     * Translate a string with the translator plugin.
+     * 
+     * @param int $form_id
+     * @param string $name
+     * @param string $value
+     * @return string
+     */
+    public function translate_string($form_id, $name, $value)
+    {
+        if ($value === '' || $value === null) {
+            return $value;
+        }
+
+        /**
+         * Filter to translate a string with the translator plugin.
+         * 
+         * @param string $value The string to translate.
+         * @param string $name The name of the string.
+         * @param int $form_id The form ID.
+         * @return string The translated string.
+         */
+        $translated = apply_filters('av_petitioner_translate_string', $value, $name, $form_id);
+
+        return is_string($translated) ? $translated : $value;
+    }
+}
