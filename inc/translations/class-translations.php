@@ -17,6 +17,7 @@ class AV_Petitioner_Translations
          * This part registers strings for the future translation by the translator plugins.
          */
         add_action('save_post_petitioner-petition', [$this, 'register_form'], 20);
+        add_action('admin_init', [$this, 'register_all_forms']);
 
         /**
          * These filters translate the fields on the frontend.
@@ -27,6 +28,23 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
+    }
+
+    /**
+     * Register all existing forms with the translator plugin.
+     */
+    public function register_all_forms()
+    {
+        $form_ids = get_posts([
+            'post_type'      => 'petitioner-petition',
+            'post_status'    => 'any',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ]);
+
+        foreach ($form_ids as $form_id) {
+            $this->register_form($form_id);
+        }
     }
 
     /**
