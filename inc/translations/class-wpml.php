@@ -38,8 +38,8 @@ class AV_Petitioner_WPML
 
         do_action(
             'wpml_register_single_string',
-            sprintf('Petitioner #%d', $form_id),
-            $form_id . ':' . $name,
+            self::string_group($form_id),
+            self::string_name($form_id, $name),
             $value
         );
     }
@@ -61,8 +61,8 @@ class AV_Petitioner_WPML
         $translated = apply_filters(
             'wpml_translate_single_string',
             $value,
-            sprintf('Petitioner #%d', $form_id),
-            $form_id . ':' . $name
+            self::string_group($form_id),
+            self::string_name($form_id, $name)
         );
 
         return is_string($translated) ? $translated : $value;
@@ -95,5 +95,28 @@ class AV_Petitioner_WPML
         $current = apply_filters('wpml_current_language', '');
 
         return is_string($current) && $current !== '' ? $current : $lang;
+    }
+
+    /**
+     * @param int $form_id
+     * @return string
+     */
+    private static function string_group($form_id)
+    {
+        $form_id = absint($form_id);
+
+        return $form_id ? sprintf('Petitioner #%d', $form_id) : 'Petitioner Labels';
+    }
+
+    /**
+     * @param int    $form_id
+     * @param string $name
+     * @return string
+     */
+    private static function string_name($form_id, $name)
+    {
+        $form_id = absint($form_id);
+
+        return $form_id ? $form_id . ':' . $name : $name;
     }
 }

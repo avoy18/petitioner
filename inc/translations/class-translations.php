@@ -18,6 +18,9 @@ class AV_Petitioner_Translations
          */
         add_action('save_post_petitioner-petition', [$this, 'register_form'], 20);
         add_action('admin_init', [$this, 'register_all_forms']);
+        add_action('admin_init', [$this, 'register_label_overrides']);
+        add_action('add_option_petitioner_label_overrides', [$this, 'register_label_overrides']);
+        add_action('update_option_petitioner_label_overrides', [$this, 'register_label_overrides']);
 
         /**
          * These filters translate the fields on the frontend.
@@ -28,6 +31,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
+        add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
 
         /**
          * Persist the posted language on the submission and pass it to mailers.
@@ -75,6 +79,26 @@ class AV_Petitioner_Translations
 
         foreach ($form_ids as $form_id) {
             $this->register_form($form_id);
+        }
+    }
+
+    /**
+     * Register site-wide label overrides with the translator plugin.
+     */
+    public function register_label_overrides()
+    {
+        if (!has_action('av_petitioner_register_translation')) {
+            return;
+        }
+
+        $overrides = json_decode(get_option('petitioner_label_overrides', '{}'), true);
+
+        if (!is_array($overrides)) {
+            return;
+        }
+
+        foreach ($overrides as $key => $value) {
+            $this->register_string(0, 'label.' . $key, $value);
         }
     }
 
@@ -197,6 +221,22 @@ class AV_Petitioner_Translations
     public function translate_success_message($message, $form_id)
     {
         return $this->maybe_translate($form_id, 'success_message', $message);
+    }
+
+    /**
+     * Translate a site-wide label override.
+     *
+     * @param string $label
+     * @param string $key
+     * @return string
+     */
+    public function translate_label($label, $key)
+    {
+        if (is_admin() && !wp_doing_ajax()) {
+            return $label;
+        }
+
+        return $this->maybe_translate(0, 'label.' . $key, $label);
     }
 
     /**
