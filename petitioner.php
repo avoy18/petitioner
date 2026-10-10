@@ -72,6 +72,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/utilities.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-labels.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/labels/class-label-overrides.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/translations/class-translations.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/translations/class-polylang.php';
 
 $petitioner_setup = new AV_Petitioner_Setup();
 
