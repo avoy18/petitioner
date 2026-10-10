@@ -13,6 +13,10 @@ class AV_Petitioner_Polylang
 {
     public function __construct()
     {
+        if (!function_exists('pll_register_string')) {
+            return;
+        }
+
         add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 4);
         add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 3);
     }
