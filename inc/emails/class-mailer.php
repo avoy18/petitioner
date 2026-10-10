@@ -23,6 +23,7 @@ class AV_Petitioner_Mailer
     public $from_field              = false;
     public $from_name               = false;
     public $final_from_field;
+    public $lang                    = '';
 
     public function __construct($settings)
     {
@@ -41,6 +42,7 @@ class AV_Petitioner_Mailer
         $this->submission_id            = $settings['submission_id'];
         $this->from_field               = $settings['from_field'] ?? '';
         $this->from_name                = $settings['from_name'] ?? '';
+        $this->lang                     = isset($settings['lang']) && is_string($settings['lang']) ? $settings['lang'] : '';
 
         $sanitized_from_field = sanitize_email($this->from_field);
 

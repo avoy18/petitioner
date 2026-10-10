@@ -237,4 +237,32 @@ class Test_Mailer extends BaseTestCase
 
         wp_delete_post($form_id, true);
     }
+
+    public function test_constructor_stores_lang()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+
+        $this->assertSame('', $mailer->lang);
+
+        $with_lang = new AV_Petitioner_Mailer([
+            'target_email' => 'test@test.com',
+            'target_cc_emails' => '',
+            'user_email' => 'user@test.com',
+            'user_name' => 'John Doe',
+            'user_country' => 'US',
+            'subject' => 'Test',
+            'letter' => 'Test letter',
+            'bcc' => false,
+            'send_to_representative' => true,
+            'confirm_emails' => false,
+            'send_ty_email' => true,
+            'form_id' => $form_id,
+            'submission_id' => 1,
+            'lang' => 'fr',
+        ]);
+
+        $this->assertSame('fr', $with_lang->lang);
+
+        wp_delete_post($form_id, true);
+    }
 }
