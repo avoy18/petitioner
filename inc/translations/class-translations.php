@@ -219,7 +219,7 @@ class AV_Petitioner_Translations
      */
     public function maybe_translate($form_id, $name, $value)
     {
-        if ($value === '' || $value === null) {
+        if (!is_string($value) || $value === '') {
             return $value;
         }
 
