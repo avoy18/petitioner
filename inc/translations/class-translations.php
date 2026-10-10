@@ -91,7 +91,13 @@ class AV_Petitioner_Translations
             return;
         }
 
-        $overrides = json_decode(get_option('petitioner_label_overrides', '{}'), true);
+        $raw = get_option('petitioner_label_overrides', '{}');
+
+        if (!is_string($raw)) {
+            return;
+        }
+
+        $overrides = json_decode($raw, true);
 
         if (!is_array($overrides)) {
             return;

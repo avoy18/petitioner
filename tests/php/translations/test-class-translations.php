@@ -185,6 +185,19 @@ class Test_Translations extends BaseTestCase
         $this->assertArrayNotHasKey('label.could_not_submit', $by_name);
     }
 
+    public function test_register_label_overrides_skips_non_string_option()
+    {
+        update_option('petitioner_label_overrides', ['already_signed' => 'You already signed']);
+
+        $called = false;
+        add_action('av_petitioner_register_translation', function () use (&$called) {
+            $called = true;
+        });
+
+        $this->translations->register_label_overrides();
+        $this->assertFalse($called);
+    }
+
     public function test_translate_label()
     {
         add_filter('av_petitioner_translate_string', function ($value, $name) {
