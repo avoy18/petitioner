@@ -19,6 +19,7 @@ class AV_Petitioner_Polylang
 
         add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 4);
         add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 3);
+        add_filter('av_petitioner_translations_register_form_args', [$this, 'register_form_args']);
     }
 
     /**
@@ -60,5 +61,17 @@ class AV_Petitioner_Polylang
         $translated = pll__($value);
 
         return is_string($translated) ? $translated : $value;
+    }
+
+    /**
+     * Polylang can hide posts in other languages. Empty lang = all forms.
+     *
+     * @param array $args
+     * @return array
+     */
+    public function register_form_args($args)
+    {
+        $args['lang'] = '';
+        return $args;
     }
 }

@@ -39,12 +39,22 @@ class AV_Petitioner_Translations
             return;
         }
 
-        $form_ids = get_posts([
+        $register_form_args = [
             'post_type'      => 'petitioner-petition',
-            'post_status'    => 'any',
+            'post_status'    => ['publish', 'draft', 'private'],
             'posts_per_page' => -1,
             'fields'         => 'ids',
-        ]);
+        ];
+
+        /**
+         * Filter to modify the arguments passed to get_posts() when registering all forms.
+         * 
+         * @param array $args The arguments passed to get_posts().
+         * @return array The modified arguments.
+         */
+        $register_form_args = apply_filters('av_petitioner_translations_register_form_args', $register_form_args);
+
+        $form_ids = get_posts($register_form_args);
 
         foreach ($form_ids as $form_id) {
             $this->register_form($form_id);
