@@ -18,6 +18,7 @@ export type SubmissionItem = {
 	hide_name?: '0' | '1';
 	accept_tos?: '0' | '1';
 	is_featured?: '0' | '1';
+	lang?: string;
 	submitted_at: string;
 	approval_status: SubmissionStatus;
 	confirmation_token?: string;

@@ -32,7 +32,7 @@ const getSubmissionLabels = (() => {
 
 export const isValidFieldKey = (key: string): key is FieldKey => {
 	// is_featured has its own ui so skipping here
-	if (key === 'is_featured') return false;
+	if (key === 'is_featured' || key === 'lang') return false;
 	return key in getSubmissionLabels();
 };
 
