@@ -35,6 +35,10 @@ class AV_Petitioner_Translations
      */
     public function register_all_forms()
     {
+        if (!has_action('av_petitioner_register_translation')) {
+            return;
+        }
+
         $form_ids = get_posts([
             'post_type'      => 'petitioner-petition',
             'post_status'    => 'any',
