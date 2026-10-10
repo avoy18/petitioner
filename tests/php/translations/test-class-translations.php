@@ -32,7 +32,6 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_submission_data_pre_save', [$this->translations, 'store_lang'], 20);
         remove_filter('av_petitioner_mailer_settings', [$this->translations, 'add_lang_to_mailer']);
         remove_filter('av_petitioner_confirmation_mailer_settings', [$this->translations, 'add_lang_to_confirmation_mailer']);
-        remove_filter('av_petitioner_exportable_fields', [$this->translations, 'add_lang_to_exportable_fields']);
 
         remove_all_filters('av_petitioner_translate_string');
         remove_all_filters('av_petitioner_translations_register_form_args');
@@ -188,36 +187,35 @@ class Test_Translations extends BaseTestCase
         $this->assertTrue($called);
     }
 
-    public function test_store_lang_writes_slug_into_custom_properties()
+    public function test_store_lang_writes_slug_on_submission()
     {
         $data = $this->translations->store_lang(['form_id' => $this->form_id], ['lang' => 'fr']);
 
-        $this->assertSame('fr', AV_Petitioner_Custom_Properties::decode($data['custom_properties'])['lang']);
+        $this->assertSame('fr', $data['lang']);
+        $this->assertArrayNotHasKey('custom_properties', $data);
     }
 
-    public function test_store_lang_keeps_existing_custom_properties()
+    public function test_store_lang_leaves_custom_properties_alone()
     {
         $data = $this->translations->store_lang([
             'custom_properties' => wp_json_encode(['org' => 'Greenpeace']),
         ], ['lang' => 'fr']);
 
-        $custom = AV_Petitioner_Custom_Properties::decode($data['custom_properties']);
-
-        $this->assertSame('Greenpeace', $custom['org']);
-        $this->assertSame('fr', $custom['lang']);
+        $this->assertSame('fr', $data['lang']);
+        $this->assertSame('Greenpeace', AV_Petitioner_Custom_Properties::decode($data['custom_properties'])['org']);
     }
 
     public function test_store_lang_skips_empty_and_non_string()
     {
-        $this->assertArrayNotHasKey('custom_properties', $this->translations->store_lang([], []));
-        $this->assertArrayNotHasKey('custom_properties', $this->translations->store_lang([], ['lang' => '']));
-        $this->assertArrayNotHasKey('custom_properties', $this->translations->store_lang([], ['lang' => ['fr']]));
+        $this->assertArrayNotHasKey('lang', $this->translations->store_lang([], []));
+        $this->assertArrayNotHasKey('lang', $this->translations->store_lang([], ['lang' => '']));
+        $this->assertArrayNotHasKey('lang', $this->translations->store_lang([], ['lang' => ['fr']]));
     }
 
     public function test_add_lang_to_mailer_reads_stored_lang()
     {
         $settings = $this->translations->add_lang_to_mailer([], [
-            'custom_properties' => wp_json_encode(['lang' => 'fr']),
+            'lang' => 'fr',
         ]);
 
         $this->assertSame('fr', $settings['lang']);
@@ -237,23 +235,9 @@ class Test_Translations extends BaseTestCase
     public function test_add_lang_to_confirmation_mailer_reads_submission()
     {
         $settings = $this->translations->add_lang_to_confirmation_mailer([], (object) [
-            'custom_properties' => wp_json_encode(['lang' => 'fr']),
+            'lang' => 'fr',
         ]);
 
         $this->assertSame('fr', $settings['lang']);
-    }
-
-    public function test_lang_from_hydrated_submission()
-    {
-        $this->assertSame('fr', AV_Petitioner_Translations::lang_from_submission((object) [
-            'lang' => 'fr',
-        ]));
-    }
-
-    public function test_add_lang_to_exportable_fields()
-    {
-        $this->assertSame(['fname', 'lang'], $this->translations->add_lang_to_exportable_fields(['fname']));
-        $this->assertSame(['lang'], $this->translations->add_lang_to_exportable_fields(['lang']));
-        $this->assertSame('nope', $this->translations->add_lang_to_exportable_fields('nope'));
     }
 }

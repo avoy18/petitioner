@@ -56,7 +56,7 @@ class Test_Submissions_Controller extends BaseTestCase
     public function test_get_public_fields_excludes_internal_fields()
     {
         $public_fields = AV_Petitioner_Submissions_Controller::get_public_fields();
-        $internal = ['id', 'fname', 'lname', 'hide_name'];
+        $internal = ['id', 'form_id', 'lang', 'fname', 'lname', 'hide_name'];
 
         foreach ($internal as $field) {
             $this->assertNotContains($field, $public_fields, "Internal field '{$field}' should not be public");

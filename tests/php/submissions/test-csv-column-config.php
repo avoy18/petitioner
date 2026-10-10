@@ -4,20 +4,6 @@ use WorDBless\BaseTestCase;
 
 class Test_CSV_Column_Config extends BaseTestCase
 {
-    private AV_Petitioner_Translations $translations;
-
-    public function set_up()
-    {
-        parent::set_up();
-        $this->translations = new AV_Petitioner_Translations();
-    }
-
-    public function tear_down()
-    {
-        remove_filter('av_petitioner_exportable_fields', [$this->translations, 'add_lang_to_exportable_fields']);
-        parent::tear_down();
-    }
-
     public function test_resolve_applies_hidden_label_and_mappings()
     {
         $payload = [

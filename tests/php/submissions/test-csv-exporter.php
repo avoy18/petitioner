@@ -203,8 +203,9 @@ class Test_CSV_Exporter extends BaseTestCase
 
         $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission);
 
-        // fname should be sanitized (prefixed with ')
-        $this->assertStringStartsWith("'=", $row[2]); // fname is 3rd field (after id, form_id)
+        $fname_idx = array_search('fname', AV_Petitioner_Column_Config::get_exportable_fields(), true);
+
+        $this->assertStringStartsWith("'=", $row[$fname_idx]);
     }
 
     public function test_get_csv_headers_with_resolved_config_applies_visibility_and_label_override()
@@ -340,7 +341,6 @@ class Test_CSV_Exporter extends BaseTestCase
 
     public function test_get_csv_row_includes_lang_from_resolved_config()
     {
-        $translations = new AV_Petitioner_Translations();
         $resolved = AV_Petitioner_Column_Config::resolve(1, []);
         $lang_idx = array_search('lang', $resolved['visible_columns'], true);
 
@@ -351,7 +351,5 @@ class Test_CSV_Exporter extends BaseTestCase
         ], $resolved);
 
         $this->assertSame('fr', $row[$lang_idx]);
-
-        remove_filter('av_petitioner_exportable_fields', [$translations, 'add_lang_to_exportable_fields']);
     }
 }

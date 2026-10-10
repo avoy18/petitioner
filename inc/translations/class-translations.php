@@ -35,7 +35,6 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_submission_data_pre_save', [$this, 'store_lang'], 20, 2);
         add_filter('av_petitioner_mailer_settings', [$this, 'add_lang_to_mailer'], 10, 2);
         add_filter('av_petitioner_confirmation_mailer_settings', [$this, 'add_lang_to_confirmation_mailer'], 10, 2);
-        add_filter('av_petitioner_exportable_fields', [$this, 'add_lang_to_exportable_fields']);
     }
 
     /**
@@ -255,7 +254,7 @@ class AV_Petitioner_Translations
     }
 
     /**
-     * Store the posted language slug on the submission custom_properties JSON.
+     * Store the posted language slug on the submission.
      *
      * @param array $data
      * @param array $post
@@ -269,7 +268,13 @@ class AV_Petitioner_Translations
 
         $lang = self::sanitize_lang(isset($post['lang']) ? wp_unslash($post['lang']) : '');
 
-        return self::merge_lang_into_submission($data, $lang);
+        if ($lang === '') {
+            return $data;
+        }
+
+        $data['lang'] = $lang;
+
+        return $data;
     }
 
     /**
@@ -315,25 +320,6 @@ class AV_Petitioner_Translations
     }
 
     /**
-     * Add lang to the CSV export column list.
-     *
-     * @param array $fields
-     * @return array
-     */
-    public function add_lang_to_exportable_fields($fields)
-    {
-        if (!is_array($fields)) {
-            return $fields;
-        }
-
-        if (!in_array('lang', $fields, true)) {
-            $fields[] = 'lang';
-        }
-
-        return $fields;
-    }
-
-    /**
      * @param mixed $lang
      * @return string
      */
@@ -349,57 +335,17 @@ class AV_Petitioner_Translations
     }
 
     /**
-     * @param array  $data
-     * @param string $lang
-     * @return array
-     */
-    public static function merge_lang_into_submission($data, $lang)
-    {
-        if (!is_array($data) || !is_string($lang) || $lang === '') {
-            return $data;
-        }
-
-        $custom = [];
-
-        if (!empty($data['custom_properties'])) {
-            $decoded = AV_Petitioner_Custom_Properties::decode($data['custom_properties']);
-            if (is_array($decoded)) {
-                $custom = $decoded;
-            }
-        }
-
-        $custom['lang'] = $lang;
-        $data['custom_properties'] = wp_json_encode($custom, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
-        return $data;
-    }
-
-    /**
      * @param array|object $submission
      * @return string
      */
     public static function lang_from_submission($submission)
     {
         if (is_object($submission)) {
-            if (isset($submission->lang) && is_string($submission->lang) && $submission->lang !== '') {
-                return $submission->lang;
-            }
-
-            if (!empty($submission->custom_properties)) {
-                $custom = AV_Petitioner_Custom_Properties::decode($submission->custom_properties);
-                $lang = $custom['lang'] ?? '';
-
-                return is_string($lang) ? $lang : '';
-            }
-
-            return '';
+            return isset($submission->lang) && is_string($submission->lang) ? $submission->lang : '';
         }
 
-        if (is_array($submission) && !empty($submission['custom_properties'])) {
-            $custom = AV_Petitioner_Custom_Properties::decode($submission['custom_properties']);
-            $lang = $custom['lang'] ?? '';
-
-            return is_string($lang) ? $lang : '';
+        if (is_array($submission)) {
+            return isset($submission['lang']) && is_string($submission['lang']) ? $submission['lang'] : '';
         }
 
         return '';
