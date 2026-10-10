@@ -82,6 +82,17 @@ class AV_Petitioner_Form_UI
          * @return array Modified field order array.
          */
         $field_order    = apply_filters('av_petitioner_field_order', $field_order, $this->form_id);
+
+        /**
+         * Filter to modify the current language.
+         * 
+         * @param string $lang The current language.
+         * @return string The modified language.
+         */
+        $lang = apply_filters('av_petitioner_current_lang', '');
+        if (!is_string($lang)) {
+            $lang = '';
+        }
 ?>
         <form
             id="petitioner-form-<?php echo esc_attr($this->form_id); ?>"
@@ -127,6 +138,10 @@ class AV_Petitioner_Form_UI
             ?>
 
             <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>">
+
+            <?php if ($lang !== '') : ?>
+                <input type="hidden" name="lang" value="<?php echo esc_attr($lang); ?>">
+            <?php endif; ?>
 
             <?php AV_Petitioner_Captcha::render_inputs(); ?>
 

@@ -20,6 +20,7 @@ class AV_Petitioner_WPML
         add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 3);
         add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 3);
         add_filter('av_petitioner_translations_register_form_args', [$this, 'register_form_args']);
+        add_filter('av_petitioner_current_lang', [$this, 'current_lang']);
     }
 
     /**
@@ -81,5 +82,18 @@ class AV_Petitioner_WPML
 
         $args['suppress_filters'] = true;
         return $args;
+    }
+
+    /**
+     * Current language slug for the hidden form field (ru, not ru_RU).
+     *
+     * @param string $lang
+     * @return string
+     */
+    public function current_lang($lang)
+    {
+        $current = apply_filters('wpml_current_language', '');
+
+        return is_string($current) && $current !== '' ? $current : $lang;
     }
 }
