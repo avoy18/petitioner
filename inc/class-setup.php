@@ -109,6 +109,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_Translations')) {
                 new AV_Petitioner_Translations();
             }
+
+            // polylang integration
+            if (class_exists('AV_Petitioner_Polylang')) {
+                new AV_Petitioner_Polylang();
+            }
         });
 
         // api endpoints

@@ -17,6 +17,7 @@ class AV_Petitioner_Translations
          * This part registers strings for the future translation by the translator plugins.
          */
         add_action('save_post_petitioner-petition', [$this, 'register_form'], 20);
+        add_action('admin_init', [$this, 'register_all_forms']);
 
         /**
          * These filters translate the fields on the frontend.
@@ -27,6 +28,43 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
+    }
+
+    /**
+     * Register all existing forms with the translator plugin.
+     */
+    public function register_all_forms()
+    {
+        if (!has_action('av_petitioner_register_translation')) {
+            return;
+        }
+
+        $register_form_args = [
+            'post_type'      => 'petitioner-petition',
+            'post_status'    => ['publish', 'draft', 'private'],
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ];
+
+        /**
+         * Filter to modify the arguments passed to get_posts() when registering all forms.
+         * 
+         * @since 0.8.7
+         * @param array $args The arguments passed to get_posts().
+         * @return array The modified arguments.
+         * 
+         */
+        $register_form_args = apply_filters('av_petitioner_translations_register_form_args', $register_form_args);
+
+        if (!is_array($register_form_args)) {
+            return;
+        }
+
+        $form_ids = get_posts($register_form_args);
+
+        foreach ($form_ids as $form_id) {
+            $this->register_form($form_id);
+        }
     }
 
     /**
@@ -83,7 +121,7 @@ class AV_Petitioner_Translations
      */
     public function register_string($form_id, $name, $value, $multiline = false)
     {
-        if ($value === '' || $value === null) {
+        if (!is_string($value) || $value === '') {
             return;
         }
 
@@ -187,7 +225,7 @@ class AV_Petitioner_Translations
      */
     public function maybe_translate($form_id, $name, $value)
     {
-        if ($value === '' || $value === null) {
+        if (!is_string($value) || $value === '') {
             return $value;
         }
 
