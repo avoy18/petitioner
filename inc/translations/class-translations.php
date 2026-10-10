@@ -56,6 +56,10 @@ class AV_Petitioner_Translations
          */
         $register_form_args = apply_filters('av_petitioner_translations_register_form_args', $register_form_args);
 
+        if (!is_array($register_form_args)) {
+            return;
+        }
+
         $form_ids = get_posts($register_form_args);
 
         foreach ($form_ids as $form_id) {
