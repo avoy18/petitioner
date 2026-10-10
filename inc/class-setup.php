@@ -111,7 +111,7 @@ class AV_Petitioner_Setup
             }
 
             // polylang integration
-            if (class_exists('AV_Petitioner_Polylang')) {
+            if (class_exists('AV_Petitioner_Polylang') && function_exists('pll_register_string')) {
                 new AV_Petitioner_Polylang();
             }
         });
