@@ -71,6 +71,11 @@ class AV_Petitioner_Polylang
      */
     public function register_form_args($args)
     {
+        if (!is_array($args)) {
+            av_ptr_error_log('av_petitioner_translations_register_form_args: Non-array query args passed: ' . print_r($args, true));
+            return $args;
+        }
+
         $args['lang'] = '';
         return $args;
     }
