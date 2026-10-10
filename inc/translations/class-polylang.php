@@ -38,9 +38,9 @@ class AV_Petitioner_Polylang
         }
 
         pll_register_string(
-            self::string_name($form_id, $name),
+            AV_Petitioner_Translations::string_name($form_id, $name),
             $value,
-            self::string_group($form_id),
+            AV_Petitioner_Translations::string_group($form_id),
             (bool) $multiline
         );
     }
@@ -96,28 +96,5 @@ class AV_Petitioner_Polylang
         $current = pll_current_language();
 
         return is_string($current) && $current !== '' ? $current : $lang;
-    }
-
-    /**
-     * @param int $form_id
-     * @return string
-     */
-    private static function string_group($form_id)
-    {
-        $form_id = absint($form_id);
-
-        return $form_id ? sprintf('Petitioner #%d', $form_id) : 'Petitioner Labels';
-    }
-
-    /**
-     * @param int    $form_id
-     * @param string $name
-     * @return string
-     */
-    private static function string_name($form_id, $name)
-    {
-        $form_id = absint($form_id);
-
-        return $form_id ? $form_id . ':' . $name : $name;
     }
 }

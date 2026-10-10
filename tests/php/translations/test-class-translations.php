@@ -218,6 +218,14 @@ class Test_Translations extends BaseTestCase
         unset($GLOBALS['current_screen']);
     }
 
+    public function test_string_group_and_name()
+    {
+        $this->assertSame('Petitioner #12', AV_Petitioner_Translations::string_group(12));
+        $this->assertSame('12:title', AV_Petitioner_Translations::string_name(12, 'title'));
+        $this->assertSame('Petitioner Labels', AV_Petitioner_Translations::string_group(0));
+        $this->assertSame('label.already_signed', AV_Petitioner_Translations::string_name(0, 'label.already_signed'));
+    }
+
     public function test_register_string_skips_empty()
     {
         $called = false;

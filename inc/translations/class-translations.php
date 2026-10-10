@@ -164,6 +164,33 @@ class AV_Petitioner_Translations
     }
 
     /**
+     * Polylang / WPML group name.
+     *
+     * @param int $form_id
+     * @return string
+     */
+    public static function string_group($form_id)
+    {
+        $form_id = absint($form_id);
+
+        return $form_id ? sprintf('Petitioner #%d', $form_id) : 'Petitioner Labels';
+    }
+
+    /**
+     * Polylang / WPML string name.
+     *
+     * @param int    $form_id
+     * @param string $name
+     * @return string
+     */
+    public static function string_name($form_id, $name)
+    {
+        $form_id = absint($form_id);
+
+        return $form_id ? $form_id . ':' . $name : $name;
+    }
+
+    /**
      * Translate the petition title.
      *
      * @param string $title
