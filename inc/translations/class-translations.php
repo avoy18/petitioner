@@ -54,10 +54,14 @@ class AV_Petitioner_Translations
          * @return array The modified arguments.
          * 
          */
-        $register_form_args = apply_filters('av_petitioner_translations_register_form_args', $register_form_args);
+        $filtered_args = apply_filters('av_petitioner_translations_register_form_args', $register_form_args);
 
-        if (!is_array($register_form_args)) {
-            return;
+        if (is_array($filtered_args)) {
+            $register_form_args = $filtered_args;
+        } else {
+            av_ptr_error_log(
+                'av_petitioner_translations_register_form_args must return an array. Falling back to defaults. Got: ' . gettype($filtered_args)
+            );
         }
 
         $form_ids = get_posts($register_form_args);
