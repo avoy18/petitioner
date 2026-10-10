@@ -22,6 +22,7 @@ class Test_Translations extends BaseTestCase
     public function tear_down()
     {
         remove_action('save_post_petitioner-petition', [$this->translations, 'register_form'], 20);
+        remove_action('admin_init', [$this->translations, 'register_all_forms']);
         remove_filter('av_petitioner_form_field', [$this->translations, 'translate_field'], 20);
         remove_filter('av_petitioner_title', [$this->translations, 'translate_title']);
         remove_filter('av_petitioner_subject', [$this->translations, 'translate_subject']);
