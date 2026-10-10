@@ -22,7 +22,7 @@ class AV_Petitioner_Shortcodes
     /**
      * Show the final goal of the petition
      */
-    public function display_goal($atts)
+    public function display_goal($atts = [])
     {
         $atts = shortcode_atts([
             'id' => null,
@@ -40,7 +40,7 @@ class AV_Petitioner_Shortcodes
     /**
      * Show the number of submissions for a specific form
      */
-    public function show_submission_count($atts)
+    public function show_submission_count($atts = [])
     {
         $atts = shortcode_atts([
             'id' => null,
@@ -60,7 +60,7 @@ class AV_Petitioner_Shortcodes
     /**
      * Render the goal progress UI
      */
-    public function render_goal_progress_ui($atts)
+    public function render_goal_progress_ui($atts = [])
     {
         $atts = shortcode_atts([
             'id' => null,
@@ -84,7 +84,7 @@ class AV_Petitioner_Shortcodes
     /**
      * Render the letter modal UI (with a button)
      */
-    public function petitioner_render_modal_ui($atts)
+    public function petitioner_render_modal_ui($atts = [])
     {
         $atts = shortcode_atts([
             'id' => null,
@@ -114,71 +114,18 @@ class AV_Petitioner_Shortcodes
      */
     public function render_submissions_list($atts)
     {
-        $available_styles = self::get_available_styles();
-        $available_fields = self::get_available_fields();
+        $atts = shortcode_atts(
+            array_merge(
+                ['id' => null],
+                AV_Petitioner_Submissions_UI::get_defaults()
+            ),
+            $atts,
+            'petitioner-submissions'
+        );
 
-        $atts = shortcode_atts([
-            'id'                => null,
-            'per_page'          => 20,
-            'style'             => 'simple',
-            'fields'            => 'name,country,submitted_at',
-            'show_pagination'   => "true",
-            'hide_page_numbers' => "false",
-        ], $atts, 'petitioner-submissions');
-
-        $form_id    = absint($atts['id']);
-
-        if (!$form_id) {
-            return '';
-        }
-
-        $per_page   = absint($atts['per_page']);
-        $style      = in_array($atts['style'], $available_styles) ? $atts['style'] : 'simple';
-
-        // Remove spaces and split fields
-        $fields_raw = str_replace(' ', '', $atts['fields']);
-        $fields_arr = explode(',', $fields_raw);
-
-        // Filter only available fields
-        $fields = array_values(array_intersect($fields_arr, $available_fields));
-
-        $show_pagination = filter_var($atts['show_pagination'], FILTER_VALIDATE_BOOLEAN);
-        $hide_page_numbers = filter_var($atts['hide_page_numbers'], FILTER_VALIDATE_BOOLEAN);
-
-        $settings = [
-            'form_id'           => $form_id,
-            'per_page'          => $per_page,
-            'style'             => $style,
-            'fields'            => implode(',', $fields),
-            'show_pagination'   => $show_pagination,
-            'hide_page_numbers' => $hide_page_numbers
-        ];
-
-        ob_start();
-        echo '<div class="petitioner petitioner-submissions petitioner-submissions--' . $style . '"';
-        echo ' data-ptr-settings="' . esc_attr(json_encode($settings)) . '"';
-        echo '>';
-        echo '</div>';
-
-        return ob_get_clean();
-    }
-
-    static public function get_available_styles()
-    {
-        return ['simple', 'table'];
-    }
-
-    static public function get_available_fields()
-    {
-        $available_fields = AV_Petitioner_Submissions_Controller::get_public_fields();
-        array_unshift($available_fields, 'name'); // Add name to the beginning of the array
-
-        /**
-         * Filter the available fields that are displayed in the submissions list
-         * 
-         * @param array $available_fields The available fields that are displayed in the submissions list
-         * @return array The available fields that are displayed in the submissions list
-         */
-        return apply_filters('av_petitioner_available_fields_shortcode', $available_fields);
+        return AV_Petitioner_Submissions_UI::render_submissions_list(
+            absint($atts['id']),
+            $atts
+        );
     }
 }
