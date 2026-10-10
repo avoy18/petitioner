@@ -227,7 +227,7 @@ class Test_CSV_Exporter extends BaseTestCase
         $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
         $headers = AV_Petitioner_CSV_Exporter::get_csv_headers(1, $resolved);
 
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 3; // -custom_properties, -email_status, -email
+        $expected_count = count(AV_Petitioner_Column_Config::get_exportable_fields()) - 1; // -email
         $this->assertCount($expected_count, $headers);
         $this->assertContains('First Name', $headers);
     }
@@ -265,7 +265,7 @@ class Test_CSV_Exporter extends BaseTestCase
         $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission, $resolved);
         $newsletter_idx = array_search('newsletter', $resolved['visible_columns'], true);
 
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 3; // -custom_properties, -email_status, -email
+        $expected_count = count(AV_Petitioner_Column_Config::get_exportable_fields()) - 1; // -email
         $this->assertCount($expected_count, $row);
         $this->assertNotFalse($newsletter_idx);
         $this->assertSame('No', $row[$newsletter_idx]);
@@ -336,5 +336,22 @@ class Test_CSV_Exporter extends BaseTestCase
 
         $row_full = AV_Petitioner_CSV_Exporter::get_csv_row($submission_full, $resolved);
         $this->assertSame('Anton Voytenko', $row_full[$fname_idx]);
+    }
+
+    public function test_get_csv_row_includes_lang_from_resolved_config()
+    {
+        $translations = new AV_Petitioner_Translations();
+        $resolved = AV_Petitioner_Column_Config::resolve(1, []);
+        $lang_idx = array_search('lang', $resolved['visible_columns'], true);
+
+        $this->assertNotFalse($lang_idx);
+
+        $row = AV_Petitioner_CSV_Exporter::get_csv_row((object) [
+            'lang' => 'fr',
+        ], $resolved);
+
+        $this->assertSame('fr', $row[$lang_idx]);
+
+        remove_filter('av_petitioner_exportable_fields', [$translations, 'add_lang_to_exportable_fields']);
     }
 }

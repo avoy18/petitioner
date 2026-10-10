@@ -35,6 +35,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_submission_data_pre_save', [$this, 'store_lang'], 20, 2);
         add_filter('av_petitioner_mailer_settings', [$this, 'add_lang_to_mailer'], 10, 2);
         add_filter('av_petitioner_confirmation_mailer_settings', [$this, 'add_lang_to_confirmation_mailer'], 10, 2);
+        add_filter('av_petitioner_exportable_fields', [$this, 'add_lang_to_exportable_fields']);
     }
 
     /**
@@ -311,6 +312,25 @@ class AV_Petitioner_Translations
         $settings['lang'] = self::lang_from_submission($submission);
 
         return $settings;
+    }
+
+    /**
+     * Add lang to the CSV export column list.
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function add_lang_to_exportable_fields($fields)
+    {
+        if (!is_array($fields)) {
+            return $fields;
+        }
+
+        if (!in_array('lang', $fields, true)) {
+            $fields[] = 'lang';
+        }
+
+        return $fields;
     }
 
     /**

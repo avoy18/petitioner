@@ -9,7 +9,7 @@ class AV_Petitioner_Column_Config
      * Fields hidden by default in the column configuration.
      * @var string[]
      */
-    public static $DEFAULT_HIDDEN_FIELDS = ['id', 'form_id', 'bcc', 'keep_name_anonymous', 'accept_tos', 'confirmation_token', 'approval_status'];
+    public static $DEFAULT_HIDDEN_FIELDS = ['id', 'form_id', 'lang', 'bcc', 'keep_name_anonymous', 'accept_tos', 'confirmation_token', 'approval_status'];
 
     /**
      * Resolve user-provided payload into export-ready config.

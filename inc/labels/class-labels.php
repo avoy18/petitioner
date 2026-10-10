@@ -181,6 +181,7 @@ class AV_Petitioner_Labels
     {
         return [
             'form_id'                        => __('Form ID', 'petitioner'),
+            'lang'                           => __('Language', 'petitioner'),
             'fname'                          => __('First name', 'petitioner'),
             'fname_placeholder'              => __('John', 'petitioner'),
             'lname'                          => __('Last name', 'petitioner'),

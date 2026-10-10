@@ -32,6 +32,7 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_submission_data_pre_save', [$this->translations, 'store_lang'], 20);
         remove_filter('av_petitioner_mailer_settings', [$this->translations, 'add_lang_to_mailer']);
         remove_filter('av_petitioner_confirmation_mailer_settings', [$this->translations, 'add_lang_to_confirmation_mailer']);
+        remove_filter('av_petitioner_exportable_fields', [$this->translations, 'add_lang_to_exportable_fields']);
 
         remove_all_filters('av_petitioner_translate_string');
         remove_all_filters('av_petitioner_translations_register_form_args');
@@ -247,5 +248,12 @@ class Test_Translations extends BaseTestCase
         $this->assertSame('fr', AV_Petitioner_Translations::lang_from_submission((object) [
             'lang' => 'fr',
         ]));
+    }
+
+    public function test_add_lang_to_exportable_fields()
+    {
+        $this->assertSame(['fname', 'lang'], $this->translations->add_lang_to_exportable_fields(['fname']));
+        $this->assertSame(['lang'], $this->translations->add_lang_to_exportable_fields(['lang']));
+        $this->assertSame('nope', $this->translations->add_lang_to_exportable_fields('nope'));
     }
 }
