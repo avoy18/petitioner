@@ -49,8 +49,10 @@ class AV_Petitioner_Translations
         /**
          * Filter to modify the arguments passed to get_posts() when registering all forms.
          * 
+         * @since 0.8.7
          * @param array $args The arguments passed to get_posts().
          * @return array The modified arguments.
+         * 
          */
         $register_form_args = apply_filters('av_petitioner_translations_register_form_args', $register_form_args);
 
