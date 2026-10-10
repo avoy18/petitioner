@@ -114,6 +114,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_Polylang')) {
                 new AV_Petitioner_Polylang();
             }
+
+            // wpml integration
+            if (class_exists('AV_Petitioner_WPML')) {
+                new AV_Petitioner_WPML();
+            }
         });
 
         // api endpoints
