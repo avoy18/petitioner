@@ -38,7 +38,18 @@ class AV_Petitioner_Labels
             ? self::get_all_with_fields()
             : self::get_core_labels();
 
-        return isset($labels[$key]) ? $labels[$key] : '';
+        $label = isset($labels[$key]) ? $labels[$key] : '';
+
+        /**
+         * Filter a single label after lookup.
+         *
+         * @param string $label The label text.
+         * @param string $key   The label key.
+         * @return string
+         */
+        $label = apply_filters('av_petitioner_label', $label, $key);
+
+        return is_string($label) ? $label : '';
     }
 
     /**

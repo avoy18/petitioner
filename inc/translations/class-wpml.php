@@ -38,8 +38,8 @@ class AV_Petitioner_WPML
 
         do_action(
             'wpml_register_single_string',
-            sprintf('Petitioner #%d', $form_id),
-            $form_id . ':' . $name,
+            AV_Petitioner_Translations::string_group($form_id),
+            AV_Petitioner_Translations::string_name($form_id, $name),
             $value
         );
     }
@@ -61,8 +61,8 @@ class AV_Petitioner_WPML
         $translated = apply_filters(
             'wpml_translate_single_string',
             $value,
-            sprintf('Petitioner #%d', $form_id),
-            $form_id . ':' . $name
+            AV_Petitioner_Translations::string_group($form_id),
+            AV_Petitioner_Translations::string_name($form_id, $name)
         );
 
         return is_string($translated) ? $translated : $value;

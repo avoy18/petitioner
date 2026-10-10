@@ -38,9 +38,9 @@ class AV_Petitioner_Polylang
         }
 
         pll_register_string(
-            $form_id . ':' . $name,
+            AV_Petitioner_Translations::string_name($form_id, $name),
             $value,
-            sprintf('Petitioner #%d', $form_id),
+            AV_Petitioner_Translations::string_group($form_id),
             (bool) $multiline
         );
     }

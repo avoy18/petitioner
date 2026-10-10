@@ -23,12 +23,18 @@ class Test_Translations extends BaseTestCase
     {
         remove_action('save_post_petitioner-petition', [$this->translations, 'register_form'], 20);
         remove_action('admin_init', [$this->translations, 'register_all_forms']);
+        remove_action('admin_init', [$this->translations, 'register_label_overrides']);
+        remove_action('add_option_petitioner_label_overrides', [$this->translations, 'register_label_overrides']);
+        remove_action('update_option_petitioner_label_overrides', [$this->translations, 'register_label_overrides']);
+        delete_option('petitioner_label_overrides');
+        AV_Petitioner_Labels::clear_cache();
         remove_filter('av_petitioner_form_field', [$this->translations, 'translate_field'], 20);
         remove_filter('av_petitioner_title', [$this->translations, 'translate_title']);
         remove_filter('av_petitioner_subject', [$this->translations, 'translate_subject']);
         remove_filter('av_petitioner_letter', [$this->translations, 'translate_letter']);
         remove_filter('av_petitioner_success_message_title', [$this->translations, 'translate_success_message_title']);
         remove_filter('av_petitioner_success_message', [$this->translations, 'translate_success_message']);
+        remove_filter('av_petitioner_label', [$this->translations, 'translate_label']);
         remove_filter('av_petitioner_submission_data_pre_save', [$this->translations, 'store_lang'], 20);
         remove_filter('av_petitioner_mailer_settings', [$this->translations, 'add_lang_to_mailer']);
         remove_filter('av_petitioner_confirmation_mailer_settings', [$this->translations, 'add_lang_to_confirmation_mailer']);
@@ -152,6 +158,85 @@ class Test_Translations extends BaseTestCase
         $this->assertTrue($by_name['field.legal.value']['multiline']);
         $this->assertArrayNotHasKey('field.fname.value', $by_name);
         $this->assertArrayNotHasKey('field.legal.label', $by_name);
+    }
+
+    public function test_register_label_overrides_registers_non_empty()
+    {
+        update_option('petitioner_label_overrides', wp_json_encode([
+            'already_signed'    => 'You already signed',
+            'could_not_submit'  => '',
+        ]));
+
+        $registered = [];
+        add_action('av_petitioner_register_translation', function ($form_id, $name, $value, $multiline) use (&$registered) {
+            $registered[] = compact('form_id', 'name', 'value', 'multiline');
+        }, 10, 4);
+
+        $this->translations->register_label_overrides();
+
+        $by_name = [];
+        foreach ($registered as $row) {
+            $by_name[$row['name']] = $row;
+        }
+
+        $this->assertSame(0, $by_name['label.already_signed']['form_id']);
+        $this->assertSame('You already signed', $by_name['label.already_signed']['value']);
+        $this->assertFalse($by_name['label.already_signed']['multiline']);
+        $this->assertArrayNotHasKey('label.could_not_submit', $by_name);
+    }
+
+    public function test_register_label_overrides_skips_non_string_option()
+    {
+        update_option('petitioner_label_overrides', ['already_signed' => 'You already signed']);
+
+        $called = false;
+        add_action('av_petitioner_register_translation', function () use (&$called) {
+            $called = true;
+        });
+
+        $this->translations->register_label_overrides();
+        $this->assertFalse($called);
+    }
+
+    public function test_translate_label()
+    {
+        add_filter('av_petitioner_translate_string', function ($value, $name) {
+            return $name . ':' . $value;
+        }, 10, 2);
+
+        $this->assertSame(
+            'label.already_signed:You already signed',
+            $this->translations->translate_label('You already signed', 'already_signed')
+        );
+    }
+
+    public function test_translate_label_skips_admin_screens()
+    {
+        add_filter('av_petitioner_translate_string', function () {
+            return 'FR';
+        });
+
+        $GLOBALS['current_screen'] = new class {
+            public function in_admin()
+            {
+                return true;
+            }
+        };
+
+        $this->assertSame(
+            'You already signed',
+            $this->translations->translate_label('You already signed', 'already_signed')
+        );
+
+        unset($GLOBALS['current_screen']);
+    }
+
+    public function test_string_group_and_name()
+    {
+        $this->assertSame('Petitioner #12', AV_Petitioner_Translations::string_group(12));
+        $this->assertSame('12:title', AV_Petitioner_Translations::string_name(12, 'title'));
+        $this->assertSame('Petitioner Labels', AV_Petitioner_Translations::string_group(0));
+        $this->assertSame('label.already_signed', AV_Petitioner_Translations::string_name(0, 'label.already_signed'));
     }
 
     public function test_register_string_skips_empty()
