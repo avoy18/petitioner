@@ -7,15 +7,18 @@ if (!defined('ABSPATH')) {
 return [
     'show_letter'          => [
         'meta_key' => 'petitioner_show_letter',
-        'type'     => 'checkbox'
+        'type'     => 'checkbox',
+        'default'  => true
     ],
     'show_title'           => [
         'meta_key' => 'petitioner_show_title',
-        'type'     => 'checkbox'
+        'type'     => 'checkbox',
+        'default'  => true
     ],
     'show_goal'            => [
         'meta_key' => 'petitioner_show_goal',
-        'type'     => 'checkbox'
+        'type'     => 'checkbox',
+        'default'  => true
     ],
     'custom_css'           => [
         'meta_key' => 'petitioner_custom_css',
