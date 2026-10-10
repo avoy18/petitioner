@@ -101,4 +101,67 @@ class Test_Form_UI extends BaseTestCase
         $this->assertStringContainsString('value="Org A"', $output);
         $this->assertStringContainsString('value="Org B"', $output);
     }
+
+    // ============================================
+    // LANG HIDDEN FIELD
+    // ============================================
+
+    public function test_render_fields_omits_lang_by_default()
+    {
+        $form_ui = $this->make_form_ui();
+
+        ob_start();
+        $form_ui->render_fields();
+        $output = ob_get_clean();
+
+        $this->assertStringNotContainsString('name="lang"', $output);
+        $this->assertStringContainsString('name="form_id"', $output);
+    }
+
+    public function test_render_fields_includes_lang_from_filter()
+    {
+        $form_ui = $this->make_form_ui();
+
+        add_filter('av_petitioner_current_lang', function () {
+            return 'fr';
+        });
+
+        ob_start();
+        $form_ui->render_fields();
+        $output = ob_get_clean();
+
+        remove_all_filters('av_petitioner_current_lang');
+
+        $this->assertStringContainsString('name="lang"', $output);
+        $this->assertStringContainsString('value="fr"', $output);
+    }
+
+    public function test_render_fields_omits_lang_when_filter_returns_non_string()
+    {
+        $form_ui = $this->make_form_ui();
+
+        add_filter('av_petitioner_current_lang', function () {
+            return ['fr'];
+        });
+
+        ob_start();
+        $form_ui->render_fields();
+        $output = ob_get_clean();
+
+        remove_all_filters('av_petitioner_current_lang');
+
+        $this->assertStringNotContainsString('name="lang"', $output);
+    }
+
+    private function make_form_ui(): AV_Petitioner_Form_UI
+    {
+        $form_id = wp_insert_post([
+            'post_type'   => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        update_post_meta($form_id, '_petitioner_form_fields', '{}');
+
+        return new AV_Petitioner_Form_UI($form_id);
+    }
 }

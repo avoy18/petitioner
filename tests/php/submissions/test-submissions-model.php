@@ -188,4 +188,10 @@ class Test_Submissions_Model extends BaseTestCase
         $this->assertContains('%spam%', $result['params']);
         $this->assertCount(2, $result['params']); // form_id + value
     }
+
+    public function test_allowed_fields_include_lang()
+    {
+        $this->assertContains('lang', AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS);
+        $this->assertContains('lang', AV_Petitioner_Submissions_Model::$INTERNAL_FIELDS);
+    }
 }

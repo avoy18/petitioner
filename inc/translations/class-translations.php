@@ -28,6 +28,13 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
+
+        /**
+         * Persist the posted language on the submission and pass it to mailers.
+         */
+        add_filter('av_petitioner_submission_data_pre_save', [$this, 'store_lang'], 20, 2);
+        add_filter('av_petitioner_mailer_settings', [$this, 'add_lang_to_mailer'], 10, 2);
+        add_filter('av_petitioner_confirmation_mailer_settings', [$this, 'add_lang_to_confirmation_mailer'], 10, 2);
     }
 
     /**
@@ -244,5 +251,103 @@ class AV_Petitioner_Translations
         $translated = apply_filters('av_petitioner_translate_string', $value, $name, $form_id);
 
         return is_string($translated) ? $translated : $value;
+    }
+
+    /**
+     * Store the posted language slug on the submission.
+     *
+     * @param array $data
+     * @param array $post
+     * @return array
+     */
+    public function store_lang($data, $post)
+    {
+        if (!is_array($data) || !is_array($post)) {
+            return $data;
+        }
+
+        $lang = self::sanitize_lang(isset($post['lang']) ? wp_unslash($post['lang']) : '');
+
+        if ($lang === '') {
+            return $data;
+        }
+
+        $data['lang'] = $lang;
+
+        return $data;
+    }
+
+    /**
+     * Add the stored (or posted) language to mailer settings.
+     *
+     * @param array $settings
+     * @param array $data
+     * @return array
+     */
+    public function add_lang_to_mailer($settings, $data)
+    {
+        if (!is_array($settings)) {
+            return $settings;
+        }
+
+        $lang = self::lang_from_submission($data);
+
+        if ($lang === '') {
+            $lang = self::sanitize_lang(isset($_POST['lang']) ? wp_unslash($_POST['lang']) : '');
+        }
+
+        $settings['lang'] = $lang;
+
+        return $settings;
+    }
+
+    /**
+     * Add the stored language to confirmation mailer settings.
+     *
+     * @param array  $settings
+     * @param object $submission
+     * @return array
+     */
+    public function add_lang_to_confirmation_mailer($settings, $submission)
+    {
+        if (!is_array($settings)) {
+            return $settings;
+        }
+
+        $settings['lang'] = self::lang_from_submission($submission);
+
+        return $settings;
+    }
+
+    /**
+     * @param mixed $lang
+     * @return string
+     */
+    public static function sanitize_lang($lang)
+    {
+        if (!is_string($lang)) {
+            return '';
+        }
+
+        $lang = sanitize_text_field($lang);
+
+        return is_string($lang) ? $lang : '';
+    }
+
+    /**
+     * @param array|object $submission
+     * @return string
+     */
+    public static function lang_from_submission($submission)
+    {
+        if (is_object($submission)) {
+            return isset($submission->lang) && is_string($submission->lang) ? $submission->lang : '';
+        }
+
+        if (is_array($submission)) {
+            return isset($submission['lang']) && is_string($submission['lang']) ? $submission['lang'] : '';
+        }
+
+        return '';
     }
 }

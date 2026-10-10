@@ -20,6 +20,7 @@ class AV_Petitioner_Polylang
         add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 4);
         add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 3);
         add_filter('av_petitioner_translations_register_form_args', [$this, 'register_form_args']);
+        add_filter('av_petitioner_current_lang', [$this, 'current_lang']);
     }
 
     /**
@@ -78,5 +79,22 @@ class AV_Petitioner_Polylang
 
         $args['lang'] = '';
         return $args;
+    }
+
+    /**
+     * Current language slug for the hidden form field (ru, not ru_RU).
+     *
+     * @param string $lang
+     * @return string
+     */
+    public function current_lang($lang)
+    {
+        if (!function_exists('pll_current_language')) {
+            return $lang;
+        }
+
+        $current = pll_current_language();
+
+        return is_string($current) && $current !== '' ? $current : $lang;
     }
 }

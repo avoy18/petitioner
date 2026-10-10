@@ -461,6 +461,7 @@ class AV_Petitioner_CSV_Importer
             'newsletter'        => filter_var($record['newsletter'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
             'hide_name'         => filter_var($record['hide_name'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
             'is_featured'       => filter_var($record['is_featured'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
+            'lang'              => AV_Petitioner_Translations::sanitize_lang($record['lang'] ?? ''),
             'accept_tos'        => filter_var($record['accept_tos'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
             'approval_status'   => $this->approve_submission ? 'Confirmed' : 'Pending',
             'submitted_at'      => $submitted_time ? gmdate('Y-m-d H:i:s', $submitted_time) : current_time('mysql', true),
