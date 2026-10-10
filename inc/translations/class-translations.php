@@ -115,7 +115,7 @@ class AV_Petitioner_Translations
      */
     public function register_string($form_id, $name, $value, $multiline = false)
     {
-        if ($value === '' || $value === null) {
+        if (!is_string($value) || $value === '') {
             return;
         }
 
