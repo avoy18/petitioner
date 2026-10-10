@@ -22,6 +22,7 @@ class Test_Translations extends BaseTestCase
     public function tear_down()
     {
         remove_action('save_post_petitioner-petition', [$this->translations, 'register_form'], 20);
+        remove_action('admin_init', [$this->translations, 'register_all_forms']);
         remove_filter('av_petitioner_form_field', [$this->translations, 'translate_field'], 20);
         remove_filter('av_petitioner_title', [$this->translations, 'translate_title']);
         remove_filter('av_petitioner_subject', [$this->translations, 'translate_subject']);
@@ -30,6 +31,8 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_success_message', [$this->translations, 'translate_success_message']);
 
         remove_all_filters('av_petitioner_translate_string');
+        remove_all_filters('av_petitioner_translations_register_form_args');
+        remove_all_filters('posts_pre_query');
         remove_all_actions('av_petitioner_register_translation');
         wp_delete_post($this->form_id, true);
         parent::tear_down();
@@ -157,5 +160,27 @@ class Test_Translations extends BaseTestCase
 
         $this->translations->register_string($this->form_id, 'title', '');
         $this->assertFalse($called);
+    }
+
+    public function test_register_all_forms_falls_back_when_query_args_not_array()
+    {
+        update_post_meta($this->form_id, '_petitioner_title', 'Save the bees');
+
+        $called = false;
+        add_action('av_petitioner_register_translation', function () use (&$called) {
+            $called = true;
+        });
+        add_filter('av_petitioner_translations_register_form_args', function () {
+            return 'nope';
+        });
+        add_filter('posts_pre_query', function ($posts, $query) {
+            if ($query->get('post_type') === 'petitioner-petition') {
+                return [$this->form_id];
+            }
+            return $posts;
+        }, 10, 2);
+
+        $this->translations->register_all_forms();
+        $this->assertTrue($called);
     }
 }
