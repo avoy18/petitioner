@@ -34,6 +34,7 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_letter', [$this->translations, 'translate_letter']);
         remove_filter('av_petitioner_success_message_title', [$this->translations, 'translate_success_message_title']);
         remove_filter('av_petitioner_success_message', [$this->translations, 'translate_success_message']);
+        remove_filter('av_petitioner_redirect_url', [$this->translations, 'translate_redirect_url']);
         remove_filter('av_petitioner_label', [$this->translations, 'translate_label']);
         remove_filter('av_petitioner_email_string', [$this->translations, 'translate_email_string']);
         remove_filter('av_petitioner_submission_data_pre_save', [$this->translations, 'store_lang'], 20);
@@ -111,6 +112,10 @@ class Test_Translations extends BaseTestCase
             'success_message:<p>We got it.</p>',
             $this->translations->translate_success_message('<p>We got it.</p>', $this->form_id)
         );
+        $this->assertSame(
+            'redirect_url:https://example.com/thanks',
+            $this->translations->translate_redirect_url('https://example.com/thanks', $this->form_id, 'redirect_url')
+        );
     }
 
     public function test_register_form_fires_action_for_meta_and_fields()
@@ -122,6 +127,9 @@ class Test_Translations extends BaseTestCase
         update_post_meta($this->form_id, '_petitioner_success_message', '<p>We got it.</p>');
         update_post_meta($this->form_id, '_petitioner_ty_email_subject', 'Thanks for signing');
         update_post_meta($this->form_id, '_petitioner_ty_email', '<p>Thanks {{user_name}}</p>');
+        update_post_meta($this->form_id, '_petitioner_redirect_url', 'https://example.com/thanks');
+        update_post_meta($this->form_id, '_petitioner_confirm_success_url', 'https://example.com/confirmed');
+        update_post_meta($this->form_id, '_petitioner_confirm_error_url', 'https://example.com/invalid');
         update_post_meta($this->form_id, '_petitioner_form_fields', wp_json_encode([
             'fname' => [
                 'type'        => 'text',
@@ -159,6 +167,9 @@ class Test_Translations extends BaseTestCase
         $this->assertFalse($by_name['ty_email_subject']['multiline']);
         $this->assertSame('<p>Thanks {{user_name}}</p>', $by_name['ty_email']['value']);
         $this->assertTrue($by_name['ty_email']['multiline']);
+        $this->assertSame('https://example.com/thanks', $by_name['redirect_url']['value']);
+        $this->assertSame('https://example.com/confirmed', $by_name['confirm_success_url']['value']);
+        $this->assertSame('https://example.com/invalid', $by_name['confirm_error_url']['value']);
         $this->assertSame('First name', $by_name['field.fname.label']['value']);
         $this->assertSame('Jane', $by_name['field.fname.placeholder']['value']);
         $this->assertSame('<p>Terms</p>', $by_name['field.legal.value']['value']);
