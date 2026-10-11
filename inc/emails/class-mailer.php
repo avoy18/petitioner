@@ -188,7 +188,9 @@ class AV_Petitioner_Mailer
         );
 
         /**
-         * Fires after the email has been sent.
+         * av_petitioner_after_send_ty_email
+         *
+         * Fires after the thank-you email is sent.
          *
          * @since 0.8.7
          *
@@ -196,7 +198,7 @@ class AV_Petitioner_Mailer
          * @param string               $lang   Language slug for this send.
          * @param bool                 $sent   Whether wp_mail accepted the message.
          */
-        do_action('av_petitioner_after_email_prep', $this, $lang, $sent);
+        do_action('av_petitioner_after_send_ty_email', $this, $lang, $sent);
 
         return $sent;
     }

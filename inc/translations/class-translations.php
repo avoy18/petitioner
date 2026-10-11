@@ -48,7 +48,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_mailer_settings', [$this, 'add_lang_to_mailer'], 10, 2);
         add_filter('av_petitioner_confirmation_mailer_settings', [$this, 'add_lang_to_confirmation_mailer'], 10, 2);
         add_action('av_petitioner_before_email_prep', [$this, 'switch_email_locale'], 10, 2);
-        add_action('av_petitioner_after_email_prep', [$this, 'restore_locale']);
+        add_action('av_petitioner_after_send_ty_email', [$this, 'restore_locale']);
         add_action('av_petitioner_after_send_rep_email', [$this, 'restore_locale']);
     }
 
