@@ -35,6 +35,7 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_success_message_title', [$this->translations, 'translate_success_message_title']);
         remove_filter('av_petitioner_success_message', [$this->translations, 'translate_success_message']);
         remove_filter('av_petitioner_label', [$this->translations, 'translate_label']);
+        remove_filter('av_petitioner_email_string', [$this->translations, 'translate_email_string']);
         remove_filter('av_petitioner_submission_data_pre_save', [$this->translations, 'store_lang'], 20);
         remove_filter('av_petitioner_mailer_settings', [$this->translations, 'add_lang_to_mailer']);
         remove_filter('av_petitioner_confirmation_mailer_settings', [$this->translations, 'add_lang_to_confirmation_mailer']);
@@ -119,6 +120,8 @@ class Test_Translations extends BaseTestCase
         update_post_meta($this->form_id, '_petitioner_letter', 'Dear minister');
         update_post_meta($this->form_id, '_petitioner_success_message_title', 'Merci!');
         update_post_meta($this->form_id, '_petitioner_success_message', '<p>We got it.</p>');
+        update_post_meta($this->form_id, '_petitioner_ty_email_subject', 'Thanks for signing');
+        update_post_meta($this->form_id, '_petitioner_ty_email', '<p>Thanks {{user_name}}</p>');
         update_post_meta($this->form_id, '_petitioner_form_fields', wp_json_encode([
             'fname' => [
                 'type'        => 'text',
@@ -152,6 +155,10 @@ class Test_Translations extends BaseTestCase
         $this->assertFalse($by_name['success_message_title']['multiline']);
         $this->assertSame('<p>We got it.</p>', $by_name['success_message']['value']);
         $this->assertTrue($by_name['success_message']['multiline']);
+        $this->assertSame('Thanks for signing', $by_name['ty_email_subject']['value']);
+        $this->assertFalse($by_name['ty_email_subject']['multiline']);
+        $this->assertSame('<p>Thanks {{user_name}}</p>', $by_name['ty_email']['value']);
+        $this->assertTrue($by_name['ty_email']['multiline']);
         $this->assertSame('First name', $by_name['field.fname.label']['value']);
         $this->assertSame('Jane', $by_name['field.fname.placeholder']['value']);
         $this->assertSame('<p>Terms</p>', $by_name['field.legal.value']['value']);
@@ -196,6 +203,42 @@ class Test_Translations extends BaseTestCase
 
         $this->translations->register_label_overrides();
         $this->assertFalse($called);
+    }
+
+    public function test_maybe_translate_passes_lang()
+    {
+        add_filter('av_petitioner_translate_string', function ($value, $name, $form_id, $lang) {
+            return $lang . ':' . $name . ':' . $value;
+        }, 10, 4);
+
+        $this->assertSame(
+            'fr:letter:Dear minister',
+            $this->translations->maybe_translate($this->form_id, 'letter', 'Dear minister', 'fr')
+        );
+    }
+
+    public function test_translate_email_string_uses_lang()
+    {
+        add_filter('av_petitioner_translate_string', function ($value, $name, $form_id, $lang) {
+            return $lang . ':' . $value;
+        }, 10, 4);
+
+        $this->assertSame(
+            'fr:Dear minister',
+            $this->translations->translate_email_string('Dear minister', 'letter', $this->form_id, 'fr')
+        );
+    }
+
+    public function test_translate_email_string_keeps_source_when_lang_empty()
+    {
+        add_filter('av_petitioner_translate_string', function () {
+            return 'FR';
+        });
+
+        $this->assertSame(
+            'Dear minister',
+            $this->translations->translate_email_string('Dear minister', 'letter', $this->form_id, '')
+        );
     }
 
     public function test_translate_label()

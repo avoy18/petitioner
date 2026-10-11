@@ -18,7 +18,7 @@ class AV_Petitioner_WPML
         }
 
         add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 3);
-        add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 3);
+        add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 4);
         add_filter('av_petitioner_translations_register_form_args', [$this, 'register_form_args']);
         add_filter('av_petitioner_current_lang', [$this, 'current_lang']);
     }
@@ -47,12 +47,13 @@ class AV_Petitioner_WPML
     /**
      * Translate a string with WPML.
      * 
-     * @param string $value The string to translate.
-     * @param string $name The name of the string.
-     * @param int $form_id The form ID.
+     * @param string      $value The string to translate.
+     * @param string      $name The name of the string.
+     * @param int         $form_id The form ID.
+     * @param string|null $lang Language slug, or null for the current language.
      * @return string The translated string.
      */
-    public function translate_string($value, $name, $form_id)
+    public function translate_string($value, $name, $form_id, $lang = null)
     {
         if (!is_string($value) || $value === '') {
             return $value;
@@ -62,7 +63,8 @@ class AV_Petitioner_WPML
             'wpml_translate_single_string',
             $value,
             AV_Petitioner_Translations::string_group($form_id),
-            AV_Petitioner_Translations::string_name($form_id, $name)
+            AV_Petitioner_Translations::string_name($form_id, $name),
+            $lang ?: null
         );
 
         return is_string($translated) ? $translated : $value;

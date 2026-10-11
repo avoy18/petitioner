@@ -144,28 +144,30 @@ class AV_Petitioner_Mailer
      */
     public function ty_email()
     {
+        $lang               = is_string($this->lang) ? $this->lang : '';
+        $letter             = $this->email_string('letter', $this->letter, $lang);
         $subject            = AV_Petitioner_Email_Template::get_default_ty_subject($this->confirm_emails);
-        $message            = AV_Petitioner_Email_Template::get_default_ty_email($this->confirm_emails, $this->user_name, $this->letter);
+        $message            = AV_Petitioner_Email_Template::get_default_ty_email($this->confirm_emails, $this->user_name, $letter);
         $headers            = AV_Petitioner_Email_Controller::build_headers($this->final_from_field);
         $override_ty_email  = get_post_meta($this->form_id, '_petitioner_override_ty_email', true);
         if ($override_ty_email) {
             $custom_subject = get_post_meta($this->form_id, '_petitioner_ty_email_subject', true);
             $custom_message = get_post_meta($this->form_id, '_petitioner_ty_email', true);
 
-            $subject = $custom_subject ? $custom_subject : $subject;
-            $message = $custom_message ? $custom_message : $message;
+            $subject = $custom_subject ? $this->email_string('ty_email_subject', $custom_subject, $lang) : $subject;
+            $message = $custom_message ? $this->email_string('ty_email', $custom_message, $lang) : $message;
         } else {
             // // Add the letter if the emails are being sent to rep
             if ($this->send_to_representative) {
                 $message .=  '<p>' . AV_Petitioner_Labels::get('letter_copy_intro', $this->form_id) . '</p>';
                 $message .=  '<hr/>';
-                $message .= $this->letter;
+                $message .= $letter;
 
                 $message .= $this->get_signature_html();
             }
         }
 
-        $message = $this->convert_email_variables($message);
+        $message = $this->convert_email_variables($message, $letter);
 
         return AV_Petitioner_Email_Controller::send(
             $this->user_email,
@@ -181,8 +183,9 @@ class AV_Petitioner_Mailer
      */
     public function representative_email()
     {
-        $subject = $this->subject;
-        $message =  $this->letter;
+        $lang = $this->representative_email_lang();
+        $subject = $this->email_string('subject', $this->subject, $lang);
+        $message = $this->email_string('letter', $this->letter, $lang);
 
         $message .= $this->get_signature_html();
 
@@ -238,7 +241,49 @@ class AV_Petitioner_Mailer
         return '<p>' . str_replace(['{{user_name}}', '%1$s', '%s'], $name, $label) . '</p>';
     }
 
-    public function convert_email_variables($message)
+    /**
+     * Language slug for the representative email.
+     *
+     * Empty keeps the source letter and subject. Return the submission slug
+     * to send that letter in the signer's language.
+     *
+     * @return string
+     */
+    public function representative_email_lang()
+    {
+        /**
+         * Filter the language used for the representative email.
+         *
+         * @since 0.8.7
+         * @param string               $lang   Language slug. Empty is the source text.
+         * @param AV_Petitioner_Mailer $mailer Mailer for this send. `$mailer->lang` is the signer slug.
+         * @return string
+         */
+        $lang = apply_filters('av_petitioner_representative_email_lang', '', $this);
+
+        return is_string($lang) ? $lang : '';
+    }
+
+    /**
+     * Translate one email string into a language slug.
+     *
+     * @param string $name
+     * @param string $value
+     * @param string $lang
+     * @return string
+     */
+    public function email_string($name, $value, $lang)
+    {
+        if (!is_string($value) || $value === '' || !is_string($lang) || $lang === '') {
+            return $value;
+        }
+
+        $translated = apply_filters('av_petitioner_email_string', $value, $name, $this->form_id, $lang);
+
+        return is_string($translated) ? $translated : $value;
+    }
+
+    public function convert_email_variables($message, $letter = null)
     {
         $confirmation_link = '';
 
@@ -257,7 +302,7 @@ class AV_Petitioner_Mailer
 
         $variables = [
             'user_name'         => $this->user_name,
-            'petition_letter'   => $this->letter,
+            'petition_letter'   => is_string($letter) ? $letter : $this->letter,
             'petition_goal'     => AV_Petitioner_Goal_Milestones::get_active_goal($this->form_id),
             'confirmation_link' => $confirmation_link
         ];

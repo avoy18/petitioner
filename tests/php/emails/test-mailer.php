@@ -265,4 +265,75 @@ class Test_Mailer extends BaseTestCase
 
         wp_delete_post($form_id, true);
     }
+
+    public function test_email_string_keeps_source_when_lang_empty()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+
+        add_filter('av_petitioner_email_string', function () {
+            return 'FR';
+        });
+
+        $this->assertSame('Test letter', $mailer->email_string('letter', 'Test letter', ''));
+
+        remove_all_filters('av_petitioner_email_string');
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_email_string_uses_filter_for_lang()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+
+        add_filter('av_petitioner_email_string', function ($value, $name, $id, $lang) {
+            return $lang . ':' . $name . ':' . $value;
+        }, 10, 4);
+
+        $this->assertSame('fr:letter:Dear minister', $mailer->email_string('letter', 'Dear minister', 'fr'));
+
+        remove_all_filters('av_petitioner_email_string');
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_representative_email_lang_defaults_to_source()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+
+        $this->assertSame('', $mailer->representative_email_lang());
+
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_representative_email_lang_filter_can_use_signer_lang()
+    {
+        $form_id = wp_insert_post([
+            'post_type' => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        $mailer = new AV_Petitioner_Mailer([
+            'target_email' => 'test@test.com',
+            'target_cc_emails' => '',
+            'user_email' => 'user@test.com',
+            'user_name' => 'John Doe',
+            'user_country' => 'US',
+            'subject' => 'Test',
+            'letter' => 'Test letter',
+            'bcc' => false,
+            'send_to_representative' => true,
+            'confirm_emails' => false,
+            'send_ty_email' => true,
+            'form_id' => $form_id,
+            'submission_id' => 1,
+            'lang' => 'fr',
+        ]);
+
+        add_filter('av_petitioner_representative_email_lang', function ($lang, $mailer) {
+            return $mailer->lang;
+        }, 10, 2);
+
+        $this->assertSame('fr', $mailer->representative_email_lang());
+
+        remove_all_filters('av_petitioner_representative_email_lang');
+        wp_delete_post($form_id, true);
+    }
 }

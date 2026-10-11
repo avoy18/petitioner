@@ -32,6 +32,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
         add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
+        add_filter('av_petitioner_email_string', [$this, 'translate_email_string'], 10, 4);
 
         /**
          * Persist the posted language on the submission and pass it to mailers.
@@ -126,6 +127,8 @@ class AV_Petitioner_Translations
         $this->register_string($form_id, 'letter', get_post_meta($form_id, '_petitioner_letter', true), true);
         $this->register_string($form_id, 'success_message_title', get_post_meta($form_id, '_petitioner_success_message_title', true));
         $this->register_string($form_id, 'success_message', get_post_meta($form_id, '_petitioner_success_message', true), true);
+        $this->register_string($form_id, 'ty_email_subject', get_post_meta($form_id, '_petitioner_ty_email_subject', true));
+        $this->register_string($form_id, 'ty_email', get_post_meta($form_id, '_petitioner_ty_email', true), true);
 
         $fields = get_post_meta($form_id, '_petitioner_form_fields', true);
         $fields = is_string($fields) ? json_decode($fields, true) : $fields;
@@ -273,6 +276,26 @@ class AV_Petitioner_Translations
     }
 
     /**
+     * Translate an email string into a specific language slug.
+     *
+     * An empty slug keeps the source text.
+     *
+     * @param string $value
+     * @param string $name
+     * @param int    $form_id
+     * @param string $lang
+     * @return string
+     */
+    public function translate_email_string($value, $name, $form_id, $lang)
+    {
+        if (!is_string($lang) || $lang === '') {
+            return $value;
+        }
+
+        return $this->maybe_translate($form_id, $name, $value, $lang);
+    }
+
+    /**
      * Translate the field right before it renders.
      *
      * @param array  $field
@@ -302,12 +325,13 @@ class AV_Petitioner_Translations
     /**
      * Prepare the string for translation. "Maybe" because relies on a translation plugin.
      * 
-     * @param int $form_id
-     * @param string $name
-     * @param string $value
+     * @param int         $form_id
+     * @param string      $name
+     * @param string      $value
+     * @param string|null $lang Language slug. Null uses the current language.
      * @return string
      */
-    public function maybe_translate($form_id, $name, $value)
+    public function maybe_translate($form_id, $name, $value, $lang = null)
     {
         if (!is_string($value) || $value === '') {
             return $value;
@@ -316,12 +340,13 @@ class AV_Petitioner_Translations
         /**
          * Filter to translate a string with the translator plugin.
          * 
-         * @param string $value The string to translate.
-         * @param string $name The name of the string.
-         * @param int $form_id The form ID.
+         * @param string      $value The string to translate.
+         * @param string      $name The name of the string.
+         * @param int         $form_id The form ID.
+         * @param string|null $lang Language slug, or null for the current language.
          * @return string The translated string.
          */
-        $translated = apply_filters('av_petitioner_translate_string', $value, $name, $form_id);
+        $translated = apply_filters('av_petitioner_translate_string', $value, $name, $form_id, $lang);
 
         return is_string($translated) ? $translated : $value;
     }
