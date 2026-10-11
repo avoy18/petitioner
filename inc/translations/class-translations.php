@@ -11,6 +11,13 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_Translations
 {
+    /**
+     * Whether switch_locale() changed the locale and still needs a restore.
+     *
+     * @var bool
+     */
+    private $locale_switched = false;
+
     public function __construct()
     {
         /**
@@ -32,6 +39,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
         add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
+        add_filter('av_petitioner_email_string', [$this, 'translate_email_string'], 10, 4);
 
         /**
          * Persist the posted language on the submission and pass it to mailers.
@@ -39,6 +47,9 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_submission_data_pre_save', [$this, 'store_lang'], 20, 2);
         add_filter('av_petitioner_mailer_settings', [$this, 'add_lang_to_mailer'], 10, 2);
         add_filter('av_petitioner_confirmation_mailer_settings', [$this, 'add_lang_to_confirmation_mailer'], 10, 2);
+        add_action('av_petitioner_before_email_prep', [$this, 'switch_email_locale'], 10, 2);
+        add_action('av_petitioner_after_send_ty_email', [$this, 'restore_locale']);
+        add_action('av_petitioner_after_send_rep_email', [$this, 'restore_locale']);
     }
 
     /**
@@ -126,6 +137,8 @@ class AV_Petitioner_Translations
         $this->register_string($form_id, 'letter', get_post_meta($form_id, '_petitioner_letter', true), true);
         $this->register_string($form_id, 'success_message_title', get_post_meta($form_id, '_petitioner_success_message_title', true));
         $this->register_string($form_id, 'success_message', get_post_meta($form_id, '_petitioner_success_message', true), true);
+        $this->register_string($form_id, 'ty_email_subject', get_post_meta($form_id, '_petitioner_ty_email_subject', true));
+        $this->register_string($form_id, 'ty_email', get_post_meta($form_id, '_petitioner_ty_email', true), true);
 
         $fields = get_post_meta($form_id, '_petitioner_form_fields', true);
         $fields = is_string($fields) ? json_decode($fields, true) : $fields;
@@ -273,6 +286,87 @@ class AV_Petitioner_Translations
     }
 
     /**
+     * Switch gettext to the locale for the email that is about to be built.
+     *
+     * @since 0.8.7
+     *
+     * @param AV_Petitioner_Mailer $mailer
+     * @param string               $lang
+     */
+    public function switch_email_locale($mailer, $lang)
+    {
+        $this->switch_locale(is_string($lang) ? $lang : '');
+    }
+
+    /**
+     * Switch gettext to the locale for a language slug.
+     *
+     * @param string $lang
+     */
+    public function switch_locale($lang)
+    {
+        if (!is_string($lang) || $lang === '' || $this->locale_switched) {
+            return;
+        }
+
+        /**
+         * Locale for a language slug.
+         *
+         * @since 0.8.7
+         *
+         * @param string $locale
+         * @param string $lang
+         */
+        $locale = apply_filters('av_petitioner_locale', '', $lang);
+
+        if (!is_string($locale) || $locale === '') {
+            return;
+        }
+
+        $this->locale_switched = switch_to_locale($locale);
+
+        if ($this->locale_switched) {
+            AV_Petitioner_Labels::clear_cache();
+        }
+    }
+
+    /**
+     * Restore the locale after an email is built.
+     *
+     * @since 0.8.7
+     */
+    public function restore_locale()
+    {
+        if (!$this->locale_switched) {
+            return;
+        }
+
+        restore_previous_locale();
+        AV_Petitioner_Labels::clear_cache();
+        $this->locale_switched = false;
+    }
+
+    /**
+     * Translate an email string into a specific language slug.
+     *
+     * An empty slug keeps the source text.
+     *
+     * @param string $value
+     * @param string $name
+     * @param int    $form_id
+     * @param string $lang
+     * @return string
+     */
+    public function translate_email_string($value, $name, $form_id, $lang)
+    {
+        if (!is_string($lang) || $lang === '') {
+            return $value;
+        }
+
+        return $this->maybe_translate($form_id, $name, $value, $lang);
+    }
+
+    /**
      * Translate the field right before it renders.
      *
      * @param array  $field
@@ -302,12 +396,13 @@ class AV_Petitioner_Translations
     /**
      * Prepare the string for translation. "Maybe" because relies on a translation plugin.
      * 
-     * @param int $form_id
-     * @param string $name
-     * @param string $value
+     * @param int         $form_id
+     * @param string      $name
+     * @param string      $value
+     * @param string|null $lang Language slug. Null uses the current language.
      * @return string
      */
-    public function maybe_translate($form_id, $name, $value)
+    public function maybe_translate($form_id, $name, $value, $lang = null)
     {
         if (!is_string($value) || $value === '') {
             return $value;
@@ -316,12 +411,13 @@ class AV_Petitioner_Translations
         /**
          * Filter to translate a string with the translator plugin.
          * 
-         * @param string $value The string to translate.
-         * @param string $name The name of the string.
-         * @param int $form_id The form ID.
+         * @param string      $value The string to translate.
+         * @param string      $name The name of the string.
+         * @param int         $form_id The form ID.
+         * @param string|null $lang Language slug, or null for the current language.
          * @return string The translated string.
          */
-        $translated = apply_filters('av_petitioner_translate_string', $value, $name, $form_id);
+        $translated = apply_filters('av_petitioner_translate_string', $value, $name, $form_id, $lang);
 
         return is_string($translated) ? $translated : $value;
     }

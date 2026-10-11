@@ -238,6 +238,28 @@ class Test_Mailer extends BaseTestCase
         wp_delete_post($form_id, true);
     }
 
+    public function test_representative_email_switches_locale_from_the_slug()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+        $mailer->lang = 'ru';
+        $asked = '';
+
+        $switch = function ($mailer, $lang) use (&$asked) {
+            $asked = $lang;
+        };
+
+        add_filter('av_petitioner_representative_use_submission_lang', '__return_true');
+        add_action('av_petitioner_before_email_prep', $switch, 10, 2);
+
+        $mailer->representative_email();
+
+        $this->assertSame('ru', $asked);
+
+        remove_filter('av_petitioner_representative_use_submission_lang', '__return_true');
+        remove_action('av_petitioner_before_email_prep', $switch, 10);
+        wp_delete_post($form_id, true);
+    }
+
     public function test_constructor_stores_lang()
     {
         list($mailer, $form_id) = $this->make_mailer_with_label();
@@ -262,7 +284,85 @@ class Test_Mailer extends BaseTestCase
         ]);
 
         $this->assertSame('fr', $with_lang->lang);
+        $this->assertSame('Test letter', $with_lang->letter);
+        $this->assertSame(wpautop('Test letter'), $with_lang->format_letter($with_lang->letter));
 
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_email_string_keeps_source_when_lang_empty()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+
+        add_filter('av_petitioner_email_string', function () {
+            return 'FR';
+        });
+
+        $this->assertSame('Test letter', $mailer->email_string('letter', 'Test letter', ''));
+
+        remove_all_filters('av_petitioner_email_string');
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_email_string_uses_filter_for_lang()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+
+        add_filter('av_petitioner_email_string', function ($value, $name, $id, $lang) {
+            return $lang . ':' . $name . ':' . $value;
+        }, 10, 4);
+
+        $this->assertSame('fr:letter:Dear minister', $mailer->email_string('letter', 'Dear minister', 'fr'));
+
+        remove_all_filters('av_petitioner_email_string');
+        wp_delete_post($form_id, true);
+    }
+
+    public function test_representative_email_uses_source_unless_filter_is_true()
+    {
+        $form_id = wp_insert_post([
+            'post_type' => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        $mailer = new AV_Petitioner_Mailer([
+            'target_email' => 'test@test.com',
+            'target_cc_emails' => '',
+            'user_email' => 'user@test.com',
+            'user_name' => 'John Doe',
+            'user_country' => 'US',
+            'subject' => 'Please help',
+            'letter' => 'Dear minister',
+            'bcc' => false,
+            'send_to_representative' => true,
+            'confirm_emails' => false,
+            'send_ty_email' => true,
+            'form_id' => $form_id,
+            'submission_id' => 1,
+            'lang' => 'fr',
+        ]);
+
+        $subjects = [];
+        $capture = function ($args) use (&$subjects) {
+            $subjects[] = $args['subject'];
+        };
+        $translate = function ($value, $name, $id, $lang) {
+            return $lang . ':' . $value;
+        };
+
+        add_action('petitioner_before_send_rep_email', $capture);
+        add_filter('av_petitioner_email_string', $translate, 10, 4);
+
+        $mailer->representative_email();
+
+        add_filter('av_petitioner_representative_use_submission_lang', '__return_true');
+        $mailer->representative_email();
+
+        $this->assertSame(['Please help', 'fr:Please help'], $subjects);
+
+        remove_action('petitioner_before_send_rep_email', $capture);
+        remove_filter('av_petitioner_email_string', $translate, 10);
+        remove_filter('av_petitioner_representative_use_submission_lang', '__return_true');
         wp_delete_post($form_id, true);
     }
 }

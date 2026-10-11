@@ -18,7 +18,8 @@ class AV_Petitioner_Polylang
         }
 
         add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 4);
-        add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 3);
+        add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 4);
+        add_filter('av_petitioner_locale', [$this, 'locale'], 10, 2);
         add_filter('av_petitioner_translations_register_form_args', [$this, 'register_form_args']);
         add_filter('av_petitioner_current_lang', [$this, 'current_lang']);
     }
@@ -48,14 +49,29 @@ class AV_Petitioner_Polylang
     /**
      * Translate a string with Polylang.
      * 
-     * @param string $value
-     * @param string $name
-     * @param int $form_id
+     * @param string      $value
+     * @param string      $name
+     * @param int         $form_id
+     * @param string|null $lang
      * @return string
      */
-    public function translate_string($value, $name, $form_id)
+    public function translate_string($value, $name, $form_id, $lang = null)
     {
-        if (!is_string($value) || $value === '' || !function_exists('pll__')) {
+        if (!is_string($value) || $value === '') {
+            return $value;
+        }
+
+        if (is_string($lang) && $lang !== '') {
+            if (!function_exists('pll_translate_string')) {
+                return $value;
+            }
+
+            $translated = pll_translate_string($value, $lang);
+
+            return is_string($translated) ? $translated : $value;
+        }
+
+        if (!function_exists('pll__')) {
             return $value;
         }
 
@@ -79,6 +95,30 @@ class AV_Petitioner_Polylang
 
         $args['lang'] = '';
         return $args;
+    }
+
+    /**
+     * Locale for a language slug. switch_to_locale() needs ru_RU, not ru.
+     *
+     * @since 0.8.7
+     *
+     * @param string $locale
+     * @param string $lang
+     * @return string
+     */
+    public function locale($locale, $lang)
+    {
+        if (!is_string($lang) || $lang === '' || !function_exists('PLL')) {
+            return $locale;
+        }
+
+        $language = PLL()->model->get_language($lang);
+
+        if (!$language || empty($language->locale)) {
+            return $locale;
+        }
+
+        return $language->locale;
     }
 
     /**
