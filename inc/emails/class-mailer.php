@@ -147,7 +147,7 @@ class AV_Petitioner_Mailer
         $lang               = is_string($this->lang) ? $this->lang : '';
         $letter             = $this->email_string('letter', $this->letter, $lang);
         $subject            = AV_Petitioner_Email_Template::get_default_ty_subject($this->confirm_emails);
-        $message            = AV_Petitioner_Email_Template::get_default_ty_email($this->confirm_emails, $this->user_name, $letter);
+        $message            = AV_Petitioner_Email_Template::get_default_ty_email($this->confirm_emails);
         $headers            = AV_Petitioner_Email_Controller::build_headers($this->final_from_field);
         $override_ty_email  = get_post_meta($this->form_id, '_petitioner_override_ty_email', true);
         if ($override_ty_email) {
