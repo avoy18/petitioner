@@ -1,3 +1,5 @@
+import type { OptionItem } from '@admin/sections/EditFields/FormBuilder/consts';
+
 export type CheckboxValue = boolean;
 export type TextValue = string | number;
 export type NumberValue = number | null;
@@ -15,7 +17,7 @@ export type DefaultValues = {
 	ty_email_confirm: string;
 	success_message_title: string;
 	success_message: string;
-	country_list: string[]
+	country_list: OptionItem[]
 };
 
 export type PetitionerData = {

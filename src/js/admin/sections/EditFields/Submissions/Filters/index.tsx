@@ -4,6 +4,8 @@ import { __ } from '@wordpress/i18n';
 import ConditionalLogic from '@admin/components/ConditionalLogic';
 import type { ConditionGroup, AvailableFields } from '@admin/components/ConditionalLogic/consts';
 import { getFieldLabels } from '../utilities';
+import { normalizedCountryList } from '@admin/sections/EditFields/AdvancedSettings/utilities';
+import { toSelectOptions } from '../utilities';
 import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 import { FiltersWrapper } from './styled';
 import { EXCLUDED_FIELDS, type FiltersProps } from './consts';
@@ -41,12 +43,11 @@ const Filters = ({
 				}
 
 				const options =
-					type === 'select' && fieldConfig && 'options' in fieldConfig
-						? (fieldConfig).options.map((o: string) => ({
-								label: o,
-								value: o,
-							}))
-						: undefined;
+					key === 'country'
+						? normalizedCountryList(window.petitionerData?.default_values)
+						: type === 'select' && fieldConfig && 'options' in fieldConfig
+							? toSelectOptions(fieldConfig.options)
+							: undefined;
 
 				return {
 					value: key,
