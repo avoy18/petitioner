@@ -238,6 +238,28 @@ class Test_Mailer extends BaseTestCase
         wp_delete_post($form_id, true);
     }
 
+    public function test_representative_email_switches_locale_from_the_slug()
+    {
+        list($mailer, $form_id) = $this->make_mailer_with_label();
+        $mailer->lang = 'ru';
+        $asked = '';
+
+        $switch = function ($mailer, $lang) use (&$asked) {
+            $asked = $lang;
+        };
+
+        add_filter('av_petitioner_representative_use_submission_lang', '__return_true');
+        add_action('av_petitioner_before_email_prep', $switch, 10, 2);
+
+        $mailer->representative_email();
+
+        $this->assertSame('ru', $asked);
+
+        remove_filter('av_petitioner_representative_use_submission_lang', '__return_true');
+        remove_action('av_petitioner_before_email_prep', $switch, 10);
+        wp_delete_post($form_id, true);
+    }
+
     public function test_constructor_stores_lang()
     {
         list($mailer, $form_id) = $this->make_mailer_with_label();
@@ -262,6 +284,8 @@ class Test_Mailer extends BaseTestCase
         ]);
 
         $this->assertSame('fr', $with_lang->lang);
+        $this->assertSame('Test letter', $with_lang->letter);
+        $this->assertSame(wpautop('Test letter'), $with_lang->format_letter($with_lang->letter));
 
         wp_delete_post($form_id, true);
     }
@@ -294,16 +318,7 @@ class Test_Mailer extends BaseTestCase
         wp_delete_post($form_id, true);
     }
 
-    public function test_representative_email_lang_defaults_to_source()
-    {
-        list($mailer, $form_id) = $this->make_mailer_with_label();
-
-        $this->assertSame('', $mailer->representative_email_lang());
-
-        wp_delete_post($form_id, true);
-    }
-
-    public function test_representative_email_lang_filter_can_use_signer_lang()
+    public function test_representative_email_uses_source_unless_filter_is_true()
     {
         $form_id = wp_insert_post([
             'post_type' => 'petitioner-petition',
@@ -316,8 +331,8 @@ class Test_Mailer extends BaseTestCase
             'user_email' => 'user@test.com',
             'user_name' => 'John Doe',
             'user_country' => 'US',
-            'subject' => 'Test',
-            'letter' => 'Test letter',
+            'subject' => 'Please help',
+            'letter' => 'Dear minister',
             'bcc' => false,
             'send_to_representative' => true,
             'confirm_emails' => false,
@@ -327,13 +342,21 @@ class Test_Mailer extends BaseTestCase
             'lang' => 'fr',
         ]);
 
-        add_filter('av_petitioner_representative_email_lang', function ($lang, $mailer) {
-            return $mailer->lang;
-        }, 10, 2);
+        add_filter('av_petitioner_email_string', function ($value, $name, $id, $lang) {
+            return $lang . ':' . $value;
+        }, 10, 4);
 
-        $this->assertSame('fr', $mailer->representative_email_lang());
+        $this->assertSame('Please help', $mailer->email_string('subject', 'Please help', ''));
 
-        remove_all_filters('av_petitioner_representative_email_lang');
+        add_filter('av_petitioner_representative_use_submission_lang', '__return_true');
+
+        $use_submission_lang = apply_filters('av_petitioner_representative_use_submission_lang', false, $mailer);
+        $lang = $use_submission_lang ? $mailer->lang : '';
+
+        $this->assertSame('fr:Please help', $mailer->email_string('subject', 'Please help', $lang));
+
+        remove_all_filters('av_petitioner_email_string');
+        remove_all_filters('av_petitioner_representative_use_submission_lang');
         wp_delete_post($form_id, true);
     }
 }

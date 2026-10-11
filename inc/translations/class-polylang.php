@@ -19,6 +19,7 @@ class AV_Petitioner_Polylang
 
         add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 4);
         add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 4);
+        add_filter('av_petitioner_locale', [$this, 'locale'], 10, 2);
         add_filter('av_petitioner_translations_register_form_args', [$this, 'register_form_args']);
         add_filter('av_petitioner_current_lang', [$this, 'current_lang']);
     }
@@ -94,6 +95,30 @@ class AV_Petitioner_Polylang
 
         $args['lang'] = '';
         return $args;
+    }
+
+    /**
+     * Locale for a language slug. switch_to_locale() needs ru_RU, not ru.
+     *
+     * @since 0.8.7
+     *
+     * @param string $locale
+     * @param string $lang
+     * @return string
+     */
+    public function locale($locale, $lang)
+    {
+        if (!is_string($lang) || $lang === '' || !function_exists('PLL')) {
+            return $locale;
+        }
+
+        $language = PLL()->model->get_language($lang);
+
+        if (!$language || empty($language->locale)) {
+            return $locale;
+        }
+
+        return $language->locale;
     }
 
     /**

@@ -11,6 +11,13 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_Translations
 {
+    /**
+     * Whether switch_locale() changed the locale and still needs a restore.
+     *
+     * @var bool
+     */
+    private $locale_switched = false;
+
     public function __construct()
     {
         /**
@@ -40,6 +47,9 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_submission_data_pre_save', [$this, 'store_lang'], 20, 2);
         add_filter('av_petitioner_mailer_settings', [$this, 'add_lang_to_mailer'], 10, 2);
         add_filter('av_petitioner_confirmation_mailer_settings', [$this, 'add_lang_to_confirmation_mailer'], 10, 2);
+        add_action('av_petitioner_before_email_prep', [$this, 'switch_email_locale'], 10, 2);
+        add_action('av_petitioner_after_email_prep', [$this, 'restore_locale']);
+        add_action('av_petitioner_after_send_rep_email', [$this, 'restore_locale']);
     }
 
     /**
@@ -273,6 +283,67 @@ class AV_Petitioner_Translations
         }
 
         return $this->maybe_translate(0, 'label.' . $key, $label);
+    }
+
+    /**
+     * Switch gettext to the locale for the email that is about to be built.
+     *
+     * @since 0.8.7
+     *
+     * @param AV_Petitioner_Mailer $mailer
+     * @param string               $lang
+     */
+    public function switch_email_locale($mailer, $lang)
+    {
+        $this->switch_locale(is_string($lang) ? $lang : '');
+    }
+
+    /**
+     * Switch gettext to the locale for a language slug.
+     *
+     * @param string $lang
+     */
+    public function switch_locale($lang)
+    {
+        if (!is_string($lang) || $lang === '' || $this->locale_switched) {
+            return;
+        }
+
+        /**
+         * Locale for a language slug.
+         *
+         * @since 0.8.7
+         *
+         * @param string $locale
+         * @param string $lang
+         */
+        $locale = apply_filters('av_petitioner_locale', '', $lang);
+
+        if (!is_string($locale) || $locale === '') {
+            return;
+        }
+
+        $this->locale_switched = switch_to_locale($locale);
+
+        if ($this->locale_switched) {
+            AV_Petitioner_Labels::clear_cache();
+        }
+    }
+
+    /**
+     * Restore the locale after an email is built.
+     *
+     * @since 0.8.7
+     */
+    public function restore_locale()
+    {
+        if (!$this->locale_switched) {
+            return;
+        }
+
+        restore_previous_locale();
+        AV_Petitioner_Labels::clear_cache();
+        $this->locale_switched = false;
     }
 
     /**

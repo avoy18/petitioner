@@ -32,7 +32,7 @@ class AV_Petitioner_Mailer
         $this->user_email               = $settings['user_email'];
         $this->user_name                = $settings['user_name'];
         $this->user_country             = $settings['user_country'];
-        $this->letter                   = wpautop(wp_kses_post($settings['letter']));
+        $this->letter                   = is_string($settings['letter']) ? $settings['letter'] : '';
         $this->subject                  = $settings['subject'];
         $this->bcc                      = $settings['bcc'];
         $this->send_to_representative   = $settings['send_to_representative'];
@@ -145,7 +145,18 @@ class AV_Petitioner_Mailer
     public function ty_email()
     {
         $lang               = is_string($this->lang) ? $this->lang : '';
-        $letter             = $this->email_string('letter', $this->letter, $lang);
+
+        /**
+         * Fires before the email copy is prepared.
+         *
+         * @since 0.8.7
+         *
+         * @param AV_Petitioner_Mailer $mailer Mailer for this send.
+         * @param string               $lang   Language slug for this send. Empty keeps the source locale.
+         */
+        do_action('av_petitioner_before_email_prep', $this, $lang);
+
+        $letter             = $this->format_letter($this->email_string('letter', $this->letter, $lang));
         $subject            = AV_Petitioner_Email_Template::get_default_ty_subject($this->confirm_emails);
         $message            = AV_Petitioner_Email_Template::get_default_ty_email($this->confirm_emails);
         $headers            = AV_Petitioner_Email_Controller::build_headers($this->final_from_field);
@@ -169,12 +180,25 @@ class AV_Petitioner_Mailer
 
         $message = $this->convert_email_variables($message, $letter);
 
-        return AV_Petitioner_Email_Controller::send(
+        $sent = AV_Petitioner_Email_Controller::send(
             $this->user_email,
             $subject,
             $message,
             $headers
         );
+
+        /**
+         * Fires after the email has been sent.
+         *
+         * @since 0.8.7
+         *
+         * @param AV_Petitioner_Mailer $mailer Mailer for this send.
+         * @param string               $lang   Language slug for this send.
+         * @param bool                 $sent   Whether wp_mail accepted the message.
+         */
+        do_action('av_petitioner_after_email_prep', $this, $lang, $sent);
+
+        return $sent;
     }
 
     /**
@@ -183,9 +207,22 @@ class AV_Petitioner_Mailer
      */
     public function representative_email()
     {
-        $lang = $this->representative_email_lang();
+        /**
+         * Use the signer's language for the representative email.
+         *
+         * @since 0.8.7
+         * @param bool                 $use_submission_lang False keeps the source letter and subject.
+         * @param AV_Petitioner_Mailer $mailer              Mailer for this send. `$mailer->lang` is the signer slug.
+         * @return bool
+         */
+        $use_submission_lang = apply_filters('av_petitioner_representative_use_submission_lang', false, $this);
+        $lang = $use_submission_lang ? $this->lang : '';
+
+        /** This action is documented on ty_email(). */
+        do_action('av_petitioner_before_email_prep', $this, $lang);
+
         $subject = $this->email_string('subject', $this->subject, $lang);
-        $message = $this->email_string('letter', $this->letter, $lang);
+        $message = $this->format_letter($this->email_string('letter', $this->letter, $lang));
 
         $message .= $this->get_signature_html();
 
@@ -213,8 +250,21 @@ class AV_Petitioner_Mailer
          */
         do_action('petitioner_before_send_rep_email', $the_args);
 
+        $sent = AV_Petitioner_Email_Controller::send($this->target_email, $subject, $message, $headers);
 
-        return AV_Petitioner_Email_Controller::send($this->target_email, $subject, $message, $headers);
+        /**
+         * av_petitioner_after_send_rep_email
+         *
+         * Fires after the representative email is sent.
+         *
+         * @since 0.8.7
+         *
+         * @param array $the_args Arguments for the email that was sent.
+         * @param bool  $sent     Whether wp_mail accepted the message.
+         */
+        do_action('av_petitioner_after_send_rep_email', $the_args, $sent);
+
+        return $sent;
     }
 
     /**
@@ -242,26 +292,16 @@ class AV_Petitioner_Mailer
     }
 
     /**
-     * Language slug for the representative email.
+     * Turn the stored letter into email HTML after translation.
      *
-     * Empty keeps the source letter and subject. Return the submission slug
-     * to send that letter in the signer's language.
+     * Polylang matches the registered source text, so wpautop has to run after that lookup.
      *
+     * @param string $letter
      * @return string
      */
-    public function representative_email_lang()
+    public function format_letter($letter)
     {
-        /**
-         * Filter the language used for the representative email.
-         *
-         * @since 0.8.7
-         * @param string               $lang   Language slug. Empty is the source text.
-         * @param AV_Petitioner_Mailer $mailer Mailer for this send. `$mailer->lang` is the signer slug.
-         * @return string
-         */
-        $lang = apply_filters('av_petitioner_representative_email_lang', '', $this);
-
-        return is_string($lang) ? $lang : '';
+        return wpautop(wp_kses_post(is_string($letter) ? $letter : ''));
     }
 
     /**
