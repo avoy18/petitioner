@@ -34,16 +34,24 @@ class Test_Select_Option_Migrator extends BaseTestCase
         $fields = $this->saved_fields();
         $migrated = apply_filters('av_petitioner_form_fields', $fields, $this->form_id);
 
-        $this->assertSame(['ca', 'ca', 'ca'], $migrated['country']['options']);
-        $this->assertSame($fields['organization']['options'], $migrated['organization']['options']);
-        $this->assertSame($fields, apply_filters('av_petitioner_form_fields_admin', $fields, $this->form_id));
+        $canada = ['value' => 'ca', 'label' => 'Канада'];
+        $this->assertSame([$canada, $canada, $canada], $migrated['country']['options']);
+        $this->assertSame(
+            [
+                ['value' => 'Org A', 'label' => 'Org A'],
+                ['value' => 'org-b', 'label' => 'Org B'],
+            ],
+            $migrated['organization']['options']
+        );
+        $this->assertSame($migrated, apply_filters('av_petitioner_form_fields_admin', $fields, $this->form_id));
     }
 
     public function test_empty_country_list_is_filled_with_codes()
     {
-        $codes = array_keys(av_petitioner_get_country_codes());
+        $options = apply_filters('av_petitioner_select_field_options', [], 'country', $this->form_id);
 
-        $this->assertSame($codes, apply_filters('av_petitioner_select_field_options', [], 'country', $this->form_id));
+        $this->assertCount(count(av_petitioner_get_country_codes()), $options);
+        $this->assertContains(['value' => 'ca', 'label' => 'Canada'], $options);
         $this->assertSame([], apply_filters('av_petitioner_select_field_options', [], 'organization', $this->form_id));
         $this->assertSame(['Org A'], apply_filters('av_petitioner_select_field_options', ['Org A'], 'organization', $this->form_id));
     }
@@ -71,6 +79,10 @@ class Test_Select_Option_Migrator extends BaseTestCase
         $this->assertSame('', apply_filters('av_petitioner_normalize_country', ''));
         $this->assertSame('', apply_filters('av_petitioner_normalize_country', null));
         $this->assertSame('Narnia', apply_filters('av_petitioner_normalize_country', 'Narnia'));
+        $this->assertSame('Канада', av_petitioner_get_country_label('ca'));
+        $this->assertSame('United States', av_petitioner_get_country_label('us'));
+        $this->assertSame('United States', apply_filters('av_petitioner_csv_field_value', 'US', 'country'));
+        $this->assertSame('John', apply_filters('av_petitioner_csv_field_value', 'John', 'fname'));
     }
 
     public function test_rendered_country_uses_codes_and_custom_choices_keep_their_value()

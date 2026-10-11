@@ -164,6 +164,50 @@ class Test_CSV_Exporter extends BaseTestCase
         // Should have values for all allowed fields (minus custom_properties)
         $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2; // -1 for custom_properties, -1 for email_status
         $this->assertCount($expected_count, $row);
+        $this->assertContains('United States', $row);
+        $this->assertNotContains('US', $row);
+    }
+
+    public function test_country_mapping_matches_the_stored_value_and_placeholders_use_the_name()
+    {
+        $payload = [
+            [
+                'id' => 'country',
+                'overrides' => [
+                    'mappings' => [
+                        ['raw_value' => 'US', 'mapped_value' => 'USA'],
+                    ],
+                ],
+            ],
+            [
+                'id' => 'fname',
+                'overrides' => [
+                    'mappings' => [
+                        ['raw_value' => '{{fname}}', 'mapped_value' => '{{fname}} from {{country}}'],
+                    ],
+                ],
+            ],
+        ];
+
+        $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
+        $row = AV_Petitioner_CSV_Exporter::get_csv_row((object) [
+            'fname' => 'Anton',
+            'country' => 'US',
+        ], $resolved);
+
+        $country_idx = array_search('country', $resolved['visible_columns'], true);
+        $fname_idx = array_search('fname', $resolved['visible_columns'], true);
+
+        $this->assertSame('USA', $row[$country_idx]);
+        $this->assertSame('Anton from United States', $row[$fname_idx]);
+
+        $unmapped = AV_Petitioner_CSV_Exporter::get_csv_row((object) [
+            'fname' => 'Anton',
+            'country' => 'CA',
+        ], $resolved);
+
+        $this->assertSame('Canada', $unmapped[$country_idx]);
+        $this->assertSame('Anton from Canada', $unmapped[$fname_idx]);
     }
 
     public function test_get_csv_row_excludes_custom_properties()

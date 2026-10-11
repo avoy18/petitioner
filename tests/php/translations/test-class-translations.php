@@ -228,7 +228,7 @@ class Test_Translations extends BaseTestCase
             AV_Petitioner_Select_Option_Migrator::normalize_option('Org A')
         );
         $this->assertSame(
-            ['value' => 'ca', 'label' => 'Canada'],
+            ['value' => 'ca', 'label' => 'Канада'],
             AV_Petitioner_Select_Option_Migrator::normalize_option('Canada', 'country')
         );
 

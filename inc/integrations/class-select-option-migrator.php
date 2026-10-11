@@ -5,50 +5,56 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Turns older select choices into the current shape.
+ * Turns older select choices into value and label pairs.
  *
- * A string stays the value and the label. A country name becomes its code.
+ * A string uses that text for both. A country name becomes its code, and the label is the country name.
  */
 class AV_Petitioner_Select_Option_Migrator
 {
     public static function migrate_to_key_value_split()
     {
         add_filter('av_petitioner_form_fields', [self::class, 'migrate_form_fields'], 20, 2);
+        add_filter('av_petitioner_form_fields_admin', [self::class, 'migrate_form_fields'], 20, 2);
         add_filter('av_petitioner_select_field_options', [self::class, 'select_field_options'], 10, 2);
         add_filter('av_petitioner_select_option', [self::class, 'normalize_option'], 10, 2);
         add_filter('av_petitioner_normalize_country', [self::class, 'country_code']);
+        add_filter('av_petitioner_csv_field_value', [self::class, 'csv_field_value'], 10, 2);
     }
 
     /**
-     * Public forms receive country codes. The editor keeps the saved names.
-     *
      * @param mixed $form_fields
      * @param int   $form_id
      * @return mixed
      */
     public static function migrate_form_fields($form_fields, $form_id)
     {
-        if (!is_array($form_fields) || empty($form_fields['country']['options']) || !is_array($form_fields['country']['options'])) {
+        if (!is_array($form_fields)) {
             return $form_fields;
         }
 
-        $options = [];
-
-        foreach ($form_fields['country']['options'] as $option) {
-            $pair = self::normalize_option($option, 'country');
-
-            if (is_array($pair) && $pair['value'] !== '') {
-                $options[] = $pair['value'];
+        foreach ($form_fields as $key => $field) {
+            if (!is_array($field) || ($field['type'] ?? '') !== 'select' || !is_array($field['options'] ?? null)) {
+                continue;
             }
-        }
 
-        $form_fields['country']['options'] = $options;
+            $options = [];
+
+            foreach ($field['options'] as $option) {
+                $pair = self::normalize_option($option, $key);
+
+                if (is_array($pair) && $pair['value'] !== '') {
+                    $options[] = $pair;
+                }
+            }
+
+            $form_fields[$key]['options'] = $options;
+        }
 
         return $form_fields;
     }
 
     /**
-     * Older country fields have no saved choices. Fill those with codes.
+     * Older country fields have no saved choices. Fill those with value and label pairs.
      *
      * @param mixed  $options
      * @param string $field_key
@@ -60,7 +66,7 @@ class AV_Petitioner_Select_Option_Migrator
             return $options;
         }
 
-        return array_keys(av_petitioner_get_country_codes());
+        return av_petitioner_get_countries();
     }
 
     /**
@@ -70,24 +76,54 @@ class AV_Petitioner_Select_Option_Migrator
      */
     public static function normalize_option($option, $field_key = '')
     {
-        if (!is_string($option)) {
+        if (is_string($option)) {
+            $value = $label = $option;
+        } elseif (is_array($option)) {
+            $value = is_string($option['value'] ?? null) ? $option['value'] : '';
+            $label = is_string($option['label'] ?? null) ? $option['label'] : '';
+            $value = $value !== '' ? $value : $label;
+            $label = $label !== '' ? $label : $value;
+        } else {
             return $option;
         }
-
-        $value = $option;
 
         if ($field_key === 'country') {
             $code = self::country_code($value);
 
-            if ($code !== '') {
+            $label_for_code = av_petitioner_get_country_label($code);
+
+            if ($label_for_code !== '') {
                 $value = $code;
+                $label = $label_for_code;
             }
         }
 
         return [
             'value' => $value,
-            'label' => $option,
+            'label' => $label,
         ];
+    }
+
+    /**
+     * The country column in a CSV shows the country name. Other fields stay as saved.
+     *
+     * @param mixed  $value
+     * @param string $field
+     * @return mixed
+     */
+    public static function csv_field_value($value, $field)
+    {
+        if ($field !== 'country') {
+            return $value;
+        }
+
+        $label = av_petitioner_get_country_label(self::country_code($value));
+
+        if ($label !== '') {
+            return $label;
+        }
+
+        return is_string($value) ? $value : '';
     }
 
     /**

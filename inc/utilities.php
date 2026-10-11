@@ -212,17 +212,38 @@ function av_petitioner_get_country_codes(): array
 }
 
 /**
- * Translated country names, one string per country.
+ * Country name in the current language.
  *
- * @return string[]
+ * @param string $code
+ * @return string
+ */
+function av_petitioner_get_country_label($code): string
+{
+    $codes = av_petitioner_get_country_codes();
+
+    if (!is_string($code) || !isset($codes[$code])) {
+        return '';
+    }
+
+    $label = __($codes[$code], 'petitioner');
+
+    return is_string($label) && $label !== '' ? $label : $codes[$code];
+}
+
+/**
+ * Country choices for the current language.
+ *
+ * @return array<int, array{value: string, label: string}>
  */
 function av_petitioner_get_countries(): array
 {
     $countries = [];
 
-    foreach (av_petitioner_get_country_codes() as $name) {
-        $label = __($name, 'petitioner');
-        $countries[] = is_string($label) && $label !== '' ? $label : $name;
+    foreach (av_petitioner_get_country_codes() as $code => $name) {
+        $countries[] = [
+            'value' => $code,
+            'label' => av_petitioner_get_country_label($code),
+        ];
     }
 
     return $countries;
