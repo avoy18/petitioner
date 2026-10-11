@@ -3,11 +3,13 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
+const option = (value: string, label = value) => ({ value, label });
+
 describe('OptionList Component', () => {
 	it('renders the component with options', () => {
 		render(
 			<OptionList
-				options={['Option 1', 'Option 2', 'Option 3']}
+				options={[option('option-1', 'Option 1'), option('option-2', 'Option 2'), option('option-3', 'Option 3')]}
 				onOptionsChange={() => {}}
 			/>
 		);
@@ -17,7 +19,7 @@ describe('OptionList Component', () => {
 	it('renders all provided option values', () => {
 		render(
 			<OptionList
-				options={['Apple', 'Banana', 'Cherry']}
+				options={[option('apple', 'Apple'), option('banana', 'Banana'), option('cherry', 'Cherry')]}
 				onOptionsChange={() => {}}
 			/>
 		);
@@ -35,23 +37,22 @@ describe('OptionList Component', () => {
 		expect(container.firstChild).toBeNull();
 	});
 
-	it('de-duplicates options', () => {
+	it('renders the label', () => {
 		render(
 			<OptionList
-				options={['Apple', 'Apple', 'Banana']}
+				options={[option('ca', 'Canada')]}
 				onOptionsChange={() => {}}
 			/>
 		);
 
-		const apples = screen.getAllByText('Apple');
-		expect(apples).toHaveLength(1);
-		expect(screen.getByText('Banana')).toBeInTheDocument();
+		expect(screen.getByText('Canada')).toBeInTheDocument();
+		expect(screen.queryByText('ca')).not.toBeInTheDocument();
 	});
 
 	it('renders table headers (Value and Actions)', () => {
 		render(
 			<OptionList
-				options={['Option 1']}
+				options={[option('option-1', 'Option 1')]}
 				onOptionsChange={() => {}}
 			/>
 		);
@@ -63,7 +64,7 @@ describe('OptionList Component', () => {
 	it('renders a remove button for each option', () => {
 		render(
 			<OptionList
-				options={['Alpha', 'Beta', 'Gamma']}
+				options={[option('alpha', 'Alpha'), option('beta', 'Beta'), option('gamma', 'Gamma')]}
 				onOptionsChange={() => {}}
 			/>
 		);
@@ -78,7 +79,7 @@ describe('OptionList Component', () => {
 
 		render(
 			<OptionList
-				options={['Alpha', 'Beta', 'Gamma']}
+				options={[option('alpha', 'Alpha'), option('beta', 'Beta'), option('gamma', 'Gamma')]}
 				onOptionsChange={mockOnChange}
 			/>
 		);
@@ -86,7 +87,7 @@ describe('OptionList Component', () => {
 		const removeButtons = screen.getAllByLabelText('Remove option');
 		await user.click(removeButtons[1]); // remove "Beta"
 
-		expect(mockOnChange).toHaveBeenCalledWith(['Alpha', 'Gamma']);
+		expect(mockOnChange).toHaveBeenCalledWith([option('alpha', 'Alpha'), option('gamma', 'Gamma')]);
 	});
 
 	it('calls onOptionsChange with empty array when last option is removed', async () => {
@@ -95,7 +96,7 @@ describe('OptionList Component', () => {
 
 		render(
 			<OptionList
-				options={['Only']}
+				options={[option('only', 'Only')]}
 				onOptionsChange={mockOnChange}
 			/>
 		);
