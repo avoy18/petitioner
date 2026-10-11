@@ -65,6 +65,34 @@ class Test_Frontend_UI extends BaseTestCase
         $this->assertStringNotContainsString('data-redirect-url="https://evil.com"', $html_attrs);
     }
 
+    public function test_form_uses_translated_redirect_url()
+    {
+        $frontend_ui = new AV_Petitioner_Frontend_UI();
+        update_post_meta($this->form_id, '_petitioner_redirect_url', home_url('/thanks'));
+
+        add_filter('av_petitioner_redirect_url', function () {
+            return home_url('/merci');
+        });
+        $html_attrs = $frontend_ui->get_form_attributes($this->form_id);
+        remove_all_filters('av_petitioner_redirect_url');
+
+        $this->assertStringContainsString('data-redirect-url="' . home_url('/merci') . '"', $html_attrs);
+    }
+
+    public function test_translated_redirect_is_still_validated()
+    {
+        $frontend_ui = new AV_Petitioner_Frontend_UI();
+        update_post_meta($this->form_id, '_petitioner_redirect_url', home_url('/thanks'));
+
+        add_filter('av_petitioner_redirect_url', function () {
+            return 'https://evil.com';
+        });
+        $html_attrs = $frontend_ui->get_form_attributes($this->form_id);
+        remove_all_filters('av_petitioner_redirect_url');
+
+        $this->assertStringNotContainsString('data-redirect-url', $html_attrs);
+    }
+
     public function test_form_pass_external_redirects_with_filter()
     {
         $frontend_ui = new AV_Petitioner_Frontend_UI();

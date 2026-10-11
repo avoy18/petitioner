@@ -38,6 +38,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
+        add_filter('av_petitioner_redirect_url', [$this, 'translate_redirect_url'], 10, 3);
         add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
         add_filter('av_petitioner_email_string', [$this, 'translate_email_string'], 10, 4);
 
@@ -139,6 +140,9 @@ class AV_Petitioner_Translations
         $this->register_string($form_id, 'success_message', get_post_meta($form_id, '_petitioner_success_message', true), true);
         $this->register_string($form_id, 'ty_email_subject', get_post_meta($form_id, '_petitioner_ty_email_subject', true));
         $this->register_string($form_id, 'ty_email', get_post_meta($form_id, '_petitioner_ty_email', true), true);
+        $this->register_string($form_id, 'redirect_url', get_post_meta($form_id, '_petitioner_redirect_url', true));
+        $this->register_string($form_id, 'confirm_success_url', get_post_meta($form_id, '_petitioner_confirm_success_url', true));
+        $this->register_string($form_id, 'confirm_error_url', get_post_meta($form_id, '_petitioner_confirm_error_url', true));
 
         $fields = get_post_meta($form_id, '_petitioner_form_fields', true);
         $fields = is_string($fields) ? json_decode($fields, true) : $fields;
@@ -267,6 +271,21 @@ class AV_Petitioner_Translations
     public function translate_success_message($message, $form_id)
     {
         return $this->maybe_translate($form_id, 'success_message', $message);
+    }
+
+    /**
+     * Translate a saved redirect URL for the current language.
+     *
+     * @since 0.8.7
+     *
+     * @param string $url
+     * @param int    $form_id
+     * @param string $name
+     * @return string
+     */
+    public function translate_redirect_url($url, $form_id, $name)
+    {
+        return $this->maybe_translate($form_id, $name, $url);
     }
 
     /**

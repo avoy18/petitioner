@@ -114,7 +114,7 @@ class AV_Email_Confirmations
                  */
                 AV_Petitioner_Submissions_Controller::trigger_finalized_hook($id);
 
-                $this->handle_redirect($form_id, '_petitioner_confirm_success_url', home_url('/?petitioner=confirmed'));
+                $this->handle_redirect($form_id, '_petitioner_confirm_success_url', 'confirm_success_url', home_url('/?petitioner=confirmed'));
             }
         }
 
@@ -133,7 +133,7 @@ class AV_Email_Confirmations
         do_action('petitioner_email_confirmation_error', $submission, $token);
 
         // Optional: custom redirect on failure
-        $this->handle_redirect($form_id, '_petitioner_confirm_error_url', home_url('/?petitioner=invalid'));
+        $this->handle_redirect($form_id, '_petitioner_confirm_error_url', 'confirm_error_url', home_url('/?petitioner=invalid'));
     }
 
     /**
@@ -143,12 +143,18 @@ class AV_Email_Confirmations
      *
      * @param int    $form_id     The ID of the submission's form.
      * @param string $meta_key    The meta key holding the custom redirect URL.
+     * @param string $name        Translation string name for that URL.
      * @param string $default_url The fallback URL to redirect to if custom URL is empty or invalid.
      * @return void
      */
-    private function handle_redirect($form_id, $meta_key, $default_url)
+    private function handle_redirect($form_id, $meta_key, $name, $default_url)
     {
         $custom_url = get_post_meta($form_id, $meta_key, true);
+
+        if (is_string($custom_url) && $custom_url !== '') {
+            $custom_url = apply_filters('av_petitioner_redirect_url', $custom_url, $form_id, $name);
+        }
+
         $custom_url = av_petitioner_get_validated_redirect_url($custom_url, $form_id);
 
         if (!empty($custom_url)) {

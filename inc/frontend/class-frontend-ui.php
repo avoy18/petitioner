@@ -63,6 +63,18 @@ class AV_Petitioner_Frontend_UI
         $redirect_url = get_post_meta($form_id, '_petitioner_redirect_url', true);
 
         if (!empty($redirect_url)) {
+            /**
+             * Filter a saved redirect URL before it is validated.
+             *
+             * Translators can return a different URL for the current language.
+             *
+             * @since 0.8.7
+             *
+             * @param string $redirect_url The saved URL.
+             * @param int    $form_id      The petition form ID.
+             * @param string $name         String name: redirect_url, confirm_success_url, or confirm_error_url.
+             */
+            $redirect_url = apply_filters('av_petitioner_redirect_url', $redirect_url, $form_id, 'redirect_url');
             $redirect_url = av_petitioner_get_validated_redirect_url($redirect_url, $form_id);
 
             // Only add the data attribute if it survived validation
