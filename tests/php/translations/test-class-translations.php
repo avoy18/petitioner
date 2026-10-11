@@ -35,6 +35,7 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_success_message_title', [$this->translations, 'translate_success_message_title']);
         remove_filter('av_petitioner_success_message', [$this->translations, 'translate_success_message']);
         remove_filter('av_petitioner_redirect_url', [$this->translations, 'translate_redirect_url']);
+        remove_filter('av_petitioner_select_option_label', [$this->translations, 'translate_select_option_label']);
         remove_filter('av_petitioner_label', [$this->translations, 'translate_label']);
         remove_filter('av_petitioner_email_string', [$this->translations, 'translate_email_string']);
         remove_filter('av_petitioner_submission_data_pre_save', [$this->translations, 'store_lang'], 20);
@@ -140,6 +141,16 @@ class Test_Translations extends BaseTestCase
                 'type'  => 'wysiwyg',
                 'value' => '<p>Terms</p>',
             ],
+            'organization' => [
+                'type'    => 'select',
+                'label'   => 'Organization',
+                'options' => ['Org A', 'Org B'],
+            ],
+            'country' => [
+                'type'    => 'select',
+                'label'   => 'Country',
+                'options' => ['Canada'],
+            ],
         ]));
 
         $registered = [];
@@ -176,6 +187,37 @@ class Test_Translations extends BaseTestCase
         $this->assertTrue($by_name['field.legal.value']['multiline']);
         $this->assertArrayNotHasKey('field.fname.value', $by_name);
         $this->assertArrayNotHasKey('field.legal.label', $by_name);
+        $this->assertSame('Org A', $by_name['field.organization.option.Org A']['value']);
+        $this->assertSame('Org B', $by_name['field.organization.option.Org B']['value']);
+        $this->assertArrayNotHasKey('field.country.option.Canada', $by_name);
+    }
+
+    public function test_translate_select_option_label_uses_the_saved_choice()
+    {
+        $names = [];
+        add_filter('av_petitioner_translate_string', function ($value, $name) use (&$names) {
+            $names[] = $name;
+
+            return 'Translated ' . $value;
+        }, 10, 2);
+
+        $this->assertSame(
+            'Translated Org A',
+            $this->translations->translate_select_option_label('Org A', 'organization', $this->form_id)
+        );
+        $this->assertSame(['field.organization.option.Org A'], $names);
+    }
+
+    public function test_translate_select_option_label_skips_country()
+    {
+        add_filter('av_petitioner_translate_string', function ($value) {
+            return 'Translated ' . $value;
+        });
+
+        $this->assertSame(
+            'Canada',
+            $this->translations->translate_select_option_label('Canada', 'country', $this->form_id)
+        );
     }
 
     public function test_register_label_overrides_registers_non_empty()

@@ -102,6 +102,33 @@ class Test_Form_UI extends BaseTestCase
         $this->assertStringContainsString('value="Org B"', $output);
     }
 
+    public function test_render_select_field_filters_value_and_label_separately()
+    {
+        $form_ui = new AV_Petitioner_Form_UI(1);
+        $field = [
+            'label'   => 'Organization',
+            'options' => ['Org A'],
+        ];
+
+        add_filter('av_petitioner_select_option_value', function () {
+            return 'org-a';
+        });
+        add_filter('av_petitioner_select_option_label', function () {
+            return 'Організація А';
+        });
+
+        ob_start();
+        $form_ui->render_select_field('organization', $field);
+        $output = ob_get_clean();
+
+        remove_all_filters('av_petitioner_select_option_value');
+        remove_all_filters('av_petitioner_select_option_label');
+
+        $this->assertStringContainsString('value="org-a"', $output);
+        $this->assertStringContainsString('Організація А', $output);
+        $this->assertStringNotContainsString('value="Org A"', $output);
+    }
+
     // ============================================
     // LANG HIDDEN FIELD
     // ============================================
