@@ -39,6 +39,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
         add_filter('av_petitioner_redirect_url', [$this, 'translate_redirect_url'], 10, 3);
+        add_filter('av_petitioner_select_option_label', [$this, 'translate_select_option_label'], 10, 3);
         add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
         add_filter('av_petitioner_email_string', [$this, 'translate_email_string'], 10, 4);
 
@@ -166,6 +167,15 @@ class AV_Petitioner_Translations
             if (($field['type'] ?? '') === 'wysiwyg' && !empty($field['value'])) {
                 $this->register_string($form_id, "field.{$key}.value", $field['value'], true);
             }
+            if (($field['type'] ?? '') === 'select' && $key !== 'country' && is_array($field['options'] ?? null)) {
+                foreach ($field['options'] as $option) {
+                    if (!is_string($option) || $option === '') {
+                        continue;
+                    }
+
+                    $this->register_string($form_id, "field.{$key}.option.{$option}", $option);
+                }
+            }
         }
     }
 
@@ -286,6 +296,27 @@ class AV_Petitioner_Translations
     public function translate_redirect_url($url, $form_id, $name)
     {
         return $this->maybe_translate($form_id, $name, $url);
+    }
+
+    /**
+     * Translate the visible text of a custom select choice.
+     *
+     * The submitted value stays the saved choice.
+     *
+     * @since 0.8.7
+     *
+     * @param string $label
+     * @param string $key
+     * @param int    $form_id
+     * @return string
+     */
+    public function translate_select_option_label($label, $key, $form_id)
+    {
+        if ($key === 'country' || !is_string($label) || $label === '') {
+            return $label;
+        }
+
+        return $this->maybe_translate($form_id, "field.{$key}.option.{$label}", $label);
     }
 
     /**

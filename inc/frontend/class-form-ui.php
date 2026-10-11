@@ -232,8 +232,38 @@ class AV_Petitioner_Form_UI
                 <option value="" selected disabled><?php esc_html_e('Select', 'petitioner'); ?></option>
 
                 <?php foreach ($options as $option): ?>
-                    <option value="<?php echo esc_attr($option); ?>">
-                        <?php echo esc_html($option); ?>
+                    <?php
+                    /**
+                     * Filter the submitted value of a select choice.
+                     *
+                     * @since 0.8.7
+                     *
+                     * @param string $option  The saved choice.
+                     * @param string $name    The field key.
+                     * @param int    $form_id The petition form ID.
+                     */
+                    $value = apply_filters('av_petitioner_select_option_value', $option, $name, $this->form_id);
+
+                    /**
+                     * Filter the visible text of a select choice.
+                     *
+                     * @since 0.8.7
+                     *
+                     * @param string $option  The saved choice.
+                     * @param string $name    The field key.
+                     * @param int    $form_id The petition form ID.
+                     */
+                    $label = apply_filters('av_petitioner_select_option_label', $option, $name, $this->form_id);
+
+                    if (!is_string($value) || $value === '') {
+                        $value = $option;
+                    }
+                    if (!is_string($label) || $label === '') {
+                        $label = $option;
+                    }
+                    ?>
+                    <option value="<?php echo esc_attr($value); ?>">
+                        <?php echo esc_html($label); ?>
                     </option>
                 <?php endforeach; ?>
 
