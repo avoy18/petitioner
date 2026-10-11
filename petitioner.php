@@ -51,6 +51,7 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-captcha.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-akismet.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-field-registry.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-form-migrator.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/integrations/class-select-option-migrator.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/class-goal-milestones.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';
@@ -84,3 +85,4 @@ register_deactivation_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_deacti
 register_uninstall_hook(__FILE__, array('AV_Petitioner_Setup', 'plugin_uninstall'));
 
 AV_Petitioner_Form_Migrator::migrate_form_fields_to_builder_filters();
+AV_Petitioner_Select_Option_Migrator::migrate_to_key_value_split();

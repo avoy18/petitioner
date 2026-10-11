@@ -39,7 +39,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
         add_filter('av_petitioner_redirect_url', [$this, 'translate_redirect_url'], 10, 3);
-        add_filter('av_petitioner_select_option_label', [$this, 'translate_select_option_label'], 10, 3);
+        add_filter('av_petitioner_select_option_label', [$this, 'translate_select_option_label'], 10, 4);
         add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
         add_filter('av_petitioner_email_string', [$this, 'translate_email_string'], 10, 4);
 
@@ -169,11 +169,28 @@ class AV_Petitioner_Translations
             }
             if (($field['type'] ?? '') === 'select' && $key !== 'country' && is_array($field['options'] ?? null)) {
                 foreach ($field['options'] as $option) {
-                    if (!is_string($option) || $option === '') {
+                    if (is_string($option)) {
+                        $value = $label = $option;
+                    } elseif (is_array($option)) {
+                        $value = isset($option['value']) && is_string($option['value']) ? $option['value'] : '';
+                        $label = isset($option['label']) && is_string($option['label']) ? $option['label'] : '';
+
+                        if ($value === '') {
+                            $value = $label;
+                        }
+
+                        if ($label === '') {
+                            $label = $value;
+                        }
+                    } else {
                         continue;
                     }
 
-                    $this->register_string($form_id, "field.{$key}.option.{$option}", $option);
+                    if ($label === '') {
+                        continue;
+                    }
+
+                    $this->register_string($form_id, "field.{$key}.option.{$value}", $label);
                 }
             }
         }
@@ -299,24 +316,41 @@ class AV_Petitioner_Translations
     }
 
     /**
-     * Translate the visible text of a custom select choice.
+     * Translate the visible text of a select choice.
      *
-     * The submitted value stays the saved choice.
+     * Custom choices use the translation plugin. Country names use gettext.
      *
      * @since 0.8.7
      *
-     * @param string $label
-     * @param string $key
-     * @param int    $form_id
+     * @param string      $label
+     * @param string      $key
+     * @param int         $form_id
+     * @param string|null $value Saved value. Legacy choices use the label text.
      * @return string
      */
-    public function translate_select_option_label($label, $key, $form_id)
+    public function translate_select_option_label($label, $key, $form_id, $value = null)
     {
-        if ($key === 'country' || !is_string($label) || $label === '') {
+        if (!is_string($label) || $label === '') {
             return $label;
         }
 
-        return $this->maybe_translate($form_id, "field.{$key}.option.{$label}", $label);
+        if ($key === 'country') {
+            $code = is_string($value) && $value !== '' ? $value : $label;
+            $codes = av_petitioner_get_country_codes();
+            $name = $codes[$code] ?? '';
+
+            if ($name === '') {
+                return $label;
+            }
+
+            $translated = __($name, 'petitioner');
+
+            return is_string($translated) && $translated !== '' ? $translated : $name;
+        }
+
+        $option_id = is_string($value) && $value !== '' ? $value : $label;
+
+        return $this->maybe_translate($form_id, "field.{$key}.option.{$option_id}", $label);
     }
 
     /**

@@ -102,6 +102,24 @@ class Test_Form_UI extends BaseTestCase
         $this->assertStringContainsString('value="Org B"', $output);
     }
 
+    public function test_render_select_field_splits_value_and_label()
+    {
+        $form_ui = new AV_Petitioner_Form_UI(1);
+        $field = [
+            'label'   => 'Organization',
+            'options' => [
+                ['value' => 'org-a', 'label' => 'Org A'],
+            ],
+        ];
+
+        ob_start();
+        $form_ui->render_select_field('organization', $field);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('value="org-a"', $output);
+        $this->assertStringContainsString('Org A', $output);
+    }
+
     public function test_render_select_field_filters_value_and_label_separately()
     {
         $form_ui = new AV_Petitioner_Form_UI(1);
@@ -127,6 +145,29 @@ class Test_Form_UI extends BaseTestCase
         $this->assertStringContainsString('value="org-a"', $output);
         $this->assertStringContainsString('Організація А', $output);
         $this->assertStringNotContainsString('value="Org A"', $output);
+    }
+
+    public function test_render_select_field_ignores_a_non_array_options_filter()
+    {
+        $form_ui = new AV_Petitioner_Form_UI(1);
+        $field = [
+            'label'   => 'Organization',
+            'options' => ['Org A'],
+        ];
+
+        $callback = function () {
+            return 'Org A';
+        };
+        add_filter('av_petitioner_select_field_options', $callback);
+
+        ob_start();
+        $form_ui->render_select_field('organization', $field);
+        $output = ob_get_clean();
+
+        remove_filter('av_petitioner_select_field_options', $callback);
+
+        $this->assertStringContainsString('<option value="" selected disabled>', $output);
+        $this->assertStringContainsString('value="Org A"', $output);
     }
 
     // ============================================
