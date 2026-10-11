@@ -342,21 +342,27 @@ class Test_Mailer extends BaseTestCase
             'lang' => 'fr',
         ]);
 
-        add_filter('av_petitioner_email_string', function ($value, $name, $id, $lang) {
+        $subjects = [];
+        $capture = function ($args) use (&$subjects) {
+            $subjects[] = $args['subject'];
+        };
+        $translate = function ($value, $name, $id, $lang) {
             return $lang . ':' . $value;
-        }, 10, 4);
+        };
 
-        $this->assertSame('Please help', $mailer->email_string('subject', 'Please help', ''));
+        add_action('petitioner_before_send_rep_email', $capture);
+        add_filter('av_petitioner_email_string', $translate, 10, 4);
+
+        $mailer->representative_email();
 
         add_filter('av_petitioner_representative_use_submission_lang', '__return_true');
+        $mailer->representative_email();
 
-        $use_submission_lang = apply_filters('av_petitioner_representative_use_submission_lang', false, $mailer);
-        $lang = $use_submission_lang ? $mailer->lang : '';
+        $this->assertSame(['Please help', 'fr:Please help'], $subjects);
 
-        $this->assertSame('fr:Please help', $mailer->email_string('subject', 'Please help', $lang));
-
-        remove_all_filters('av_petitioner_email_string');
-        remove_all_filters('av_petitioner_representative_use_submission_lang');
+        remove_action('petitioner_before_send_rep_email', $capture);
+        remove_filter('av_petitioner_email_string', $translate, 10);
+        remove_filter('av_petitioner_representative_use_submission_lang', '__return_true');
         wp_delete_post($form_id, true);
     }
 }
