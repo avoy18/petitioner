@@ -119,6 +119,30 @@ class Test_Translations extends BaseTestCase
         );
     }
 
+    public function test_confirm_redirect_uses_the_language_on_the_signature()
+    {
+        $seen = null;
+        add_filter('av_petitioner_translate_string', function ($value, $name, $form_id, $lang) use (&$seen) {
+            $seen = [$name, $lang];
+            return $value;
+        }, 10, 4);
+
+        $this->translations->translate_redirect_url('https://example.com/thanks', $this->form_id, 'redirect_url');
+        $this->assertSame(['redirect_url', null], $seen);
+
+        $this->translations->translate_redirect_url(
+            'https://example.com/confirmed',
+            $this->form_id,
+            'confirm_success_url',
+            (object) ['lang' => 'de_DE']
+        );
+        $this->assertSame(['confirm_success_url', 'de_DE'], $seen);
+
+        $seen = null;
+        $this->translations->translate_letter('Dear minister', $this->form_id);
+        $this->assertSame(['letter', null], $seen);
+    }
+
     public function test_register_form_fires_action_for_meta_and_fields()
     {
         update_post_meta($this->form_id, '_petitioner_title', 'Save the bees');

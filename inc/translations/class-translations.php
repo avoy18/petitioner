@@ -38,7 +38,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_letter', [$this, 'translate_letter'], 10, 2);
         add_filter('av_petitioner_success_message_title', [$this, 'translate_success_message_title'], 10, 2);
         add_filter('av_petitioner_success_message', [$this, 'translate_success_message'], 10, 2);
-        add_filter('av_petitioner_redirect_url', [$this, 'translate_redirect_url'], 10, 3);
+        add_filter('av_petitioner_redirect_url', [$this, 'translate_redirect_url'], 10, 4);
         add_filter('av_petitioner_select_option_label', [$this, 'translate_select_option_label'], 10, 4);
         add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
         add_filter('av_petitioner_email_string', [$this, 'translate_email_string'], 10, 4);
@@ -305,14 +305,17 @@ class AV_Petitioner_Translations
      *
      * @since 0.8.7
      *
-     * @param string $url
-     * @param int    $form_id
-     * @param string $name
+     * @param string       $url
+     * @param int          $form_id
+     * @param string       $name
+     * @param object|array|null $submission Signature, when this redirect follows one. Its lang is used.
      * @return string
      */
-    public function translate_redirect_url($url, $form_id, $name)
+    public function translate_redirect_url($url, $form_id, $name, $submission = null)
     {
-        return $this->maybe_translate($form_id, $name, $url);
+        $lang = self::lang_from_submission($submission);
+
+        return $this->maybe_translate($form_id, $name, $url, $lang !== '' ? $lang : null);
     }
 
     /**
