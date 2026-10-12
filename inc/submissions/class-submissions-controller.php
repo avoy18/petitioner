@@ -35,6 +35,19 @@ class AV_Petitioner_Submissions_Controller
         $lname                      = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
         $date_of_birth              = isset($_POST['petitioner_date_of_birth']) ? sanitize_text_field(wp_unslash($_POST['petitioner_date_of_birth'])) : '';
         $country                    = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
+
+        /**
+         * Normalize a posted country to its code.
+         *
+         * @since 0.8.7
+         *
+         * @param string $country The posted country.
+         */
+        $country = apply_filters('av_petitioner_normalize_country', $country);
+
+        if (!is_string($country)) {
+            $country = '';
+        }
         $phone                      = isset($_POST['petitioner_phone']) ? sanitize_text_field(wp_unslash($_POST['petitioner_phone'])) : '';
         $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
         $city                       = isset($_POST['petitioner_city']) ? sanitize_text_field(wp_unslash($_POST['petitioner_city'])) : '';
@@ -197,9 +210,49 @@ class AV_Petitioner_Submissions_Controller
                     'Petitioner submission warning: Failed to send emails for submission ID ' . $submission_id . '.'
                 );
             }
+            $success_title = get_post_meta($form_id, '_petitioner_success_message_title', true);
+            if (is_string($success_title) && $success_title !== '') {
+                /**
+                 * Filter the custom success message title.
+                 *
+                 * Only runs when this form has an override. Defaults stay on Labels.
+                 *
+                 * @param string $success_title The custom success title.
+                 * @param int    $form_id       The form ID.
+                 * @return string The modified success title.
+                 */
+                $success_title = apply_filters('av_petitioner_success_message_title', $success_title, $form_id);
+
+                if (!is_string($success_title)) {
+                    $success_title = '';
+                }
+            } else {
+                $success_title = AV_Petitioner_Labels::get('success_message_title');
+            }
+
+            $success_message = get_post_meta($form_id, '_petitioner_success_message', true);
+            if (is_string($success_message) && $success_message !== '') {
+                /**
+                 * Filter the custom success message.
+                 *
+                 * Only runs when this form has an override. Defaults stay on Labels.
+                 *
+                 * @param string $success_message The custom success message.
+                 * @param int    $form_id         The form ID.
+                 * @return string The modified success message.
+                 */
+                $success_message = apply_filters('av_petitioner_success_message', $success_message, $form_id);
+
+                if (!is_string($success_message)) {
+                    $success_message = '';
+                }
+            } else {
+                $success_message = AV_Petitioner_Labels::get('success_message');
+            }
+
             wp_send_json_success([
-                'title'     => AV_Petitioner_Labels::get('success_message_title', $form_id),
-                'message'   => AV_Petitioner_Labels::get('success_message', $form_id),
+                'title'   => $success_title,
+                'message' => $success_message,
             ]);
         }
 

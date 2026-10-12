@@ -99,7 +99,8 @@ class AV_Petitioner_Admin_Settings_UI
             if (empty($config['meta_key'])) {
                 continue;
             }
-            $option_values[$key] = get_option($config['meta_key'], null);
+            $default = $config['default'] ?? null;
+            $option_values[$key] = get_option($config['meta_key'], $default);
         }
         return $option_values;
     }

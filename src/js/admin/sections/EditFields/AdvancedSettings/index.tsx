@@ -3,6 +3,7 @@ import PTRichText from '@admin/components/PTRichText';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 import type { DefaultValues } from '@admin/sections/EditFields/consts';
 import { __ } from '@wordpress/i18n';
+import { normalizeCountryList } from './utilities';
 import CheckboxInput from '@admin/components/CheckboxInput';
 
 /*
@@ -44,10 +45,7 @@ export const normalizeDefaultValues = (raw: unknown): DefaultValues => {
 		const value = input[key];
 
 		if (key === 'country_list') {
-			if (Array.isArray(value)) {
-				defaultValues[key] = value;
-			}
-
+			defaultValues.country_list = normalizeCountryList(value);
 			continue;
 		}
 

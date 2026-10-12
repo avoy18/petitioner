@@ -16,6 +16,7 @@ describe('IntegrationBox', () => {
 				title={title}
 				description={description}
 				enabled={false}
+				integrationFields={integrationFields}
 			/>
 		);
 
@@ -27,12 +28,29 @@ describe('IntegrationBox', () => {
 		).toBeInTheDocument();
 	});
 
+	it('uses a custom button label when one is passed', () => {
+		render(
+			<IntegrationBox
+				title={title}
+				description={description}
+				enabled={true}
+				buttonLabel="Expand"
+				integrationFields={integrationFields}
+			/>
+		);
+
+		expect(
+			screen.getByRole('button', { name: /expand/i })
+		).toBeInTheDocument();
+	});
+
 	it('renders "Active" when enabled is true', () => {
 		render(
 			<IntegrationBox
 				title={title}
 				description={description}
 				enabled={true}
+				integrationFields={integrationFields}
 			/>
 		);
 

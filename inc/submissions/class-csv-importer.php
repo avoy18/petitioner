@@ -450,7 +450,7 @@ class AV_Petitioner_CSV_Importer
             'lname'             => sanitize_text_field($record['lname'] ?? ''),
             'email'             => $email,
             'date_of_birth'     => $dob_time ? gmdate('Y-m-d', $dob_time) : '',
-            'country'           => sanitize_text_field($record['country'] ?? ''),
+            'country'           => $this->normalize_imported_country($record['country'] ?? ''),
             'salutation'        => sanitize_text_field($record['salutation'] ?? ''),
             'phone'             => sanitize_text_field($record['phone'] ?? ''),
             'street_address'    => sanitize_text_field($record['street_address'] ?? ''),
@@ -461,6 +461,7 @@ class AV_Petitioner_CSV_Importer
             'newsletter'        => filter_var($record['newsletter'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
             'hide_name'         => filter_var($record['hide_name'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
             'is_featured'       => filter_var($record['is_featured'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
+            'lang'              => AV_Petitioner_Translations::sanitize_lang($record['lang'] ?? ''),
             'accept_tos'        => filter_var($record['accept_tos'] ?? false, FILTER_VALIDATE_BOOLEAN) ? '1' : '0',
             'approval_status'   => $this->approve_submission ? 'Confirmed' : 'Pending',
             'submitted_at'      => $submitted_time ? gmdate('Y-m-d H:i:s', $submitted_time) : current_time('mysql', true),
@@ -499,6 +500,30 @@ class AV_Petitioner_CSV_Importer
         }
 
         return false;
+    }
+
+    /**
+     * A country cell from a CSV is stored as its code.
+     *
+     * Export writes the country name, so an imported file may contain either.
+     *
+     * @param mixed $country
+     * @return string
+     */
+    private function normalize_imported_country($country)
+    {
+        $country = sanitize_text_field(is_string($country) ? $country : '');
+
+        /**
+         * Normalize an imported country to its code.
+         *
+         * @since 0.8.7
+         *
+         * @param string $country The country cell from the CSV.
+         */
+        $country = apply_filters('av_petitioner_normalize_country', $country);
+
+        return is_string($country) ? $country : '';
     }
 
     /**

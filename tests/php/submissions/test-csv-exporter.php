@@ -164,6 +164,50 @@ class Test_CSV_Exporter extends BaseTestCase
         // Should have values for all allowed fields (minus custom_properties)
         $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 2; // -1 for custom_properties, -1 for email_status
         $this->assertCount($expected_count, $row);
+        $this->assertContains('United States', $row);
+        $this->assertNotContains('US', $row);
+    }
+
+    public function test_country_mapping_matches_the_stored_value_and_placeholders_use_the_name()
+    {
+        $payload = [
+            [
+                'id' => 'country',
+                'overrides' => [
+                    'mappings' => [
+                        ['raw_value' => 'US', 'mapped_value' => 'USA'],
+                    ],
+                ],
+            ],
+            [
+                'id' => 'fname',
+                'overrides' => [
+                    'mappings' => [
+                        ['raw_value' => '{{fname}}', 'mapped_value' => '{{fname}} from {{country}}'],
+                    ],
+                ],
+            ],
+        ];
+
+        $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
+        $row = AV_Petitioner_CSV_Exporter::get_csv_row((object) [
+            'fname' => 'Anton',
+            'country' => 'US',
+        ], $resolved);
+
+        $country_idx = array_search('country', $resolved['visible_columns'], true);
+        $fname_idx = array_search('fname', $resolved['visible_columns'], true);
+
+        $this->assertSame('USA', $row[$country_idx]);
+        $this->assertSame('Anton from United States', $row[$fname_idx]);
+
+        $unmapped = AV_Petitioner_CSV_Exporter::get_csv_row((object) [
+            'fname' => 'Anton',
+            'country' => 'CA',
+        ], $resolved);
+
+        $this->assertSame('Canada', $unmapped[$country_idx]);
+        $this->assertSame('Anton from Canada', $unmapped[$fname_idx]);
     }
 
     public function test_get_csv_row_excludes_custom_properties()
@@ -203,8 +247,9 @@ class Test_CSV_Exporter extends BaseTestCase
 
         $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission);
 
-        // fname should be sanitized (prefixed with ')
-        $this->assertStringStartsWith("'=", $row[2]); // fname is 3rd field (after id, form_id)
+        $fname_idx = array_search('fname', AV_Petitioner_Column_Config::get_exportable_fields(), true);
+
+        $this->assertStringStartsWith("'=", $row[$fname_idx]);
     }
 
     public function test_get_csv_headers_with_resolved_config_applies_visibility_and_label_override()
@@ -227,7 +272,7 @@ class Test_CSV_Exporter extends BaseTestCase
         $resolved = AV_Petitioner_Column_Config::resolve(1, $payload);
         $headers = AV_Petitioner_CSV_Exporter::get_csv_headers(1, $resolved);
 
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 3; // -custom_properties, -email_status, -email
+        $expected_count = count(AV_Petitioner_Column_Config::get_exportable_fields()) - 1; // -email
         $this->assertCount($expected_count, $headers);
         $this->assertContains('First Name', $headers);
     }
@@ -265,7 +310,7 @@ class Test_CSV_Exporter extends BaseTestCase
         $row = AV_Petitioner_CSV_Exporter::get_csv_row($submission, $resolved);
         $newsletter_idx = array_search('newsletter', $resolved['visible_columns'], true);
 
-        $expected_count = count(AV_Petitioner_Submissions_Model::$ALLOWED_FIELDS) - 3; // -custom_properties, -email_status, -email
+        $expected_count = count(AV_Petitioner_Column_Config::get_exportable_fields()) - 1; // -email
         $this->assertCount($expected_count, $row);
         $this->assertNotFalse($newsletter_idx);
         $this->assertSame('No', $row[$newsletter_idx]);
@@ -336,5 +381,19 @@ class Test_CSV_Exporter extends BaseTestCase
 
         $row_full = AV_Petitioner_CSV_Exporter::get_csv_row($submission_full, $resolved);
         $this->assertSame('Anton Voytenko', $row_full[$fname_idx]);
+    }
+
+    public function test_get_csv_row_includes_lang_from_resolved_config()
+    {
+        $resolved = AV_Petitioner_Column_Config::resolve(1, []);
+        $lang_idx = array_search('lang', $resolved['visible_columns'], true);
+
+        $this->assertNotFalse($lang_idx);
+
+        $row = AV_Petitioner_CSV_Exporter::get_csv_row((object) [
+            'lang' => 'fr',
+        ], $resolved);
+
+        $this->assertSame('fr', $row[$lang_idx]);
     }
 }

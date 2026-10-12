@@ -12,6 +12,7 @@ class AV_Petitioner_Submissions_Model
     public static $ALLOWED_FIELDS = [
         'id',
         'form_id',
+        'lang',
         'fname',
         'lname',
         'email',
@@ -58,6 +59,7 @@ class AV_Petitioner_Submissions_Model
     public static $INTERNAL_FIELDS = [
         'id',
         'form_id',
+        'lang',
         'fname',
         'lname',
         'hide_name',
@@ -80,6 +82,7 @@ class AV_Petitioner_Submissions_Model
         $sql .= " (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             form_id mediumint(9) NOT NULL,
+            lang varchar(20) DEFAULT '',
             fname varchar(255) NOT NULL,
             lname varchar(255) NOT NULL,
             email varchar(255) NOT NULL,
@@ -412,6 +415,7 @@ class AV_Petitioner_Submissions_Model
         $field_formats = [
             'id'                    => '%d',
             'form_id'               => '%d',
+            'lang'                  => '%s',
             'fname'                 => '%s',
             'lname'                 => '%s',
             'email'                 => '%s',

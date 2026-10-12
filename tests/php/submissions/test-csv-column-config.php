@@ -121,4 +121,23 @@ class Test_CSV_Column_Config extends BaseTestCase
         $this->assertIsString($first_column['id']);
         $this->assertIsString($first_column['label']);
     }
+
+    public function test_get_exportable_fields_includes_lang()
+    {
+        $this->assertContains('lang', AV_Petitioner_Column_Config::get_exportable_fields());
+    }
+
+    public function test_get_default_columns_includes_language()
+    {
+        $columns = AV_Petitioner_Column_Config::get_default_columns(1);
+        $by_id = [];
+
+        foreach ($columns as $column) {
+            $by_id[$column['id']] = $column;
+        }
+
+        $this->assertArrayHasKey('lang', $by_id);
+        $this->assertSame('Language', $by_id['lang']['label']);
+        $this->assertTrue($by_id['lang']['overrides']['hidden']);
+    }
 }

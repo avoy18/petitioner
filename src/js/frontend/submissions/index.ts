@@ -2,7 +2,8 @@ import { safelyParseJSON } from '@js/utilities';
 import SubmissionsRenderer, {
 	SubmissionsRendererTable,
 } from '@js/frontend/submissions/renderer';
-import type { SubmissionSettings, Submissions } from './consts';
+import type { SubmissionSettings, Submissions, SubmissionRendererInstance } from './consts';
+import { submissionRegistry } from './registry';
 
 declare global {
 	interface Window {
@@ -17,10 +18,13 @@ declare global {
 	}
 }
 
+submissionRegistry.add('simple', SubmissionsRenderer);
+submissionRegistry.add('table', SubmissionsRendererTable);
+
 export default class PetitionerSubmissions {
 	private settings?: SubmissionSettings;
 	private submissions: Submissions | undefined;
-	private renderer?: SubmissionsRenderer;
+	private renderer?: SubmissionRendererInstance;
 	private ajaxurl: string;
 	private nonce: string;
 	private currentPage: number = 1;
@@ -75,10 +79,19 @@ export default class PetitionerSubmissions {
 			typeof this.submissions === 'object' &&
 			this.submissions?.length > 0
 		) {
-			const RenderClass =
-				this.settings.style === 'simple'
-					? SubmissionsRenderer
-					: SubmissionsRendererTable;
+
+			const RenderClass = submissionRegistry.get(this.settings.style);
+
+			// An add-on may register the style from a separate bundle that
+			// failed to load, so bail out instead of rejecting the init promise.
+			if (!RenderClass) {
+				console.warn(
+					'Petitioner: no renderer registered for style "' +
+						this.settings.style +
+						'".'
+				);
+				return;
+			}
 
 			this.renderer = new RenderClass({
 				wrapper: this.wrapper,
@@ -134,5 +147,9 @@ export default class PetitionerSubmissions {
 		this.totalResults = Number(response.data.total) || 0;
 		this.submissions = response.data.submissions || [];
 		this.labels = response.data.labels || [];
+	}
+
+	public destroy(): void {
+		this.renderer?.destroy?.();
 	}
 }

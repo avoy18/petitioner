@@ -101,4 +101,135 @@ class Test_Form_UI extends BaseTestCase
         $this->assertStringContainsString('value="Org A"', $output);
         $this->assertStringContainsString('value="Org B"', $output);
     }
+
+    public function test_render_select_field_splits_value_and_label()
+    {
+        $form_ui = new AV_Petitioner_Form_UI(1);
+        $field = [
+            'label'   => 'Organization',
+            'options' => [
+                ['value' => 'org-a', 'label' => 'Org A'],
+            ],
+        ];
+
+        ob_start();
+        $form_ui->render_select_field('organization', $field);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('value="org-a"', $output);
+        $this->assertStringContainsString('Org A', $output);
+    }
+
+    public function test_render_select_field_filters_value_and_label_separately()
+    {
+        $form_ui = new AV_Petitioner_Form_UI(1);
+        $field = [
+            'label'   => 'Organization',
+            'options' => ['Org A'],
+        ];
+
+        add_filter('av_petitioner_select_option_value', function () {
+            return 'org-a';
+        });
+        add_filter('av_petitioner_select_option_label', function () {
+            return 'Організація А';
+        });
+
+        ob_start();
+        $form_ui->render_select_field('organization', $field);
+        $output = ob_get_clean();
+
+        remove_all_filters('av_petitioner_select_option_value');
+        remove_all_filters('av_petitioner_select_option_label');
+
+        $this->assertStringContainsString('value="org-a"', $output);
+        $this->assertStringContainsString('Організація А', $output);
+        $this->assertStringNotContainsString('value="Org A"', $output);
+    }
+
+    public function test_render_select_field_ignores_a_non_array_options_filter()
+    {
+        $form_ui = new AV_Petitioner_Form_UI(1);
+        $field = [
+            'label'   => 'Organization',
+            'options' => ['Org A'],
+        ];
+
+        $callback = function () {
+            return 'Org A';
+        };
+        add_filter('av_petitioner_select_field_options', $callback);
+
+        ob_start();
+        $form_ui->render_select_field('organization', $field);
+        $output = ob_get_clean();
+
+        remove_filter('av_petitioner_select_field_options', $callback);
+
+        $this->assertStringContainsString('<option value="" selected disabled>', $output);
+        $this->assertStringContainsString('value="Org A"', $output);
+    }
+
+    // ============================================
+    // LANG HIDDEN FIELD
+    // ============================================
+
+    public function test_render_fields_omits_lang_by_default()
+    {
+        $form_ui = $this->make_form_ui();
+
+        ob_start();
+        $form_ui->render_fields();
+        $output = ob_get_clean();
+
+        $this->assertStringNotContainsString('name="lang"', $output);
+        $this->assertStringContainsString('name="form_id"', $output);
+    }
+
+    public function test_render_fields_includes_lang_from_filter()
+    {
+        $form_ui = $this->make_form_ui();
+
+        add_filter('av_petitioner_current_lang', function () {
+            return 'fr';
+        });
+
+        ob_start();
+        $form_ui->render_fields();
+        $output = ob_get_clean();
+
+        remove_all_filters('av_petitioner_current_lang');
+
+        $this->assertStringContainsString('name="lang"', $output);
+        $this->assertStringContainsString('value="fr"', $output);
+    }
+
+    public function test_render_fields_omits_lang_when_filter_returns_non_string()
+    {
+        $form_ui = $this->make_form_ui();
+
+        add_filter('av_petitioner_current_lang', function () {
+            return ['fr'];
+        });
+
+        ob_start();
+        $form_ui->render_fields();
+        $output = ob_get_clean();
+
+        remove_all_filters('av_petitioner_current_lang');
+
+        $this->assertStringNotContainsString('name="lang"', $output);
+    }
+
+    private function make_form_ui(): AV_Petitioner_Form_UI
+    {
+        $form_id = wp_insert_post([
+            'post_type'   => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        update_post_meta($form_id, '_petitioner_form_fields', '{}');
+
+        return new AV_Petitioner_Form_UI($form_id);
+    }
 }

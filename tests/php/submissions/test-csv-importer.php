@@ -128,4 +128,15 @@ class Test_Submissions_Importer extends BaseTestCase
         $result = $method->invokeArgs($importer, [' FNAME ' /* Trims and lowercases automatically */, []]);
         $this->assertEquals('fname', $result);
     }
+
+    public function test_imported_country_names_are_stored_as_codes()
+    {
+        $importer = new AV_Petitioner_CSV_Importer();
+        $method = (new ReflectionClass($importer))->getMethod('normalize_imported_country');
+        $method->setAccessible(true);
+
+        $this->assertSame('us', $method->invoke($importer, 'United States'));
+        $this->assertSame('us', $method->invoke($importer, 'US'));
+        $this->assertSame('us', $method->invoke($importer, ' us '));
+    }
 }

@@ -1264,6 +1264,10 @@ msgstr ""
 msgid "Form ID"
 msgstr ""
 
+#: inc/labels/class-labels.php:184
+msgid "Language"
+msgstr "Langue"
+
 #: inc/labels/class-labels.php:151
 msgid "John"
 msgstr ""

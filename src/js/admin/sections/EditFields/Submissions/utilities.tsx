@@ -13,6 +13,7 @@ import {
 import type {
 	FieldKey,
 	FieldType,
+	OptionItem,
 } from '@admin/sections/EditFields/FormBuilder/consts';
 import { getAllPossibleFields } from '@admin/context/FormBuilderContext';
 
@@ -244,6 +245,7 @@ export const getFieldLabels = (): Record<string, string> => {
 		name: __('First/Last name', 'petitioner'),
 		accept_tos: __('Consent', 'petitioner'),
 		is_featured: __('Featured', 'petitioner'),
+		lang: __('Language', 'petitioner'),
 		submitted_at: __('Submitted at', 'petitioner'),
 		approval_status: __('Status', 'petitioner'),
 	};
@@ -304,6 +306,40 @@ export const getSubmissionValType = (label: FieldKey): FieldType => {
 	);
 
 	return correctItem?.type || 'text';
+};
+
+export const toSelectOptions = (options: unknown): OptionItem[] | undefined => {
+	if (!Array.isArray(options)) {
+		return undefined;
+	}
+
+	const pairs: OptionItem[] = [];
+
+	for (const option of options) {
+		if (typeof option === 'string') {
+			pairs.push({ value: option, label: option });
+			continue;
+		}
+
+		if (
+			typeof option !== 'object' ||
+			option === null ||
+			!('value' in option) ||
+			typeof option.value !== 'string'
+		) {
+			continue;
+		}
+
+		pairs.push({
+			value: option.value,
+			label:
+				'label' in option && typeof option.label === 'string'
+					? option.label
+					: option.value,
+		});
+	}
+
+	return pairs.length > 0 ? pairs : undefined;
 };
 
 export const getExportURL = () => {

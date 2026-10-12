@@ -15,7 +15,8 @@ export default function IntegrationBox({
 	title = 'reCAPTCHA',
 	description = 'Google reCAPTCHA integration',
 	enabled = false,
-	integrationFields = null,
+	integrationFields,
+	buttonLabel = 'Configure',
 }: IntegrationBoxProps) {
 	const [isOpen, setOpen] = useState(false);
 	const openModal = () => setOpen(true);
@@ -41,7 +42,7 @@ export default function IntegrationBox({
 						{enabled ? 'Active' : 'Inactive'}
 					</Text>
 					<Button onClick={openModal} variant="primary">
-						Configure
+						{buttonLabel}
 					</Button>
 				</CardFooter>
 			</Card>

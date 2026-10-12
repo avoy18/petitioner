@@ -9,10 +9,11 @@ import {
 } from '@wordpress/components';
 import { Text } from '@admin/components/Experimental';
 
-import { getHumanValue, getSubmissionValType } from '../utilities';
+import { getHumanValue, getSubmissionValType, toSelectOptions } from '../utilities';
+import { normalizedCountryList } from '@admin/sections/EditFields/AdvancedSettings/utilities';
 import { getFieldLabels } from './../utilities';
 import { FieldItem, InputGroup, ActionButtonWrapper } from './styled';
-import type { FieldKey } from '@admin/sections/EditFields/FormBuilder/consts';
+import type { FieldKey, OptionItem } from '@admin/sections/EditFields/FormBuilder/consts';
 import ResendButton from '../ApprovalStatus/ResendButton';
 import EditField from '@admin/components/EditField';
 import FeaturedSubmission from './FeaturedSubmission';
@@ -30,9 +31,15 @@ const getSubmissionLabels = (() => {
 	};
 })();
 
+const matchingCountry = (stored: string): OptionItem | undefined => {
+	return normalizedCountryList(window.petitionerData?.default_values).find(
+			(country) => country.value === stored || country.label === stored
+		);
+};
+
 export const isValidFieldKey = (key: string): key is FieldKey => {
 	// is_featured has its own ui so skipping here
-	if (key === 'is_featured') return false;
+	if (key === 'is_featured' || key === 'lang') return false;
 	return key in getSubmissionLabels();
 };
 
@@ -83,7 +90,10 @@ export default function SubmissionEditModal({
 		const valueString = String(value);
 		const finalLabel = getSubmissionLabels()[label] ?? label;
 		const type = getSubmissionValType(label);
-		const finalValue = getHumanValue(valueString, type);
+		const finalValue =
+			label === 'country' && valueString !== ''
+				? matchingCountry(valueString)?.label || valueString
+				: getHumanValue(valueString, type);
 
 		const isEmpty = finalValue == __('(empty)', 'petitioner');
 		const currentlyEditing = isEdit === label;
@@ -110,16 +120,17 @@ export default function SubmissionEditModal({
 			);
 			const fieldOptions =
 				type === 'select' && fieldConfig && 'options' in fieldConfig
-					? (fieldConfig as any).options.map((o: string) => ({
-						label: o,
-						value: o,
-					}))
+					? toSelectOptions((fieldConfig as { options?: unknown }).options)
 					: undefined;
 
 			ValueField = (
 				<EditField
 					type={type}
-					value={valueString}
+					value={
+						label === 'country'
+							? matchingCountry(valueString)?.value || valueString
+							: valueString
+					}
 					fieldKey={label}
 					options={fieldOptions}
 					onChange={(val) => {

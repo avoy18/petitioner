@@ -55,6 +55,11 @@ const normalizeSettingsData = (
 		field_spacing: raw?.field_spacing ?? '',
 		input_border_width: raw?.input_border_width ?? '',
 		input_size: raw?.input_size ?? '',
+		translation_integrations: {
+			polylang: raw?.translation_integrations?.polylang ?? false,
+			wpml: raw?.translation_integrations?.wpml ?? false,
+			translatepress: raw?.translation_integrations?.translatepress ?? false,
+		},
 	};
 
 	return applyFilters(

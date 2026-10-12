@@ -291,6 +291,11 @@ class AV_Petitioner_CSV_Exporter
             foreach ($resolved_config['visible_columns'] as $field) {
                 $value = isset($submission->$field) ? $submission->$field : '';
                 $mapped = self::map_csv_value($field, $value, $resolved_config, $submission);
+
+                if ($mapped === (string) $value) {
+                    $mapped = self::export_field_value($value, $field);
+                }
+
                 $row[] = self::sanitize_csv_value($mapped);
             }
 
@@ -308,7 +313,7 @@ class AV_Petitioner_CSV_Exporter
             $value = isset($submission->$field) ? $submission->$field : '';
 
             // Sanitize to prevent CSV injection
-            $row[] = self::sanitize_csv_value($value);
+            $row[] = self::sanitize_csv_value(self::export_field_value($value, $field));
         }
 
         /**
@@ -345,6 +350,27 @@ class AV_Petitioner_CSV_Exporter
         }
 
         return AV_Petitioner_Column_Config::resolve($form_id, $payload);
+    }
+
+    /**
+     * What a saved value should look like in the file.
+     *
+     * @param mixed  $value
+     * @param string $field
+     * @return string
+     */
+    private static function export_field_value($value, $field)
+    {
+        $display = apply_filters('av_petitioner_csv_field_value', $value, $field);
+
+        if (!is_scalar($display)) {
+            av_ptr_error_log(
+                'av_petitioner_csv_field_value must return a string. Falling back to the saved value. Got: ' . gettype($display)
+            );
+            $display = $value;
+        }
+
+        return is_scalar($display) ? (string) $display : '';
     }
 
     /**
@@ -385,7 +411,11 @@ class AV_Petitioner_CSV_Exporter
                             return '';
                         }
 
-                        return (isset($submission->$placeholder) && is_scalar($submission->$placeholder)) ? (string) $submission->$placeholder : '';
+                        if (!isset($submission->$placeholder) || !is_scalar($submission->$placeholder)) {
+                            return '';
+                        }
+
+                        return self::export_field_value($submission->$placeholder, $placeholder);
                     }, $mapped_string);
                 }
 

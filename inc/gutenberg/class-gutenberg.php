@@ -40,6 +40,8 @@ class AV_Petitioner_Gutenberg
             }
         ]);
 
+        $submission_defaults = AV_Petitioner_Submissions_UI::get_defaults();
+
         register_block_type(AV_PETITIONER_PLUGIN_DIR . '/dist-gutenberg/blocks/submissions', [
             'attributes' => [
                 'formId' => [
@@ -52,41 +54,45 @@ class AV_Petitioner_Gutenberg
                 ],
                 'perPage' => [
                     'type'    => 'number',
-                    'default' => 10
+                    'default' => absint($submission_defaults['per_page'])
                 ],
                 'style' => [
                     'type'    => 'string',
-                    'default' => 'simple',
-                    'enum'    => ['simple', 'table']
+                    'default' => $submission_defaults['style'],
+                    'enum'    => AV_Petitioner_Submissions_UI::get_available_styles()
                 ],
                 'fields' => [
                     'type'    => 'array',
-                    'default' => ['name', 'country', 'submitted_at'],
+                    'default' => explode(',', $submission_defaults['fields']),
                     'items'   => [
                         'type' => 'string'
                     ]
                 ],
                 'showPagination' => [
                     'type'    => 'boolean',
-                    'default' => true
+                    'default' => (bool) $submission_defaults['show_pagination']
                 ],
                 'hidePageNumbers' => [
                     'type'    => 'boolean',
-                    'default' => false
+                    'default' => (bool) $submission_defaults['hide_page_numbers']
                 ],
                 'availableStyles' => [
                     'type'    => 'array',
-                    'default' => AV_Petitioner_Shortcodes::get_available_styles(),
+                    'default' => AV_Petitioner_Submissions_UI::get_style_choices(),
                     'items'   => [
-                        'type' => 'string'
+                        'type' => 'object'
                     ]
                 ],
                 'availableFields' => [
                     'type'    => 'array',
-                    'default' => AV_Petitioner_Shortcodes::get_available_fields(),
+                    'default' => AV_Petitioner_Submissions_UI::get_available_fields(),
                     'items'   => [
                         'type' => 'string'
                     ]
+                ],
+                'styleEditorHints' => [
+                    'type'    => 'object',
+                    'default' => AV_Petitioner_Submissions_UI::get_style_editor_hints(),
                 ]
             ],
             'render_callback' => function ($attributes) {
@@ -96,8 +102,8 @@ class AV_Petitioner_Gutenberg
                 $fields             = isset($attributes['fields']) ? array_map('sanitize_text_field', $attributes['fields']) : ['name', 'country', 'submitted_at'];
                 $show_pagination    = isset($attributes['showPagination']) ? filter_var($attributes['showPagination'], FILTER_VALIDATE_BOOLEAN) : true;
                 $hide_page_numbers  = isset($attributes['hidePageNumbers']) ? filter_var($attributes['hidePageNumbers'], FILTER_VALIDATE_BOOLEAN) : false;
-                $available_styles   = AV_Petitioner_Shortcodes::get_available_styles();
-                $available_fields   = AV_Petitioner_Shortcodes::get_available_fields();
+                $available_styles   = AV_Petitioner_Submissions_UI::get_available_styles();
+                $available_fields   = AV_Petitioner_Submissions_UI::get_available_fields();
 
                 $shortcode_atts = [
                     'id'                => absint($attributes['formId']),

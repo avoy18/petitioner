@@ -1,0 +1,145 @@
+<?php
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Polylang integration for the Petitioner plugin.
+ * 
+ * @since 0.8.7
+ */
+class AV_Petitioner_Polylang
+{
+    public static function is_active()
+    {
+        return function_exists('pll_register_string');
+    }
+
+    public function __construct()
+    {
+        if (!self::is_active()) {
+            return;
+        }
+
+        add_action('av_petitioner_register_translation', [$this, 'register_string'], 10, 4);
+        add_filter('av_petitioner_translate_string', [$this, 'translate_string'], 10, 4);
+        add_filter('av_petitioner_locale', [$this, 'locale'], 10, 2);
+        add_filter('av_petitioner_translations_register_form_args', [$this, 'register_form_args']);
+        add_filter('av_petitioner_current_lang', [$this, 'current_lang']);
+    }
+
+    /**
+     * Register a translation string with Polylang.
+     * 
+     * @param int $form_id
+     * @param string $name
+     * @param string $value
+     * @param boolean $multiline
+     */
+    public function register_string($form_id, $name, $value, $multiline = false)
+    {
+        if (!is_string($value) || $value === '' || !function_exists('pll_register_string')) {
+            return;
+        }
+
+        pll_register_string(
+            AV_Petitioner_Translations::string_name($form_id, $name),
+            $value,
+            AV_Petitioner_Translations::string_group($form_id),
+            (bool) $multiline
+        );
+    }
+
+    /**
+     * Translate a string with Polylang.
+     * 
+     * @param string      $value
+     * @param string      $name
+     * @param int         $form_id
+     * @param string|null $lang
+     * @return string
+     */
+    public function translate_string($value, $name, $form_id, $lang = null)
+    {
+        if (!is_string($value) || $value === '') {
+            return $value;
+        }
+
+        if (is_string($lang) && $lang !== '') {
+            if (!function_exists('pll_translate_string')) {
+                return $value;
+            }
+
+            $translated = pll_translate_string($value, $lang);
+
+            return is_string($translated) ? $translated : $value;
+        }
+
+        if (!function_exists('pll__')) {
+            return $value;
+        }
+
+        $translated = pll__($value);
+
+        return is_string($translated) ? $translated : $value;
+    }
+
+    /**
+     * Polylang can hide posts in other languages. Empty lang = all forms.
+     *
+     * @param array $args
+     * @return array
+     */
+    public function register_form_args($args)
+    {
+        if (!is_array($args)) {
+            av_ptr_error_log('av_petitioner_translations_register_form_args: Non-array query args passed: ' . print_r($args, true));
+            return $args;
+        }
+
+        $args['lang'] = '';
+        return $args;
+    }
+
+    /**
+     * Locale for a language slug. switch_to_locale() needs ru_RU, not ru.
+     *
+     * @since 0.8.7
+     *
+     * @param string $locale
+     * @param string $lang
+     * @return string
+     */
+    public function locale($locale, $lang)
+    {
+        if (!is_string($lang) || $lang === '' || !function_exists('PLL')) {
+            return $locale;
+        }
+
+        $language = PLL()->model->get_language($lang);
+
+        if (!$language || empty($language->locale)) {
+            return $locale;
+        }
+
+        return $language->locale;
+    }
+
+    /**
+     * Current language slug for the hidden form field (ru, not ru_RU).
+     *
+     * @param string $lang
+     * @return string
+     */
+    public function current_lang($lang)
+    {
+        if (!function_exists('pll_current_language')) {
+            return $lang;
+        }
+
+        $current = pll_current_language();
+
+        return is_string($current) && $current !== '' ? $current : $lang;
+    }
+}

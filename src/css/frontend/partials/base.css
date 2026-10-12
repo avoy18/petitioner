@@ -194,7 +194,7 @@
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
-.petitioner__btn {
+button.petitioner__btn {
     margin-top: var(--ptr-spacer-xs);
     outline: none;
     border-radius: var(--ptr-button-border-radius);
@@ -208,33 +208,33 @@
     margin-bottom: var(--ptr-spacer-md);
 }
 
-.petitioner__btn--submit {
+button.petitioner__btn--submit {
     font-size: var(--ptr-btn-font-size);
     background-color: var(--ptr-color-primary);
     color: white;
 }
 
-.petitioner__btn--submit:hover {
+button.petitioner__btn--submit:hover {
     background-color: var(--ptr-color-dark);
 }
 
-.petitioner__btn--letter {
+button.petitioner__btn--letter {
     font-size: var(--ptr-fs-sm);
     background-color: var(--ptr-color-grey);
     color: var(--ptr-color-dark);
 }
 
-.petitioner__btn--letter:hover {
+button.petitioner__btn--letter:hover {
     background-color: var(--ptr-color-dark);
     color: white;
 }
 
-.petitioner__btn:active,
-.petitioner__btn:focus {
+button.petitioner__btn:active,
+button.petitioner__btn:focus {
     border-color: var(--ptr-button-border-color-active);
 }
 
-.petitioner__btn:hover {
+button.petitioner__btn:hover {
     cursor: pointer;
 }
 

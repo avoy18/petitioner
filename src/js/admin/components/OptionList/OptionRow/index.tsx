@@ -10,7 +10,7 @@ import type { OptionRowProps } from './consts';
 
 export default function OptionRow({ value, onRemove }: OptionRowProps) {
 	const { attributes, listeners, setNodeRef, transform, isDragging } =
-		useSortable({ id: value });
+		useSortable({ id: value.value });
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
@@ -22,7 +22,7 @@ export default function OptionRow({ value, onRemove }: OptionRowProps) {
 			<DragCell>
 				<DragHandle {...attributes} {...listeners} />
 			</DragCell>
-			<ValueCell>{value}</ValueCell>
+			<ValueCell>{value.label}</ValueCell>
 			<ValueCell align="right">
 				<Button
 					showTooltip={true}

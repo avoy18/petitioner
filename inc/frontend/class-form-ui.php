@@ -8,7 +8,6 @@ class AV_Petitioner_Form_UI
 {
 
     public string|float $form_id;
-    public array $country_list;
     public bool $show_country;
     public bool $send_to_representative;
     public bool $add_consent_checkbox;
@@ -31,7 +30,6 @@ class AV_Petitioner_Form_UI
         $this->add_honeypot             = get_post_meta($this->form_id, '_petitioner_add_honeypot', true);
         $this->form_fields              = get_post_meta($this->form_id, '_petitioner_form_fields', false);
         $this->field_order              = get_post_meta($this->form_id, '_petitioner_field_order', true);
-        $this->country_list             = av_petitioner_get_countries();
     }
 
     /**
@@ -82,6 +80,17 @@ class AV_Petitioner_Form_UI
          * @return array Modified field order array.
          */
         $field_order    = apply_filters('av_petitioner_field_order', $field_order, $this->form_id);
+
+        /**
+         * Filter to modify the current language.
+         * 
+         * @param string $lang The current language.
+         * @return string The modified language.
+         */
+        $lang = apply_filters('av_petitioner_current_lang', '');
+        if (!is_string($lang)) {
+            $lang = '';
+        }
 ?>
         <form
             id="petitioner-form-<?php echo esc_attr($this->form_id); ?>"
@@ -91,7 +100,22 @@ class AV_Petitioner_Form_UI
             <?php
             if (is_array($form_fields) && is_array($field_order)) {
                 foreach ($field_order as $key) {
-                    $field      = $form_fields[$key] ?? [];
+                    $field = $form_fields[$key] ?? [];
+
+                    /**
+                     * Filter to modify the form field before rendering.
+                     * 
+                     * @param array $field The form field array.
+                     * @param string $key The field key.
+                     * @param int $form_id The form ID.
+                     * @return array The modified form field array.
+                     */
+                    $field = apply_filters('av_petitioner_form_field', $field, $key, $this->form_id);
+
+                    if (!is_array($field) || $field === []) {
+                        continue;
+                    }
+
                     $field_type = !empty($field['type']) ? esc_html($field['type']) : '';
 
                     if ($field_type === 'checkbox') {
@@ -112,6 +136,10 @@ class AV_Petitioner_Form_UI
             ?>
 
             <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>">
+
+            <?php if ($lang !== '') : ?>
+                <input type="hidden" name="lang" value="<?php echo esc_attr($lang); ?>">
+            <?php endif; ?>
 
             <?php AV_Petitioner_Captcha::render_inputs(); ?>
 
@@ -174,20 +202,27 @@ class AV_Petitioner_Form_UI
         $field_label        = !empty($field['label']) ? wp_kses_post($field['label']) : '';
         $field_name         = !empty($name) ? 'petitioner_' . esc_attr($name) : '';
         $extra_attributes   = $this->get_extra_attributes($field);
-        $options            = [];
+        $options            = (!empty($field['options']) && is_array($field['options']))
+            ? map_deep($field['options'], 'sanitize_text_field')
+            : [];
 
         /**
-         * Starting from version 0.8.0, the options for the country field are also stored in the field['options'] array.
-         * 
-         * This is a fallback for older versions.
+         * Filter the choices rendered for a select field.
+         *
+         * @since 0.8.7
+         *
+         * @param array  $options The saved choices. Empty when the field has none.
+         * @param string $name    The field key.
+         * @param int    $form_id The petition form ID.
          */
-        if ($name === 'country') {
-            $options = $this->country_list;
-        }
+        $final_options = apply_filters('av_petitioner_select_field_options', $options, $name, $this->form_id);
 
-        $options = (!empty($field['options']) && is_array($field['options']))
-            ? map_deep($field['options'], 'sanitize_text_field')
-            : $options;
+        if (!is_array($final_options)) {
+            av_ptr_error_log(
+                'av_petitioner_select_field_options must return an array. Falling back to saved choices. Got: ' . gettype($final_options)
+            );
+            $final_options = $options;
+        }
     ?>
         <div class="petitioner__input">
             <label for="<?php echo $field_name; ?>">
@@ -201,15 +236,92 @@ class AV_Petitioner_Form_UI
 
                 <option value="" selected disabled><?php esc_html_e('Select', 'petitioner'); ?></option>
 
-                <?php foreach ($options as $option): ?>
-                    <option value="<?php echo esc_attr($option); ?>">
-                        <?php echo esc_html($option); ?>
+                <?php foreach ($final_options as $option): ?>
+                    <?php
+                    /**
+                     * Normalize a saved choice into a value and a label.
+                     *
+                     * A string uses that text for both.
+                     *
+                     * @since 0.8.7
+                     *
+                     * @param mixed  $option   The saved choice.
+                     * @param string $name     The field key.
+                     * @param int    $form_id  The petition form ID.
+                     */
+                    $normalized = apply_filters('av_petitioner_select_option', $option, $name, $this->form_id);
+                    $pair = self::select_option_pair($normalized);
+
+                    if ($pair['value'] === '' && $pair['label'] === '') {
+                        continue;
+                    }
+
+                    /**
+                     * Filter the submitted value of a select choice.
+                     *
+                     * @since 0.8.7
+                     *
+                     * @param string $value   The saved value. A legacy choice uses its text.
+                     * @param string $name    The field key.
+                     * @param int    $form_id The petition form ID.
+                     */
+                    $value = apply_filters('av_petitioner_select_option_value', $pair['value'], $name, $this->form_id);
+
+                    /**
+                     * Filter the visible text of a select choice.
+                     *
+                     * @since 0.8.7
+                     *
+                     * @param string $label   The saved label. A legacy choice uses its text.
+                     * @param string $name    The field key.
+                     * @param int    $form_id The petition form ID.
+                     * @param string $value   The saved value, before the value filter.
+                     */
+                    $label = apply_filters('av_petitioner_select_option_label', $pair['label'], $name, $this->form_id, $pair['value']);
+
+                    if (!is_string($value) || $value === '') {
+                        $value = $pair['value'];
+                    }
+                    if (!is_string($label) || $label === '') {
+                        $label = $pair['label'] !== '' ? $pair['label'] : $value;
+                    }
+                    ?>
+                    <option value="<?php echo esc_attr($value); ?>">
+                        <?php echo esc_html($label); ?>
                     </option>
                 <?php endforeach; ?>
 
             </select>
         </div>
     <?php
+    }
+
+    /**
+     * @param mixed $option
+     * @return array{value: string, label: string}
+     */
+    private static function select_option_pair($option)
+    {
+        if (is_string($option)) {
+            return ['value' => $option, 'label' => $option];
+        }
+
+        if (!is_array($option)) {
+            return ['value' => '', 'label' => ''];
+        }
+
+        $value = isset($option['value']) && is_string($option['value']) ? $option['value'] : '';
+        $label = isset($option['label']) && is_string($option['label']) ? $option['label'] : '';
+
+        if ($value === '') {
+            $value = $label;
+        }
+
+        if ($label === '') {
+            $label = $value;
+        }
+
+        return ['value' => $value, 'label' => $label];
     }
 
     public function render_wysiwyg_field(string $name, array $field): void
