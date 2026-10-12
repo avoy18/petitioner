@@ -53,6 +53,10 @@ Create and manage an unlimited number of petitions.
 - Goal milestones: set incremental signature targets (e.g., 100, 500, 1000) to keep momentum high.
 - Custom redirects: redirect users to custom "Thank You" or "Action" pages after signing or confirming their email.
 
+**Translations**
+- Translate Petitioner with Polylang, WPML, TranslatePress, or your own custom integration.
+- The language of the page is saved with the signature, and the thank-you email to that signer uses it.
+
 **Design & layout features**
 - The plugin features a modern, mobile-friendly design for a seamless user experience.
 - Color customizations & custom CSS options
@@ -148,6 +152,17 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 
 == Changelog ==
 
+= 0.8.7 =
+* Improvements
+    * Expanded translation support for popular plugins (WPML, Polylang, and TranslatePress)
+    * Added support for a custom translation integration
+    * Reworked dropdowns and country select to separate label from value (for better localization handling). The change is automatically backwards-compatible through a new migration class, but please double-check before updating.
+    * Submission display styles can be extended for the submissions block and shortcode.
+* Bugfixes
+    * Increased button style specificity so theme resets do not wipe the petition button.
+    * Polylang no longer hides petitions when it filters posts by language.
+    * Fixed settings that default to "on" that were showing as "off" (show goal, letter, and title).
+
 = 0.8.6 =
 * Improvements
     * New util for triggering scheduled actions immediately. Useful when bypassing scheduler.
@@ -157,6 +172,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Fix malformed HTML in the default thank-you email greeting ("Dear {{user_name}},").
     * Regenerate and update translation files (.pot, .po, .mo) to match corrected email strings and new label keys.
     * Fixed select dropdowns showing the first option instead of the "Select" placeholder on load
+
 = 0.8.5 =
 * Improvements
     * Additional spacing and font size controls in the styles customizer
