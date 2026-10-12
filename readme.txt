@@ -159,9 +159,8 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * Reworked dropdowns and country select to separate label from value (for better localization handling). The change is automatically backwards-compatible through a new migration class, but please double-check before updating.
     * Submission display styles can be extended for the submissions block and shortcode.
 * Bugfixes
-    * Increased button style specificity so theme resets do not wipe the petition button.
-    * Polylang no longer hides petitions when it filters posts by language.
-    * Fixed settings that default to "on" that were showing as "off" (show goal, letter, and title).
+    * Slightly bumped button style specificity so theme resets do not override it. Should be safe but double-check before updating.
+    * Fixed a bug with general settings showing wrong initial state (show title, letter, and goal were on by default but showed as disabled)
 
 = 0.8.6 =
 * Improvements
