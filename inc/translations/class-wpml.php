@@ -11,9 +11,14 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_WPML
 {
+    public static function is_active()
+    {
+        return class_exists('SitePress');
+    }
+
     public function __construct()
     {
-        if (!class_exists('SitePress')) {
+        if (!self::is_active()) {
             return;
         }
 

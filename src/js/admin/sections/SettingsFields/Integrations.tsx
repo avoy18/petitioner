@@ -8,13 +8,42 @@ import {
 
 import IntegrationBox from './IntegrationBox';
 import type { IntegrationConfigItem } from './consts';
+import { Text } from '@admin/components/Experimental';
 import { __ } from '@wordpress/i18n';
 import { useSettingsFormContext } from '@admin/context/SettingsContext';
 
 import { applyFilters } from '@wordpress/hooks';
 
+const translationDocs = 'https://getpetitioner.com/docs/translating-petitioner/';
+
+const autoEnabledDescription = __(
+	'This integration is enabled automatically when the plugin is active.',
+	'petitioner'
+);
+
+function TranslationDetails({
+	docsUrl,
+	children,
+}: {
+	docsUrl: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<>
+			<Text>{children}</Text>
+			<p>
+				<a href={docsUrl} target="_blank" rel="noreferrer">
+					{__('Translation guide', 'petitioner')}
+				</a>
+			</p>
+		</>
+	);
+}
+
 export default function Integrations() {
-	const { formState, updateFormState } = useSettingsFormContext();
+	const { formState, updateFormState, windowPetitionerData } =
+		useSettingsFormContext();
+	const translationPlugins = windowPetitionerData.translation_integrations;
 
 	const integrations: IntegrationConfigItem[] = useMemo(() => {
 		const baseIntegrations = [
@@ -242,6 +271,56 @@ export default function Integrations() {
 					</div>
 				),
 			},
+			{
+				name: 'polylang',
+				title: __('Polylang', 'petitioner'),
+				description: autoEnabledDescription,
+				enabled: translationPlugins?.polylang ?? false,
+				buttonLabel: __('Expand', 'petitioner'),
+				integrationFields: (
+					<TranslationDetails docsUrl={`${translationDocs}#polylang`}>
+						{__(
+							'Save the petition once. Its text is sent to Polylang in a group named Petitioner and the petition ID. Translate it there, and leave the petition post type untranslatable.',
+							'petitioner'
+						)}
+					</TranslationDetails>
+				),
+				hiddenFields: null,
+			},
+			{
+				name: 'wpml',
+				title: __('WPML', 'petitioner'),
+				description: autoEnabledDescription,
+				enabled: translationPlugins?.wpml ?? false,
+				buttonLabel: __('Expand', 'petitioner'),
+				integrationFields: (
+					<TranslationDetails docsUrl={`${translationDocs}#wpml`}>
+						{__(
+							'Save the petition once. Find its text in WPML String Translation, under Petitioner and the petition ID. Leave the petition post type untranslatable.',
+							'petitioner'
+						)}
+					</TranslationDetails>
+				),
+				hiddenFields: null,
+			},
+			{
+				name: 'translatepress',
+				title: __('TranslatePress', 'petitioner'),
+				description: autoEnabledDescription,
+				enabled: translationPlugins?.translatepress ?? false,
+				buttonLabel: __('Expand', 'petitioner'),
+				integrationFields: (
+					<TranslationDetails
+						docsUrl={`${translationDocs}#translatepress`}
+					>
+						{__(
+							'Translate the petition in the visual editor. Emails, the success message, and redirect URLs use the strings TranslatePress has already seen.',
+							'petitioner'
+						)}
+					</TranslationDetails>
+				),
+				hiddenFields: null,
+			},
 		];
 
 		const filtered = applyFilters(
@@ -257,7 +336,7 @@ export default function Integrations() {
 
 		return filtered as IntegrationConfigItem[];
 
-	}, [formState]);
+	}, [formState, translationPlugins]);
 
 	return (
 		<Grid alignment="bottom" columns={3} gap={3}>

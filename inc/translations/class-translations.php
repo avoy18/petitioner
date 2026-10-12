@@ -42,6 +42,7 @@ class AV_Petitioner_Translations
         add_filter('av_petitioner_select_option_label', [$this, 'translate_select_option_label'], 10, 4);
         add_filter('av_petitioner_label', [$this, 'translate_label'], 10, 2);
         add_filter('av_petitioner_email_string', [$this, 'translate_email_string'], 10, 4);
+        add_filter('av_petitioner_info_settings', [$this, 'add_translation_integrations']);
 
         /**
          * Persist the posted language on the submission and pass it to mailers.
@@ -507,6 +508,27 @@ class AV_Petitioner_Translations
         $translated = apply_filters('av_petitioner_translate_string', $value, $name, $form_id, $lang);
 
         return is_string($translated) ? $translated : $value;
+    }
+
+    /**
+     * Tell the settings screen which translation plugins are active.
+     *
+     * @param mixed $info
+     * @return mixed
+     */
+    public function add_translation_integrations($info)
+    {
+        if (!is_array($info)) {
+            return $info;
+        }
+
+        $info['translation_integrations'] = [
+            'polylang' => AV_Petitioner_Polylang::is_active(),
+            'wpml' => AV_Petitioner_WPML::is_active(),
+            'translatepress' => AV_Petitioner_TranslatePress::is_active(),
+        ];
+
+        return $info;
     }
 
     /**

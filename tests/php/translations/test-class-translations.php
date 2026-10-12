@@ -38,6 +38,7 @@ class Test_Translations extends BaseTestCase
         remove_filter('av_petitioner_select_option_label', [$this->translations, 'translate_select_option_label'], 10);
         remove_filter('av_petitioner_label', [$this->translations, 'translate_label']);
         remove_filter('av_petitioner_email_string', [$this->translations, 'translate_email_string']);
+        remove_filter('av_petitioner_info_settings', [$this->translations, 'add_translation_integrations']);
         remove_filter('av_petitioner_submission_data_pre_save', [$this->translations, 'store_lang'], 20);
         remove_filter('av_petitioner_mailer_settings', [$this->translations, 'add_lang_to_mailer']);
         remove_filter('av_petitioner_confirmation_mailer_settings', [$this->translations, 'add_lang_to_confirmation_mailer']);
@@ -48,6 +49,20 @@ class Test_Translations extends BaseTestCase
         remove_all_actions('av_petitioner_register_translation');
         wp_delete_post($this->form_id, true);
         parent::tear_down();
+    }
+
+    public function test_settings_screen_reports_which_translation_plugins_are_active()
+    {
+        $info = apply_filters('av_petitioner_info_settings', []);
+
+        $this->assertSame(
+            [
+                'polylang' => function_exists('pll_register_string'),
+                'wpml' => class_exists('SitePress'),
+                'translatepress' => function_exists('trp_translate'),
+            ],
+            $info['translation_integrations']
+        );
     }
 
     public function test_maybe_translate_returns_empty_unchanged()
