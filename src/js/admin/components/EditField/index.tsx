@@ -6,7 +6,7 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import PTRichText from '@admin/components/PTRichText';
-import { normalizeDefaultValues } from '@admin/sections/EditFields/AdvancedSettings';
+import { normalizedCountryList } from '@admin/sections/EditFields/AdvancedSettings/utilities';
 import type { EditFieldProps } from './consts';
 
 export default function EditField({
@@ -22,15 +22,10 @@ export default function EditField({
 	let finalOptions = providedOptions;
 
 	if (fieldKey === 'country') {
-		const defaultValues = normalizeDefaultValues(
+		finalType = 'select';
+		finalOptions = normalizedCountryList(
 			window.petitionerData.default_values
 		);
-		const countries = defaultValues.country_list || [];
-		finalType = 'select';
-		finalOptions = countries.map((country) => ({
-			label: country,
-			value: country,
-		}));
 	}
 
 	if (fieldKey === 'approval_status') {

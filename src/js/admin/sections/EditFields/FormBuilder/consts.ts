@@ -24,7 +24,10 @@ export interface TextField extends BaseField {
 	placeholder: string;
 }
 
-export type OptionItem = string;
+export type OptionItem = {
+	value: string;
+	label: string;
+};
 
 export interface SelectField extends BaseField {
 	type: 'select';

@@ -35,6 +35,19 @@ class AV_Petitioner_Submissions_Controller
         $lname                      = isset($_POST['petitioner_lname']) ? sanitize_text_field(wp_unslash($_POST['petitioner_lname'])) : '';
         $date_of_birth              = isset($_POST['petitioner_date_of_birth']) ? sanitize_text_field(wp_unslash($_POST['petitioner_date_of_birth'])) : '';
         $country                    = isset($_POST['petitioner_country']) ? sanitize_text_field(wp_unslash($_POST['petitioner_country'])) : '';
+
+        /**
+         * Normalize a posted country to its code.
+         *
+         * @since 0.8.7
+         *
+         * @param string $country The posted country.
+         */
+        $country = apply_filters('av_petitioner_normalize_country', $country);
+
+        if (!is_string($country)) {
+            $country = '';
+        }
         $phone                      = isset($_POST['petitioner_phone']) ? sanitize_text_field(wp_unslash($_POST['petitioner_phone'])) : '';
         $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
         $city                       = isset($_POST['petitioner_city']) ? sanitize_text_field(wp_unslash($_POST['petitioner_city'])) : '';
