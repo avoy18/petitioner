@@ -525,7 +525,7 @@ class AV_Petitioner_Translations
         $info['translation_integrations'] = [
             'polylang' => AV_Petitioner_Polylang::is_active(),
             'wpml' => AV_Petitioner_WPML::is_active(),
-            'translatepress' => function_exists('trp_translate'),
+            'translatepress' => AV_Petitioner_TranslatePress::is_active(),
         ];
 
         return $info;

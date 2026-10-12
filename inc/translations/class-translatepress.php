@@ -14,9 +14,14 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_TranslatePress
 {
+    public static function is_active()
+    {
+        return function_exists('trp_translate');
+    }
+
     public function __construct()
     {
-        if (!function_exists('trp_translate')) {
+        if (!self::is_active()) {
             return;
         }
 
