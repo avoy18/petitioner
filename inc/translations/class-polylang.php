@@ -11,9 +11,14 @@ if (!defined('ABSPATH')) {
  */
 class AV_Petitioner_Polylang
 {
+    public static function is_active()
+    {
+        return function_exists('pll_register_string');
+    }
+
     public function __construct()
     {
-        if (!function_exists('pll_register_string')) {
+        if (!self::is_active()) {
             return;
         }
 

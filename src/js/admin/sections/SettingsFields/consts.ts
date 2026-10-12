@@ -38,10 +38,17 @@ export type DefaultValues = {
 	visual_options?: Record<string, Record<string, string>>;
 };
 
+export type TranslationIntegrations = {
+	polylang: boolean;
+	wpml: boolean;
+	translatepress: boolean;
+};
+
 export interface WindowSettingsData extends SettingsFormData {
 	default_values?: DefaultValues;
 	preview_nonce: string;
 	home_url: string;
+	translation_integrations?: TranslationIntegrations;
 }
 
 export type SettingsFormContextValue = {
@@ -57,7 +64,8 @@ export type IntegrationBoxProps = {
 	title: string;
 	description: string;
 	enabled: boolean;
-	integrationFields: React.ReactNode | null;
+	integrationFields: React.ReactNode;
+	buttonLabel?: string;
 };
 
 export type IntegrationConfigItem = IntegrationBoxProps & {
