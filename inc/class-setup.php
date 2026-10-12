@@ -119,6 +119,11 @@ class AV_Petitioner_Setup
             if (class_exists('AV_Petitioner_WPML')) {
                 new AV_Petitioner_WPML();
             }
+
+            // translatepress integration
+            if (class_exists('AV_Petitioner_TranslatePress')) {
+                new AV_Petitioner_TranslatePress();
+            }
         });
 
         // api endpoints
