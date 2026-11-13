@@ -94,6 +94,16 @@ export default class PetitionerGoal {
 		const count = String(data.count);
 		const goal = String(data.goal);
 		const progress = String(data.progress);
+		// The ratio can pass 100. The track does not.
+		const barWidth = Math.min(100, Math.max(0, data.progress));
+
+		const bar = this.goalEl.querySelector<HTMLElement>(
+			'.petitioner__progress-bar'
+		);
+
+		if (bar) {
+			bar.style.setProperty('width', `${barWidth}%`, 'important');
+		}
 
 		if (
 			this.goalEl.dataset.count === count &&
@@ -113,9 +123,6 @@ export default class PetitionerGoal {
 		const goalNum = this.goalEl.querySelector<HTMLElement>(
 			'.petitioner__col--end .petitioner__num'
 		);
-		const bar = this.goalEl.querySelector<HTMLElement>(
-			'.petitioner__progress-bar'
-		);
 		const percentEl = this.goalEl.querySelector<HTMLElement>(
 			'.petitioner__numlabel small'
 		);
@@ -126,10 +133,6 @@ export default class PetitionerGoal {
 
 		if (goalNum) {
 			goalNum.textContent = goal;
-		}
-
-		if (bar) {
-			bar.style.setProperty('width', `${progress}%`, 'important');
 		}
 
 		if (percentEl) {

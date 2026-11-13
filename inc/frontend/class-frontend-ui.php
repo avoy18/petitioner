@@ -199,6 +199,7 @@ class AV_Petitioner_Frontend_UI
         $goal              = $progress_data['goal'];
         $total_submissions = $progress_data['count'];
         $progress          = $progress_data['progress'];
+        $bar_width         = AV_Petitioner_Goal_Milestones::bar_width($progress);
     ?>
         <div
             class="petitioner__goal"
@@ -209,7 +210,7 @@ class AV_Petitioner_Frontend_UI
             <div class="petitioner__progress">
                 <div
                     class="petitioner__progress-bar"
-                    style="width: <?php echo esc_html($progress); ?>% !important">
+                    style="width: <?php echo esc_html($bar_width); ?>% !important">
                 </div>
             </div>
 

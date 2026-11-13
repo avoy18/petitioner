@@ -144,6 +144,125 @@ describe('PetitionerGoal', () => {
 		).toBe('(50%)');
 	});
 
+	it('caps the bar at 100% when signatures pass the goal', async () => {
+		server.use(
+			http.get(AJAX_ORIGIN, ({ request }) => {
+				const url = new URL(request.url);
+				const action = url.searchParams.get('action');
+
+				if (action === 'petitioner_get_nonce') {
+					return HttpResponse.json({
+						success: true,
+						data: { nonce: NONCE },
+					});
+				}
+
+				if (action === 'petitioner_get_goal_progress') {
+					return HttpResponse.json({
+						success: true,
+						data: {
+							form_id: Number(url.searchParams.get('form_id')),
+							count: 15,
+							goal: 14,
+							progress: 107,
+						},
+					});
+				}
+
+				return HttpResponse.json({ success: false });
+			})
+		);
+
+		const wrapper = createWrapper({
+			formId: '7',
+			count: '10',
+			goal: '14',
+			progress: '71',
+		});
+
+		new PetitionerGoal(wrapper);
+
+		await vi.waitFor(() => {
+			expect(
+				wrapper.querySelector('.petitioner__goal')?.getAttribute('data-count')
+			).toBe('15');
+		});
+
+		const goalEl = wrapper.querySelector('.petitioner__goal') as HTMLElement;
+		const bar = goalEl.querySelector('.petitioner__progress-bar') as HTMLElement;
+
+		expect(goalEl.dataset.goal).toBe('14');
+		expect(goalEl.dataset.progress).toBe('107');
+		expect(
+			goalEl.querySelector(
+				'.petitioner__col:not(.petitioner__col--end) .petitioner__num'
+			)?.textContent
+		).toBe('15');
+		expect(
+			goalEl.querySelector('.petitioner__col--end .petitioner__num')
+				?.textContent
+		).toBe('14');
+		expect(
+			goalEl.querySelector('.petitioner__numlabel small')?.textContent
+		).toBe('(107%)');
+		expect(bar.getAttribute('style')).toContain('width: 100%');
+		expect(bar.getAttribute('style')).not.toContain('107%');
+	});
+
+	it('caps a server-rendered bar that is already past the goal', async () => {
+		server.use(
+			http.get(AJAX_ORIGIN, ({ request }) => {
+				const url = new URL(request.url);
+				const action = url.searchParams.get('action');
+
+				if (action === 'petitioner_get_nonce') {
+					return HttpResponse.json({
+						success: true,
+						data: { nonce: NONCE },
+					});
+				}
+
+				if (action === 'petitioner_get_goal_progress') {
+					return HttpResponse.json({
+						success: true,
+						data: {
+							form_id: Number(url.searchParams.get('form_id')),
+							count: 15,
+							goal: 14,
+							progress: 107,
+						},
+					});
+				}
+
+				return HttpResponse.json({ success: false });
+			})
+		);
+
+		const wrapper = createWrapper({
+			formId: '7',
+			count: '15',
+			goal: '14',
+			progress: '107',
+		});
+
+		new PetitionerGoal(wrapper);
+
+		await vi.waitFor(() => {
+			const bar = wrapper.querySelector('.petitioner__progress-bar');
+			expect(bar?.getAttribute('style')).toContain('width: 100%');
+		});
+
+		const goalEl = wrapper.querySelector('.petitioner__goal') as HTMLElement;
+		expect(
+			goalEl.querySelector(
+				'.petitioner__col:not(.petitioner__col--end) .petitioner__num'
+			)?.textContent
+		).toBe('15');
+		expect(
+			goalEl.querySelector('.petitioner__numlabel small')?.textContent
+		).toBe('(107%)');
+	});
+
 	it('keeps SSR numbers when the request fails', async () => {
 		server.use(
 			http.get(AJAX_ORIGIN, ({ request }) => {

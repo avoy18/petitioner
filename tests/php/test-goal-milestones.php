@@ -205,6 +205,16 @@ class Test_Goal_Milestones extends BaseTestCase
         $this->assertEquals(150, AV_Petitioner_Goal_Milestones::calculate_progress(150, 100));
     }
 
+    public function test_bar_width_fills_the_track_without_passing_it()
+    {
+        $this->assertEquals(0, AV_Petitioner_Goal_Milestones::bar_width(0));
+        $this->assertEquals(0, AV_Petitioner_Goal_Milestones::bar_width(-10));
+        $this->assertEquals(50, AV_Petitioner_Goal_Milestones::bar_width(50));
+        $this->assertEquals(100, AV_Petitioner_Goal_Milestones::bar_width(100));
+        $this->assertEquals(100, AV_Petitioner_Goal_Milestones::bar_width(107));
+        $this->assertEquals(100, AV_Petitioner_Goal_Milestones::bar_width(150));
+    }
+
     public function test_get_progress_data_uses_goal_meta_when_count_is_zero()
     {
         $form_id = wp_insert_post([

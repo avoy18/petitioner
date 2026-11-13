@@ -79,6 +79,10 @@ class AV_Petitioner_Goal_Milestones
     /**
      * Calculate progress percent from a count and goal.
      *
+     * Not capped. A count past the active goal is above 100 so the
+     * signature total and percent label can show the real ratio.
+     * The bar width is capped separately via bar_width().
+     *
      * @param int $count Confirmed submission count.
      * @param int $goal  Active goal value.
      * @return int Progress percent, rounded.
@@ -90,6 +94,20 @@ class AV_Petitioner_Goal_Milestones
         }
 
         return 0;
+    }
+
+    /**
+     * Width of the progress bar as a percent of its track.
+     *
+     * The displayed count may pass the goal. The bar fills the track
+     * and does not extend past it.
+     *
+     * @param int $progress Progress percent from calculate_progress().
+     * @return int Integer from 0 through 100.
+     */
+    public static function bar_width($progress)
+    {
+        return min(100, max(0, (int) $progress));
     }
 
     /**
