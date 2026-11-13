@@ -158,6 +158,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
     * The Akismet card in Settings, Integrations shows Active only when the integration is enabled and a usable API key was found.
 * Bugfixes
     * Fixed the Akismet integration silently skipping spam checks on WordPress.com and Jetpack-managed sites, where the Akismet key wasn't detected.
+    * Fixed the goal progress bar overflowing its container once the signature count reaches or exceeds the goal.
 
 = 0.8.7 =
 * Improvements
