@@ -49,6 +49,7 @@ export interface WindowSettingsData extends SettingsFormData {
 	preview_nonce: string;
 	home_url: string;
 	translation_integrations?: TranslationIntegrations;
+	akismet_has_api_key?: boolean;
 }
 
 export type SettingsFormContextValue = {

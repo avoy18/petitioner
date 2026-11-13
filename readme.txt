@@ -4,7 +4,7 @@ Donate link: https://avoy.me/
 Tags: petition, activism, form, community, email
 Requires at least: 6.3
 Tested up to: 7.1
-Stable Tag: 0.8.7
+Stable Tag: 0.8.8
 Requires PHP: 8.0
 License: GPLv2 or later 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -151,6 +151,14 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 13. Submissions on the frontend
 
 == Changelog ==
+
+= 0.8.8 =
+* Improvements
+    * Akismet spam checks now use Akismet's own key lookup and HTTP helper, with fallbacks for the WPCOM_API_KEY constant and the wordpress_api_key option.
+    * The Akismet card in Settings, Integrations shows Active only when the integration is enabled and a usable API key was found.
+* Bugfixes
+    * Fixed the Akismet integration silently skipping spam checks on WordPress.com and Jetpack-managed sites, where the Akismet key wasn't detected.
+    * Fixed the goal progress bar overflowing its container once the signature count reaches or exceeds the goal.
 
 = 0.8.7 =
 * Improvements
