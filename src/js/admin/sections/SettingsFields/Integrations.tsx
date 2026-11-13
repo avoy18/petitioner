@@ -44,6 +44,7 @@ export default function Integrations() {
 	const { formState, updateFormState, windowPetitionerData } =
 		useSettingsFormContext();
 	const translationPlugins = windowPetitionerData.translation_integrations;
+	const akismetHasApiKey = Boolean(windowPetitionerData.akismet_has_api_key);
 
 	const integrations: IntegrationConfigItem[] = useMemo(() => {
 		const baseIntegrations = [
@@ -247,7 +248,7 @@ export default function Integrations() {
 				name: 'akismet',
 				title: 'Akismet',
 				description: 'Akismet integration.',
-				enabled: formState.enable_akismet,
+				enabled: formState.enable_akismet && akismetHasApiKey,
 				integrationFields: (
 					<>
 						<div>
@@ -336,7 +337,7 @@ export default function Integrations() {
 
 		return filtered as IntegrationConfigItem[];
 
-	}, [formState, translationPlugins]);
+	}, [formState, translationPlugins, akismetHasApiKey]);
 
 	return (
 		<Grid alignment="bottom" columns={3} gap={3}>
