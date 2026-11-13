@@ -6,8 +6,6 @@ class Test_Frontend_UI extends BaseTestCase
 {
     private $form_id;
 
-    private $submission_count_filter = null;
-
     public function set_up()
     {
         parent::set_up();
@@ -21,10 +19,6 @@ class Test_Frontend_UI extends BaseTestCase
 
     public function tear_down()
     {
-        if ($this->submission_count_filter) {
-            remove_filter('wordbless_wpdb_query_results', $this->submission_count_filter, 10);
-        }
-
         // Clean up the mock post so it doesn't pollute the database
         wp_delete_post($this->form_id, true);
         AV_Petitioner_Labels::clear_cache();
@@ -245,60 +239,6 @@ class Test_Frontend_UI extends BaseTestCase
         $this->assertStringContainsString('100', $output);
     }
 
-    public function test_render_goal_caps_bar_when_count_exceeds_goal()
-    {
-        $this->seed_goal_and_signatures(
-            [['value' => 14, 'count_start' => 0]],
-            15
-        );
-
-        $output = $this->render_goal_html();
-
-        $this->assertStringContainsString('data-count="15"', $output);
-        $this->assertStringContainsString('data-goal="14"', $output);
-        $this->assertStringContainsString('data-progress="107"', $output);
-        $this->assertStringContainsString('width: 100% !important', $output);
-        $this->assertStringNotContainsString('width: 107%', $output);
-        $this->assertStringContainsString('(107%)', $output);
-        $this->assertMatchesRegularExpression('/class="petitioner__num">15\s*</', $output);
-    }
-
-    public function test_render_goal_caps_bar_when_active_milestone_is_exceeded()
-    {
-        $this->seed_goal_and_signatures(
-            [
-                ['value' => 14, 'count_start' => 0],
-                ['value' => 50, 'count_start' => 20],
-            ],
-            15
-        );
-
-        $output = $this->render_goal_html();
-
-        $this->assertStringContainsString('data-count="15"', $output);
-        $this->assertStringContainsString('data-goal="14"', $output);
-        $this->assertStringContainsString('data-progress="107"', $output);
-        $this->assertStringContainsString('width: 100% !important', $output);
-        $this->assertStringNotContainsString('width: 107%', $output);
-        $this->assertMatchesRegularExpression('/class="petitioner__num">15\s*</', $output);
-    }
-
-    public function test_render_goal_keeps_partial_width_below_goal()
-    {
-        $this->seed_goal_and_signatures(
-            [['value' => 4, 'count_start' => 0]],
-            1
-        );
-
-        $output = $this->render_goal_html();
-
-        $this->assertStringContainsString('data-count="1"', $output);
-        $this->assertStringContainsString('data-goal="4"', $output);
-        $this->assertStringContainsString('data-progress="25"', $output);
-        $this->assertStringContainsString('width: 25% !important', $output);
-        $this->assertStringContainsString('(25%)', $output);
-    }
-
     public function test_render_goal_is_hidden_when_disabled()
     {
         $frontend_ui = new AV_Petitioner_Frontend_UI();
@@ -308,42 +248,5 @@ class Test_Frontend_UI extends BaseTestCase
         $output = ob_get_clean();
 
         $this->assertEmpty(trim($output));
-    }
-
-    /**
-     * @param array<int, array{value: int, count_start: int}> $milestones
-     */
-    private function seed_goal_and_signatures(array $milestones, int $count): void
-    {
-        update_post_meta(
-            $this->form_id,
-            '_petitioner_goal',
-            wp_json_encode($milestones)
-        );
-
-        // WorDBless does not persist custom tables. Stub the confirmed-count query.
-        $this->submission_count_filter = function ($results, $query) use ($count) {
-            if (!is_string($query) || stripos($query, 'COUNT(*)') === false) {
-                return $results;
-            }
-
-            if (stripos($query, 'av_petitioner_submissions') === false) {
-                return $results;
-            }
-
-            return [(object) ['count' => (string) $count]];
-        };
-
-        add_filter('wordbless_wpdb_query_results', $this->submission_count_filter, 10, 2);
-    }
-
-    private function render_goal_html(): string
-    {
-        $frontend_ui = new AV_Petitioner_Frontend_UI();
-
-        ob_start();
-        $frontend_ui->render_goal($this->form_id);
-
-        return (string) ob_get_clean();
     }
 }

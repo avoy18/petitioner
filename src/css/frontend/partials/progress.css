@@ -43,7 +43,6 @@
 	background-color: var(--ptr-progress-bg);
 	border-radius: var(--ptr-progress-radius);
 	position: relative;
-	overflow: hidden;
 }
 
 .petitioner__progress-bar {
