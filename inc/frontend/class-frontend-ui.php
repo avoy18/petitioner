@@ -28,8 +28,10 @@ class AV_Petitioner_Frontend_UI
         <div <?php echo $form_attributes; ?>>
             <?php
             $this->render_title($form_id);
-            $this->render_goal($form_id, get_option('petitioner_show_goal', true));
-            $this->render_modal($form_id);
+            $this->render_goal($form_id, get_option('petitioner_show_goal', true) && get_post_meta($form_id, '_petitioner_show_goal', true));
+            if (get_option('petitioner_show_letter', true) && get_post_meta($form_id, '_petitioner_show_letter', true)) {
+                $this->render_modal($form_id);
+            }
 
             // $form_handler->render();
             $form_handler->render_fields();

@@ -156,6 +156,7 @@ You can find a more extensive FAQ [on the main website](https://getpetitioner.co
 * Improvements
     * Akismet spam checks now use Akismet's own key lookup and HTTP helper, with fallbacks for the WPCOM_API_KEY constant and the wordpress_api_key option.
     * The Akismet card in Settings, Integrations shows Active only when the integration is enabled and a usable API key was found.
+    * Each petition can show or hide its goal progress bar and letter. Existing petitions keep showing both.
 * Bugfixes
     * Fixed the Akismet integration silently skipping spam checks on WordPress.com and Jetpack-managed sites, where the Akismet key wasn't detected.
     * Fixed the goal progress bar overflowing its container once the signature count reaches or exceeds the goal.

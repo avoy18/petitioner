@@ -20,6 +20,8 @@ class Test_Frontend_UI extends BaseTestCase
     public function tear_down()
     {
         // Clean up the mock post so it doesn't pollute the database
+        delete_option('petitioner_show_goal');
+        delete_option('petitioner_show_letter');
         wp_delete_post($this->form_id, true);
         AV_Petitioner_Labels::clear_cache();
         parent::tear_down();
@@ -248,5 +250,76 @@ class Test_Frontend_UI extends BaseTestCase
         $output = ob_get_clean();
 
         $this->assertEmpty(trim($output));
+    }
+
+    public function test_form_shows_goal_when_global_and_petition_settings_are_on()
+    {
+        update_option('petitioner_show_goal', 1);
+        update_post_meta($this->form_id, '_petitioner_show_goal', 1);
+
+        $this->assertStringContainsString('petitioner__goal', $this->render_petition_form());
+    }
+
+    public function test_form_hides_goal_when_either_setting_is_off()
+    {
+        update_option('petitioner_show_goal', 0);
+        update_post_meta($this->form_id, '_petitioner_show_goal', 1);
+
+        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
+
+        update_option('petitioner_show_goal', 1);
+        update_post_meta($this->form_id, '_petitioner_show_goal', 0);
+
+        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
+    }
+
+    public function test_form_shows_letter_when_global_and_petition_settings_are_on()
+    {
+        update_option('petitioner_show_letter', 1);
+        update_post_meta($this->form_id, '_petitioner_show_letter', 1);
+
+        $this->assertStringContainsString('petitioner-modal', $this->render_petition_form());
+    }
+
+    public function test_form_hides_letter_when_either_setting_is_off()
+    {
+        update_option('petitioner_show_letter', 0);
+        update_post_meta($this->form_id, '_petitioner_show_letter', 1);
+
+        $this->assertStringNotContainsString('petitioner-modal', $this->render_petition_form());
+
+        update_option('petitioner_show_letter', 1);
+        update_post_meta($this->form_id, '_petitioner_show_letter', 0);
+
+        $this->assertStringNotContainsString('petitioner-modal', $this->render_petition_form());
+    }
+
+    public function test_letter_modal_shortcode_still_renders_when_the_form_hides_the_letter()
+    {
+        update_option('petitioner_show_letter', 1);
+        update_post_meta($this->form_id, '_petitioner_show_letter', 0);
+
+        $shortcodes = new AV_Petitioner_Shortcodes();
+        $output = $shortcodes->petitioner_render_modal_ui(['id' => $this->form_id]);
+
+        $this->assertStringContainsString('petitioner-modal', $output);
+    }
+
+    public function test_goal_progress_shortcode_still_renders_when_the_form_hides_the_goal()
+    {
+        update_option('petitioner_show_goal', 0);
+        update_post_meta($this->form_id, '_petitioner_show_goal', 0);
+
+        $shortcodes = new AV_Petitioner_Shortcodes();
+        $output = $shortcodes->render_goal_progress_ui(['id' => $this->form_id]);
+
+        $this->assertStringContainsString('petitioner__goal', $output);
+    }
+
+    private function render_petition_form()
+    {
+        update_post_meta($this->form_id, '_petitioner_form_fields', '[]');
+
+        return (new AV_Petitioner_Frontend_UI())->display_form(['id' => $this->form_id]);
     }
 }

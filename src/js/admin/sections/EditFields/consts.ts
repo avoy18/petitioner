@@ -26,6 +26,7 @@ export type PetitionerData = {
 	email: TextValue;
 	cc_emails: TextValue;
 	show_goal: CheckboxValue;
+	show_letter: CheckboxValue;
 	goal: GoalMilestone[];
 	show_country: CheckboxValue;
 	subject: TextValue;

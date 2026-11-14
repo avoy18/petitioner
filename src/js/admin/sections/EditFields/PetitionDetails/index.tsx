@@ -34,6 +34,22 @@ export default function PetitionDetails() {
 
 			<p>
 				<input
+					checked={formState.show_goal}
+					type="checkbox"
+					name="petitioner_show_goal"
+					id="petitioner_show_goal"
+					className="widefat"
+					onChange={(e) =>
+						updateFormState('show_goal', e.target.checked)
+					}
+				/>
+				<label htmlFor="petitioner_show_goal">
+					Show the goal progress bar?
+				</label>
+			</p>
+
+			<p>
+				<input
 					checked={formState.send_to_representative}
 					type="checkbox"
 					name="petitioner_send_to_representative"
@@ -88,6 +104,21 @@ export default function PetitionDetails() {
 
 			<hr />
 			<h3>Letter details</h3>
+			<p>
+				<input
+					checked={formState.show_letter}
+					type="checkbox"
+					name="petitioner_show_letter"
+					id="petitioner_show_letter"
+					className="widefat"
+					onChange={(e) =>
+						updateFormState('show_letter', e.target.checked)
+					}
+				/>
+				<label htmlFor="petitioner_show_letter">
+					Show the petition letter?
+				</label>
+			</p>
 			<p>
 				<TextControl
 					style={{ width: '100%' }}
