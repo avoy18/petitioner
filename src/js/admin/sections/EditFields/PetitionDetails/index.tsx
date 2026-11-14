@@ -1,9 +1,7 @@
-import { TextControl, SelectControl } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { TextControl } from '@wordpress/components';
 import PTRichText from '@admin/components/PTRichText';
 import GoalMilestones from '@admin/components/GoalMilestones';
 import { useEditFormContext } from '@admin/context/EditFormContext';
-import type { GoalDisplay } from '@admin/sections/EditFields/consts';
 
 /**
  * Petition Details Component
@@ -35,31 +33,19 @@ export default function PetitionDetails() {
 			/>
 
 			<p>
-				<SelectControl<GoalDisplay>
-					label={__('Goal display', 'petitioner')}
-					help={__(
-						'Use the global setting, or show or hide the progress bar on this petition only.',
-						'petitioner'
-					)}
-					value={formState.show_goal}
+				<input
+					checked={formState.show_goal}
+					type="checkbox"
 					name="petitioner_show_goal"
 					id="petitioner_show_goal"
-					options={[
-						{
-							label: __('Use global setting', 'petitioner'),
-							value: 'inherit',
-						},
-						{
-							label: __('Show', 'petitioner'),
-							value: 'show',
-						},
-						{
-							label: __('Hide', 'petitioner'),
-							value: 'hide',
-						},
-					]}
-					onChange={(value) => updateFormState('show_goal', value)}
+					className="widefat"
+					onChange={(e) =>
+						updateFormState('show_goal', e.target.checked)
+					}
 				/>
+				<label htmlFor="petitioner_show_goal">
+					Show the goal progress bar?
+				</label>
 			</p>
 
 			<p>

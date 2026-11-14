@@ -251,72 +251,31 @@ class Test_Frontend_UI extends BaseTestCase
         $this->assertEmpty(trim($output));
     }
 
-    public function test_form_shows_goal_when_no_override_and_global_setting_is_on()
-    {
-        delete_option('petitioner_show_goal');
-
-        $this->assertStringContainsString('petitioner__goal', $this->render_petition_form());
-    }
-
-    public function test_form_hides_goal_when_no_override_and_global_setting_is_off()
-    {
-        update_option('petitioner_show_goal', 0);
-
-        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
-
-        update_option('petitioner_show_goal', '0');
-
-        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
-    }
-
-    public function test_legacy_show_goal_meta_follows_the_global_setting()
-    {
-        update_post_meta($this->form_id, '_petitioner_show_goal', '0');
-        delete_option('petitioner_show_goal');
-
-        $this->assertStringContainsString('petitioner__goal', $this->render_petition_form());
-
-        update_option('petitioner_show_goal', 0);
-
-        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
-
-        update_post_meta($this->form_id, '_petitioner_show_goal', '1');
-
-        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
-    }
-
-    public function test_per_petition_show_overrides_a_hidden_global_goal()
-    {
-        update_option('petitioner_show_goal', 0);
-        update_post_meta($this->form_id, '_petitioner_show_goal', 'show');
-
-        $this->assertStringContainsString('petitioner__goal', $this->render_petition_form());
-    }
-
-    public function test_per_petition_hide_overrides_a_visible_global_goal()
+    public function test_form_shows_goal_when_global_and_petition_settings_are_on()
     {
         update_option('petitioner_show_goal', 1);
-        update_post_meta($this->form_id, '_petitioner_show_goal', 'hide');
+        update_post_meta($this->form_id, '_petitioner_show_goal', 1);
 
-        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
+        $this->assertStringContainsString('petitioner__goal', $this->render_petition_form());
     }
 
-    public function test_explicit_inherit_follows_the_global_setting()
+    public function test_form_hides_goal_when_either_setting_is_off()
     {
-        update_post_meta($this->form_id, '_petitioner_show_goal', 'inherit');
-        update_option('petitioner_show_goal', '0');
+        update_option('petitioner_show_goal', 0);
+        update_post_meta($this->form_id, '_petitioner_show_goal', 1);
 
         $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
 
         update_option('petitioner_show_goal', '1');
+        update_post_meta($this->form_id, '_petitioner_show_goal', '0');
 
-        $this->assertStringContainsString('petitioner__goal', $this->render_petition_form());
+        $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
     }
 
     public function test_goal_progress_shortcode_still_renders_when_the_form_hides_the_goal()
     {
         update_option('petitioner_show_goal', 0);
-        update_post_meta($this->form_id, '_petitioner_show_goal', 'hide');
+        update_post_meta($this->form_id, '_petitioner_show_goal', 0);
 
         $shortcodes = new AV_Petitioner_Shortcodes();
         $output = $shortcodes->render_goal_progress_ui(['id' => $this->form_id]);

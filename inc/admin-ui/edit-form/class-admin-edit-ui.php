@@ -94,7 +94,12 @@ class AV_Petitioner_Admin_Edit_UI
             $value = $meta_values[$key] ?? '';
 
             if ($type === 'checkbox') {
-                $petitioner_info[$key] = (bool) $value;
+                // A new petition has no saved choice yet, so the goal stays visible.
+                if ($key === 'show_goal') {
+                    $petitioner_info[$key] = ($value === '') ? true : wp_validate_boolean($value);
+                } else {
+                    $petitioner_info[$key] = (bool) $value;
+                }
             } elseif ($type === 'wysiwyg') {
                 $petitioner_info[$key] = wp_kses_post($value);
             } elseif ($type === 'emails' || $type === 'text') {

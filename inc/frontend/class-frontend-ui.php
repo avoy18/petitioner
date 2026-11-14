@@ -191,31 +191,15 @@ class AV_Petitioner_Frontend_UI
     }
 
     /**
-     * Whether the petition form should render the goal progress bar.
-     *
-     * "show" and "hide" on this petition win. Anything else, including a
-     * missing value and the legacy checkbox values 0 and 1, follows the
-     * global petitioner_show_goal option.
+     * The form shows the goal bar when both the global setting and this petition allow it.
      *
      * @param int|string $form_id Petition ID.
      * @return bool
      */
     public function should_show_goal($form_id)
     {
-        $choice = get_post_meta($form_id, '_petitioner_show_goal', true);
-
-        if ($choice === 'hide') {
-            return false;
-        }
-
-        if ($choice === 'show') {
-            return true;
-        }
-
-        $show_goal = get_option('petitioner_show_goal', true);
-
-        // Saved checkboxes come back as 0/1, or as "0"/"1" from MySQL.
-        return !in_array($show_goal, [false, 0, '0', ''], true);
+        return wp_validate_boolean(get_option('petitioner_show_goal', true))
+            && wp_validate_boolean(get_post_meta($form_id, '_petitioner_show_goal', true));
     }
 
     public function render_goal($form_id, $show_goal = true)

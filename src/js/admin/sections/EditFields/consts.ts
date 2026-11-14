@@ -1,7 +1,6 @@
 import type { OptionItem } from '@admin/sections/EditFields/FormBuilder/consts';
 
 export type CheckboxValue = boolean;
-export type GoalDisplay = 'inherit' | 'show' | 'hide';
 export type TextValue = string | number;
 export type NumberValue = number | null;
 export type ApprovalState = 'Email' | 'Confirmed' | 'Declined';
@@ -26,7 +25,7 @@ export type PetitionerData = {
 	send_to_representative: CheckboxValue;
 	email: TextValue;
 	cc_emails: TextValue;
-	show_goal: GoalDisplay;
+	show_goal: CheckboxValue;
 	goal: GoalMilestone[];
 	show_country: CheckboxValue;
 	subject: TextValue;
