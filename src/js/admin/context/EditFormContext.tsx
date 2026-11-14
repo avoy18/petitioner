@@ -6,9 +6,19 @@ import {
 } from '@wordpress/element';
 import type {
 	EditFormContextValue,
+	GoalDisplay,
 	PetitionerData,
 	EditFormContextProviderProps,
 } from '@admin/sections/EditFields/consts';
+
+function normalizeGoalDisplay(value: unknown): GoalDisplay {
+	if (value === 'show' || value === 'hide' || value === 'inherit') {
+		return value;
+	}
+
+	// Legacy checkbox meta is 0 or 1, saved even when no control existed.
+	return 'inherit';
+}
 
 const EditFormContext = createContext<EditFormContextValue | null>(null);
 
@@ -38,7 +48,7 @@ const normalizePetitionerData = () => {
 		send_to_representative: false,
 		email: '',
 		cc_emails: '',
-		show_goal: true,
+		show_goal: 'inherit',
 		goal: normalizedGoal,
 		show_country: false,
 		subject: '',
@@ -66,7 +76,12 @@ const normalizePetitionerData = () => {
 		active_tab: 'default'
 	};
 
-	return { ...defaultData, ...rawData, goal: normalizedGoal };
+	return {
+		...defaultData,
+		...rawData,
+		goal: normalizedGoal,
+		show_goal: normalizeGoalDisplay(rawData.show_goal),
+	};
 };
 
 export function EditFormContextProvider({

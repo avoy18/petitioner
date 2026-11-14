@@ -55,4 +55,39 @@ class Test_Admin_Edit_UI extends BaseTestCase
         $this->assertEquals('_petitioner_pro_brevo_list_id_override', $schema['pro_brevo_list_id_override']['meta_key']);
         $this->assertEquals('text', $schema['pro_brevo_list_id_override']['type']);
     }
+
+    public function test_show_goal_override_is_saved_without_checkbox_coercion()
+    {
+        $user_id = wp_insert_user([
+            'user_login' => 'petition_editor',
+            'user_pass'  => 'password',
+            'role'       => 'administrator',
+        ]);
+        wp_set_current_user($user_id);
+
+        $post_id = wp_insert_post([
+            'post_type'   => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
+
+        $_POST['petitioner_details_nonce'] = wp_create_nonce(AV_Petitioner_Admin_Edit_UI::$ADMIN_EDIT_NONCE_LABEL);
+
+        $edit_ui = new AV_Petitioner_Admin_Edit_UI();
+
+        $_POST['petitioner_show_goal'] = 'hide';
+        $edit_ui->save_meta_box_data($post_id);
+        $this->assertSame('hide', get_post_meta($post_id, '_petitioner_show_goal', true));
+
+        $_POST['petitioner_show_goal'] = 'show';
+        $edit_ui->save_meta_box_data($post_id);
+        $this->assertSame('show', get_post_meta($post_id, '_petitioner_show_goal', true));
+
+        $_POST['petitioner_show_goal'] = 'inherit';
+        $edit_ui->save_meta_box_data($post_id);
+        $this->assertSame('inherit', get_post_meta($post_id, '_petitioner_show_goal', true));
+
+        unset($_POST['petitioner_show_goal'], $_POST['petitioner_details_nonce']);
+        wp_delete_post($post_id, true);
+        wp_set_current_user(0);
+    }
 }

@@ -11,7 +11,7 @@ return [
     'goal'                      => ['meta_key' => '_petitioner_goal', 'type' => 'json_goal'],
     'subject'                   => ['meta_key' => '_petitioner_subject', 'type' => 'text'],
     'show_country'              => ['meta_key' => '_petitioner_show_country', 'type' => 'checkbox'],
-    'show_goal'                 => ['meta_key' => '_petitioner_show_goal', 'type' => 'checkbox'],
+    'show_goal'                 => ['meta_key' => '_petitioner_show_goal', 'type' => 'text'],
     'require_approval'          => ['meta_key' => '_petitioner_require_approval', 'type' => 'checkbox'],
     'approval_state'            => ['meta_key' => '_petitioner_approval_state', 'type' => 'text'],
     'letter'                    => ['meta_key' => '_petitioner_letter', 'type' => 'wysiwyg'],

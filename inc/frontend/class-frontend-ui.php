@@ -28,7 +28,7 @@ class AV_Petitioner_Frontend_UI
         <div <?php echo $form_attributes; ?>>
             <?php
             $this->render_title($form_id);
-            $this->render_goal($form_id, get_option('petitioner_show_goal', true));
+            $this->render_goal($form_id, $this->should_show_goal($form_id));
             $this->render_modal($form_id);
 
             // $form_handler->render();
@@ -188,6 +188,34 @@ class AV_Petitioner_Frontend_UI
             </div>
         </div>
     <?php
+    }
+
+    /**
+     * Whether the petition form should render the goal progress bar.
+     *
+     * "show" and "hide" on this petition win. Anything else, including a
+     * missing value and the legacy checkbox values 0 and 1, follows the
+     * global petitioner_show_goal option.
+     *
+     * @param int|string $form_id Petition ID.
+     * @return bool
+     */
+    public function should_show_goal($form_id)
+    {
+        $choice = get_post_meta($form_id, '_petitioner_show_goal', true);
+
+        if ($choice === 'hide') {
+            return false;
+        }
+
+        if ($choice === 'show') {
+            return true;
+        }
+
+        $show_goal = get_option('petitioner_show_goal', true);
+
+        // Saved checkboxes come back as 0/1, or as "0"/"1" from MySQL.
+        return !in_array($show_goal, [false, 0, '0', ''], true);
     }
 
     public function render_goal($form_id, $show_goal = true)
