@@ -62,6 +62,10 @@ class AV_Petitioner_Setup
                 new AV_Petitioner_Admin_Settings_UI();
             }
 
+            if (class_exists('AV_Petitioner_Admin_Contact_Forms_UI')) {
+                new AV_Petitioner_Admin_Contact_Forms_UI();
+            }
+
             if (class_exists('AV_Petitioner_Admin_Component_Preview_UI')) {
                 new AV_Petitioner_Admin_Component_Preview_UI();
             }
