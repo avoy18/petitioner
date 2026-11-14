@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { useEditFormContext } from '@admin/context/EditFormContext';
 import CheckboxInput from '@admin/components/CheckboxInput';
 import { normalizeDefaultValues } from '@admin/sections/EditFields/AdvancedSettings';
+import SuccessMessageOverride from '@admin/sections/EditFields/SuccessMessageOverride';
 
 /**
  * Contact Advanced Settings Component
@@ -59,6 +60,8 @@ export default function ContactAdvancedSettings() {
 					onChange={(value) => updateFormState('from_name', value)}
 				/>
 			</p>
+
+			<SuccessMessageOverride defaultValues={defaultValues} />
 
 			<hr />
 

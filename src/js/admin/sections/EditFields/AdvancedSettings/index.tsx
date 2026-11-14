@@ -5,6 +5,7 @@ import type { DefaultValues } from '@admin/sections/EditFields/consts';
 import { __ } from '@wordpress/i18n';
 import { normalizeCountryList } from './utilities';
 import CheckboxInput from '@admin/components/CheckboxInput';
+import SuccessMessageOverride from '@admin/sections/EditFields/SuccessMessageOverride';
 
 /*
  * Normalize the default values from the raw data
@@ -88,10 +89,6 @@ export default function AdvancedSettings() {
 
 	const { subject: defaultTYSubject, content: defaultTYEmailContent } =
 		getThankYouDefaults(defaultValues, formState.approval_state);
-
-	const defaultSuccessMessageTitle =
-		defaultValues?.success_message_title || '';
-	const defaultSuccessMessageContent = defaultValues?.success_message || '';
 
 	return (
 		<>
@@ -306,63 +303,7 @@ export default function AdvancedSettings() {
 				</>
 			)}
 
-			<CheckboxInput
-				name="petitioner_override_success_message"
-				label={__('Override success message?', 'petitioner')}
-				help={__(
-					'Use this to customize the success message shown after submitting a petition.',
-					'petitioner'
-				)}
-				checked={formState.override_success_message}
-				onChange={(e) =>
-					updateFormState(
-						'override_success_message',
-						e.target.checked
-					)
-				}
-			/>
-
-			{formState.override_success_message && (
-				<>
-					<p>
-						<TextControl
-							style={{ width: '100%' }}
-							type="text"
-							label={__('Success message title', 'petitioner')}
-							// @ts-ignore - the string here should work fine
-							value={
-								String(formState?.success_message_title).length > 0
-									? formState.success_message_title
-									: defaultSuccessMessageTitle
-							}
-							name="petitioner_success_message_title"
-							id="petitioner_success_message_title"
-							onChange={(value) =>
-								updateFormState('success_message_title', value)
-							}
-						/>
-					</p>
-					<PTRichText
-						plugins="lists link image"
-						toolbar="formatselect | bold italic | bullist numlist | link | image"
-						label={__('Success message content', 'petitioner')}
-						id="petitioner_success_message"
-						help={__(
-							'This will be the content of the success message shown after submitting a petition.',
-							'petitioner'
-						)}
-						value={
-							String(formState?.success_message).length > 0
-								? formState.success_message
-								: defaultSuccessMessageContent
-						}
-						onChange={(value) =>
-							updateFormState('success_message', value)
-						}
-						height={150}
-					/>
-				</>
-			)}
+			<SuccessMessageOverride defaultValues={defaultValues} />
 
 			<CheckboxInput
 				name="petitioner_hide_last_names"
