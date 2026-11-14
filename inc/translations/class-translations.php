@@ -24,6 +24,7 @@ class AV_Petitioner_Translations
          * This part registers strings for the future translation by the translator plugins.
          */
         add_action('save_post_petitioner-petition', [$this, 'register_form'], 20);
+        add_action('save_post_petitioner-contact', [$this, 'register_form'], 20);
         add_action('admin_init', [$this, 'register_all_forms']);
         add_action('admin_init', [$this, 'register_label_overrides']);
         add_action('add_option_petitioner_label_overrides', [$this, 'register_label_overrides']);
@@ -65,7 +66,7 @@ class AV_Petitioner_Translations
         }
 
         $register_form_args = [
-            'post_type'      => 'petitioner-petition',
+            'post_type'      => av_petitioner_get_form_post_types(),
             'post_status'    => ['publish', 'draft', 'private'],
             'posts_per_page' => -1,
             'fields'         => 'ids',

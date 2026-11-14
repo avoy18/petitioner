@@ -5,6 +5,45 @@
  */
 
 /**
+ * Post types that hold Petitioner forms.
+ *
+ * @since 0.9.0
+ * @return string[]
+ */
+function av_petitioner_get_form_post_types(): array
+{
+    /**
+     * Filter the post types that are treated as Petitioner forms.
+     *
+     * @since 0.9.0
+     * @param string[] $post_types
+     */
+    return (array) apply_filters('av_petitioner_form_post_types', ['petitioner-petition']);
+}
+
+/**
+ * Whether a post type holds Petitioner forms.
+ *
+ * @since 0.9.0
+ */
+function av_petitioner_is_form_post_type($post_type): bool
+{
+    return in_array($post_type, av_petitioner_get_form_post_types(), true);
+}
+
+/**
+ * Whether a post (ID or object) is a Petitioner form.
+ *
+ * @since 0.9.0
+ */
+function av_petitioner_is_form_post($post): bool
+{
+    $post = get_post($post);
+
+    return $post && av_petitioner_is_form_post_type($post->post_type);
+}
+
+/**
  * Country code => English name.
  *
  * @return array<string, string>

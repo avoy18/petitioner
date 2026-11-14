@@ -16,6 +16,41 @@ class Test_Utilities extends BaseTestCase
     }
 
     // ============================================
+    // FORM POST TYPE HELPERS
+    // ============================================
+
+    public function test_form_post_types_default_to_petition()
+    {
+        $this->assertSame(['petitioner-petition'], av_petitioner_get_form_post_types());
+        $this->assertTrue(av_petitioner_is_form_post_type('petitioner-petition'));
+        $this->assertFalse(av_petitioner_is_form_post_type('post'));
+    }
+
+    public function test_form_post_types_are_filterable()
+    {
+        $add_type = function ($post_types) {
+            $post_types[] = 'petitioner-extra';
+            return $post_types;
+        };
+        add_filter('av_petitioner_form_post_types', $add_type);
+
+        $this->assertTrue(av_petitioner_is_form_post_type('petitioner-extra'));
+
+        remove_filter('av_petitioner_form_post_types', $add_type);
+    }
+
+    public function test_is_form_post()
+    {
+        $form_id = wp_insert_post(['post_type' => 'petitioner-petition', 'post_status' => 'publish']);
+        $post_id = wp_insert_post(['post_type' => 'post', 'post_status' => 'publish']);
+
+        $this->assertTrue(av_petitioner_is_form_post($form_id));
+        $this->assertTrue(av_petitioner_is_form_post(get_post($form_id)));
+        $this->assertFalse(av_petitioner_is_form_post($post_id));
+        $this->assertFalse(av_petitioner_is_form_post(0));
+    }
+
+    // ============================================
     // AV_PETITIONER_PARSE_CONDITIONAL_LOGIC TESTS
     // ============================================
 

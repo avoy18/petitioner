@@ -289,8 +289,7 @@ class AV_Petitioner_Setup
     {
         $screen = get_current_screen();
 
-        // Check if on the edit or add new page for 'petitioner_petition' post type
-        if ($screen->post_type === 'petitioner-petition') {
+        if (av_petitioner_is_form_post_type($screen->post_type)) {
             // Enqueue scripts
             wp_enqueue_script('wp-blocks');
             wp_enqueue_script('wp-block-editor');

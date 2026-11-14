@@ -1,4 +1,4 @@
-.wp-admin.post-type-petitioner-petition {
+.wp-admin.ptr-form-post-type {
     .ptr-fake-field {
         position: relative;
         padding: var(--ptr-admin-spacing-md, 8px);

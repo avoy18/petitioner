@@ -412,7 +412,7 @@ class Test_Translations extends BaseTestCase
             return 'nope';
         });
         add_filter('posts_pre_query', function ($posts, $query) {
-            if ($query->get('post_type') === 'petitioner-petition') {
+            if (in_array('petitioner-petition', (array) $query->get('post_type'), true)) {
                 return [$this->form_id];
             }
             return $posts;

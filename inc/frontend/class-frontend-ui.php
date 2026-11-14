@@ -15,9 +15,7 @@ class AV_Petitioner_Frontend_UI
     public function display_form($attributes)
     {
         $form_id        = esc_attr($attributes['id']);
-        $post_exists    = get_post($form_id);
-
-        if (!$post_exists || $post_exists->post_type !== 'petitioner-petition') {
+        if (!av_petitioner_is_form_post($form_id)) {
             return '';
         }
         $form_handler       = new AV_Petitioner_Form_UI($form_id);

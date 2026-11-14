@@ -24,6 +24,8 @@ class AV_Petitioner_Admin_Edit_UI
     {
         add_action("add_meta_boxes", [$this, "add_meta_boxes"]);
         add_action("save_post_petitioner-petition", [$this, "save_meta_box_data"]);
+        add_action("save_post_petitioner-contact", [$this, "save_meta_box_data"]);
+        add_filter("admin_body_class", [$this, "add_form_body_class"]);
         add_filter("get_sample_permalink_html", [$this, "hide_cpt_permalink"], 10, 4);
         add_filter("post_row_actions", [$this, "remove_view_link"], 10, 4);
     }
@@ -37,7 +39,7 @@ class AV_Petitioner_Admin_Edit_UI
             "petition_details",
             "Petition details",
             [$this, "display_meta_box"],
-            "petitioner-petition",
+            av_petitioner_get_form_post_types(),
             "normal",
             "default"
         );
@@ -256,7 +258,21 @@ class AV_Petitioner_Admin_Edit_UI
      */
     public function hide_cpt_permalink($permalink_html, $post_id, $new_title, $new_slug)
     {
-        return get_post($post_id)->post_type === "petitioner-petition" ? "" : $permalink_html;
+        return av_petitioner_is_form_post($post_id) ? "" : $permalink_html;
+    }
+
+    /**
+     * Shared body class for every form post type screen, used to scope admin CSS.
+     */
+    public function add_form_body_class($classes)
+    {
+        $screen = get_current_screen();
+
+        if ($screen && av_petitioner_is_form_post_type($screen->post_type)) {
+            $classes .= " ptr-form-post-type";
+        }
+
+        return $classes;
     }
 
     /**
@@ -264,7 +280,7 @@ class AV_Petitioner_Admin_Edit_UI
      */
     public function remove_view_link($actions, $post)
     {
-        if ($post->post_type === "petitioner-petition") {
+        if (av_petitioner_is_form_post_type($post->post_type)) {
             unset($actions["view"]);
         }
         return $actions;
