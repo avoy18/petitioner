@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import EditFields, { tabs } from '@admin/sections/EditFields';
+import EditFields, { tabs, contactTabs } from '@admin/sections/EditFields';
 
 describe('EditFields', () => {
 	const defaultPetitionerData = {
@@ -83,6 +83,58 @@ describe('EditFields', () => {
 			'integrations',
 			'submissions',
 		]);
+	});
+
+	describe('contact forms', () => {
+		beforeEach(() => {
+			window.petitionerData = {
+				...structuredClone(defaultPetitionerData),
+				form_type: 'contact',
+			};
+		});
+
+		it('registers the contact tab set', () => {
+			expect(contactTabs.map((t) => t.name)).toEqual([
+				'contact-details',
+				'form-builder',
+				'advanced-settings',
+				'integrations',
+				'submissions',
+			]);
+		});
+
+		it('renders contact tabs instead of petition details', () => {
+			render(<EditFields />);
+
+			expect(screen.getByTestId('ptr-tab-contact-details')).toBeInTheDocument();
+			expect(screen.queryByTestId('ptr-tab-petition-details')).not.toBeInTheDocument();
+			expect(screen.queryByTestId('ptr-tab-integrations')).not.toBeInTheDocument();
+		});
+
+		it('only requires the notification email', () => {
+			const { container } = render(<EditFields />);
+
+			const requiredInputs = Array.from(
+				container.querySelectorAll('input[required]')
+			).map((input) => input.getAttribute('name'));
+
+			expect(requiredInputs).toEqual(['petitioner_email']);
+		});
+
+		it('does not render petition-only fields', () => {
+			const { container } = render(<EditFields />);
+
+			[
+				'petitioner_goal',
+				'petitioner_letter',
+				'petitioner_send_to_representative',
+				'petitioner_hide_last_names',
+				'petitioner_require_approval',
+			].forEach((name) => {
+				expect(container.querySelector(`[name="${name}"]`)).toBeNull();
+			});
+			expect(container.querySelector('[name="petitioner_add_honeypot"]')).not.toBeNull();
+		});
 	});
 
 	it('renders the integrations tab when the hook returns true', () => {

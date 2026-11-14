@@ -59,6 +59,7 @@ const normalizePetitionerData = () => {
 		from_name: '',
 		add_honeypot: true,
 		form_id: null,
+		form_type: 'petition',
 		hide_last_names: true,
 		redirect_url: '',
 		confirm_success_url: '',

@@ -7,6 +7,7 @@ export type ApprovalState = 'Email' | 'Confirmed' | 'Declined';
 export type GoalMilestone = { value: number; count_start: number };
 
 export type FormID = number|null;
+export type FormType = 'petition' | 'contact';
 
 export type DefaultValues = {
 	from_field: string;
@@ -43,6 +44,7 @@ export type PetitionerData = {
 	from_name: TextValue;
 	add_honeypot: CheckboxValue;
 	form_id?: FormID;
+	form_type: FormType;
 	default_values?: DefaultValues;
 	success_message_title?: TextValue;
 	override_success_message?: CheckboxValue;

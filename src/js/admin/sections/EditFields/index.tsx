@@ -1,17 +1,51 @@
-
 import { applyFilters } from '@wordpress/hooks';
 import { Dashicon } from '@wordpress/components';
 import Submissions from './Submissions';
 import FormBuilder from './FormBuilder';
 import IntegrationArea from './IntegrationsArea';
 import PetitionDetails from '@admin/sections/EditFields/PetitionDetails';
+import ContactDetails from '@admin/sections/EditFields/ContactDetails';
 import BottomCallout from '@admin/sections/EditFields/BottomCallout';
 import AdvancedSettings from '@admin/sections/EditFields/AdvancedSettings';
+import ContactAdvancedSettings from '@admin/sections/EditFields/ContactAdvancedSettings';
 import Tabs from '@admin/components/Tabs';
 import {
 	EditFormContextProvider,
 	useEditFormContext,
 } from '@admin/context/EditFormContext';
+
+const formBuilderTab = {
+	name: 'form-builder',
+	title: (
+		<>
+			<Dashicon icon="welcome-widgets-menus" /> Form builder
+		</>
+	),
+	className: 'petition-tablink',
+	renderingEl: <FormBuilder />,
+};
+
+const integrationsTab = {
+	name: 'integrations',
+	title: (
+		<>
+			<Dashicon icon="admin-generic" /> Integrations
+		</>
+	),
+	className: 'petition-tablink petition-tablink--integrations',
+	renderingEl: <IntegrationArea />,
+};
+
+const submissionsTab = {
+	name: 'submissions',
+	title: (
+		<>
+			<Dashicon icon="editor-ul" /> Submissions
+		</>
+	),
+	className: 'petition-tablink',
+	renderingEl: <Submissions />,
+};
 
 export const tabs = [
 	{
@@ -24,16 +58,7 @@ export const tabs = [
 		className: 'petition-tablink',
 		renderingEl: <PetitionDetails />,
 	},
-	{
-		name: 'form-builder',
-		title: (
-			<>
-				<Dashicon icon="welcome-widgets-menus" /> Form builder
-			</>
-		),
-		className: 'petition-tablink',
-		renderingEl: <FormBuilder />,
-	},
+	formBuilderTab,
 	{
 		name: 'advanced-settings',
 		title: (
@@ -44,34 +69,43 @@ export const tabs = [
 		className: 'petition-tablink',
 		renderingEl: <AdvancedSettings />,
 	},
+	integrationsTab,
+	submissionsTab,
+];
+
+export const contactTabs = [
 	{
-		name: 'integrations',
+		name: 'contact-details',
 		title: (
 			<>
-				<Dashicon icon="admin-generic" /> Integrations
-			</>
-		),
-		className: 'petition-tablink petition-tablink--integrations',
-		renderingEl: <IntegrationArea />,
-	},
-	{
-		name: 'submissions',
-		title: (
-			<>
-				<Dashicon icon="editor-ul" /> Submissions
+				<Dashicon icon="email-alt" /> Contact details
 			</>
 		),
 		className: 'petition-tablink',
-		renderingEl: <Submissions />,
+		renderingEl: <ContactDetails />,
 	},
+	formBuilderTab,
+	{
+		name: 'advanced-settings',
+		title: (
+			<>
+				<Dashicon icon="admin-settings" /> Advanced settings
+			</>
+		),
+		className: 'petition-tablink',
+		renderingEl: <ContactAdvancedSettings />,
+	},
+	integrationsTab,
+	submissionsTab,
 ];
 
 function EditFieldsComponent() {
 	const { formState } = useEditFormContext();
-	const { active_tab } = formState;
+	const { active_tab, form_type } = formState;
 
+	const formTabs = form_type === 'contact' ? contactTabs : tabs;
 	const showIntegrations = applyFilters('petitioner.admin.sections.edit_fields.show_integrations', false) as boolean;
-	const visibleTabs = showIntegrations ? tabs : tabs.filter(tab => tab.name !== 'integrations');
+	const visibleTabs = showIntegrations ? formTabs : formTabs.filter(tab => tab.name !== 'integrations');
 
 	return (
 		<>
