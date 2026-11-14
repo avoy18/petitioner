@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "petitioner/contact-form",
+	"version": "0.1.0",
+	"title": "Petitioner Contact Form",
+	"category": "petitioner-blocks",
+	"icon": "email",
+	"description": "A contact form that sends submissions to your inbox",
+	"keywords": ["contact", "form", "email"],
+	"attributes": {
+		"formId": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": true,
+		"anchor": true,
+		"customClassName": true,
+		"styles": false,
+		"color": {
+			"background": false,
+			"text": false
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "petitioner-form-style",
+	"style": "petitioner-form-style"
+}

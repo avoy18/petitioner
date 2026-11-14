@@ -40,6 +40,24 @@ class AV_Petitioner_Gutenberg
             }
         ]);
 
+        register_block_type(AV_PETITIONER_PLUGIN_DIR . '/dist-gutenberg/blocks/contact-form', [
+            'attributes' => [
+                'formId' => [
+                    'type'    => 'string',
+                    'default' => null
+                ],
+                'newContactFormLink' => [
+                    'type'    => 'text',
+                    'default' => admin_url('post-new.php?post_type=petitioner-contact')
+                ],
+            ],
+            'render_callback' => function ($attributes) {
+                if (empty($attributes['formId']) || get_post_type($attributes['formId']) !== 'petitioner-contact') return '';
+
+                return do_shortcode('[petitioner-form id="' . absint($attributes['formId']) . '"]');
+            }
+        ]);
+
         $submission_defaults = AV_Petitioner_Submissions_UI::get_defaults();
 
         register_block_type(AV_PETITIONER_PLUGIN_DIR . '/dist-gutenberg/blocks/submissions', [
