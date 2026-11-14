@@ -155,16 +155,15 @@ class Test_Frontend_UI extends BaseTestCase
     // RENDER TITLE TESTS
     // ============================================
 
-    public function test_render_title_outputs_default_when_no_meta_exists()
+    public function test_render_title_outputs_nothing_when_title_is_empty()
     {
         $frontend_ui = new AV_Petitioner_Frontend_UI();
-        
+
         ob_start();
         $frontend_ui->render_title($this->form_id);
         $output = ob_get_clean();
 
-        $this->assertStringContainsString('Sign this petition', $output);
-        $this->assertStringContainsString('petitioner__title', $output);
+        $this->assertEmpty(trim($output));
     }
 
     public function test_render_title_outputs_custom_title()

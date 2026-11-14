@@ -127,12 +127,10 @@ class AV_Petitioner_Frontend_UI
          */
         $petitioner_title = apply_filters('av_petitioner_title', $petitioner_title, $form_id);
 
-        if (!is_string($petitioner_title)) {
-            $petitioner_title = '';
-        }
+        if (!is_string($petitioner_title) || $petitioner_title === '') return;
     ?>
         <h2 class="petitioner__title">
-            <?php echo !empty($petitioner_title) ? esc_html($petitioner_title) : esc_html__('Sign this petition', 'petitioner'); ?>
+            <?php echo esc_html($petitioner_title); ?>
         </h2>
     <?php
     }
