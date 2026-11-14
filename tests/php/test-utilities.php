@@ -51,6 +51,17 @@ class Test_Utilities extends BaseTestCase
         $this->assertFalse(av_petitioner_is_form_post(0));
     }
 
+    public function test_get_form_type()
+    {
+        $petition_id = wp_insert_post(['post_type' => 'petitioner-petition', 'post_status' => 'publish']);
+        $contact_id  = wp_insert_post(['post_type' => 'petitioner-contact', 'post_status' => 'publish']);
+
+        $this->assertSame('petition', av_petitioner_get_form_type($petition_id));
+        $this->assertSame('contact', av_petitioner_get_form_type($contact_id));
+        $this->assertSame('contact', av_petitioner_get_form_type(get_post($contact_id)));
+        $this->assertSame('petition', av_petitioner_get_form_type(0));
+    }
+
     // ============================================
     // AV_PETITIONER_PARSE_CONDITIONAL_LOGIC TESTS
     // ============================================

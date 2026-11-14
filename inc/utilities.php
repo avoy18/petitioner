@@ -44,6 +44,18 @@ function av_petitioner_is_form_post($post): bool
 }
 
 /**
+ * Get the form type ('petition' or 'contact') for a form post (ID or object).
+ *
+ * @since 0.9.0
+ */
+function av_petitioner_get_form_type($post): string
+{
+    $post = get_post($post);
+
+    return $post && $post->post_type === 'petitioner-contact' ? 'contact' : 'petition';
+}
+
+/**
  * Country code => English name.
  *
  * @return array<string, string>

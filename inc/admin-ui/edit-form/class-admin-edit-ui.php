@@ -9,15 +9,23 @@ class AV_Petitioner_Admin_Edit_UI
     public static $ADMIN_EDIT_NONCE_LABEL = 'save_petition_details';
 
     /**
-     * Get the meta schema for petition forms.
+     * Get the meta schema for a form type.
      *
+     * @param string $form_type 'petition' or 'contact'.
      * @return array
      */
-    public static function get_meta_schema()
+    public static function get_meta_schema($form_type = 'petition')
     {
-        $schema = require plugin_dir_path(__FILE__) . 'admin-edit-schema.php';
+        $schema_file = $form_type === 'contact' ? 'admin-edit-schema-contact.php' : 'admin-edit-schema.php';
+        $schema = require plugin_dir_path(__FILE__) . $schema_file;
 
-        return apply_filters('av_petitioner_edit_meta_schema', $schema);
+        /**
+         * Filter the edit screen meta schema.
+         *
+         * @param array  $schema    Meta schema keyed by field name.
+         * @param string $form_type 'petition' or 'contact'. @since 0.9.0
+         */
+        return apply_filters('av_petitioner_edit_meta_schema', $schema, $form_type);
     }
 
     public function __construct()
@@ -51,7 +59,7 @@ class AV_Petitioner_Admin_Edit_UI
     private function get_meta_fields($post_id)
     {
         $meta_values = [];
-        foreach (self::get_meta_schema() as $key => $config) {
+        foreach (self::get_meta_schema(av_petitioner_get_form_type($post_id)) as $key => $config) {
             if (empty($config['meta_key'])) {
                 continue;
             }
@@ -70,9 +78,11 @@ class AV_Petitioner_Admin_Edit_UI
         wp_nonce_field(self::$ADMIN_EDIT_NONCE_LABEL, "petitioner_details_nonce");
         // Retrieve current meta values
         $meta_values     = $this->get_meta_fields($post->ID);
+        $form_type       = av_petitioner_get_form_type($post);
         // Base non-meta data for the React app
         $petitioner_info = [
             "form_id"                       => (int) $post->ID,
+            "form_type"                     => $form_type,
             "export_url"                    => esc_url_raw(admin_url("admin-post.php?action=petitioner_export_csv&form_id=" . (int) $post->ID)),
             "default_values"                => [
                 "ty_email_subject"              => AV_Petitioner_Labels::get('ty_email_subject'),
@@ -90,7 +100,7 @@ class AV_Petitioner_Admin_Edit_UI
         ];
 
         // Hydrate all fields from the schema automatically based on their type
-        $schema = self::get_meta_schema();
+        $schema = self::get_meta_schema($form_type);
         foreach ($schema as $key => $config) {
             $type  = $config['type'] ?? 'text';
             $value = $meta_values[$key] ?? '';
@@ -179,7 +189,7 @@ class AV_Petitioner_Admin_Edit_UI
 
         // Process meta fields
         $meta_values = [];
-        foreach (self::get_meta_schema() as $key => $config) {
+        foreach (self::get_meta_schema(av_petitioner_get_form_type($post_id)) as $key => $config) {
             $meta_values[$key] = isset($_POST["petitioner_$key"])
                 ? wp_unslash($_POST["petitioner_$key"])
                 : '';
@@ -194,7 +204,7 @@ class AV_Petitioner_Admin_Edit_UI
      */
     private function update_meta_fields($post_id, $meta_values)
     {
-        $schema = self::get_meta_schema();
+        $schema = self::get_meta_schema(av_petitioner_get_form_type($post_id));
 
         foreach ($meta_values as $key => $value) {
             if (!isset($schema[$key]) || empty($schema[$key]['meta_key'])) {
