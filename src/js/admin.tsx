@@ -3,8 +3,6 @@ import EditFields from '@admin/sections/EditFields';
 import SettingsFields from '@admin/sections/SettingsFields';
 import ShortcodeArea from '@admin/sections/ShortcodeArea';
 import ComponentPreview from '@admin/sections/ComponentPreviewArea';
-import ContactForms from '@admin/sections/ContactForms';
-
 import '../css/admin/index.css';
 import { safelyParseJSON } from '@js/utilities';
 import { registerComponents } from '@admin/registerComponents';
@@ -56,14 +54,6 @@ function ComponentPreviewUI() {
 	}
 }
 
-function ContactFormsUI() {
-	const contactFormsContainer = document.getElementById('petitioner-contact-forms-admin');
-	if (contactFormsContainer) {
-		const contactFormsRoot = createRoot(contactFormsContainer);
-		contactFormsRoot.render(<ContactForms />);
-	}
-}
-
 function removeLoading() {
 	const loadingElement = document.querySelector('.ptr-is-loading');
 
@@ -77,7 +67,4 @@ EditUI();
 SettingsUI();
 
 ComponentPreviewUI();
-
-ContactFormsUI();
-
 removeLoading();

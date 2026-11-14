@@ -62,10 +62,6 @@ class AV_Petitioner_Setup
                 new AV_Petitioner_Admin_Settings_UI();
             }
 
-            if (class_exists('AV_Petitioner_Admin_Contact_Forms_UI')) {
-                new AV_Petitioner_Admin_Contact_Forms_UI();
-            }
-
             if (class_exists('AV_Petitioner_Admin_Component_Preview_UI')) {
                 new AV_Petitioner_Admin_Component_Preview_UI();
             }
@@ -237,6 +233,33 @@ class AV_Petitioner_Setup
             'hierarchical'          => false,
             'publicly_queryable'    => false,
             'menu_icon'             => plugin_dir_url(dirname(__FILE__)) . 'petitioner-glyph.svg'
+        ));
+
+        $contact_labels = array(
+            'name'               => _x('Contact Forms', 'post type general name', 'petitioner'),
+            'singular_name'      => _x('Contact Form', 'post type singular name', 'petitioner'),
+            'name_admin_bar'     => _x('Contact Form', 'add new on admin bar', 'petitioner'),
+            'add_new'            => _x('Add New', 'contact form', 'petitioner'),
+            'add_new_item'       => __('Add New Contact Form', 'petitioner'),
+            'new_item'           => __('New Contact Form', 'petitioner'),
+            'edit_item'          => __('Edit Contact Form', 'petitioner'),
+            'view_item'          => __('View Contact Form', 'petitioner'),
+            'all_items'          => __('Contact Forms', 'petitioner'),
+            'search_items'       => __('Search Contact Forms', 'petitioner'),
+            'not_found'          => __('No contact forms found.', 'petitioner'),
+            'not_found_in_trash' => __('No contact forms found in Trash.', 'petitioner')
+        );
+
+        register_post_type('petitioner-contact', array(
+            'public'                => true,
+            'labels'                => $contact_labels,
+            'supports'              => array('title'),
+            'has_archive'           => false,
+            'show_in_menu'          => 'edit.php?post_type=petitioner-petition',
+            'show_in_rest'          => true,
+            'exclude_from_search'   => true,
+            'hierarchical'          => false,
+            'publicly_queryable'    => false,
         ));
     }
 

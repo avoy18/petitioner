@@ -19,10 +19,11 @@ class Test_Utilities extends BaseTestCase
     // FORM POST TYPE HELPERS
     // ============================================
 
-    public function test_form_post_types_default_to_petition()
+    public function test_form_post_types_include_petition_and_contact()
     {
-        $this->assertSame(['petitioner-petition'], av_petitioner_get_form_post_types());
+        $this->assertSame(['petitioner-petition', 'petitioner-contact'], av_petitioner_get_form_post_types());
         $this->assertTrue(av_petitioner_is_form_post_type('petitioner-petition'));
+        $this->assertTrue(av_petitioner_is_form_post_type('petitioner-contact'));
         $this->assertFalse(av_petitioner_is_form_post_type('post'));
     }
 

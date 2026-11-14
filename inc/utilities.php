@@ -18,7 +18,7 @@ function av_petitioner_get_form_post_types(): array
      * @since 0.9.0
      * @param string[] $post_types
      */
-    return (array) apply_filters('av_petitioner_form_post_types', ['petitioner-petition']);
+    return (array) apply_filters('av_petitioner_form_post_types', ['petitioner-petition', 'petitioner-contact']);
 }
 
 /**
