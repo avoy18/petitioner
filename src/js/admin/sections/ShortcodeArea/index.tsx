@@ -13,7 +13,7 @@ export default function ShortCodeArea() {
 			clipboardValue={`[petitioner-form id="${formID}"]`}
 			label={__('Your Petitioner shortcode', 'petitioner')}
 			help={__(
-				'Use this shortcode on the frontend of your website to show the petition form',
+				'Use this shortcode on the frontend of your website to show the form',
 				'petitioner'
 			)}
 			fieldName="petitioner_shortcode"

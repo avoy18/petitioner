@@ -41,11 +41,11 @@ class AV_Petitioner_Admin_Edit_UI
     /**
      * Add Meta Boxes
      */
-    public function add_meta_boxes()
+    public function add_meta_boxes($post_type = '')
     {
         add_meta_box(
             "petition_details",
-            "Petition details",
+            $post_type === "petitioner-contact" ? __("Contact form details", "petitioner") : __("Petition details", "petitioner"),
             [$this, "display_meta_box"],
             av_petitioner_get_form_post_types(),
             "normal",
