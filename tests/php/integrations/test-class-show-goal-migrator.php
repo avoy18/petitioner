@@ -19,12 +19,15 @@ class Test_Show_Goal_Migrator extends BaseTestCase
         $with_zero = $this->make_form();
         $without_meta = $this->make_form();
         update_post_meta($with_zero, '_petitioner_show_goal', 0);
+        update_post_meta($with_zero, '_petitioner_show_letter', 0);
         $this->stub_petition_query([$with_zero, $without_meta]);
 
         AV_Petitioner_Show_Goal_Migrator::migrate_existing_petitions();
 
         $this->assertSame(1, (int) get_post_meta($with_zero, '_petitioner_show_goal', true));
+        $this->assertSame(1, (int) get_post_meta($with_zero, '_petitioner_show_letter', true));
         $this->assertSame(1, (int) get_post_meta($without_meta, '_petitioner_show_goal', true));
+        $this->assertSame(1, (int) get_post_meta($without_meta, '_petitioner_show_letter', true));
     }
 
     public function test_upgrade_to_0_8_8_runs_the_migration_once()
@@ -39,6 +42,7 @@ class Test_Show_Goal_Migrator extends BaseTestCase
         $petitioner_setup->on_plugins_loaded();
 
         $this->assertSame(1, (int) get_post_meta($form_id, '_petitioner_show_goal', true));
+        $this->assertSame(1, (int) get_post_meta($form_id, '_petitioner_show_letter', true));
         $this->assertSame('0.8.8', get_option('petitioner_plugin_version'));
 
         update_post_meta($form_id, '_petitioner_show_goal', 0);
@@ -68,7 +72,7 @@ class Test_Show_Goal_Migrator extends BaseTestCase
         }
 
         return array_map(function ($id) {
-            return (object) ['ID' => $id];
+            return (object) ['ID' => (int) $id];
         }, $this->petition_ids);
     }
 }

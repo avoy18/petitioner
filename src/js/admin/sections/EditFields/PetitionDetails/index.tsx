@@ -105,6 +105,21 @@ export default function PetitionDetails() {
 			<hr />
 			<h3>Letter details</h3>
 			<p>
+				<input
+					checked={formState.show_letter}
+					type="checkbox"
+					name="petitioner_show_letter"
+					id="petitioner_show_letter"
+					className="widefat"
+					onChange={(e) =>
+						updateFormState('show_letter', e.target.checked)
+					}
+				/>
+				<label htmlFor="petitioner_show_letter">
+					Show the petition letter?
+				</label>
+			</p>
+			<p>
 				<TextControl
 					style={{ width: '100%' }}
 					type="text"

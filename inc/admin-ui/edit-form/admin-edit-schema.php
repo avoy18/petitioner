@@ -12,6 +12,7 @@ return [
     'subject'                   => ['meta_key' => '_petitioner_subject', 'type' => 'text'],
     'show_country'              => ['meta_key' => '_petitioner_show_country', 'type' => 'checkbox'],
     'show_goal'                 => ['meta_key' => '_petitioner_show_goal', 'type' => 'checkbox', 'default' => true],
+    'show_letter'               => ['meta_key' => '_petitioner_show_letter', 'type' => 'checkbox', 'default' => true],
     'require_approval'          => ['meta_key' => '_petitioner_require_approval', 'type' => 'checkbox'],
     'approval_state'            => ['meta_key' => '_petitioner_approval_state', 'type' => 'text'],
     'letter'                    => ['meta_key' => '_petitioner_letter', 'type' => 'wysiwyg'],

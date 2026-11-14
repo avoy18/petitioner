@@ -5,22 +5,22 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Turns the per-petition goal display on for petitions saved before that choice existed.
- *
- * Those saves stored 0 because the field had no editor control.
+ * Turns per-petition goal and letter display on for petitions saved before those choices existed.
  */
 class AV_Petitioner_Show_Goal_Migrator
 {
     public static function migrate_existing_petitions()
     {
-        $forms = get_posts([
+        $form_ids = get_posts([
             'post_type'   => 'petitioner-petition',
-            'numberposts' => 1000,
+            'numberposts' => -1,
+            'fields'      => 'ids',
             'post_status' => 'any',
         ]);
 
-        foreach ($forms as $form) {
-            update_post_meta($form->ID, '_petitioner_show_goal', 1);
+        foreach ($form_ids as $form_id) {
+            update_post_meta($form_id, '_petitioner_show_goal', 1);
+            update_post_meta($form_id, '_petitioner_show_letter', 1);
         }
     }
 }
