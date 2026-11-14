@@ -53,7 +53,10 @@ class AV_Petitioner_Contact_Mailer extends AV_Petitioner_Mailer
      */
     public function get_field_rows($submission)
     {
-        $field_aliases = ['bcc_yourself' => 'bcc'];
+        $labels = array_merge(
+            AV_Petitioner_Labels::get_field_labels(),
+            av_petitioner_get_form_labels($this->form_id, array_keys($submission))
+        );
 
         $rows = [];
 
@@ -62,8 +65,7 @@ class AV_Petitioner_Contact_Mailer extends AV_Petitioner_Mailer
                 continue;
             }
 
-            $field = AV_Petitioner_Field_Registry::get($field_aliases[$key] ?? $key);
-            $label = !empty($field['fieldName']) ? $field['fieldName'] : $key;
+            $label = !empty($labels[$key]) ? $labels[$key] : ucwords(str_replace('_', ' ', $key));
 
             $rows[$label] = ($value === 1 || $value === '1') ? __('Yes', 'petitioner') : (string) $value;
         }

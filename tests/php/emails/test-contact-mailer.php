@@ -96,9 +96,32 @@ class Test_Contact_Mailer extends BaseTestCase
         ]);
 
         $this->assertSame([
-            AV_Petitioner_Field_Registry::get('email')['fieldName']      => 'jane@example.com',
-            AV_Petitioner_Field_Registry::get('fname')['fieldName']      => 'Jane',
-            AV_Petitioner_Field_Registry::get('newsletter')['fieldName'] => 'Yes',
+            AV_Petitioner_Labels::get_field_labels()['email']      => 'jane@example.com',
+            AV_Petitioner_Labels::get_field_labels()['fname']      => 'Jane',
+            AV_Petitioner_Labels::get_field_labels()['newsletter'] => 'Yes',
         ], $rows);
+    }
+
+    public function test_get_field_rows_uses_form_labels_and_readable_fallback()
+    {
+        $form_id = wp_insert_post([
+            'post_type'   => 'petitioner-contact',
+            'post_status' => 'publish',
+        ]);
+        update_post_meta($form_id, '_petitioner_form_fields', wp_json_encode([
+            'email' => ['label' => 'Work email'],
+        ]));
+
+        $rows = (new AV_Petitioner_Contact_Mailer($this->make_settings(['form_id' => $form_id])))->get_field_rows([
+            'email'        => 'jane@example.com',
+            'petition_url' => 'http://localhost/contact/',
+        ]);
+
+        $this->assertSame([
+            'Work email'   => 'jane@example.com',
+            'Petition Url' => 'http://localhost/contact/',
+        ], $rows);
+
+        wp_delete_post($form_id, true);
     }
 }
