@@ -4,9 +4,16 @@ use WorDBless\BaseTestCase;
 
 class Test_Submissions_UI extends BaseTestCase
 {
+    private $form_id;
+
     public function set_up()
     {
         parent::set_up();
+
+        $this->form_id = wp_insert_post([
+            'post_type'   => 'petitioner-petition',
+            'post_status' => 'publish',
+        ]);
 
         // get_submission_style_labels() memoises, so a label registered by one
         // test must not leak into the next.
@@ -80,9 +87,18 @@ class Test_Submissions_UI extends BaseTestCase
         $this->assertSame('', AV_Petitioner_Submissions_UI::render_submissions_list('not-an-id'));
     }
 
+    public function test_render_returns_empty_string_for_forms_without_public_submissions()
+    {
+        $contact_id = wp_insert_post(['post_type' => 'petitioner-contact', 'post_status' => 'publish']);
+        $post_id    = wp_insert_post(['post_type' => 'post', 'post_status' => 'publish']);
+
+        $this->assertSame('', AV_Petitioner_Submissions_UI::render_submissions_list($contact_id));
+        $this->assertSame('', AV_Petitioner_Submissions_UI::render_submissions_list($post_id));
+    }
+
     public function test_render_outputs_wrapper_with_style_modifier()
     {
-        $html = AV_Petitioner_Submissions_UI::render_submissions_list(42);
+        $html = AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id);
 
         $this->assertStringContainsString('class="petitioner petitioner-submissions petitioner-submissions--simple"', $html);
     }
@@ -90,12 +106,12 @@ class Test_Submissions_UI extends BaseTestCase
     public function test_render_applies_defaults_when_no_atts_are_passed()
     {
         $settings = $this->get_rendered_settings(
-            AV_Petitioner_Submissions_UI::render_submissions_list(42)
+            AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id)
         );
 
         $defaults = AV_Petitioner_Submissions_UI::get_defaults();
 
-        $this->assertSame(42, $settings['form_id']);
+        $this->assertSame($this->form_id, $settings['form_id']);
         $this->assertSame($defaults['per_page'], $settings['per_page']);
         $this->assertSame($defaults['style'], $settings['style']);
         $this->assertTrue($settings['show_pagination']);
@@ -105,7 +121,7 @@ class Test_Submissions_UI extends BaseTestCase
     public function test_render_lets_atts_override_defaults()
     {
         $settings = $this->get_rendered_settings(
-            AV_Petitioner_Submissions_UI::render_submissions_list(42, [
+            AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id, [
                 'per_page' => 5,
                 'style'    => 'table',
             ])
@@ -118,7 +134,7 @@ class Test_Submissions_UI extends BaseTestCase
     public function test_render_falls_back_to_default_style_when_style_is_unknown()
     {
         $settings = $this->get_rendered_settings(
-            AV_Petitioner_Submissions_UI::render_submissions_list(42, ['style' => 'does-not-exist'])
+            AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id, ['style' => 'does-not-exist'])
         );
 
         $this->assertSame('simple', $settings['style']);
@@ -131,7 +147,7 @@ class Test_Submissions_UI extends BaseTestCase
             return $styles;
         });
 
-        $html = AV_Petitioner_Submissions_UI::render_submissions_list(42, ['style' => 'pro-ticker']);
+        $html = AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id, ['style' => 'pro-ticker']);
 
         $this->assertSame('pro-ticker', $this->get_rendered_settings($html)['style']);
         $this->assertStringContainsString('petitioner-submissions--pro-ticker', $html);
@@ -140,7 +156,7 @@ class Test_Submissions_UI extends BaseTestCase
     public function test_render_drops_fields_that_are_not_public()
     {
         $settings = $this->get_rendered_settings(
-            AV_Petitioner_Submissions_UI::render_submissions_list(42, [
+            AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id, [
                 'fields' => 'name,email,country',
             ])
         );
@@ -152,7 +168,7 @@ class Test_Submissions_UI extends BaseTestCase
     public function test_render_tolerates_spaces_between_fields()
     {
         $settings = $this->get_rendered_settings(
-            AV_Petitioner_Submissions_UI::render_submissions_list(42, [
+            AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id, [
                 'fields' => 'name, country, submitted_at',
             ])
         );
@@ -163,7 +179,7 @@ class Test_Submissions_UI extends BaseTestCase
     public function test_render_coerces_shortcode_string_booleans()
     {
         $settings = $this->get_rendered_settings(
-            AV_Petitioner_Submissions_UI::render_submissions_list(42, [
+            AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id, [
                 'show_pagination'   => 'false',
                 'hide_page_numbers' => 'true',
             ])
@@ -176,10 +192,10 @@ class Test_Submissions_UI extends BaseTestCase
     public function test_render_casts_form_id_to_an_integer()
     {
         $settings = $this->get_rendered_settings(
-            AV_Petitioner_Submissions_UI::render_submissions_list('42')
+            AV_Petitioner_Submissions_UI::render_submissions_list((string) $this->form_id)
         );
 
-        $this->assertSame(42, $settings['form_id']);
+        $this->assertSame($this->form_id, $settings['form_id']);
     }
 
     public function test_render_escapes_the_settings_payload()
@@ -189,7 +205,7 @@ class Test_Submissions_UI extends BaseTestCase
             return $styles;
         });
 
-        $html = AV_Petitioner_Submissions_UI::render_submissions_list(42, [
+        $html = AV_Petitioner_Submissions_UI::render_submissions_list($this->form_id, [
             'style' => '"><script>alert(1)</script>',
         ]);
 

@@ -30,7 +30,7 @@ class AV_Petitioner_Shortcodes
 
         $form_id = absint($atts['id']);
 
-        if (!$form_id) {
+        if (!av_petitioner_form_supports($form_id, 'ptr-goal')) {
             return '';
         }
 
@@ -48,7 +48,7 @@ class AV_Petitioner_Shortcodes
 
         $form_id = absint($atts['id']);
 
-        if (!$form_id) {
+        if (!av_petitioner_form_supports($form_id, 'ptr-public-submissions')) {
             return '';
         }
 
@@ -68,8 +68,7 @@ class AV_Petitioner_Shortcodes
 
         $form_id = absint($atts['id']);
 
-        $post = get_post($form_id);
-        if (!$post || $post->post_type !== 'petitioner-petition') {
+        if (!av_petitioner_form_supports($form_id, 'ptr-goal')) {
             return '';
         }
 

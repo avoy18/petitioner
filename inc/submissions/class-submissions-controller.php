@@ -84,8 +84,7 @@ class AV_Petitioner_Submissions_Controller
 
         $form_type = av_petitioner_get_form_type($form_id);
 
-        // Contact forms accept repeat submissions from the same email
-        if ($form_type !== 'contact') {
+        if (av_petitioner_form_supports($form_id, 'ptr-duplicate-check')) {
             $email_exists = AV_Petitioner_Submissions_Model::check_duplicate_email($email, $form_id);
 
             if ($email_exists) {
@@ -340,8 +339,7 @@ class AV_Petitioner_Submissions_Controller
         $order      = isset($_GET['order']) ? ($_GET['order'] === 'desc' ? 'desc' : 'asc') : null;
         $orderby    = isset($_GET['orderby']) ? $_GET['orderby'] : '';
 
-        // Check if form_id is valid
-        if (!$form_id) {
+        if (!av_petitioner_form_supports($form_id, 'ptr-public-submissions') || get_post_status($form_id) !== 'publish') {
             wp_send_json_error('Invalid form ID.');
             wp_die();
         }
@@ -718,8 +716,7 @@ class AV_Petitioner_Submissions_Controller
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('invalid_form_id')]);
         }
 
-        $post = get_post($form_id);
-        if (!$post || $post->post_type !== 'petitioner-petition' || $post->post_status !== 'publish') {
+        if (!av_petitioner_form_supports($form_id, 'ptr-goal') || get_post_status($form_id) !== 'publish') {
             wp_send_json_error(['message' => AV_Petitioner_Labels::get('invalid_form_id')]);
         }
 

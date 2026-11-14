@@ -51,6 +51,24 @@ class Test_Utilities extends BaseTestCase
         $this->assertFalse(av_petitioner_is_form_post(0));
     }
 
+    public function test_form_supports_is_opt_in_per_form_type()
+    {
+        $petition_id = wp_insert_post(['post_type' => 'petitioner-petition', 'post_status' => 'publish']);
+        $contact_id  = wp_insert_post(['post_type' => 'petitioner-contact', 'post_status' => 'publish']);
+        $post_id     = wp_insert_post(['post_type' => 'post', 'post_status' => 'publish']);
+
+        foreach (['ptr-goal', 'ptr-letter', 'ptr-public-submissions', 'ptr-duplicate-check'] as $feature) {
+            $this->assertTrue(av_petitioner_form_supports($petition_id, $feature), $feature);
+            $this->assertFalse(av_petitioner_form_supports($contact_id, $feature), $feature);
+        }
+
+        add_post_type_support('post', 'ptr-goal');
+        $this->assertFalse(av_petitioner_form_supports($post_id, 'ptr-goal'));
+        remove_post_type_support('post', 'ptr-goal');
+
+        $this->assertFalse(av_petitioner_form_supports(0, 'ptr-goal'));
+    }
+
     public function test_get_form_type()
     {
         $petition_id = wp_insert_post(['post_type' => 'petitioner-petition', 'post_status' => 'publish']);

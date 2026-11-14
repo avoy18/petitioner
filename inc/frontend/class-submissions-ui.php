@@ -42,7 +42,7 @@ class AV_Petitioner_Submissions_UI
     {
         $form_id = absint($form_id);
 
-        if (!$form_id) {
+        if (!av_petitioner_form_supports($form_id, 'ptr-public-submissions')) {
             return '';
         }
 

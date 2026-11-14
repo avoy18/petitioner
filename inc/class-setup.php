@@ -225,7 +225,7 @@ class AV_Petitioner_Setup
         register_post_type('petitioner-petition', array(
             'public'                => true,
             'labels'                => $labels,
-            'supports'              => array('title'),
+            'supports'              => array('title', 'ptr-goal', 'ptr-letter', 'ptr-public-submissions', 'ptr-duplicate-check'),
             'has_archive'           => false,
             'show_in_menu'          => true,
             'show_in_rest'          => true,

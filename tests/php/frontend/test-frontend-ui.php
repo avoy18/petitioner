@@ -249,4 +249,27 @@ class Test_Frontend_UI extends BaseTestCase
 
         $this->assertEmpty(trim($output));
     }
+
+    public function test_contact_form_renders_without_goal_or_letter()
+    {
+        $contact_id = wp_insert_post(['post_type' => 'petitioner-contact', 'post_status' => 'publish']);
+        update_post_meta($contact_id, '_petitioner_form_fields', wp_json_encode([]));
+
+        $output = (new AV_Petitioner_Frontend_UI())->display_form(['id' => $contact_id]);
+
+        $this->assertStringContainsString('petitioner__response', $output);
+        $this->assertStringNotContainsString('petitioner__goal', $output);
+        $this->assertStringNotContainsString('petitioner-modal', $output);
+    }
+
+    public function test_contact_form_shortcodes_expose_no_goal_or_count()
+    {
+        new AV_Petitioner_Shortcodes();
+        $contact_id = wp_insert_post(['post_type' => 'petitioner-contact', 'post_status' => 'publish']);
+
+        $this->assertSame('', do_shortcode('[petitioner-goal id="' . $contact_id . '"]'));
+        $this->assertSame('', do_shortcode('[petitioner-submission-count id="' . $contact_id . '"]'));
+        $this->assertSame('', do_shortcode('[petitioner-goal-progress-ui id="' . $contact_id . '"]'));
+        $this->assertSame('', do_shortcode('[petitioner-submissions id="' . $contact_id . '"]'));
+    }
 }

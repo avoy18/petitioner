@@ -44,6 +44,21 @@ function av_petitioner_is_form_post($post): bool
 }
 
 /**
+ * Whether a form post (ID or object) supports a Petitioner feature.
+ *
+ * Features are opt-in per post type via `supports`, so new form types get none by default:
+ * ptr-goal, ptr-letter, ptr-public-submissions, ptr-duplicate-check.
+ *
+ * @since 0.9.0
+ */
+function av_petitioner_form_supports($post, string $feature): bool
+{
+    $post = get_post($post);
+
+    return $post && av_petitioner_is_form_post_type($post->post_type) && post_type_supports($post->post_type, $feature);
+}
+
+/**
  * Get the form type ('petition' or 'contact') for a form post (ID or object).
  *
  * @since 0.9.0

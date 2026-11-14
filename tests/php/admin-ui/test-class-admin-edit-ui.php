@@ -95,6 +95,7 @@ class Test_Admin_Edit_UI extends BaseTestCase
         $user = wp_get_current_user();
         $user->add_cap('edit_posts');
         $user->add_cap('edit_others_posts');
+        $user->add_cap('edit_published_posts');
 
         $post_id = wp_insert_post(['post_type' => 'petitioner-contact', 'post_status' => 'publish']);
 

@@ -139,7 +139,7 @@ class AV_Petitioner_Frontend_UI
 
     public function render_modal($form_id)
     {
-        if (!$form_id) return;
+        if (!$form_id || !av_petitioner_form_supports($form_id, 'ptr-letter')) return;
 
         $petitioner_letter      = get_post_meta($form_id, '_petitioner_letter', true);
         $petitioner_subject     = get_post_meta($form_id, '_petitioner_subject', true);
@@ -190,8 +190,7 @@ class AV_Petitioner_Frontend_UI
 
     public function render_goal($form_id, $show_goal = true)
     {
-
-        if (!$show_goal) return;
+        if (!$show_goal || !av_petitioner_form_supports($form_id, 'ptr-goal')) return;
 
         $progress_data     = AV_Petitioner_Goal_Milestones::get_progress_data($form_id);
         $goal              = $progress_data['goal'];
