@@ -28,7 +28,7 @@ class AV_Petitioner_Frontend_UI
         <div <?php echo $form_attributes; ?>>
             <?php
             $this->render_title($form_id);
-            $this->render_goal($form_id, $this->should_show_goal($form_id));
+            $this->render_goal($form_id, get_option('petitioner_show_goal', true) && get_post_meta($form_id, '_petitioner_show_goal', true));
             $this->render_modal($form_id);
 
             // $form_handler->render();
@@ -188,18 +188,6 @@ class AV_Petitioner_Frontend_UI
             </div>
         </div>
     <?php
-    }
-
-    /**
-     * The form shows the goal bar when both the global setting and this petition allow it.
-     *
-     * @param int|string $form_id Petition ID.
-     * @return bool
-     */
-    public function should_show_goal($form_id)
-    {
-        return wp_validate_boolean(get_option('petitioner_show_goal', true))
-            && wp_validate_boolean(get_post_meta($form_id, '_petitioner_show_goal', true));
     }
 
     public function render_goal($form_id, $show_goal = true)

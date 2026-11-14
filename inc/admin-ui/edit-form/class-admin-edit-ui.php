@@ -53,7 +53,11 @@ class AV_Petitioner_Admin_Edit_UI
             if (empty($config['meta_key'])) {
                 continue;
             }
-            $meta_values[$key] = get_post_meta($post_id, $config['meta_key'], true);
+            $value = get_post_meta($post_id, $config['meta_key'], true);
+            if ($value === '' && array_key_exists('default', $config)) {
+                $value = $config['default'];
+            }
+            $meta_values[$key] = $value;
         }
         return $meta_values;
     }
@@ -94,12 +98,7 @@ class AV_Petitioner_Admin_Edit_UI
             $value = $meta_values[$key] ?? '';
 
             if ($type === 'checkbox') {
-                // A new petition has no saved choice yet, so the goal stays visible.
-                if ($key === 'show_goal') {
-                    $petitioner_info[$key] = ($value === '') ? true : wp_validate_boolean($value);
-                } else {
-                    $petitioner_info[$key] = (bool) $value;
-                }
+                $petitioner_info[$key] = (bool) $value;
             } elseif ($type === 'wysiwyg') {
                 $petitioner_info[$key] = wp_kses_post($value);
             } elseif ($type === 'emails' || $type === 'text') {

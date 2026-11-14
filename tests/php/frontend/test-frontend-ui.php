@@ -266,8 +266,8 @@ class Test_Frontend_UI extends BaseTestCase
 
         $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
 
-        update_option('petitioner_show_goal', '1');
-        update_post_meta($this->form_id, '_petitioner_show_goal', '0');
+        update_option('petitioner_show_goal', 1);
+        update_post_meta($this->form_id, '_petitioner_show_goal', 0);
 
         $this->assertStringNotContainsString('petitioner__goal', $this->render_petition_form());
     }
