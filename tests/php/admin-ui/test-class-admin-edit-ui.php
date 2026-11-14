@@ -61,7 +61,7 @@ class Test_Admin_Edit_UI extends BaseTestCase
         $schema = AV_Petitioner_Admin_Edit_UI::get_meta_schema('contact');
 
         $this->assertEqualsCanonicalizing(
-            ['title', 'email', 'cc_emails', 'subject', 'add_honeypot', 'form_fields', 'field_order'],
+            ['title', 'email', 'cc_emails', 'subject', 'add_honeypot', 'from_field', 'from_name', 'redirect_url', 'form_fields', 'field_order'],
             array_keys($schema)
         );
     }

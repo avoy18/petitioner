@@ -133,7 +133,15 @@ describe('EditFields', () => {
 			].forEach((name) => {
 				expect(container.querySelector(`[name="${name}"]`)).toBeNull();
 			});
-			expect(container.querySelector('[name="petitioner_add_honeypot"]')).not.toBeNull();
+			[
+				'petitioner_add_honeypot',
+				'petitioner_from_field',
+				'petitioner_from_name',
+				'petitioner_redirect_url',
+			].forEach((name) => {
+				expect(container.querySelector(`[name="${name}"]`)).not.toBeNull();
+			});
+			expect(container.querySelector('[name="petitioner_confirm_success_url"]')).toBeNull();
 		});
 	});
 
