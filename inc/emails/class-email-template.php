@@ -31,6 +31,26 @@ class AV_Petitioner_Email_Template
         return $message;
     }
 
+    /**
+     * A two-column table of label => value rows.
+     *
+     * @since 0.9.0
+     *
+     * @param array<string, string> $rows
+     * @return string
+     */
+    static public function get_fields_table($rows)
+    {
+        $html = '';
+
+        foreach ($rows as $label => $value) {
+            $html .= '<tr><th align="left" valign="top" style="padding: 4px 16px 4px 0;">' . esc_html($label) . '</th>';
+            $html .= '<td style="padding: 4px 0;">' . nl2br(esc_html($value)) . '</td></tr>';
+        }
+
+        return '<table>' . $html . '</table>';
+    }
+
     static public function get_default_from_field()
     {
         $domain = wp_parse_url(home_url(), PHP_URL_HOST);

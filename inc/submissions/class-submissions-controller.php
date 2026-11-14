@@ -52,7 +52,7 @@ class AV_Petitioner_Submissions_Controller
         $street_address             = isset($_POST['petitioner_street_address']) ? sanitize_text_field(wp_unslash($_POST['petitioner_street_address'])) : '';
         $city                       = isset($_POST['petitioner_city']) ? sanitize_text_field(wp_unslash($_POST['petitioner_city'])) : '';
         $postal_code                = isset($_POST['petitioner_postal_code']) ? sanitize_text_field(wp_unslash($_POST['petitioner_postal_code'])) : '';
-        $comments                   = isset($_POST['petitioner_comments']) ? sanitize_text_field(wp_unslash($_POST['petitioner_comments'])) : '';
+        $comments                   = isset($_POST['petitioner_comments']) ? sanitize_textarea_field(wp_unslash($_POST['petitioner_comments'])) : '';
         $bcc                        = !empty($_POST['petitioner_bcc']) && sanitize_text_field(wp_unslash($_POST['petitioner_bcc'])) === 'on';
         $hide_name                  = !empty($_POST['petitioner_hide_name']) && sanitize_text_field(wp_unslash($_POST['petitioner_hide_name'])) === 'on';
         $newsletter                 = !empty($_POST['petitioner_newsletter']) && sanitize_text_field(wp_unslash($_POST['petitioner_newsletter'])) === 'on';
@@ -82,13 +82,18 @@ class AV_Petitioner_Submissions_Controller
 
         // Insert into the custom table
 
-        $email_exists = AV_Petitioner_Submissions_Model::check_duplicate_email($email, $form_id);
+        $form_type = av_petitioner_get_form_type($form_id);
 
-        if ($email_exists) {
-            wp_send_json_error([
-                'title'     => AV_Petitioner_Labels::get('could_not_submit'),
-                'message'   => AV_Petitioner_Labels::get('already_signed'),
-            ]);
+        // Contact forms accept repeat submissions from the same email
+        if ($form_type !== 'contact') {
+            $email_exists = AV_Petitioner_Submissions_Model::check_duplicate_email($email, $form_id);
+
+            if ($email_exists) {
+                wp_send_json_error([
+                    'title'     => AV_Petitioner_Labels::get('could_not_submit'),
+                    'message'   => AV_Petitioner_Labels::get('already_signed'),
+                ]);
+            }
         }
 
         $confirmation_token = null;
@@ -190,7 +195,9 @@ class AV_Petitioner_Submissions_Controller
          */
         $mailer_settings = apply_filters('av_petitioner_mailer_settings', $mailer_settings, $data);
 
-        $mailer = new AV_Petitioner_Mailer($mailer_settings);
+        $mailer = $form_type === 'contact'
+            ? new AV_Petitioner_Contact_Mailer($mailer_settings)
+            : new AV_Petitioner_Petition_Mailer($mailer_settings);
 
         $send_emails = $mailer->send_emails();
 

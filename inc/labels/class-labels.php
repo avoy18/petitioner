@@ -133,6 +133,7 @@ class AV_Petitioner_Labels
             // Translators: %s is the user's name.
             'sincerely'                      => __('Sincerely, %s', 'petitioner'),
             'confirmation_resent'            => __('Confirmation email resent.', 'petitioner'),
+            'contact_notification_subject'   => __('New contact form submission', 'petitioner'),
 
             // UI labels
             'success_message_title'          => __('Thank you!', 'petitioner'),

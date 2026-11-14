@@ -120,4 +120,28 @@ class Test_Email_Template extends BaseTestCase
 
         remove_all_filters('petitioner_get_styled_message');
     }
+
+    public function test_fields_table_renders_rows()
+    {
+        $html = AV_Petitioner_Email_Template::get_fields_table([
+            'Email'   => 'jane@example.com',
+            'Message' => "Hello\nWorld",
+        ]);
+
+        $this->assertStringStartsWith('<table>', $html);
+        $this->assertStringContainsString('>Email</th>', $html);
+        $this->assertStringContainsString('jane@example.com', $html);
+        $this->assertStringContainsString('Hello<br />', $html);
+    }
+
+    public function test_fields_table_escapes_labels_and_values()
+    {
+        $html = AV_Petitioner_Email_Template::get_fields_table([
+            '<b>Label</b>' => '<script>alert(1)</script>',
+        ]);
+
+        $this->assertStringNotContainsString('<script>', $html);
+        $this->assertStringNotContainsString('<b>', $html);
+        $this->assertStringContainsString('&lt;script&gt;', $html);
+    }
 }

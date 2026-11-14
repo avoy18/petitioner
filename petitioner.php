@@ -57,6 +57,8 @@ require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-controller.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-confirmations.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-email-template.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-mailer.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-petition-mailer.php';
+require_once AV_PETITIONER_PLUGIN_DIR . 'inc/emails/class-contact-mailer.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-frontend-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-form-ui.php';
 require_once AV_PETITIONER_PLUGIN_DIR . 'inc/frontend/class-dynamic-css.php';

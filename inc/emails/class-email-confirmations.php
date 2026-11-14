@@ -209,7 +209,9 @@ class AV_Email_Confirmations
          */
         $mailer_settings = apply_filters('av_petitioner_confirmation_mailer_settings', $mailer_settings, $submission);
 
-        $mailer = new AV_Petitioner_Mailer($mailer_settings);
+        $mailer = av_petitioner_get_form_type($form_id) === 'contact'
+            ? new AV_Petitioner_Contact_Mailer($mailer_settings)
+            : new AV_Petitioner_Petition_Mailer($mailer_settings);
 
         return $mailer->send_emails();
     }
