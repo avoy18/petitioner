@@ -358,7 +358,7 @@ class AV_Petitioner_Form_UI
 
     public function render_submit(array $field): void
     {
-        $field_label = !empty($field['label']) ? wp_kses_post($field['label']) : __('Sign this petition', 'petitioner');
+        $field_label = !empty($field['label']) ? wp_kses_post($field['label']) : __('Submit', 'petitioner');
     ?>
         <button type="submit" class="petitioner__btn petitioner__btn--submit">
             <?php echo $field_label; ?>

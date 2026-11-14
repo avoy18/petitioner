@@ -223,7 +223,7 @@ class AV_Petitioner_Labels
             'approval_status'                => __('Approval status', 'petitioner'),
             'confirmation_token'             => __('Confirmation token', 'petitioner'),
             'submit_button'                  => __('Submit button', 'petitioner'),
-            'submit_button_label'            => __('Sign this petition', 'petitioner'),
+            'submit_button_label'            => __('Submit', 'petitioner'),
             'legal_text'                     => __('Legal text', 'petitioner'),
             'legal_default_val'              => __('By submitting, you agree to our terms.', 'petitioner'),
         ];
