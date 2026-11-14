@@ -33,7 +33,7 @@ class Test_Mailer extends BaseTestCase
             'submission_id' => 1,
         ];
 
-        $mailer = $this->getMockBuilder(AV_Petitioner_Mailer::class)
+        $mailer = $this->getMockBuilder(AV_Petitioner_Petition_Mailer::class)
             ->setConstructorArgs([$settings])
             ->onlyMethods(['ty_email', 'representative_email'])
             ->getMock();
@@ -68,7 +68,7 @@ class Test_Mailer extends BaseTestCase
             'submission_id' => 1,
         ];
 
-        $mailer = $this->getMockBuilder(AV_Petitioner_Mailer::class)
+        $mailer = $this->getMockBuilder(AV_Petitioner_Petition_Mailer::class)
             ->setConstructorArgs([$settings])
             ->onlyMethods(['ty_email', 'representative_email'])
             ->getMock();
@@ -100,7 +100,7 @@ class Test_Mailer extends BaseTestCase
             'submission_id' => 1,
         ];
 
-        $mailer = $this->getMockBuilder(AV_Petitioner_Mailer::class)
+        $mailer = $this->getMockBuilder(AV_Petitioner_Petition_Mailer::class)
             ->setConstructorArgs([$settings])
             ->onlyMethods(['ty_email', 'representative_email'])
             ->getMock();
@@ -142,7 +142,7 @@ class Test_Mailer extends BaseTestCase
 
         add_filter('av_petitioner_submission_status', $filter_callback, 10, 2);
 
-        $mailer = $this->getMockBuilder(AV_Petitioner_Mailer::class)
+        $mailer = $this->getMockBuilder(AV_Petitioner_Petition_Mailer::class)
             ->setConstructorArgs([$settings])
             ->onlyMethods(['ty_email', 'representative_email'])
             ->getMock();
@@ -164,7 +164,7 @@ class Test_Mailer extends BaseTestCase
      * Build a mailer whose "sincerely" label is overridden for its form.
      *
      * @param string|null $sincerely_label Label to store, or null to keep the default.
-     * @return array{0: AV_Petitioner_Mailer, 1: int} The mailer and its form ID.
+     * @return array{0: AV_Petitioner_Petition_Mailer, 1: int} The mailer and its form ID.
      */
     private function make_mailer_with_label($sincerely_label = null)
     {
@@ -179,7 +179,7 @@ class Test_Mailer extends BaseTestCase
             update_post_meta($form_id, '_petitioner_sincerely', $sincerely_label);
         }
 
-        $mailer = new AV_Petitioner_Mailer([
+        $mailer = new AV_Petitioner_Petition_Mailer([
             'target_email' => 'test@test.com',
             'target_cc_emails' => '',
             'user_email' => 'user@test.com',
@@ -266,7 +266,7 @@ class Test_Mailer extends BaseTestCase
 
         $this->assertSame('', $mailer->lang);
 
-        $with_lang = new AV_Petitioner_Mailer([
+        $with_lang = new AV_Petitioner_Petition_Mailer([
             'target_email' => 'test@test.com',
             'target_cc_emails' => '',
             'user_email' => 'user@test.com',
@@ -325,7 +325,7 @@ class Test_Mailer extends BaseTestCase
             'post_status' => 'publish',
         ]);
 
-        $mailer = new AV_Petitioner_Mailer([
+        $mailer = new AV_Petitioner_Petition_Mailer([
             'target_email' => 'test@test.com',
             'target_cc_emails' => '',
             'user_email' => 'user@test.com',
