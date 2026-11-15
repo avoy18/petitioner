@@ -364,4 +364,95 @@ class Test_Akismet_With_Plugin extends BaseTestCase
         $active = apply_filters('av_petitioner_info_settings', []);
         $this->assertTrue($active['akismet_has_api_key']);
     }
+
+    public function test_comment_check_sends_akismet_comment_visitor_details()
+    {
+        Akismet::$override = 'class-key';
+        Akismet::$response = ['headers', 'false'];
+        update_option('petitioner_enable_akismet', 1);
+        update_option('blog_charset', 'UTF-8');
+
+        $form_id = wp_insert_post([
+            'post_type'   => 'post',
+            'post_status' => 'publish',
+            'post_title'  => 'Save the whales',
+        ]);
+        $this->assertIsInt($form_id);
+
+        $_SERVER['REMOTE_ADDR'] = '198.51.100.8';
+        $_SERVER['HTTP_USER_AGENT'] = 'PetitionerTest';
+        $_SERVER['HTTP_REFERER'] = 'https://example.com/petition';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.5';
+        $_SERVER['HTTP_COOKIE'] = 'session=secret';
+        $_SERVER['HTTP_COOKIE2'] = 'also=secret';
+        $_SERVER['HTTP_X_ARRAY'] = ['not', 'a-string'];
+        $_SERVER['REQUEST_URI'] = '/petition/save-the-whales/';
+        $_SERVER['DOCUMENT_URI'] = '/index.php';
+        $_SERVER['SERVER_SOFTWARE'] = 'nginx';
+
+        $this->assertFalse(AV_Petitioner_Akismet::check_with_akismet(
+            'person@example.com',
+            'Pat',
+            'Lee',
+            'US',
+            $form_id
+        ));
+
+        $this->assertNotNull(Akismet::$last_call);
+        parse_str(Akismet::$last_call['request'], $params);
+
+        $this->assertSame(get_option('home'), $params['blog']);
+        $this->assertSame(get_locale(), $params['blog_lang']);
+        $this->assertSame('UTF-8', $params['blog_charset']);
+        $this->assertSame(get_permalink($form_id), $params['permalink']);
+        $this->assertSame('198.51.100.8', $params['user_ip']);
+        $this->assertSame('198.51.100.8', $params['REMOTE_ADDR']);
+        $this->assertSame('PetitionerTest', $params['user_agent']);
+        $this->assertSame('PetitionerTest', $params['HTTP_USER_AGENT']);
+        $this->assertSame('https://example.com/petition', $params['referrer']);
+        $this->assertSame('https://example.com/petition', $params['HTTP_REFERER']);
+        $this->assertSame('203.0.113.5', $params['HTTP_X_FORWARDED_FOR']);
+        $this->assertSame('/petition/save-the-whales/', $params['REQUEST_URI']);
+        $this->assertSame('/index.php', $params['DOCUMENT_URI']);
+        $this->assertSame('person@example.com', $params['comment_author_email']);
+        $this->assertSame('Pat Lee', $params['comment_author']);
+        $this->assertSame('signup', $params['comment_type']);
+        $this->assertArrayNotHasKey('HTTP_COOKIE', $params);
+        $this->assertArrayNotHasKey('HTTP_COOKIE2', $params);
+        $this->assertArrayNotHasKey('HTTP_X_ARRAY', $params);
+        $this->assertArrayNotHasKey('SERVER_SOFTWARE', $params);
+        $this->assertArrayNotHasKey('comment_content', $params);
+        $this->assertStringNotContainsString('Country:', Akismet::$last_call['request']);
+        $this->assertStringNotContainsString('Form ID:', Akismet::$last_call['request']);
+        $this->assertStringNotContainsString('secret', Akismet::$last_call['request']);
+    }
+
+    public function test_only_true_response_is_spam()
+    {
+        Akismet::$override = 'class-key';
+        update_option('petitioner_enable_akismet', 1);
+
+        $cases = [
+            'true'    => true,
+            'false'   => false,
+            'invalid' => false,
+            ''        => false,
+        ];
+
+        foreach ($cases as $body => $expected) {
+            Akismet::$response = ['headers', $body];
+
+            $this->assertSame(
+                $expected,
+                AV_Petitioner_Akismet::check_with_akismet(
+                    'person@example.com',
+                    'Pat',
+                    'Lee',
+                    'US',
+                    3
+                ),
+                'Response body ' . var_export($body, true)
+            );
+        }
+    }
 }
