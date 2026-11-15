@@ -53,7 +53,11 @@ class AV_Petitioner_Admin_Edit_UI
             if (empty($config['meta_key'])) {
                 continue;
             }
-            $meta_values[$key] = get_post_meta($post_id, $config['meta_key'], true);
+            $value = get_post_meta($post_id, $config['meta_key'], true);
+            if ($value === '' && array_key_exists('default', $config)) {
+                $value = $config['default'];
+            }
+            $meta_values[$key] = $value;
         }
         return $meta_values;
     }

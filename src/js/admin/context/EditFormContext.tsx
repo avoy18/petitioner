@@ -39,6 +39,7 @@ const normalizePetitionerData = () => {
 		email: '',
 		cc_emails: '',
 		show_goal: true,
+		show_letter: true,
 		goal: normalizedGoal,
 		show_country: false,
 		subject: '',

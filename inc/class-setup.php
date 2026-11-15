@@ -181,6 +181,11 @@ class AV_Petitioner_Setup
         } else if (version_compare($current_version, AV_PETITIONER_PLUGIN_VERSION, '<')) {
             // Update the database schema or perform any other necessary updates
             AV_Petitioner_Submissions_Model::create_db_table();
+
+            if (version_compare($current_version, '0.8.8', '<')) {
+                AV_Petitioner_Show_Goal_Migrator::migrate_existing_petitions();
+            }
+
             update_option('petitioner_plugin_version', AV_PETITIONER_PLUGIN_VERSION);
         }
     }

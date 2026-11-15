@@ -60,6 +60,7 @@ const normalizeSettingsData = (
 			wpml: raw?.translation_integrations?.wpml ?? false,
 			translatepress: raw?.translation_integrations?.translatepress ?? false,
 		},
+		akismet_has_api_key: raw?.akismet_has_api_key ?? false,
 	};
 
 	return applyFilters(
