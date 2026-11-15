@@ -40,7 +40,7 @@ class AV_Petitioner_Akismet
             return false;
         }
 
-        $response = self::comment_check($api_key, $email, $fname, $lname, $country, $form_id);
+        $response = self::comment_check($api_key, $email, $fname, $lname, $form_id);
 
         return self::response_is_spam($response);
     }
@@ -145,16 +145,22 @@ class AV_Petitioner_Akismet
      * @param string     $email
      * @param string     $fname
      * @param string     $lname
-     * @param string     $country
      * @param int|string $form_id
      * @return array
      */
-    private static function comment_check($api_key, $email, $fname, $lname, $country, $form_id)
+    private static function comment_check($api_key, $email, $fname, $lname, $form_id)
     {
         $full_name = trim($fname . ' ' . $lname);
+        $permalink = get_permalink($form_id);
+        $charset = get_option('blog_charset');
 
+        // Same visitor fields Akismet sends for a comment. A repeated
+        // placeholder in comment_content was scored as spam for every signer.
         $query = [
             'blog'                 => get_option('home'),
+            'blog_lang'            => get_locale(),
+            'blog_charset'         => is_string($charset) ? $charset : '',
+            'permalink'            => is_string($permalink) ? $permalink : '',
             'user_ip'              => $_SERVER['REMOTE_ADDR'] ?? '',
             'user_agent'           => $_SERVER['HTTP_USER_AGENT'] ?? '',
             'referrer'             => $_SERVER['HTTP_REFERER'] ?? '',
@@ -162,8 +168,17 @@ class AV_Petitioner_Akismet
             'comment_author'       => $full_name,
             'comment_author_email' => $email,
             'comment_author_url'   => '',
-            'comment_content'      => 'Country: ' . $country . '. Form ID: ' . $form_id,
         ];
+
+        foreach ($_SERVER as $key => $value) {
+            if (!is_string($value) || preg_match('/^HTTP_COOKIE/', $key)) {
+                continue;
+            }
+
+            if (preg_match('/^(HTTP_|REMOTE_ADDR|REQUEST_URI|DOCUMENT_URI)/', $key)) {
+                $query[$key] = $value;
+            }
+        }
 
         $request = http_build_query($query);
 

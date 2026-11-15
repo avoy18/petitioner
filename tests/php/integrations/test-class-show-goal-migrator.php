@@ -43,7 +43,7 @@ class Test_Show_Goal_Migrator extends BaseTestCase
 
         $this->assertSame(1, (int) get_post_meta($form_id, '_petitioner_show_goal', true));
         $this->assertSame(1, (int) get_post_meta($form_id, '_petitioner_show_letter', true));
-        $this->assertSame('0.8.8', get_option('petitioner_plugin_version'));
+        $this->assertSame('0.8.9', get_option('petitioner_plugin_version'));
 
         update_post_meta($form_id, '_petitioner_show_goal', 0);
         $petitioner_setup->on_plugins_loaded();
